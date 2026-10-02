@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2026-10-02-d">
+<meta name="app-version" content="2026-10-02-f">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -138,7 +138,7 @@ html{scroll-padding-top:62px}
 /* Reports sub tabs (the visible #sn bar): 3 on top, 2 below */
 #ovf{margin-bottom:0!important;border-bottom-left-radius:0!important;border-bottom-right-radius:0!important;border-bottom:0!important}
 #ovc{border-top-left-radius:0!important;border-top-right-radius:0!important;border-top:0!important;box-shadow:none!important;padding-top:0!important}
-#ovf,#ovc,#allc{border-color:var(--ac)!important}
+#ovf,#ovc,#allc,#dsc{border-color:var(--ac)!important}.acts{flex-wrap:wrap}.acts .btn:disabled{opacity:.4;filter:grayscale(1);cursor:not-allowed}
 #stg .card{border-color:var(--ac)}
 .stt{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
 #stg .sh{font-size:12.5px;margin-top:6px}
@@ -398,10 +398,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
 <section id="pvt" class="hide"><div class="card" style="text-align:center;padding:36px 16px"><b style="font-size:18px">Private Workers</b><div class="mut" style="margin:10px 0 14px">A list of Mr. Njoroge's home &amp; private workers that are paid separately</div><div class="pay" style="font-size:22px;letter-spacing:1px;color:var(--ok)!important">COME BACK LATER!</div></div></section>
-<section id="unp" class="hide"><div id="ualert"></div><div class="card" id="dsc"><b>Driver statement</b><div class="mut">A PDF of one driver's trips, fuel taken, advances and salary paid, with the balance. Share it or download it.</div>
-<label>Driver</label><select id="dsd"></select>
-<div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div>
-<div class="acts" style="margin:12px 0 0"><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button></div></div><div class="card"><label>Balances up to end of month (clear it for all time)</label><div class="ufr"><div class="umw em"><input type="month" id="umon"><span class="uph">Select month</span></div><div class="utb"><span>Total Unpaid Salary</span><b id="utot">0</b></div></div></div>
+<section id="unp" class="hide"><div id="ualert"></div><div class="card"><label>Balances up to end of month (clear it for all time)</label><div class="ufr"><div class="umw em"><input type="month" id="umon"><span class="uph">Select month</span></div><div class="utb"><span>Total Unpaid Salary</span><b id="utot">0</b></div></div></div>
 <div class="card"><b>Unpaid driver balances</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ud"></tbody></table></div></div>
 <div class="card"><b>Unpaid loader balances</b><div class="mut">Only entries with a loader deposit. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ul"></tbody></table></div></div>
 <div class="card"><b>Salary paid</b><div class="wrap"><table><tbody id="ph"></tbody></table></div></div>
@@ -435,15 +432,18 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 </section><section id="flg" class="hide"><div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b id="fltitle">Fuel entries</b><span class="mut" style="font-size:12px;white-space:nowrap">Swipe right | Tap for details</span></div><div class="wrap"><table id="ftab"><thead><tr><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Litres</th><th>Sell/ltr</th><th>Cost/ltr</th><th>Amount</th><th>Profit</th><th class="l">Collected by</th><th class="l">Issued by</th><th class="l">Notes</th></tr></thead><tbody id="flist"></tbody></table></div></div></section>
 
 
-<section id="ov" class="hide"><div class="card ovx" id="ovf"><b class="noprt" style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
+<section id="ov" class="hide"><div class="card noprt" id="dsc"><b style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
+<label>Driver</label><select id="dsd"></select>
+<div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div>
+<div class="acts" style="margin:12px 0 0"><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button></div></div><div class="card ovx" id="ovf"><b class="noprt" style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
 <div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
-<div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button></div></div>
+<div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
 <div class="card" id="allc"><b style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
 <div class="noprt"><div class="fgrid"><div><label>Category</label><select id="ocat"><option value="all">All</option><option value="Payment">Trips only</option><option value="Fuel">Fuel only</option></select></div><div><label>Date</label><select id="odf"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div></div>
 <div id="odw" class="hide"><label>Date</label><input type="date" id="oday"></div><div id="omw2" class="hide"><label>Month</label><input type="month" id="ofm"></div><div id="oyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="oyr" min="2000" max="2100"></div></div>
 <div class="mut" id="ocnt" style="margin:8px 0"></div>
 <div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Category</th><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Quantity</th><th>Trip expense</th><th>Fuel profit</th></tr></thead><tbody id="oab"></tbody></table></div>
-<div class="acts noprt" style="margin:10px 0 0"><button class="btn" id="oacsv">Download CSV</button><button class="btn alt" id="oapdf">Download PDF</button></div></div>
+<div class="acts noprt" style="margin:10px 0 0"><button class="btn" id="oacsv">Download CSV</button><button class="btn alt" id="oapdf">Download PDF</button><button class="btn" id="oashare">Share PDF</button></div></div>
 <div class="card bkc"><div id="bkst" class="bkst"></div>
 <div class="setrow"><div class="st"><b>Remind me every</b><small>A banner shows when a backup is due</small></div><select id="bkint" class="ssel"><option value="3">3 days</option><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option></select></div>
 <div class="setrow"><div class="st"><b>Year for CSV</b><small>CSV covers one year. The full backup (JSON) has everything.</small></div><label class="sf"><input type="number" inputmode="numeric" id="byr" placeholder="Type year in full"></label></div>
@@ -1295,7 +1295,14 @@ document.addEventListener("touchcancel",function(){ok=false},{passive:true});
 })();</script>
 <script>(function(){
 var $=function(i){return document.getElementById(i)};
-function btns(){var on=!!$("dsd").value;$("dssh").disabled=!on;$("dsdl").disabled=!on}
+function hasD(nm){if(!nm)return false;var P=per();return entries.some(function(e){return e.driver===nm&&P.t(e.date)})||fuels.some(function(f){return(f.driver||(cfg.vd||{})[f.vehicle])===nm&&P.t(f.date)})||advs.some(function(x){return x.driver===nm&&P.t(x.date)})||pays.some(function(x){return x.who===nm&&P.t(x.date)})}
+function btns(){var on=false;try{on=hasD($("dsd").value)}catch(e){}$("dssh").disabled=!on;$("dsdl").disabled=!on}
+/* grey out export/share buttons when the current selection has no data */
+function setD(ids,on){ids.forEach(function(i){var b=$(i);if(b)b.disabled=!on})}
+function gate(){var ovOK=false,allOK=false;
+ try{var OP=oper();ovOK=entries.some(function(e){return e.date&&OP.t(e.date)})||fuels.some(function(f){return f.date&&OP.t(f.date)})}catch(e){}
+ try{allOK=allRows().length>0}catch(e){}
+ setD(["ocsv","opdf","oshare"],ovOK);setD(["oacsv","oapdf","oashare"],allOK);btns()}
 function fillD(){var s=$("dsd");if(!s)return;var cv=s.value,o={};
  try{drvNames().forEach(function(k){o[k]=1});fuels.forEach(function(f){var d=f.driver||(cfg.vd||{})[f.vehicle];if(d)o[d]=1})}catch(e){}
  var nm=Object.keys(o).sort();s.innerHTML='<option value="">Select driver…</option>'+nm.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");
@@ -1344,10 +1351,15 @@ function make(){var nm=$("dsd").value;if(!nm){toast("Pick a driver first");retur
 $("dsd").onchange=btns;
 $("dsp").onchange=function(){var k=this.value;$("dsmw").classList.toggle("hide",k!=="month");$("dsyw").classList.toggle("hide",k!=="year");if(k==="month"&&!$("dsm").value)$("dsm").value=today().slice(0,7);if(k==="year"&&!$("dsy").value)$("dsy").value=today().slice(0,4)};
 $("dsdl").onclick=function(){try{var b=make();if(!b)return;dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}};
-$("dssh").onclick=function(){try{var b=make();if(!b)return;var f=null;try{f=new File([b.blob],b.name,{type:"application/pdf"})}catch(x){}
- if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:b.title}).catch(function(){})}
- else{dlf(b.name,b.blob);toast("Sharing is not available here. PDF downloaded instead.")}}catch(x){alert("Could not create the PDF")}};
-var _r=render;render=function(){var v=_r.apply(this,arguments);try{fillD()}catch(x){}return v};fillD()})();</script>
+function sharePdf(blob,name,title){var f=null;try{f=new File([blob],name,{type:"application/pdf"})}catch(x){}
+ if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:title}).catch(function(){})}
+ else{dlf(name,blob);toast("Sharing is not available here. PDF downloaded instead.")}}
+$("dssh").onclick=function(){try{var b=make();if(b)sharePdf(b.blob,b.name,b.title)}catch(x){alert("Could not create the PDF")}};
+$("oshare").onclick=function(){try{PM=alloc();renderOv();var P=oper();sharePdf(pdfBlob("Vehicle overview: trips and fuel","Period: "+P.lab,domItems($("ovc"))),"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf","Vehicle overview")}catch(x){alert("Could not create the PDF")}};
+$("oashare").onclick=function(){try{renderOb();sharePdf(pdfBlob("Trips and fuel entries",allLabel(),domItems($("allc"))),"entries-"+today()+".pdf","Trips and fuel entries")}catch(x){alert("Could not create the PDF")}};
+var _r=render;render=function(){var v=_r.apply(this,arguments);try{fillD();gate()}catch(x){}return v};
+["oper","ovday","omon","ovyr","ocat","odf","oday","ofm","oyr","dsd","dsp","dsm","dsy"].forEach(function(i){var e=$(i);if(!e)return;e.addEventListener("change",gate);e.addEventListener("input",gate)});
+fillD();gate()})();</script>
 <script>try{netUpdate()}catch(e){}</script>
 <script>(function(){
 var g=function(i){return document.getElementById(i)};
