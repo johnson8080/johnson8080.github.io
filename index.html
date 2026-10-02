@@ -154,6 +154,7 @@ html{scroll-padding-top:52px}
 #toast{--tc:22,163,74;position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top,0px));max-width:none;margin:0;box-sizing:border-box;display:flex;align-items:center;gap:6px;height:36px;padding:0 8px;background:linear-gradient(rgba(var(--tc),.16),rgba(var(--tc),.16)),var(--card);color:var(--tx);border:1px solid rgb(var(--tc));border-radius:6px;z-index:60;text-align:left;font-size:12px;font-weight:700;line-height:1;overflow:hidden;pointer-events:none;animation:tin .3s ease-out,tglow 1.1s ease-out .15s 2}
 .hd .ht #toast{position:relative;left:auto;right:auto;top:auto;flex:1 1 0;min-width:0;width:auto;margin:0 0 0 6px;height:36px;z-index:3}
 #toast.hide{display:none!important}
+.hd:has(#toast:not(.hide)){z-index:11}
 #toast.bad{--tc:220,38,38}
 #toast i{flex:0 0 auto;width:16px;height:16px;border-radius:50%!important;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:800;line-height:1;color:#fff;background:rgb(var(--tc))}
 #toast span{min-width:0;flex:1;display:block;white-space:nowrap;overflow:hidden}
@@ -523,8 +524,9 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <script>
 var WM="Developer: Made & Managed by Johnson 0724067632";
 var rqT=0,rqF=0;function rq(){if(rqT)return;rqT=setTimeout(function(){rqT=0;render()},40)}function rqf(){if(rqF)return;rqF=setTimeout(function(){rqF=0;renderFuel()},40)}
-var tt0;function toast(m){var t=document.getElementById("toast");m=String(m==null?"":m);
- var bad=/^(could not|can't|a future|that month|pick |that plate|read-only|not |connect to|sharing is not|you are offline)|not saved|failed|no permission|cannot|not allowed/i.test(m);
+var tt0;function toast(m,isBad){var t=document.getElementById("toast");m=String(m==null?"":m);
+ try{if(/[<&]/.test(m))m=(new DOMParser().parseFromString(m.replace(/<br\s*\/?>/gi," \u00b7 "),"text/html").body.textContent||"").replace(/\s+/g," ").trim()}catch(e){}
+ var bad=isBad===true||(isBad!==false&&/^(cannot|could not|can't|a future|that month|pick |that plate|read-only|not |connect to|sharing is not|you are offline)|not saved|failed|no permission|cannot|not allowed|finished with problems/i.test(m));
  clearTimeout(tt0);
  try{var ht=document.querySelector(".hd .ht");if(ht&&t.parentNode!==ht)ht.appendChild(t)}catch(e){}
  t.className="";t.textContent="";
@@ -532,9 +534,10 @@ var tt0;function toast(m){var t=document.getElementById("toast");m=String(m==nul
  var sp=document.createElement("span"),bb=document.createElement("b");bb.textContent=m;sp.appendChild(bb);t.appendChild(ic);t.appendChild(sp);
  if(bad)t.classList.add("bad");
  void t.offsetWidth;
- var ms=4500;
+ var ms=bad?6000:4500;
  try{var d=bb.offsetWidth-sp.clientWidth;if(d>1){var dur=Math.max(2.4,d/36);t.style.setProperty("--d",(-d-4)+"px");t.style.setProperty("--t",dur+"s");t.classList.add("mq");ms=Math.round(600+dur*1000+1500)}}catch(e){}
  tt0=setTimeout(function(){t.classList.add("hide")},ms)}
+window.toast=toast;
 window.alert=toast;
 var cfg={rate:0,dday:0,dbal:0,vd:{},veh:[]};
 var entries=[],trashE=[],trashF=[],trashA=[],trashP=[],pays=[],advs=[],PM={},payKeys={driver:[],loader:[]},db=null,me=null,names={},canWrite=true,isAdmin=true,editing=null,dl=null;
@@ -935,6 +938,7 @@ function rParse(txt){var j=JSON.parse(txt);if(!rObj(j))throw new Error("This is 
  var fr=j.fuelRates;if(rObj(fr)&&rNum(fr.sell)&&rNum(fr.cost))R.fuelRates={sell:fr.sell,cost:fr.cost};
  if(!(R.entries.length||R.fuel.length||R.advances.length||R.payments.length||R.rates||R.fuelRates))throw new Error("No payment or fuel data found in this file");
  R.skipped=sk;return R}
+function rRes(h,b,bad){closeM();toast(h+": "+b,!!bad)}
 function rMsg(h,b){$("mbody").innerHTML='<b style="font-size:18px">'+h+'</b><div class="mut" style="margin-top:8px;line-height:1.5">'+b+'</div>';$("modal").classList.remove("hide")}
 function rAsk(R){var rate=(R.rates||R.fuelRates)?(isAdmin?"Rates and vehicles in the file will also be restored (they replace the current ones).":"Rates are in the file but only editors and the owner can restore them, so they will be skipped."):"No rates in this file.";
  rMsg("Restore from backup",(R.exported?"Backup made: "+esc(String(R.exported).slice(0,10))+"<br>":"")+"Trip entries: <b>"+R.entries.length+"</b><br>Fuel entries: <b>"+R.fuel.length+"</b><br>Advances: <b>"+R.advances.length+"</b><br>Salary paid: <b>"+R.payments.length+"</b><br>"+rate+(R.skipped?'<br><span class="neg">'+R.skipped+' invalid record'+(R.skipped>1?"s":"")+' will be skipped.</span>':"")
@@ -944,9 +948,9 @@ function rAsk(R){var rate=(R.rates||R.fuelRates)?(isAdmin?"Rates and vehicles in
  $("mbody").appendChild(b);$("rC").onclick=closeM;$("rM").onclick=function(){rRun(R,false)};
  $("rR").onclick=function(){if(!this.dataset.s){this.dataset.s=1;this.textContent="Sure? Tap again to replace everything";return}rRun(R,true)}}
 async function rRun(R,replace){
- if(!canWrite){rMsg("Cannot restore","You have view-only access. Ask the owner to make you a Contributor.");return}
+ if(!canWrite){rRes("Cannot restore","You have view-only access. Ask the owner to make you a Contributor.",1);return}
  var lkm=Object.keys(locks);if(lkm.length){var hit=function(a){return a.some(function(x){return isLocked(x.date)})};
-  if(hit(R.entries)||hit(R.fuel)||hit(R.advances)||hit(R.payments)||(replace&&(hit(entries)||hit(fuels)||hit(advs)||hit(pays)))){rMsg("Cannot restore","This restore would change a locked month ("+lkm.sort().join(", ")+"). Unlock the month first, then restore.");var okb=document.createElement("button");okb.className="btn";okb.style.margin="14px 0 0";okb.textContent="OK";okb.onclick=closeM;$("mbody").appendChild(okb);return}}
+  if(hit(R.entries)||hit(R.fuel)||hit(R.advances)||hit(R.payments)||(replace&&(hit(entries)||hit(fuels)||hit(advs)||hit(pays)))){rRes("Cannot restore","This restore would change a locked month ("+lkm.sort().join(", ")+"). Unlock the month first, then restore.",1);return}}
  var cols=[["entries",R.entries],["fuel",R.fuel],["advances",R.advances],["payments",R.payments]],fails=0,done=0,total=0,ids={};
  cols.forEach(function(c){total+=c[1].length;ids[c[0]]={}});
  var rt=isAdmin&&(R.rates||R.fuelRates);if(R.rates&&isAdmin)total++;if(R.fuelRates&&isAdmin)total++;
@@ -970,9 +974,8 @@ async function rRun(R,replace){
  if(R.skipped)msg+="<br>"+R.skipped+" invalid record"+(R.skipped>1?"s were":" was")+" skipped.";
  if((R.rates||R.fuelRates)&&!isAdmin)msg+="<br>Rates were not restored because only editors and the owner can change them.";
  if(fails)msg+='<br><span class="neg">'+fails+' item'+(fails>1?"s":"")+' could not be saved. Your data may only be partly restored'+(replace?", so nothing was deleted":"")+'. You can run the restore again.</span>';
- rMsg(fails?"Restore finished with problems":"Restore complete",msg);
- var ok=document.createElement("button");ok.className="btn";ok.style.margin="14px 0 0";ok.textContent="OK";ok.onclick=closeM;$("mbody").appendChild(ok)}
-function rErr(m){rMsg("Cannot restore this file",esc(m||"The file is not a valid backup")+'.<br>Choose a "Full backup (JSON)" file made by this app.');var ok=document.createElement("button");ok.className="btn";ok.style.margin="14px 0 0";ok.textContent="OK";ok.onclick=closeM;$("mbody").appendChild(ok)}
+ rRes(fails?"Restore finished with problems":"Restore complete",msg,!!fails)}
+function rErr(m){rRes("Cannot restore this file",esc(m||"The file is not a valid backup")+'. Choose a "Full backup (JSON)" file made by this app.',1)}
 $("rfile").addEventListener("click",function(ev){if(!canWrite){ev.preventDefault();alert("You have view-only access, so you can't restore data.")}});
 $("rpaste").onclick=function(){if(!canWrite){alert("You have view-only access, so you can't restore data.");return}
  rMsg("Paste backup text","Open your backup .json file, copy all of its text, and paste it below.");
@@ -1059,7 +1062,7 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
   var sv=null,raw=null,loadBad=false,keptCopy=false;try{raw=localStorage.getItem(LK)}catch(x){}if(raw){try{sv=JSON.parse(raw)}catch(x){loadBad=true;try{localStorage.setItem(LK+"_corrupt",raw);keptCopy=true}catch(y){}}}try{if(sv){entries=sv.entries||[];pays=sv.pays||[];advs=sv.advs||[];fuels=sv.fuels||[];trashE=sv.trashE||[];trashF=sv.trashF||[];trashA=sv.trashA||[];trashP=sv.trashP||[];if(sv.cfg)cfg=sv.cfg;if(sv.locks)locks=sv.locks;if(sv.fcfg)fcfg=sv.fcfg;paySaved=!!sv.paySaved;
    fillVeh();showCfg();$("frs").value=fcfg.sell||"";$("frc").value=fcfg.cost||"";fautofill();frchk();chkR();setDdp();render();renderFuel();prev()}}catch(x){}
   var lastS=null,pt=null,loadMsg=loadBad?"Saved data on this phone could not be read."+(keptCopy?" A copy was kept, so it is not lost. Ask the owner for help before entering new data.":" Nothing new will be saved on this phone until this is fixed."):"";
-  var sw=function(m,btn){$("sbanner").innerHTML=m?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+m+'</b>'+(btn?' <button class="x" onclick="bkNow()">Back up now</button>':"")+'</div>':""};
+  var swLast="";var sw=function(m,btn){if(m&&m!==swLast){try{toast(m,true)}catch(e){}}swLast=m||"";$("sbanner").innerHTML=m?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+m+'</b>'+(btn?' <button class="x" onclick="bkNow()">Back up now</button>':"")+'</div>':""};
   window.persistLocal=function(){if(loadBad&&!keptCopy){sw(loadMsg);return}
    var s;try{s=JSON.stringify({entries:entries,pays:pays,advs:advs,fuels:fuels,trashE:trashE,trashF:trashF,trashA:trashA,trashP:trashP,cfg:cfg,fcfg:fcfg,paySaved:paySaved,locks:locks})}catch(x){sw("Could not prepare data to save on this phone.",true);return}
    if(s===lastS)return;
