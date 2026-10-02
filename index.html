@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2026-10-02-f">
+<meta name="app-version" content="1.0.3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -112,6 +112,28 @@ body.nohd .hd{display:none}body.nohd{padding-top:8px}
 #htoday.on{background:var(--ac)!important;border-color:var(--ac)!important;color:#fff!important;font-weight:600}
 .dw{position:relative}.dw .ph{position:absolute;left:12px;top:0;height:42px;line-height:42px;font-size:14px;color:var(--mut);pointer-events:none;display:none}
 .dw.em .ph{display:block}.dw.em input{color:transparent!important}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.rh{font-size:17px;font-weight:800;margin-bottom:6px}#rfuel,#rpay,#lockc{scroll-margin-top:12px}#barrates{display:none!important}
+
+/* uppercase headers, fixed box height, wrap rather than overlap */
+.sn{grid-auto-rows:44px}
+.sn button,.hch button{text-transform:uppercase}
+.sn button{display:flex;align-items:center;justify-content:center;text-align:center;height:44px;margin:0;padding:0 4px!important;white-space:normal!important;overflow:hidden;text-overflow:clip!important;line-height:1.15;font-size:11.5px!important;letter-spacing:0}
+.hch button{font-size:12px!important}
+.rh,#trashc>b,#lockc>b{text-transform:uppercase}
+#stg .sabout #devtxt{white-space:nowrap;font-size:clamp(10px,3.2vw,13px);overflow:hidden;text-overflow:clip}
+
+/* Reports tabs: 3 lines, buttons sized to their text */
+/* Quick menu: two columns so everything shows at once */
+.qm{grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.qm button{min-width:0;min-height:46px;padding:8px 8px;gap:7px;font-size:clamp(12px,3.4vw,13.5px);line-height:1.15;white-space:normal;overflow:hidden}.qm svg{width:17px;height:17px}
+#mbody:has(.qm){overflow:visible;max-height:none}
+/* light theme: darker sub header text and borders */
+:root[data-theme="light"] .sn button:not(.on),:root[data-theme="light"] .hch button:not(.on){color:#050a14!important;font-weight:800!important;border-color:#8793ab}
+:root[data-theme="light"] .sn button.on,:root[data-theme="light"] .hch button.on{font-weight:800!important}
+/* Reports: the three card headers share the Trips & Fuel Summary spacing and size */
+#ov #dsc,#ov #ovf,#ov #allc{padding-top:18px!important}
+#ov #dsc>b,#ov #ovf>b,#ov #allc>b{font-size:16px!important;margin-bottom:10px!important;line-height:normal}
+#stg .sabout #devtxt{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;padding:0 4px;font-size:clamp(10px,3.2vw,13px)!important}
+@media(max-width:340px){.qm button{font-size:11.5px;padding:8px 6px;gap:5px}.qm svg{width:15px;height:15px}}
 </style>
 <style>
 .hd{position:sticky;top:0;z-index:9;display:flex;align-items:center;gap:6px;margin:0 -12px 8px;padding:7px 12px 5px;background:var(--bg);border-bottom:1px solid var(--ln)}
@@ -145,10 +167,8 @@ html{scroll-padding-top:62px}
 #stg .acts{justify-content:center}
 #devtxt{font-size:14.5px;color:var(--tx)}
 .sn[data-k="p"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}.sn[data-k="p"] button{font-size:12px!important;padding:10px 2px!important;letter-spacing:0}
-.sn[data-k="r"]{grid-template-columns:repeat(6,minmax(0,1fr))!important}
-.sn[data-k="r"] button{white-space:normal;line-height:1.15;text-overflow:clip;padding:10px 4px}
-.sn[data-k="r"] button:nth-child(-n+3){grid-column:span 2}
-.sn[data-k="r"] button:nth-child(n+4){grid-column:span 3}
+.sn[data-k="r"]{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.sn[data-k="r"] button{white-space:normal!important;line-height:1.15;text-overflow:clip;padding:0 4px!important;font-size:11.5px!important}
 /* every bordered box in the header: identical height, centered on one line */
 .hd{align-items:center}
 .hd .ht{display:flex;align-items:center;height:36px}
@@ -353,7 +373,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">Private Workers</button></div>
 <div class="tabs hide" id="barrates" data-g="rates" style="grid-template-columns:minmax(0,1fr)"><button data-t="set" class="on">Update Rates</button></div>
 <div class="tabs hide" id="barfuel" data-g="fuel" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-t="fen">ADD FUEL</button><button data-t="flg" class="on">ALL FUEL LOGS</button></div>
-<div class="tabs hide" id="barov" data-g="ov"><button data-t="sum" class="on">Trips</button><button data-t="fsm">Fuel</button><button data-t="nts">All Notes</button><button data-t="ov">EXPORT/DOWNLOAD PDF</button><button data-t="pguide">HOW TO DOWNLOAD PDF</button></div>
+<div class="tabs hide" id="barov" data-g="ov"><button data-t="ov" class="on">DOWNLOAD REPORT</button><button data-t="pguide">DOWNLOAD GUIDE</button><button data-t="sum">Trips</button><button data-t="fsm">Fuel</button><button data-t="nts">All Notes</button><button data-t="dhs">DELETE HISTORY</button></div>
 
 <div id="st1" class="hide"><div class="stats"><div class="stat b"><span>Today's tonnes</span><b id="s1a">0.00 ton</b><small id="s1b">All time: 0.00 ton</small></div><div class="stat g"><span>Today's trip expenses</span><b id="s1c">0.00</b><small id="s1d">All time: 0.00</small></div></div></div><div id="st2" class="hide"><div class="stats"><div class="stat b"><span>Today's litres</span><b id="s2a">0 ltrs</b><small id="s2b">All time: 0 ltrs</small></div><div class="stat g"><span>Today's net profit</span><b id="s2c">0.00</b><small id="s2d">All time: 0.00</small></div></div></div>
 <div class="sn hide" id="sn"></div>
@@ -450,7 +470,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="sacts"><button class="btn alt" id="bjson">Full backup (JSON)</button><button class="btn alt" id="bcsv" disabled>1 year backup (CSV)</button></div>
 <div class="setrow col"><div class="st"><b>Restore</b><small>You will see a summary and confirm before anything changes.</small></div></div>
 <div class="sacts"><label class="btn alt" id="rbtn" style="position:relative;overflow:hidden;cursor:pointer;display:inline-block;text-align:center"><span>Restore from file</span><input type="file" id="rfile" accept=".json,application/json,text/plain" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0"></label><button class="btn alt" id="rpaste">Paste backup text</button></div>
-<div class="mut sh" style="padding-bottom:12px">If the file picker does not open, use Paste backup text.</div></div><div class="card" id="trashc"></div></section>  <section id="sales" class="hide"><div class="card" style="text-align:center;padding:36px 18px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Sales</b><div style="font-size:16px;line-height:1.5">A project of selling 30T cane fleet carrier</div><div style="font-size:22px;font-weight:800;margin-top:14px;letter-spacing:1px;color:var(--ok)">COME BACK LATER!</div></div></section>
+<div class="mut sh" style="padding-bottom:12px">If the file picker does not open, use Paste backup text.</div></div></section><section id="dhs" class="hide"><div class="card" id="trashc"></div></section>  <section id="sales" class="hide"><div class="card" style="text-align:center;padding:36px 18px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Sales</b><div style="font-size:16px;line-height:1.5">A project of selling 30T cane fleet carrier</div><div style="font-size:22px;font-weight:800;margin-top:14px;letter-spacing:1px;color:var(--ok)">COME BACK LATER!</div></div></section>
 <section id="nts" class="hide"><div class="card"><b>Notes</b><div class="mut" id="ntc"></div><div id="ntl"></div></div></section>
 
 <section id="stg" class="hide"><div class="ssec" id="s-alerts"><div class="sh2">Alerts</div><div class="ssub">The unpaid alert saves with the Save button. The other two apply on this device straight away.</div>
@@ -473,7 +493,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div id="sbar"><span>Unsaved changes</span><button type="button" class="sdis" id="sdis">Discard</button><button class="btn" id="sappsave" disabled>Save</button></div>
 
 <button type="button" class="fab hide" id="fabT" aria-label="Add trip log">+</button><button type="button" class="fab hide" id="fabF" aria-label="Add fuel entry">+</button>
-<nav class="bn" id="bn"><button data-go="pay:log" data-k="t"><i></i>Trips</button><button data-go="fuel:flg" data-k="f"><i></i>Fuel</button><button data-go="sales:" data-k="s"><i></i>Sales</button><button data-go="pay:unp" data-k="p"><i></i>Salary</button><button data-go="hist" data-k="h"><i></i>History</button><button data-go="ov:sum" data-k="r"><i></i>Reports</button></nav>
+<nav class="bn" id="bn"><button data-go="pay:log" data-k="t"><i></i>Trips</button><button data-go="fuel:flg" data-k="f"><i></i>Fuel</button><button data-go="sales:" data-k="s"><i></i>Sales</button><button data-go="pay:unp" data-k="p"><i></i>Salary</button><button data-go="hist" data-k="h"><i></i>History</button><button data-go="ov:ov" data-k="r"><i></i>Reports</button></nav>
 <div id="modal" class="modal hide"><div class="card" id="mbody"></div></div><div id="toast" class="hide"></div><div id="wm" aria-hidden="true">Developer: Made &amp; Managed by Johnson 0724067632</div>
 <script>
 var WM="Developer: Made & Managed by Johnson 0724067632";
@@ -552,14 +572,14 @@ function prev(){chk();var c=cur();$("prev").textContent=fmt(pay(c));var nm=$("dr
  if(!nm){r.innerHTML="";return}
  var v=remain(nm)+dheld(c)-c.advance;r.innerHTML="Driver's remaining balance after this entry: <b>"+mn(v)+"</b>"+(c.advance>0?" (advance taken from it)":"")}
 ["ton","dep","ddp","exp","adv","drv","rsn","nte"].forEach(function(i){$(i).addEventListener("input",prev)});$("date").addEventListener("input",prev);$("date").addEventListener("change",prev);$("veh").addEventListener("change",function(){applyDrv();prev()});
-var G={pay:"log",fuel:"flg",ov:"sum",rates:"set"};
+var G={pay:"log",fuel:"flg",ov:"ov",rates:"set"};
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){if(GATED[b.dataset.t]&&needRates()){gatePop();return}var bar=b.parentNode;G[bar.dataset.g]=b.dataset.t;
  bar.querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b)});
- ["enter","log","advt","sum","unp","pvt","set","fen","fsm","flg","nts","ov","sales","stg","pguide"].forEach(function(s){$(s).classList.toggle("hide",s!==b.dataset.t)});render()}});
+ ["enter","log","advt","sum","unp","pvt","set","fen","fsm","flg","nts","ov","sales","stg","pguide","dhs"].forEach(function(s){$(s).classList.toggle("hide",s!==b.dataset.t)});render()}});
 document.querySelectorAll(".main button").forEach(function(b){b.onclick=function(){var g=b.dataset.g;
  document.querySelectorAll(".main button").forEach(function(x){x.classList.toggle("on",x===b)});
  ["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.toggle("hide",x!==g)});
- if(g==="nts"||g==="sales"||g==="stg"){["enter","log","advt","sum","unp","pvt","set","fen","fsm","flg","ov","nts","sales","stg","pguide"].forEach(function(x){$(x).classList.add("hide")});$(g).classList.remove("hide");if(g==="nts")render();return}
+ if(g==="nts"||g==="sales"||g==="stg"){["enter","log","advt","sum","unp","pvt","set","fen","fsm","flg","ov","nts","sales","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$(g).classList.remove("hide");if(g==="nts")render();return}
  document.querySelector("#bar"+g+' [data-t="'+G[g]+'"]').click();if(g==="rates")scrollTo(0,0)}});
 function payM(kind,who,u){if(needRates()){gatePop();return}$("mbody").innerHTML='<b style="font-size:18px">Mark paid</b><div class="mut">'+esc(who)+' · '+kind+' balance</div><label>Amount paid</label><input type="number" inputmode="decimal" id="pamt" value="'+(Math.round(u*100)/100)+'"><div class="mut" style="margin-top:6px">Unpaid now: '+fmt(u)+'. Lower the amount for a part payment.</div><label>Date paid</label><input type="date" id="pdate" value="'+today()+'"><div id="pwarn" class="neg" style="margin-top:8px;font-size:14px"></div><div class="b2"><button class="pr" id="pOK">Confirm paid</button><button id="pNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("pNo").onclick=closeM;
@@ -1117,7 +1137,7 @@ function isDark(){var t=document.documentElement.getAttribute("data-theme");retu
 function paint(){sw.setAttribute("aria-pressed",isDark()?"true":"false")}
 sw.onclick=function(){var t=isDark()?"light":"dark";document.documentElement.setAttribute("data-theme",t);try{localStorage.setItem("fleetTheme2",t)}catch(e){}paint()};
 if(mq){try{mq.addEventListener("change",paint)}catch(e){}}
-paint();var dv=document.getElementById("devtxt");if(dv)dv.textContent=WM})();
+paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySelector('meta[name="app-version"]');dv.innerHTML="<span>Version: "+(vm?vm.content:"")+"</span><span>DEVELOPER: Johnson 0724067632</span>"}})();
 (function(){var P={home:"M3 11l9-8 9 8M5 9.5V21h5v-6h4v6h5V9.5",pay:"M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6",fuel:"M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4",nts:"M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M8 13h8M8 17h8",ov:"M21.2 15.9A10 10 0 1 1 8 2.8M22 12A10 10 0 0 0 12 2v10z",rates:"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6",sales:"M1 4h15v12H1zM16 8h4l3 3v5h-7zM5.5 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18.5 21a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",stg:"M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z",moon:"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z",sun:"M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4",hist:"M12 6v6l4 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z",wal:"M20 7H5a2 2 0 0 1 0-4h13v4zM3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1M16 14h.01",truck:"M1 4h15v12H1zM16 8h4l3 3v5h-7z",bk:"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"};
  function ic(k,c){return'<svg class="i" viewBox="0 0 24 24"'+(c?' style="color:'+c+'"':"")+'><path d="'+P[k]+'"/></svg>'}
  var $=function(i){return document.getElementById(i)};
@@ -1125,29 +1145,29 @@ paint();var dv=document.getElementById("devtxt");if(dv)dv.textContent=WM})();
  [].forEach.call(document.querySelectorAll(".main button"),function(b){b.insertAdjacentHTML("afterbegin",ic(b.dataset.g))});
  var nm={t:"nts",h:"hist",f:"fuel",p:"wal",s:"sales",r:"ov"};[].forEach.call(document.querySelectorAll(".bn button"),function(b){b.querySelector("i").innerHTML=ic(nm[b.dataset.k])});
  function th(){$("hth").innerHTML=ic(document.documentElement.getAttribute("data-theme")==="light"?"moon":"sun")}th();
- $("hst").innerHTML=ic("stg");$("hst").onclick=function(){if(!$("stg").classList.contains("hide"))return;[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.add("hide")});["enter","log","advt","sum","unp","pvt","set","fen","fsm","flg","nts","ov","sales","pguide"].forEach(function(x){$(x).classList.add("hide")});$("stg").classList.remove("hide");act();scrollTo({top:0,behavior:"smooth"})};
+ $("hst").innerHTML=ic("stg");$("hst").onclick=function(){if(!$("stg").classList.contains("hide"))return;[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.add("hide")});["enter","log","advt","sum","unp","pvt","set","fen","fsm","flg","nts","ov","sales","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$("stg").classList.remove("hide");act();scrollTo({top:0,behavior:"smooth"})};
  function go(v){if(v==="bk"){window.pgBk();return}if(v==="hist"){showHist();return}var a=v.split(":");document.querySelector('.main [data-g="'+a[0]+'"]').click();var t=document.querySelector('.tabs [data-t="'+a[1]+'"]');if(t)t.click();scrollTo({top:0,behavior:"smooth"})}
  [].forEach.call(document.querySelectorAll(".bn button"),function(b){b.onclick=function(){go(b.dataset.go)}});
  $("hrp").onclick=function(){go("rates:set")};
  (function(){var h=document.querySelector(".hd h1");if(!h)return;h.setAttribute("role","button");h.setAttribute("tabindex","0");h.setAttribute("aria-label","Quick menu");
   function openQ(){var cw=typeof canWrite==="undefined"||canWrite,L=[["pay:log","home","Go to Home"]];
    if(cw){L.push(["pay:enter","truck","Add trip log"]);L.push(["fuel:fen","fuel","Add fuel log"])}
-   L.push(["ov:sum","ov","View Reports"]);L.push(["ov:nts","nts","View All Notes"]);L.push(["rates:set","rates","Update Rates"]);L.push(["ov:pguide","nts","Download PDF"]);L.push(["bk","bk","Full Backup now"]);
+   L.push(["ov:ov","ov","View Reports"]);L.push(["ov:nts","nts","View All Notes"]);L.push(["rates:set","rates","Update Rates"]);L.push(["ov:pguide","nts","Download Report"]);L.push(["bk","bk","Full Backup now"]);
    var off=(typeof offCopy!=="undefined"&&offCopy)||navigator.onLine===false;
    $("mbody").innerHTML='<div class="qh"><b style="font-size:18px">Quick menu</b><span class="qt'+(off?' off':'')+'"><i>'+(off?"&#10005;":"&#10003;")+'</i>'+(off?"You are offline":"You are online")+'</span></div>'+'<div class="qm">'+L.map(function(x,i){return'<button type="button" data-i="'+i+'">'+ic(x[1])+x[2]+'</button>'}).join("")+'</div><div class="b2"><button type="button" id="qmC">Close</button></div>';
    $("modal").classList.remove("hide");$("qmC").onclick=closeM;
    [].forEach.call(document.querySelectorAll(".qm button"),function(b){b.onclick=function(){closeM();go(L[b.dataset.i][0])}})}
   h.onclick=openQ;h.onkeydown=function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();openQ()}}})();
- var MP={hist:"h",enter:"t",advt:"p",log:"t",fen:"f",flg:"f",unp:"p",pvt:"p",sum:"r",fsm:"r",ov:"r",pguide:"r",nts:"r",sales:"s",set:"m"};
-  var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","Private Workers","pvt"]],r:[["ov:sum","Trips","sum"],["ov:fsm","Fuel","fsm"],["ov:nts","All Notes","nts"],["ov:ov","EXPORT/DOWNLOAD PDF","ov"],["ov:pguide","HOW TO DOWNLOAD PDF","pguide"]],m:[["rates:set","Update Rates","set"]]};
+ var MP={hist:"h",enter:"t",advt:"p",log:"t",fen:"f",flg:"f",unp:"p",pvt:"p",sum:"r",fsm:"r",ov:"r",pguide:"r",dhs:"r",nts:"r",sales:"s",set:"m"};
+  var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","Private Workers","pvt"]],r:[["ov:ov","DOWNLOAD REPORT","ov"],["ov:pguide","DOWNLOAD GUIDE","pguide"],["ov:sum","TRIPS","sum"],["ov:fsm","FUEL","fsm"],["ov:nts","ALL NOTES","nts"],["ov:dhs","DELETE HISTORY","dhs"]],m:[["rates:set","Update Rates","set"]]};
   var lastK=null;
   function sub(k,cur){var bar=$("sn"),L=CATS[k]||[];
    if(L.length<2){bar.classList.add("hide");bar.innerHTML="";lastK=null;return}
-   if(k!==lastK){lastK=k;bar.setAttribute("data-k",k);bar.style.gridTemplateColumns=(k==="t"?"1fr 1.5fr":k==="r"?"repeat(6,minmax(0,1fr))":"repeat("+L.length+",minmax(0,1fr))");bar.innerHTML=L.map(function(x){return'<button data-go="'+x[0]+'" data-s="'+x[2]+'">'+x[1]+'</button>'}).join("");[].forEach.call(bar.querySelectorAll("button"),function(b){b.onclick=function(){go(b.dataset.go)}})}
+   if(k!==lastK){lastK=k;bar.setAttribute("data-k",k);bar.style.gridTemplateColumns=(k==="t"?"1fr 1.5fr":k==="r"?"repeat(3,minmax(0,1fr))":"repeat("+L.length+",minmax(0,1fr))");var bt=function(x){return'<button data-go="'+x[0]+'" data-s="'+x[2]+'">'+x[1]+'</button>'};bar.innerHTML=L.map(bt).join("");[].forEach.call(bar.querySelectorAll("button"),function(b){b.onclick=function(){go(b.dataset.go)}})}
    bar.classList.remove("hide");[].forEach.call(bar.querySelectorAll("button"),function(b){b.classList.toggle("on",b.dataset.s===cur)})}
   function act(){$("hst").classList.toggle("on",!$("stg").classList.contains("hide"));var k="",cur="";[].forEach.call(document.querySelectorAll("section:not(.hide)"),function(x){if(MP[x.id]){k=MP[x.id];cur=x.id}});[].forEach.call(document.querySelectorAll(".bn button"),function(b){b.classList.toggle("on",b.dataset.k===k)});$("hrp").classList.toggle("on",k==="m");sub(k,cur);var cw=typeof canWrite==="undefined"||canWrite;$("fabT").classList.toggle("hide",cur!=="log"||!cw);$("fabF").classList.toggle("hide",cur!=="flg"||!cw);$("st1").classList.toggle("hide",k!=="t");$("st2").classList.toggle("hide",k!=="f");document.body.classList.toggle("nohd",!(k==="m"||k==="s"||!$("stg").classList.contains("hide")))}
   var HT="all";
-  function showHist(){["enter","log","advt","sum","unp","pvt","set","fen","fsm","flg","nts","ov","sales","stg","pguide"].forEach(function(x){$(x).classList.add("hide")});[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});$("hist").classList.remove("hide");document.body.classList.add("nohd");renderHist();scrollTo({top:0,behavior:"smooth"})}
+  function showHist(){["enter","log","advt","sum","unp","pvt","set","fen","fsm","flg","nts","ov","sales","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});$("hist").classList.remove("hide");document.body.classList.add("nohd");renderHist();scrollTo({top:0,behavior:"smooth"})}
   function renderHist(){if($("hist").classList.contains("hide"))return;
    var sv=$("hveh"),cv=sv.value;sv.innerHTML='<option value="">All vehicles</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)sv.value=cv;
    try{PM=alloc()}catch(x){}
@@ -1240,8 +1260,8 @@ function sync(){h.classList.toggle("mlock",!m.classList.contains("hide"))}
 new MutationObserver(sync).observe(m,{attributes:true,attributeFilter:["class"]});sync();
 m.addEventListener("touchmove",function(e){var c=e.target.closest&&e.target.closest(".card");if(!c||c.scrollHeight<=c.clientHeight+1)e.preventDefault()},{passive:false});
 m.addEventListener("wheel",function(e){var c=e.target.closest&&e.target.closest(".card");if(!c||c.scrollHeight<=c.clientHeight+1)e.preventDefault()},{passive:false})})();</script>
-<script>(function(){var IDS=["enter","log","advt","unp","pvt","fen","flg","sum","fsm","ov","pguide","set","nts","sales","stg","hist"],
-G={enter:"pay",log:"pay",advt:"pay",unp:"pay",pvt:"pay",fen:"fuel",flg:"fuel",sum:"ov",fsm:"ov",ov:"ov",pguide:"ov",nts:"ov",set:"rates"},
+<script>(function(){var IDS=["enter","log","advt","unp","pvt","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","stg","hist"],
+G={enter:"pay",log:"pay",advt:"pay",unp:"pay",pvt:"pay",fen:"fuel",flg:"fuel",sum:"ov",fsm:"ov",ov:"ov",pguide:"ov",dhs:"ov",nts:"ov",set:"rates"},
 cur=null,depth=0,popping=false,ready=false,raf=0,mflag=false,pback=false,pbt=0;
 function q(x){return document.querySelector(x)}
 function vis(){for(var i=0;i<IDS.length;i++){var e=document.getElementById(IDS[i]);if(e&&!e.classList.contains("hide"))return IDS[i]}return null}
