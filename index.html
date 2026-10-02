@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2026-10-02-a">
+<meta name="app-version" content="2026-10-02-b">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -313,11 +313,29 @@ var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){
 var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs)}
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
 setTimeout(function(){var s=document.getElementById("stg");if(!s)return;var b=document.createElement("button");b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){auth.signOut().then(function(){location.reload()})};s.appendChild(b)},800);
+var lastOk=0,gOpen=null;
+function gate(){
+if(ro||Date.now()-lastOk<20000)return Promise.resolve();
+if(gOpen)return gOpen;
+gOpen=new Promise(function(res,rej){
+var o=document.createElement("div");
+o.style.cssText="position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:24px";
+o.innerHTML='<div style="width:100%;max-width:340px;background:#141a26;color:#fff;border:1px solid #334;border-radius:12px;padding:18px"><h3 style="margin:0 0 4px">Confirm your password</h3><p id="gW" style="margin:0 0 12px;opacity:.7;font-size:13px"></p><input id="gP" type="password" placeholder="Password" autocomplete="current-password" style="'+IS+'"><div id="gM" style="color:#f87171;min-height:20px;margin:2px 0 8px;font-size:13px"></div><div style="display:flex;gap:8px"><button id="gC" style="flex:1;padding:12px;border-radius:10px;border:1px solid #334;background:none;color:#fff;font-size:15px">Cancel</button><button id="gB" style="flex:1;padding:12px;border:0;border-radius:10px;background:#3b82f6;color:#fff;font-size:15px;font-weight:700">Confirm</button></div></div>';
+document.body.appendChild(o);
+o.querySelector("#gW").textContent=who+" - needed to edit or delete";
+var p=o.querySelector("#gP"),m=o.querySelector("#gM"),b=o.querySelector("#gB");
+var done=function(ok,err){o.remove();gOpen=null;if(ok){lastOk=Date.now();res()}else rej(err||new Error("Password not confirmed"))};
+o.querySelector("#gC").onclick=function(){done(false,new Error("Cancelled"))};
+var go=function(){if(!p.value)return;b.disabled=true;m.textContent="";
+u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email,p.value)).then(function(){done(true)}).catch(function(e){b.disabled=false;m.textContent=e.code==="auth/network-request-failed"?"No internet connection":(e.code==="auth/too-many-requests"?"Too many tries. Wait a minute":"Wrong password")})};
+b.onclick=go;p.onkeydown=function(e){if(e.key==="Enter")go()};
+setTimeout(function(){try{p.focus()}catch(x){}},50)});
+return gOpen}
 var root=fs.collection("fuelTrips").doc("app");
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
-set:function(d){if(!COLS[c])return r.set(d);return r.get().catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return r.set(o)})},
-delete:function(){return r.delete()},onSnapshot:function(a,b){return r.onSnapshot(a,b)}}},
+set:function(d){if(!COLS[c])return r.set(d);return r.get().catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return r.set(o)}):r.set(o)})},
+delete:function(){return gate().then(function(){return r.delete()})},onSnapshot:function(a,b){return r.onSnapshot(a,b)}}},
 collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return cr.add(o)},onSnapshot:function(a,b){return cr.onSnapshot(a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
 </head><body>
