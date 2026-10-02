@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.0.4">
+<meta name="app-version" content="1.0.5">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -430,7 +430,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
 <section id="pvt" class="hide"><div class="card" style="text-align:center;padding:36px 16px"><b style="font-size:18px">Private Workers</b><div class="mut" style="margin:10px 0 14px">A list of Mr. Njoroge's home &amp; private workers that are paid separately</div></div></section>
-<section id="unp" class="hide"><div id="ualert"></div><div class="card"><label>Balances up to end of month (clear it for all time)</label><div class="ufr"><div class="umw em"><input type="month" id="umon"><span class="uph">Select month</span></div><div class="utb"><span>Total Unpaid Salary</span><b id="utot">0</b></div></div></div>
+<section id="unp" class="hide"><div id="ualert"></div><div id="orphc"></div><div class="card"><label>Balances up to end of month (clear it for all time)</label><div class="ufr"><div class="umw em"><input type="month" id="umon"><span class="uph">Select month</span></div><div class="utb"><span>Total Unpaid Salary</span><b id="utot">0</b></div></div></div>
 <div class="card"><b>Unpaid driver balances</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ud"></tbody></table></div></div>
 <div class="card"><b>Unpaid loader balances</b><div class="mut">Only entries with a loader deposit. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ul"></tbody></table></div></div>
 <div class="card"><b>Salary paid</b><div class="wrap"><table><tbody id="ph"></tbody></table></div></div>
@@ -1127,7 +1127,7 @@ function renderTrash(){var el=$("trashc");if(!el)return;var L=[];
  trashP.forEach(function(x){L.push({k:"P",o:x,t:(x.kind==="loader"?"Loader":"Driver")+" payment · "+x.who,s:x.date+" · "+fmt(x.amount)})});
  L.sort(function(a,b){return(b.o.deletedAt||0)-(a.o.deletedAt||0)});
  var can=canWrite&&isAdmin;
- el.innerHTML='<b>Deleted items</b><div class="mut">Deleted records are kept with who deleted them and when. They no longer count in any total until restored.</div>'+(L.length?L.slice(0,50).map(function(x){return'<div class="item" style="align-items:flex-start"><div style="min-width:0;flex:1"><b>'+esc(x.t)+'</b><div class="mut">'+esc(x.s)+'</div><div class="mut">Deleted '+esc(x.o.deletedAt?new Date(x.o.deletedAt).toLocaleString():"")+'</div></div>'+(can?'<button class="mp" data-rk="'+x.k+'" data-rid="'+esc(x.o.id)+'">Restore</button>':"")+'</div>'}).join(""):'<div class="mut" style="margin-top:8px">Nothing deleted.</div>')}
+ el.innerHTML='<b>Deleted items</b><div class="mut">Deleted records are kept with who deleted them and when. They no longer count in any total until restored.</div>'+(L.length?L.slice(0,50).map(function(x){return'<div class="item" style="align-items:flex-start"><div style="min-width:0;flex:1"><b>'+esc(x.t)+'</b><div class="mut">'+esc(x.s)+'</div><div class="mut">Deleted '+esc(x.o.deletedAt?new Date(x.o.deletedAt).toLocaleString():"")+'</div></div>'+(can?'<button class="mp" data-rk="'+x.k+'" data-rid="'+esc(x.o.id)+'">Restore</button>':"")+'</div>'}).join(""):'<div class="mut" style="margin-top:8px">Nothing deleted.</div>')+(can&&L.length?'<button class="btn alt" id="clrTrash" style="margin-top:12px;width:100%">Clear deleted history ('+L.length+')</button>':"")}
 $("trashc").onclick=async function(ev){var b=ev.target.closest("button[data-rk]");if(!b)return;var m=trashSet(b.dataset.rk),id=b.dataset.rid,o=m[1].find(function(x){return x.id===id});if(!o)return;if(isLocked(o.date)){toast("That month is locked. Unlock it first.");return}b.disabled=true;
  var c=stripId(o);delete c.deleted;delete c.deletedBy;delete c.deletedAt;c.restoredBy=me||"local";c.restoredAt=Date.now();
  try{if(db)await db.doc(m[0]+"/"+id).set(c);m[1].splice(m[1].indexOf(o),1);m[2].push(Object.assign({id:id},c));render();try{renderFuel()}catch(x){}renderTrash();toast("Restored")}catch(x){b.disabled=false;toast("Could not restore: "+(x&&x.message||"no permission"))}};
@@ -1141,7 +1141,30 @@ function bkCheck(){var last=+bkGet(BK.l,0),days=+bkGet(BK.i,7)||7,all=[].concat(
  if(bb)bb.innerHTML=(due&&isAdmin&&Date.now()>+bkGet(BK.z,0))?'<div class="note" style="border-color:var(--bad)"><b>Backup due.</b> '+(last?'Last backup was '+Math.floor(age)+' days ago':'No backup made yet')+' · '+since+' new record(s). <button class="x" onclick="$(\'bjson\').click()">Back up now</button><button class="x" onclick="bkSnooze()" style="color:var(--mut)">Later</button></div>':""}
 $("bkint").value=bkGet(BK.i,"7");$("bkint").onchange=function(){bkSet(BK.i,$("bkint").value);bkSet(BK.z,0);bkCheck()};
 $("bjson").addEventListener("click",function(){bkSet(BK.l,Date.now());bkSet(BK.z,0);bkCheck()});
-var _inR=0,_r=render;render=function(){var v;_inR++;try{v=_r.apply(this,arguments)}finally{_inR--}try{bkCheck();renderTrash();renderLocks()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v};
+
+function confirmX(t,m,yes){return new Promise(function(res){var M=document.getElementById("mbody");M.innerHTML='<b style="font-size:18px">'+t+'</b><div class="mut" style="margin-top:8px">'+m+'</div><div class="b2"><button class="pr" id="cxY">'+yes+'</button><button id="cxN">Cancel</button></div>';document.getElementById("modal").classList.remove("hide");document.getElementById("cxY").onclick=function(){closeM();res(true)};document.getElementById("cxN").onclick=function(){closeM();res(false)}})}
+function orphLists(){return{A:advs.filter(function(x){return noEnt(x.driver)}),P:pays.filter(function(x){return noEnt(x.who)})}}
+function renderOrph(){var el=document.getElementById("orphc");if(!el)return;var o=orphLists();
+ if(!(o.A.length||o.P.length)||!(canWrite&&isAdmin)){el.innerHTML="";return}
+ el.innerHTML='<div class="card"><b>Leftover balances</b><div class="mut" style="margin-top:4px">'+o.A.length+' advance(s) and '+o.P.length+' payment(s) belong to drivers or loaders that have no trips. They still show as unpaid balances.</div><button class="btn alt" id="orphb" style="margin-top:10px;width:100%">Clear leftover balances</button></div>'}
+document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.closest?ev.target.closest("#orphb,#clrTrash"):null;if(!t)return;
+ if(t.id==="orphb"){var o=orphLists();if(!o.A.length&&!o.P.length)return;
+  if(!(await confirmX("Clear leftover balances?",o.A.length+" advance(s) and "+o.P.length+" payment(s) for drivers with no trips will be moved to Deleted items. You can restore them from there, or erase them with Clear deleted history.","Clear balances")))return;
+  t.disabled=true;var ok=0,sk=0,fl=0,stop=0;
+  var jobs=o.A.map(function(x){return["advances",x.id,advs,trashA]}).concat(o.P.map(function(x){return["payments",x.id,pays,trashP]}));
+  for(var i=0;i<jobs.length&&!stop;i++){var j=jobs[i];try{await softDel(j[0],j[1],j[2],j[3]);ok++}catch(e){var m=String(e&&e.message||e);if(/locked/i.test(m))sk++;else if(/cancel|password/i.test(m))stop=1;else fl++}}
+  render();try{renderFuel()}catch(x){}
+  toast(stop?"Cancelled. "+ok+" cleared":ok+" cleared"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""));return}
+ if(t.id==="clrTrash"){var S=[["entries",trashE],["fuel",trashF],["advances",trashA],["payments",trashP]],n=0;S.forEach(function(x){n+=x[1].length});if(!n)return;
+  if(db&&navigator.onLine===false){toast("Connect to the internet to erase deleted history");return}
+  if(!(await confirmX("Clear deleted history?",n+" deleted item(s) will be erased permanently. This cannot be undone.","Erase permanently")))return;
+  t.disabled=true;var ok=0,sk=0,fl=0,stop=0;
+  for(var a=0;a<S.length&&!stop;a++){var arr=S[a][1],items=arr.slice();
+   for(var b=0;b<items.length&&!stop;b++){var it=items[b];if(isLocked(it.date)){sk++;continue}
+    try{if(db)await db.doc(S[a][0]+"/"+it.id).delete();var k=arr.indexOf(it);if(k>=0)arr.splice(k,1);ok++}catch(e){var m2=String(e&&e.message||e);if(/cancel|password/i.test(m2))stop=1;else fl++}}}
+  renderTrash();toast(stop?"Cancelled. "+ok+" erased":ok+" erased"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""))}
+});
+var _inR=0,_r=render;render=function(){var v;_inR++;try{v=_r.apply(this,arguments)}finally{_inR--}try{bkCheck();renderTrash();renderLocks();renderOrph()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v};
 if(typeof renderFuel==="function"){var _rf=renderFuel;renderFuel=function(){var v=_rf.apply(this,arguments);if(_inR)return v;try{bkCheck();renderTrash();renderLocks()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v}}
 bkCheck();renderTrash();renderLocks();
 </script>
