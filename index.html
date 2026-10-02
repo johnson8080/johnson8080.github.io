@@ -335,6 +335,7 @@ button,.card,input,select,textarea{transition:none}
 button{transition:background .15s,color .15s,transform .12s}
 .wrap th:first-child,.wrap td:first-child{position:static;box-shadow:none}
 #logl .wrap th:first-child,#logl .wrap td:first-child,#ftab th:first-child,#ftab td:first-child,table.ov th:first-child,table.ov td:first-child{position:sticky;left:0;box-shadow:1px 0 0 var(--ln)}
+.cfr{text-align:right;margin-top:6px;line-height:1}.cfr .ed{padding:4px 2px}@media print{.cfr{display:none!important}}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -421,7 +422,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <button class="btn" id="asave">Give advance</button></div>
 <div class="card"><b>Driver balances</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Balance</th></tr></thead><tbody id="abal"></tbody></table></div></div>
 <div class="card"><b>Advances given</b><div class="wrap"><table><tbody id="ahist"></tbody></table></div></div></section>
-<section id="sum" class="hide"><div class="card"><div class="fgrid"><div><label>Period</label><select id="pper" onchange="render()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pdw" class="hide"><label>Date</label><input type="date" id="pday"></div><div id="pmw" class="hide"><label>Month</label><input type="month" id="mon"></div><div id="pyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pyr" min="2000" max="2100"></div></div>
+<section id="sum" class="hide"><div class="card"><div class="fgrid"><div><label>Period</label><select id="pper" onchange="render()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pdw" class="hide"><label>Date</label><input type="date" id="pday"></div><div id="pmw" class="hide"><label>Month</label><input type="month" id="mon"></div><div id="pyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfsum"><button type="button" class="ed" data-cf="sum">Clear filters</button></div>
 <div class="row" id="trow" style="margin-top:10px"><div><div class="mut">Total tonnes</div><div class="pay" id="tt">0</div></div><div><div class="mut">Total trip expense</div><div class="pay" id="tp">0</div></div><div id="tunp" role="button" tabindex="0" style="cursor:pointer"><div class="mut">Total unpaid ›</div><div class="pay" id="tup" style="color:var(--bad)">0</div></div></div></div>
 <div class="card" id="top3"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>Top 3 drivers</b><div class="t3c" id="t3c"><button data-v="p">This Period</button><button data-v="a" class="on">Overall</button></div></div><div class="mut" id="t3l" style="margin-top:4px"></div><div id="t3b"></div></div>
 <div class="card" id="pwkc"><b>By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="wk"></tbody></table></div></div>
@@ -457,7 +458,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <label>Add a note</label><textarea id="fnt" rows="2" placeholder="Optional"></textarea>
 <div class="pvb"><div class="mut">Net profit</div><div class="pay" id="fnp">0</div></div>
 <div class="neg" id="flkw" style="margin-top:8px;font-size:14px"></div><button class="btn" id="fsave" disabled>Save fuel</button><div class="mut" style="margin-top:8px">Prices fill in from Update Rates → Fuel rates. You can change them for this entry.</div></div>
-</section><section id="fsm" class="hide"><div class="card"><div class="fgrid"><div><label>Period</label><select id="fper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="fdw" class="hide"><label>Date</label><input type="date" id="fday"></div><div id="fmw" class="hide"><label>Month</label><input type="month" id="fmon"></div><div id="fyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="fyr" min="2000" max="2100"></div></div><div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))"><div><div class="mut">Litres</div><div class="pay" id="fl" style="font-size:20px">0</div></div><div><div class="mut">Net profit</div><div class="pay" id="fp" style="font-size:20px">0</div></div><div><div class="mut">Profit %</div><div class="pay" id="fpc" style="font-size:20px">0%</div></div></div></div>
+</section><section id="fsm" class="hide"><div class="card"><div class="fgrid"><div><label>Period</label><select id="fper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="fdw" class="hide"><label>Date</label><input type="date" id="fday"></div><div id="fmw" class="hide"><label>Month</label><input type="month" id="fmon"></div><div id="fyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="fyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cffsm"><button type="button" class="ed" data-cf="fsm">Clear filters</button></div><div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))"><div><div class="mut">Litres</div><div class="pay" id="fl" style="font-size:20px">0</div></div><div><div class="mut">Net profit</div><div class="pay" id="fp" style="font-size:20px">0</div></div><div><div class="mut">Profit %</div><div class="pay" id="fpc" style="font-size:20px">0%</div></div></div></div>
 <div class="card" id="fwkc"><b>By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fwk"></tbody></table></div></div>
 <div class="card"><b>By vehicle</b><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fvh"></tbody></table></div></div>
 <div class="card"><b>Year by month</b><div class="wrap"><table><thead><tr><th>Month</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fmo"></tbody></table></div><div id="fbars"></div></div>
@@ -466,13 +467,13 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 
 <section id="ov" class="hide"><div class="card noprt" id="dsc"><b style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
 <label>Driver</label><select id="dsd"></select>
-<div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div>
-<div class="acts" style="margin:12px 0 0"><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button></div></div><div class="card ovx" id="ovf"><b class="noprt" style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
+<div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfdsc"><button type="button" class="ed" data-cf="dsc">Clear filters</button></div>
+<div class="acts" style="margin:12px 0 0"><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button></div></div><div class="card ovx" id="ovf"><b class="noprt" style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
 <div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
 <div class="card" id="allc"><b style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
 <div class="noprt"><div class="fgrid"><div><label>Category</label><select id="ocat"><option value="all">All</option><option value="Payment">Trips only</option><option value="Fuel">Fuel only</option></select></div><div><label>Date</label><select id="odf"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div></div>
-<div id="odw" class="hide"><label>Date</label><input type="date" id="oday"></div><div id="omw2" class="hide"><label>Month</label><input type="month" id="ofm"></div><div id="oyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="oyr" min="2000" max="2100"></div></div>
+<div id="odw" class="hide"><label>Date</label><input type="date" id="oday"></div><div id="omw2" class="hide"><label>Month</label><input type="month" id="ofm"></div><div id="oyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="oyr" min="2000" max="2100"></div><div class="cfr noprt hide" id="cfallc"><button type="button" class="ed" data-cf="allc">Clear filters</button></div></div>
 <div class="mut" id="ocnt" style="margin:8px 0"></div>
 <div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Category</th><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Quantity</th><th>Trip expense</th><th>Fuel profit</th></tr></thead><tbody id="oab"></tbody></table></div>
 <div class="acts noprt" style="margin:10px 0 0"><button class="btn" id="oacsv">Download CSV</button><button class="btn alt" id="oapdf">Download PDF</button><button class="btn" id="oashare">Share PDF</button></div></div>
@@ -1485,4 +1486,44 @@ fetch(location.pathname+"?__v="+Date.now(),{cache:"no-store"}).then(function(r){
 setTimeout(check,4000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden)check()});
 setInterval(check,600000)})();</script>
+<script>(function(){
+var $=function(i){return document.getElementById(i)};
+function fire(e){if(e)e.dispatchEvent(new Event("change",{bubbles:true}))}
+function clr(ids){ids.forEach(function(i){if($(i))$(i).value=""})}
+/* each entry: dirty() = a filter is applied, reset() = back to default (re-runs the page's own render code) */
+var F={
+ sum:{dirty:function(){var b=$("t3c").querySelector("button.on");return $("pper").value!=="all"||!!(b&&b.dataset.v!=="a")},
+  reset:function(){clr(["pday","mon","pyr"]);$("pper").value="all";fire($("pper"));var a=$("t3c").querySelector('button[data-v="a"]');if(a&&!a.classList.contains("on"))a.click()},
+  btn:$("cfsum"),show:function(){return $("pper").value!=="all"}},
+ fsm:{dirty:function(){return $("fper").value!=="all"},
+  reset:function(){clr(["fday","fmon","fyr"]);$("fper").value="all";fire($("fper"))},
+  btn:$("cffsm"),show:function(){return $("fper").value!=="all"}},
+ dsc:{dirty:function(){return $("dsd").value!==""||$("dsp").value!=="all"},
+  reset:function(){clr(["dsm","dsy"]);$("dsp").value="all";fire($("dsp"));$("dsd").value="";fire($("dsd"))},
+  btn:$("cfdsc"),show:function(){return $("dsd").value!==""||$("dsp").value!=="all"}},
+ ovf:{dirty:function(){return $("oper").value!=="all"},
+  reset:function(){clr(["ovday","omon","ovyr"]);$("oper").value="all";fire($("oper"))},
+  btn:$("cfovf"),show:function(){return $("oper").value!=="all"}},
+ allc:{dirty:function(){return $("ocat").value!=="all"||$("odf").value!=="all"},
+  reset:function(){clr(["oday","ofm","oyr"]);$("ocat").value="all";$("odf").value="all";fire($("odf"))},
+  btn:$("cfallc"),show:function(){return $("ocat").value!=="all"||$("odf").value!=="all"}},
+ unp:{dirty:function(){return $("umon").value!==""},
+  reset:function(){$("umon").value="";fire($("umon"))}},
+ hist:{dirty:function(){var b=$("hch").querySelector("button.on");return $("hq").value!==""||$("hper").value!=="all"||$("hveh").value!==""||!!(b&&b.dataset.v!=="all")},
+  reset:function(){$("hclr").click()}}
+};
+function sync(){["sum","fsm","dsc","ovf","allc"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
+var later=0;function sched(){clearTimeout(later);later=setTimeout(sync,0)}
+/* Clear filters buttons */
+document.addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("[data-cf]");if(!b)return;var f=F[b.dataset.cf];if(!f)return;f.reset();sync()});
+/* keep the buttons in step with the filters */
+["pper","fper","dsd","dsp","oper","ocat","odf"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
+try{new MutationObserver(sched).observe($("dsd"),{childList:true})}catch(x){}
+/* leaving a tab (any way: sub-tab, top tab, bottom bar, History, Settings) puts its filters back to default */
+var AREA={sum:["sum"],fsm:["fsm"],ov:["dsc","ovf","allc"],unp:["unp"],hist:["hist"]},seen={};
+Object.keys(AREA).forEach(function(id){var sec=$(id);if(!sec)return;seen[id]=!sec.classList.contains("hide");
+ new MutationObserver(function(){var vis=!sec.classList.contains("hide");
+  if(seen[id]&&!vis){AREA[id].forEach(function(k){try{if(F[k].dirty())F[k].reset()}catch(x){}});sync()}
+  seen[id]=vis}).observe(sec,{attributes:true,attributeFilter:["class"]})});
+sync()})();</script>
 </body></html>
