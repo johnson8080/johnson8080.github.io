@@ -353,7 +353,7 @@ button{transition:background .15s,color .15s,transform .12s}
 .wrap th:first-child,.wrap td:first-child{position:static;box-shadow:none}
 #logl .wrap th:first-child,#logl .wrap td:first-child,#ftab th:first-child,#ftab td:first-child,table.ov th:first-child,table.ov td:first-child{position:sticky;left:0;box-shadow:1px 0 0 var(--ln)}
 .cfr{text-align:right;margin-top:6px;line-height:1}.cfr .ed{padding:4px 2px}.cfr.cfl{text-align:left;margin-top:8px}
-#unp>.card{border-color:var(--ac)}
+#unp>.card{border-color:var(--ac)}#unp>.card:has(.ufr){padding-top:12px}.card,.modal .card,:root[data-theme="light"] .card,:root[data-theme="dark"] .card{border-color:var(--ac)!important}
 #unp .ut{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}@media print{.cfr{display:none!important}}
 </style>
 
@@ -450,7 +450,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
 <section id="pvt" class="hide"><div class="card" style="text-align:center;padding:36px 16px"><b style="font-size:18px">Private Workers</b><div class="mut" style="margin:10px 0 14px">A list of Mr. Njoroge's home &amp; private workers that are paid separately</div></div></section>
-<section id="unp" class="hide"><div id="ualert"></div><div id="orphc"></div><div class="card"><b class="ut">UNPAID BALANCE</b><div class="ufr"><div class="ucol"><div class="ul">MONTH</div><div class="umw em"><input type="month" id="umon" required><span class="uph">Select month</span></div></div><div class="ucol"><div class="ul" id="utl">TOTAL UNPAID</div><div class="utb"><b id="utot">0</b></div></div></div><div class="cfr cfl noprt hide" id="cfunp"><button type="button" class="ed" data-cf="unp">Clear filters</button></div></div>
+<section id="unp" class="hide"><div id="ualert"></div><div id="orphc"></div><div class="card"><b class="ut">TOTAL UNPAID BALANCES</b><div class="ufr"><div class="ucol"><div class="ul">MONTH</div><div class="umw em"><input type="month" id="umon" required><span class="uph">Select month</span></div></div><div class="ucol"><div class="ul" id="utl">TOTAL UNPAID</div><div class="utb"><b id="utot">0</b></div></div></div><div class="cfr cfl noprt hide" id="cfunp"><button type="button" class="ed" data-cf="unp">Clear filters</button></div></div>
 <div class="card"><b class="ut">UNPAID DRIVER BALANCES</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ud"></tbody></table></div></div>
 <div class="card"><b class="ut">UNPAID LOADER BALANCES</b><div class="mut">Only entries with a loader deposit. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ul"></tbody></table></div></div>
 <div class="card"><b class="ut">PAID SALARY HISTORY</b><div class="wrap"><table><tbody id="ph"></tbody></table></div></div>
@@ -501,7 +501,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="setrow"><div class="st"><b>Year for CSV</b><small>CSV covers one year. The full backup (JSON) has everything.</small></div><label class="sf"><input type="number" inputmode="numeric" id="byr" placeholder="Type year in full"></label></div>
 <div class="sacts"><button class="btn alt" id="bjson">Full backup (JSON)</button><button class="btn alt" id="bcsv" disabled>1 year backup (CSV)</button></div>
 <div class="setrow col"><div class="st"><b>Restore</b><small>You will see a summary and confirm before anything changes.</small></div></div>
-<div class="sacts"><label class="btn alt" id="rbtn" style="position:relative;overflow:hidden;cursor:pointer;display:inline-block;text-align:center"><span>Restore from file</span><input type="file" id="rfile" accept=".json,application/json,text/plain" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0"></label><button class="btn alt" id="rpaste">Paste backup text</button></div>
+<div class="sacts"><label class="btn alt" id="rbtn" style="position:relative;overflow:hidden;cursor:pointer;display:inline-block;text-align:center"><span>Full restore (JSON)</span><input type="file" id="rfile" accept=".json,application/json,text/plain" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0"></label><button class="btn alt" id="rpaste">Full text restore (JSON)</button></div>
 <div class="mut sh" style="padding-bottom:12px">If the file picker does not open, use Paste backup text.</div></div></section><section id="dhs" class="hide"><div class="card" id="trashc"></div></section>  <section id="sales" class="hide"><div class="card" style="text-align:center;padding:36px 18px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Sales</b><div style="font-size:16px;line-height:1.5">A project of selling 30T cane fleet carrier</div></div></section>
 <section id="nts" class="hide"><div class="card"><b>Notes</b><div class="mut" id="ntc"></div><div id="ntl"></div></div></section>
 
