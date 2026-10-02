@@ -1,8 +1,13 @@
-const CACHE = "fuel-trips-v5";
+const CACHE = "fuel-trips-v6";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-48.png"];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  // Add files one by one so a single missing icon cannot stop the whole install
+  e.waitUntil(
+    caches.open(CACHE)
+      .then((c) => Promise.all(SHELL.map((u) => c.add(u).catch(() => {}))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", (e) => {
@@ -35,8 +40,11 @@ self.addEventListener("fetch", (e) => {
         fetch(req)
           .then((res) => {
             clearTimeout(timer);
-            const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put("index.html", copy));
+            // Only keep good pages, so an error page never replaces the saved copy
+            if (res && res.ok) {
+              const copy = res.clone();
+              caches.open(CACHE).then((c) => c.put("index.html", copy));
+            }
             if (!done) { done = true; resolve(res); }
           })
           .catch(() => {

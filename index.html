@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2026-10-02-b">
+<meta name="app-version" content="2026-10-02-c">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -269,8 +269,6 @@ html,body{overscroll-behavior-y:none!important}
 #sbar .sdis{background:none;border:0;color:inherit;opacity:.8;font:inherit;font-weight:700;padding:10px}
 /* Text size scales the whole app (S/M/L) */
 body.ts-s{zoom:.9}body.ts-l{zoom:1.15}@media print{body.ts-s,body.ts-l{zoom:1}}
-#pinlk{position:fixed;inset:0;z-index:100;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
-#pinlk input{width:170px;text-align:center;font-size:28px;letter-spacing:10px}
 /* settings icon: same flat blue look as RATES */
 .hd #hst,.hd #hst.on{transition:none!important;box-shadow:none!important}
 .hd #hst.on{background:var(--ac)!important;border-color:var(--ac)!important;color:#fff!important}
@@ -346,7 +344,7 @@ function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
 set:function(d){if(!COLS[c])return r.set(d);return r.get().catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return r.set(o)}):r.set(o)})},
 delete:function(){return gate().then(function(){return r.delete()})},onSnapshot:function(a,b){return r.onSnapshot(a,b)}}},
-collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return cr.add(o)},onSnapshot:function(a,b){return cr.onSnapshot(a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
+collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;var pr=cr.add(o);if(navigator.onLine===false){pr.catch(function(){});return Promise.resolve()}return pr},onSnapshot:function(a,b){return cr.onSnapshot(a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
 </head><body>
 <header class="hd"><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1></div><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
@@ -400,7 +398,10 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
 <section id="pvt" class="hide"><div class="card" style="text-align:center;padding:36px 16px"><b style="font-size:18px">Private Workers</b><div class="mut" style="margin:10px 0 14px">A list of Mr. Njoroge's home &amp; private workers that are paid separately</div><div class="pay" style="font-size:22px;letter-spacing:1px;color:var(--ok)!important">COME BACK LATER!</div></div></section>
-<section id="unp" class="hide"><div id="ualert"></div><div class="card"><label>Balances up to end of month (clear it for all time)</label><div class="ufr"><div class="umw em"><input type="month" id="umon"><span class="uph">Select month</span></div><div class="utb"><span>Total Unpaid Salary</span><b id="utot">0</b></div></div></div>
+<section id="unp" class="hide"><div id="ualert"></div><div class="card" id="dsc"><b>Driver statement</b><div class="mut">A PDF of one driver's trips, fuel taken, advances and salary paid, with the balance. Share it or download it.</div>
+<label>Driver</label><select id="dsd"></select>
+<div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div>
+<div class="acts" style="margin:12px 0 0"><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button></div></div><div class="card"><label>Balances up to end of month (clear it for all time)</label><div class="ufr"><div class="umw em"><input type="month" id="umon"><span class="uph">Select month</span></div><div class="utb"><span>Total Unpaid Salary</span><b id="utot">0</b></div></div></div>
 <div class="card"><b>Unpaid driver balances</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ud"></tbody></table></div></div>
 <div class="card"><b>Unpaid loader balances</b><div class="mut">Only entries with a loader deposit. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ul"></tbody></table></div></div>
 <div class="card"><b>Salary paid</b><div class="wrap"><table><tbody id="ph"></tbody></table></div></div>
@@ -460,11 +461,10 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="setrow hide" id="srmrow"><div class="st"><b>Reminder time</b></div><input type="time" id="srmtime" class="ssel" value="18:00" aria-label="Reminder time"></div>
 </div></div>
 <div class="ssec" id="s-data"><div class="sh2">Data &amp; backup</div><div class="ssub">Keep a copy outside the app.</div><div id="bkhost"></div></div>
-<div class="ssec" id="s-app"><div class="sh2">App</div><div class="ssub">Look, feel and security.</div>
+<div class="ssec" id="s-app"><div class="sh2">App</div><div class="ssub">Look and feel.</div>
 <div class="card sc">
 <div class="setrow"><div class="st"><b>Theme</b></div><div class="t3c" id="sthm"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button></div></div><div class="setrow wp"><div class="st"><b>Dark color</b><small>Pick the colour of the Dark theme</small></div><div class="pals" id="spal"><button type="button" data-p="navy"><i style="background:linear-gradient(135deg,#111724 55%,#2f6df6 55%)"></i>Navy</button><button type="button" data-p="graphite"><i style="background:linear-gradient(135deg,#17191d 55%,#4f8cf7 55%)"></i>Graphite</button><button type="button" data-p="forest"><i style="background:linear-gradient(135deg,#0f1c16 55%,#1fa971 55%)"></i>Forest</button><button type="button" data-p="plum"><i style="background:linear-gradient(135deg,#191222 55%,#8b5cf6 55%)"></i>Plum</button><button type="button" data-p="wine"><i style="background:linear-gradient(135deg,#201116 55%,#e0475b 55%)"></i>Wine</button></div></div>
 <div class="setrow"><div class="st"><b>Text size<span class="nw">NEW</span></b><small>Bigger or smaller text across the whole app</small></div><div class="t3c" id="stsz"><button type="button" data-v="s">S</button><button type="button" data-v="m">M</button><button type="button" data-v="l">L</button></div></div>
-<div class="setrow"><div class="st"><b>PIN on open<span class="nw">NEW</span></b><small>Ask for a 4-digit PIN when the app starts. A screen lock for this device only.</small></div><button type="button" class="sw" id="spinsw" role="switch" aria-checked="false" aria-label="PIN on open"><i></i></button></div>
 <div class="setrow col"><div class="st"><b>Report footer</b><small>Printed on every PDF, print and download</small></div></div>
 <div style="padding-bottom:14px"><input id="sfoot" maxlength="100" placeholder="e.g. Company name, phone number" aria-label="Report footer"></div>
 </div></div>
@@ -1061,7 +1061,7 @@ async function softDel(col,id,list,trash){var o=list.find(function(x){return x.i
  t.id=id;trash.push(t);list.splice(list.indexOf(o),1);return true}
 function histAdd(o){var h=(o.hist||[]).slice(-19),p=stripId(o);delete p.hist;h.push({at:Date.now(),by:me||"local",prev:p});return h}
 var HL={date:"Date",vehicle:"Vehicle",driver:"Driver",tonnes:"Tonnes",deposit:"Loader deposit",ddep:"Driver deposit",advance:"Advance",expense:"Other expense",reason:"Reason",note:"Note",litres:"Litres",sell:"Sell price",cost:"Actual price",collected:"Collected by",issued:"Issued by"};
-function who(i){return"You"}
+function who(i){return!i||i===window.me?"You":i}
 function histBlk(e){if(!e.hist||!e.hist.length)return"";var h=e.hist;
  var rows=h.map(function(x,i){var nx=i+1<h.length?h[i+1].prev:e,d=[];Object.keys(HL).forEach(function(k){var a=x.prev[k]==null?"":String(x.prev[k]),b=nx[k]==null?"":String(nx[k]);if(a!==b)d.push(HL[k]+": "+esc(a||"—")+" → "+esc(b||"—"))});
   return'<div style="padding:6px 0;border-bottom:1px solid var(--ln);font-size:13px"><span class="mut">'+esc(new Date(x.at).toLocaleString())+" · "+esc(who(x.by))+"</span><br>"+(d.length?d.join("<br>"):"No visible change")+"</div>"}).reverse().join("");
@@ -1250,7 +1250,13 @@ function askExit(){if(xq)return;var m=document.getElementById("modal");if(m)m.cl
  function close(){if(xq){xq.remove();xq=null}}
  xq.querySelector("#exn").onclick=close;
  xq.addEventListener("click",function(ev){if(ev.target===xq)close()});
- xq.querySelector("#exy").onclick=function(){exiting=true;close();try{window.close()}catch(x){}setTimeout(function(){try{history.go(-2)}catch(x){}},150);setTimeout(function(){exiting=false},1500)}}
+ xq.querySelector("#exy").onclick=function(){exiting=true;close();try{window.close()}catch(x){}
+  /* browsers cannot close an installed app from script; step to the first history entry so ONE more Back closes it */
+  try{history.go(-1)}catch(x){}
+  var c=document.createElement("div");c.style.cssText="position:fixed;inset:0;z-index:100002;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center";
+  c.innerHTML='<b style="font-size:20px">FUEL &amp; TRIPS</b><div class="mut">Press Back once more to close the app</div><button class="btn" style="width:auto;padding:12px 26px;margin:6px 0 0" id="exb">Back to app</button>';
+  document.body.appendChild(c);
+  c.querySelector("#exb").onclick=function(){c.remove();exiting=false;depth=0;cur="log";try{history.pushState({pg:"log",d:0},"")}catch(x){}}}}
 function q(x){return document.querySelector(x)}
 function vis(){for(var i=0;i<IDS.length;i++){var e=document.getElementById(IDS[i]);if(e&&!e.classList.contains("hide"))return IDS[i]}return null}
 function nav(pg){try{if(pg==="hist"){q('.bn button[data-go="hist"]').click()}else if(pg==="stg"){document.getElementById("hst").click()}
@@ -1302,6 +1308,61 @@ document.addEventListener("touchend",function(e){
  b[j].click()},{passive:true});
 document.addEventListener("touchcancel",function(){ok=false},{passive:true});
 })();</script>
+<script>(function(){
+var $=function(i){return document.getElementById(i)};
+function btns(){var on=!!$("dsd").value;$("dssh").disabled=!on;$("dsdl").disabled=!on}
+function fillD(){var s=$("dsd");if(!s)return;var cv=s.value,o={};
+ try{drvNames().forEach(function(k){o[k]=1});fuels.forEach(function(f){var d=f.driver||(cfg.vd||{})[f.vehicle];if(d)o[d]=1})}catch(e){}
+ var nm=Object.keys(o).sort();s.innerHTML='<option value="">Select driver…</option>'+nm.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");
+ if(nm.indexOf(cv)>=0)s.value=cv;btns()}
+function per(){var k=$("dsp").value,td=today();
+ if(k==="month"){var m=$("dsm").value||td.slice(0,7);return{lab:"Month "+m,t:function(x){return String(x).slice(0,7)===m}}}
+ if(k==="year"){var y=String($("dsy").value||td.slice(0,4));return{lab:"Year "+y,t:function(x){return String(x).slice(0,4)===y}}}
+ return{lab:"All dates",t:function(){return true}}}
+function asc(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}
+function make(){var nm=$("dsd").value;if(!nm){toast("Pick a driver first");return null}
+ PM=alloc();var P=per(),sum=function(a,f){return a.reduce(function(t,x){return t+(+f(x)||0)},0)};
+ var tr=entries.filter(function(e){return e.driver===nm&&P.t(e.date)}).sort(asc),
+  fu=fuels.filter(function(f){return(f.driver||(cfg.vd||{})[f.vehicle])===nm&&P.t(f.date)}).sort(asc),
+  av=advs.filter(function(x){return x.driver===nm&&P.t(x.date)}).sort(asc),
+  pd=pays.filter(function(x){return x.who===nm&&P.t(x.date)}).sort(asc),
+  pdD=pd.filter(function(x){return x.kind!=="loader"}),pdL=pd.filter(function(x){return x.kind==="loader"});
+ var held=sum(tr,dheld),advE=sum(tr,function(e){return e.advance}),advS=sum(av,function(x){return x.amount}),paidD=sum(pdD,function(x){return x.amount});
+ var lo=sum(tr.filter(function(e){return e.deposit>0}),function(e){return e.tonnes*rt(e)-e.deposit}),lp=sum(pdL,function(x){return x.amount});
+ var bal=held-advE-advS-paidD,now=dbalOf(nm).b;
+ var it=[{t:"stat",s:"Driver: "+nm+"      Period: "+P.lab}];
+ it.push({t:"h",s:"Summary"});
+ it.push({t:"tbl",h:["Item","Amount"],rows:[
+  ["Trips",String(tr.length)],["Tonnes",sum(tr,function(e){return e.tonnes}).toFixed(2)],["Total trip expense",fmt(sum(tr,pay))],
+  ["Driver balance held",fmt(held)],["Advances (on trips)",fmt(advE)],["Advances (given separately)",fmt(advS)],["Salary paid",fmt(paidD)],["Driver balance for period",fmt(bal)],
+  ["Loader owed",fmt(lo)],["Loader paid",fmt(lp)],["Loader unpaid",fmt(lo-lp)],
+  ["Fuel taken (litres)",sum(fu,function(f){return f.litres}).toFixed(1)],["Fuel taken (amount)",fmt(sum(fu,function(f){return f.litres*f.sell}))],
+  ["Driver balance now (all dates)",fmt(now)]]});
+ it.push({t:"h",s:"Trips"});
+ if(tr.length){var rows=tr.map(function(e){return[e.date,e.vehicle,(+e.tonnes||0).toFixed(2),fmt(e.deposit||0),fmt(dpaid(e)),fmt(e.advance||0),fmt(e.expense||0),fmt(pay(e))]});
+  rows.push(["Total","",sum(tr,function(e){return e.tonnes}).toFixed(2),fmt(sum(tr,function(e){return e.deposit})),fmt(sum(tr,dpaid)),fmt(advE),fmt(sum(tr,function(e){return e.expense})),fmt(sum(tr,pay))]);
+  it.push({t:"tbl",h:["Date","Vehicle","Tonnes","Loader dep.","Driver dep.","Advance","Expense","Trip expense"],rows:rows})}
+ else it.push({t:"p",s:"No trip entries in this period."});
+ it.push({t:"h",s:"Fuel taken"});
+ if(fu.length){var fr=fu.map(function(f){return[f.date,f.vehicle,String(f.litres),fmt(f.sell),fmt(f.litres*f.sell),f.collected||""]});
+  fr.push(["Total","",sum(fu,function(f){return f.litres}).toFixed(1),"",fmt(sum(fu,function(f){return f.litres*f.sell})),""]);
+  it.push({t:"tbl",h:["Date","Vehicle","Litres","Price/ltr","Amount","Collected by"],rows:fr})}
+ else it.push({t:"p",s:"No fuel entries in this period."});
+ it.push({t:"h",s:"Advances given"});
+ if(av.length){var ar=av.map(function(x){return[x.date,fmt(x.amount)]});ar.push(["Total",fmt(advS)]);it.push({t:"tbl",h:["Date","Amount"],rows:ar})}
+ else it.push({t:"p",s:"No separate advances in this period."});
+ it.push({t:"h",s:"Salary and loader payments"});
+ if(pd.length){var pr=pd.map(function(x){return[x.date,x.kind==="loader"?"Loader":"Salary",fmt(x.amount)]});pr.push(["Total","",fmt(paidD+lp)]);it.push({t:"tbl",h:["Date","Type","Amount"],rows:pr})}
+ else it.push({t:"p",s:"No payments in this period."});
+ var safe=function(v){return v.replace(/[^\w-]+/g,"-")};
+ return{blob:pdfBlob("Driver statement - "+nm,"Period: "+P.lab,it),name:"statement-"+safe(nm)+"-"+safe(P.lab)+".pdf",title:"Driver statement - "+nm}}
+$("dsd").onchange=btns;
+$("dsp").onchange=function(){var k=this.value;$("dsmw").classList.toggle("hide",k!=="month");$("dsyw").classList.toggle("hide",k!=="year");if(k==="month"&&!$("dsm").value)$("dsm").value=today().slice(0,7);if(k==="year"&&!$("dsy").value)$("dsy").value=today().slice(0,4)};
+$("dsdl").onclick=function(){try{var b=make();if(!b)return;dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}};
+$("dssh").onclick=function(){try{var b=make();if(!b)return;var f=null;try{f=new File([b.blob],b.name,{type:"application/pdf"})}catch(x){}
+ if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:b.title}).catch(function(){})}
+ else{dlf(b.name,b.blob);toast("Sharing is not available here. PDF downloaded instead.")}}catch(x){alert("Could not create the PDF")}};
+var _r=render;render=function(){var v=_r.apply(this,arguments);try{fillD()}catch(x){}return v};fillD()})();</script>
 <script>try{netUpdate()}catch(e){}</script>
 <script>(function(){
 var g=function(i){return document.getElementById(i)};
@@ -1349,20 +1410,6 @@ rt.value=ls("fleetRemindAt","18:00");rPaint();
 rs.onclick=function(){ss("fleetRemindOn",rOn()?"0":"1");rPaint();rCheck();say(rOn()?"Daily reminder on":"Daily reminder off")};
 rt.onchange=function(){if(rt.value){ss("fleetRemindAt",rt.value);ss("fleetRemindSnooze","");rCheck();say("Reminder set for "+rt.value)}};
 rCheck();setInterval(rCheck,30000);
-/* PIN on open (a screen lock, not strong security) */
-function hash(s){var h=5381;s="fleet|"+s;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return String(h)}
-var ps=g("spinsw");function pin(){return ls("fleetPin","")}
-function pPaint(){ps.setAttribute("aria-checked",pin()?"true":"false")}
-ps.onclick=function(){
- if(pin()){var c=prompt("Enter your PIN to turn it off");if(c===null)return;if(hash(c.trim())!==pin()){say("Wrong PIN");return}ss("fleetPin","");pPaint();say("PIN turned off");return}
- var p=prompt("Choose a 4-digit PIN");if(p===null)return;p=p.trim();if(!/^\d{4}$/.test(p)){say("The PIN must be exactly 4 digits");return}
- var q=prompt("Type the PIN again to confirm");if(q===null)return;if(q.trim()!==p){say("The PINs did not match");return}
- ss("fleetPin",hash(p));pPaint();say("PIN set. It will be asked the next time the app opens")};
-pPaint();
-if(pin()){var o=document.createElement("div");o.id="pinlk";
- o.innerHTML='<b style="font-size:20px">FUEL &amp; TRIPS</b><div class="mut">Enter your 4-digit PIN</div><input id="pinin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="PIN"><div class="neg" id="pinerr" style="min-height:20px"></div><div class="mut" style="font-size:12px;max-width:290px">Forgot your PIN? Clearing this site\'s data in your browser removes it, but also any records not yet synced.</div>';
- document.body.appendChild(o);var i=g("pinin");i.focus();
- i.oninput=function(){i.value=i.value.replace(/\D/g,"");if(i.value.length===4){if(hash(i.value)===pin())o.remove();else{g("pinerr").textContent="Wrong PIN";i.value=""}}}}
 })();</script>
 <script>(function(){var $=function(i){return document.getElementById(i)};
 window.pgBk=function(){var st=$("stg");if(st.classList.contains("hide"))$("hst").click();
