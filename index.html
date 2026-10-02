@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2026-10-02-c">
+<meta name="app-version" content="2026-10-02-d">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -1242,21 +1242,7 @@ m.addEventListener("touchmove",function(e){var c=e.target.closest&&e.target.clos
 m.addEventListener("wheel",function(e){var c=e.target.closest&&e.target.closest(".card");if(!c||c.scrollHeight<=c.clientHeight+1)e.preventDefault()},{passive:false})})();</script>
 <script>(function(){var IDS=["enter","log","advt","unp","pvt","fen","flg","sum","fsm","ov","pguide","set","nts","sales","stg","hist"],
 G={enter:"pay",log:"pay",advt:"pay",unp:"pay",pvt:"pay",fen:"fuel",flg:"fuel",sum:"ov",fsm:"ov",ov:"ov",pguide:"ov",nts:"ov",set:"rates"},
-cur=null,depth=0,popping=false,ready=false,raf=0,mflag=false,pback=false,pbt=0,exiting=false,xq=null;
-function askExit(){if(xq)return;var m=document.getElementById("modal");if(m)m.classList.add("hide");
- xq=document.createElement("div");xq.className="modal";xq.style.cssText="z-index:100001;align-items:center";
- xq.innerHTML='<div class="card" style="max-width:340px"><b style="font-size:17px">Exit app?</b><div class="mut" style="margin-top:6px">Press Exit to close FUEL &amp; TRIPS.</div><div class="b2"><button id="exn">Stay</button><button class="pr" id="exy">Exit</button></div></div>';
- document.body.appendChild(xq);
- function close(){if(xq){xq.remove();xq=null}}
- xq.querySelector("#exn").onclick=close;
- xq.addEventListener("click",function(ev){if(ev.target===xq)close()});
- xq.querySelector("#exy").onclick=function(){exiting=true;close();try{window.close()}catch(x){}
-  /* browsers cannot close an installed app from script; step to the first history entry so ONE more Back closes it */
-  try{history.go(-1)}catch(x){}
-  var c=document.createElement("div");c.style.cssText="position:fixed;inset:0;z-index:100002;background:var(--bg);color:var(--tx);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center";
-  c.innerHTML='<b style="font-size:20px">FUEL &amp; TRIPS</b><div class="mut">Press Back once more to close the app</div><button class="btn" style="width:auto;padding:12px 26px;margin:6px 0 0" id="exb">Back to app</button>';
-  document.body.appendChild(c);
-  c.querySelector("#exb").onclick=function(){c.remove();exiting=false;depth=0;cur="log";try{history.pushState({pg:"log",d:0},"")}catch(x){}}}}
+cur=null,depth=0,popping=false,ready=false,raf=0,mflag=false,pback=false,pbt=0;
 function q(x){return document.querySelector(x)}
 function vis(){for(var i=0;i<IDS.length;i++){var e=document.getElementById(IDS[i]);if(e&&!e.classList.contains("hide"))return IDS[i]}return null}
 function nav(pg){try{if(pg==="hist"){q('.bn button[data-go="hist"]').click()}else if(pg==="stg"){document.getElementById("hst").click()}
@@ -1266,14 +1252,13 @@ function check(){if(!ready||pback)return;var v=vis();if(!v||v===cur)return;if(po
 cur=v;if(v==="log"){if(depth>0){var d=depth;depth=0;popping=true;history.go(-d);setTimeout(function(){popping=false},500)}return}
 depth++;history.pushState({pg:v,d:depth},"")}
 function sched(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;check()})}
-window.addEventListener("popstate",function(e){if(exiting)return;if(e.state&&e.state.pg==="exit"){try{history.pushState({pg:"log",d:0},"")}catch(x){}depth=0;cur="log";askExit();return}
- var st=e.state&&e.state.pg?e.state:{pg:"log",d:0};depth=st.d||0;
+window.addEventListener("popstate",function(e){var st=e.state&&e.state.pg?e.state:{pg:"log",d:0};depth=st.d||0;
 if(pback){pback=false;clearTimeout(pbt);sched();return}
 if(mflag){mflag=false;document.getElementById("modal").classList.add("hide");return}
 document.getElementById("modal").classList.add("hide");popping=true;
 if(window.pgOn&&st.pg!=="ov"&&window.pgReset)window.pgReset();
 if(vis()!==st.pg)nav(st.pg);cur=vis()||st.pg;setTimeout(function(){popping=false},200)});
-setTimeout(function(){cur=vis();try{history.replaceState({pg:"exit",x:1},"");history.pushState({pg:"log",d:0},"")}catch(x){}
+setTimeout(function(){cur=vis();try{history.replaceState({pg:"log",d:0},"")}catch(x){}
 if(cur&&cur!=="log"){depth=1;try{history.pushState({pg:cur,d:1},"")}catch(x){}}
 ready=true;var M=document.getElementById("modal");new MutationObserver(function(){var open=!M.classList.contains("hide");
 if(open&&!mflag){mflag=true;depth++;try{history.pushState({pg:cur||vis()||"log",d:depth,m:1},"")}catch(x){}}
