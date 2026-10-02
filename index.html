@@ -244,13 +244,15 @@ html{scroll-padding-top:62px}
 #trow,#fsm>.card:first-child>.row{grid-template-columns:repeat(3,auto)!important;justify-content:space-between;gap:8px}
 #trow>div,#fsm>.card:first-child>.row>div{min-width:0}
 /* Salary tab: Total unpaid beside the month filter, red border only */
-.ufr{display:grid;grid-template-columns:1.05fr .95fr;gap:10px;align-items:stretch}
+.ufr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:start}
+.ucol{min-width:0;display:flex;flex-direction:column;gap:6px}
+.ul{font-size:11px;font-weight:700;letter-spacing:.4px;line-height:1.2;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ufr #umon{height:46px;box-sizing:border-box;margin:0;width:100%;font-size:15px;padding-left:12px;padding-right:6px;min-width:0}
-.utb{height:46px;box-sizing:border-box;border:1.5px solid var(--bad);border-radius:12px;background:transparent;color:var(--tx);display:flex;flex-direction:column;justify-content:center;padding:0 10px;min-width:0}
+.utb{height:46px;width:100%;box-sizing:border-box;border:1px solid var(--bad);border-radius:12px;background:transparent;color:var(--tx);display:flex;align-items:center;padding:0 12px;min-width:0}
 .utb span{font-size:10.5px;font-weight:600;color:var(--mut);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px}
-.utb b{font-size:16px;font-weight:700;color:var(--tx);line-height:1.25;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.umw{position:relative;min-width:0}
-.umw .uph{display:none;position:absolute;left:14px;top:0;height:46px;align-items:center;color:var(--mut);font-size:16px;pointer-events:none}
+.utb b{font-size:17px;font-weight:700;color:var(--tx);line-height:1.25;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.umw{position:relative;min-width:0;height:46px}
+.umw .uph{display:none;position:absolute;left:13px;right:34px;top:0;height:46px;align-items:center;color:var(--mut);font-size:15px;white-space:nowrap;overflow:hidden;pointer-events:none}
 .umw.em .uph{display:flex}
 .umw.em #umon{color:transparent}
 /* Trip logs: swipe sideways, Date column frozen, Total row like the Fuel tab */
@@ -350,7 +352,7 @@ button,.card,input,select,textarea{transition:none}
 button{transition:background .15s,color .15s,transform .12s}
 .wrap th:first-child,.wrap td:first-child{position:static;box-shadow:none}
 #logl .wrap th:first-child,#logl .wrap td:first-child,#ftab th:first-child,#ftab td:first-child,table.ov th:first-child,table.ov td:first-child{position:sticky;left:0;box-shadow:1px 0 0 var(--ln)}
-.cfr{text-align:right;margin-top:6px;line-height:1}.cfr .ed{padding:4px 2px}@media print{.cfr{display:none!important}}
+.cfr{text-align:right;margin-top:6px;line-height:1}.cfr .ed{padding:4px 2px}.cfr.cfl{text-align:left;margin-top:8px}@media print{.cfr{display:none!important}}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -446,7 +448,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
 <section id="pvt" class="hide"><div class="card" style="text-align:center;padding:36px 16px"><b style="font-size:18px">Private Workers</b><div class="mut" style="margin:10px 0 14px">A list of Mr. Njoroge's home &amp; private workers that are paid separately</div></div></section>
-<section id="unp" class="hide"><div id="ualert"></div><div id="orphc"></div><div class="card"><label>Balances up to end of month (clear it for all time)</label><div class="ufr"><div class="umw em"><input type="month" id="umon"><span class="uph">Select month</span></div><div class="utb"><span>Total Unpaid Salary</span><b id="utot">0</b></div></div></div>
+<section id="unp" class="hide"><div id="ualert"></div><div id="orphc"></div><div class="card"><div class="ufr"><div class="ucol"><div class="ul">MONTH</div><div class="umw em"><input type="month" id="umon" required><span class="uph">Select month</span></div></div><div class="ucol"><div class="ul" id="utl">TOTAL UNPAID</div><div class="utb"><b id="utot">0</b></div></div></div><div class="cfr cfl noprt hide" id="cfunp"><button type="button" class="ed" data-cf="unp">Clear filters</button></div></div>
 <div class="card"><b>Unpaid driver balances</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ud"></tbody></table></div></div>
 <div class="card"><b>Unpaid loader balances</b><div class="mut">Only entries with a loader deposit. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ul"></tbody></table></div></div>
 <div class="card"><b>Salary paid</b><div class="wrap"><table><tbody id="ph"></tbody></table></div></div>
@@ -671,7 +673,7 @@ function render(){
   return"<tr><td>"+esc(k)+(x.o===0&&x.p>0?' <span class="mut">(no loader entries)</span>':"")+ualB(u)+"</td><td>"+fmt(x.o)+"</td><td>"+fmt(x.p)+"</td><td><b>"+up(u)+"</b>"+btn(u).replace("#",i)+"</td></tr>"}).join("")
   +(Object.keys(L).length?'<tr style="font-weight:700"><td colspan="3">Total loader balance</td><td>'+up(uL)+'</td></tr>':'<tr><td class="mut" colspan="4">No loader balances</td></tr>');
  $("ph").innerHTML=PL.length?PL.map(function(p){return"<tr><td>"+esc(p.date.slice(5))+"</td><td>"+esc(p.who)+" ("+esc(p.kind)+")</td><td>"+fmt(p.amount)+"</td><td>"+(own(p)?'<button class="undo" data-p="'+esc(p.id)+'">Delete</button>':"")+"</td></tr>"}).join(""):'<tr><td class="mut">No payments yet</td></tr>';
- $("utot").textContent=fmt(uD+uL);var ua=$("ualert");if(ua)ua.innerHTML=uAl?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+uAl+" balance"+(uAl>1?"s are":" is")+" above "+fmt(appCfg.alertAt)+"</b> (marked &#9888; below).</div>":"";
+ $("utot").textContent=fmt(uD+uL);$("utl").textContent=um?"MONTHLY UNPAID":"TOTAL UNPAID";var ua=$("ualert");if(ua)ua.innerHTML=uAl?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+uAl+" balance"+(uAl>1?"s are":" is")+" above "+fmt(appCfg.alertAt)+"</b> (marked &#9888; below).</div>":"";
  var TT=0,TP=0,AL=alloc();sorted.forEach(function(e){TT+=e.tonnes;TP+=pay(e)});
  $("logl").innerHTML='<div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Trip expense</th><th>Unpaid</th><th>Notes</th></tr></thead><tbody>'+(sorted.length?sorted.slice(0,300).map(function(e){var o=AL[e.id]||{dn:0,dr:0,ln:0,lr:0},hb=o.dn!==0||(e.deposit>0&&o.ln!==0),u=o.dr+(e.deposit>0?o.lr:0),uc=!hb?"—":Math.round(u)===0?'<span style="color:var(--ok);font-weight:700">'+(o.da>0&&!o.dp&&!o.lp?"Advance":"Paid")+'</span>':up(u);
   return'<tr data-id="'+esc(e.id)+'" style="cursor:pointer"><td>'+esc(e.date.slice(5))+'</td><td>'+esc(e.vehicle)+'</td><td>'+esc(e.driver||"—")+'</td><td>'+(+e.tonnes||0).toFixed(2)+'</td><td>'+fmt(pay(e))+'</td><td>'+uc+'</td><td>'+(e.note?"Available":"—")+'</td></tr>'}).join("")+
@@ -1542,27 +1544,28 @@ var F={
   reset:function(){clr(["oday","ofm","oyr"]);$("ocat").value="all";$("odf").value="all";fire($("odf"))},
   btn:$("cfallc"),show:function(){return $("ocat").value!=="all"||$("odf").value!=="all"}},
  unp:{dirty:function(){return $("umon").value!==""},
-  reset:function(){$("umon").value="";fire($("umon"))}},
+  reset:function(){$("umon").value="";fire($("umon"))},
+  btn:$("cfunp"),show:function(){return $("umon").value!==""}},
  hist:{dirty:function(){var b=$("hch").querySelector("button.on");return $("hq").value!==""||$("hper").value!=="all"||$("hveh").value!==""||!!(b&&b.dataset.v!=="all")},
   reset:function(){$("hclr").click()}}
 };
-function sync(){["sum","fsm","dsc","ovf","allc"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
+function sync(){["sum","fsm","dsc","ovf","allc","unp"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
 var later=0;function sched(){clearTimeout(later);later=setTimeout(sync,0)}
 /* Clear filters buttons */
 document.addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("[data-cf]");if(!b)return;var f=F[b.dataset.cf];if(!f)return;f.reset();sync()});
 /* keep the buttons in step with the filters */
-["pper","fper","dsd","dsp","oper","ocat","odf"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
+["pper","fper","dsd","dsp","oper","ocat","odf","umon"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
 try{new MutationObserver(sched).observe($("dsd"),{childList:true})}catch(x){}
 /* leaving a tab (any way: sub-tab, top tab, bottom bar, History, Settings) puts its filters back to default */
 var AREA={sum:["sum"],fsm:["fsm"],ov:["dsc","ovf","allc"],unp:["unp"],hist:["hist"]},seen={};
 Object.keys(AREA).forEach(function(id){var sec=$(id);if(!sec)return;seen[id]=!sec.classList.contains("hide");
  new MutationObserver(function(){var vis=!sec.classList.contains("hide");
-  if(seen[id]&&!vis){AREA[id].forEach(function(k){try{if(F[k].dirty())F[k].reset()}catch(x){}});sync()}
+  if(seen[id]&&!vis||(id==="unp"&&!seen[id]&&vis)){AREA[id].forEach(function(k){try{if(F[k].dirty())F[k].reset()}catch(x){}});sync()}
   seen[id]=vis}).observe(sec,{attributes:true,attributeFilter:["class"]})});
 sync()})();</script>
 <script>(function(){
 /* Trip and Fuel entry forms: leaving the tab (or finishing a log) returns them to defaults, date = today */
-var F=[{id:"enter",reset:function(){try{endEdit()}catch(e){}}},{id:"fen",reset:function(){try{fend()}catch(e){}}}];
+var F=[{id:"enter",reset:function(){try{endEdit()}catch(e){}}},{id:"fen",reset:function(){try{fend()}catch(e){}}},{id:"advt",reset:function(){try{document.getElementById("adate").value=today();document.getElementById("aamt").value="";document.getElementById("adrv").value="";renderAdv()}catch(e){}}}];
 F.forEach(function(f){var el=document.getElementById(f.id);if(!el)return;
  [].forEach.call(el.querySelectorAll("input,textarea"),function(i){i.setAttribute("autocomplete","off")});
  f.vis=!el.classList.contains("hide");
