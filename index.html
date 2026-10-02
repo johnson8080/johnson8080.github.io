@@ -152,13 +152,13 @@ html{scroll-padding-top:52px}
 /* slightly roomier header */
 /* Save/update pop-ups sit inside the header, in the free space right of the app name */
 #toast{--tc:22,163,74;position:fixed;left:12px;right:12px;top:calc(8px + env(safe-area-inset-top,0px));max-width:none;margin:0;box-sizing:border-box;display:flex;align-items:center;gap:6px;height:36px;padding:0 8px;background:linear-gradient(rgba(var(--tc),.16),rgba(var(--tc),.16)),var(--card);color:var(--tx);border:1px solid rgb(var(--tc));border-radius:6px;z-index:60;text-align:left;font-size:12px;font-weight:700;line-height:1;overflow:hidden;pointer-events:none;animation:tin .3s ease-out,tglow 1.1s ease-out .15s 2}
-.hd .ht #toast{position:relative;left:auto;right:auto;top:auto;flex:1 1 0;min-width:0;width:auto;margin:0 0 0 6px;height:36px;z-index:3}
+.hd>#toast{position:absolute;left:12px;right:12px;top:10px;width:auto;height:36px;margin:0;z-index:30;pointer-events:auto;cursor:pointer;padding:0 10px;gap:8px}
 #toast.hide{display:none!important}
 .hd:has(#toast:not(.hide)){z-index:11}
 #toast.bad{--tc:220,38,38}
 #toast i{flex:0 0 auto;width:16px;height:16px;border-radius:50%!important;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:800;line-height:1;color:#fff;background:rgb(var(--tc))}
-#toast span{min-width:0;flex:1;display:block;white-space:nowrap;overflow:hidden}
-#toast span b{display:inline-block;font-weight:inherit;will-change:transform}
+#toast span{min-width:0;flex:1;display:block;white-space:nowrap;overflow:hidden;max-height:34px;line-height:1.15;word-break:break-word}
+#toast span b{display:inline;font-weight:inherit}
 #toast.mq span b{animation:tmq var(--t,3s) linear .6s forwards}
 @keyframes tin{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
 @keyframes tglow{0%{box-shadow:0 0 0 0 rgba(var(--tc),.65)}100%{box-shadow:0 0 0 8px rgba(var(--tc),0)}}
@@ -528,14 +528,20 @@ var tt0;function toast(m,isBad){var t=document.getElementById("toast");m=String(
  try{if(/[<&]/.test(m))m=(new DOMParser().parseFromString(m.replace(/<br\s*\/?>/gi," \u00b7 "),"text/html").body.textContent||"").replace(/\s+/g," ").trim()}catch(e){}
  var bad=isBad===true||(isBad!==false&&/^(cannot|could not|can't|a future|that month|pick |that plate|read-only|not |connect to|sharing is not|you are offline)|not saved|failed|no permission|cannot|not allowed|finished with problems/i.test(m));
  clearTimeout(tt0);
- try{var ht=document.querySelector(".hd .ht");if(ht&&t.parentNode!==ht)ht.appendChild(t)}catch(e){}
- t.className="";t.textContent="";
+ var hd=document.querySelector(".hd");try{if(hd&&t.parentNode!==hd)hd.appendChild(t)}catch(e){}
+ t.className="";t.textContent="";t.onclick=function(){clearTimeout(tt0);t.classList.add("hide")};
  var ic=document.createElement("i");ic.textContent=bad?"\u2715":"\u2713";
  var sp=document.createElement("span"),bb=document.createElement("b");bb.textContent=m;sp.appendChild(bb);t.appendChild(ic);t.appendChild(sp);
  if(bad)t.classList.add("bad");
+ try{if(hd){var hr=hd.getBoundingClientRect(),kids=[].filter.call(hd.children,function(x){return x!==t&&x.getClientRects().length}),L=1e9,R=-1e9,T=1e9;
+  kids.forEach(function(x){var q=x.getBoundingClientRect();L=Math.min(L,q.left);R=Math.max(R,q.right);T=Math.min(T,q.top)});
+  if(kids.length){var cs=getComputedStyle(hd);t.style.top=(T-hr.top-(parseFloat(cs.borderTopWidth)||0))+"px";t.style.left=(L-hr.left-(parseFloat(cs.borderLeftWidth)||0))+"px";t.style.right=(hr.right-R-(parseFloat(cs.borderRightWidth)||0))+"px"}}}catch(e){}
  void t.offsetWidth;
- var ms=bad?6000:4500;
- try{var d=bb.offsetWidth-sp.clientWidth;if(d>1){var dur=Math.max(2.4,d/36);t.style.setProperty("--d",(-d-4)+"px");t.style.setProperty("--t",dur+"s");t.classList.add("mq");ms=Math.round(600+dur*1000+1500)}}catch(e){}
+ /* fit: one line at 12px, else wrap smaller (2 then 3 lines) inside the same 36px height; never scrolls */
+ var steps=[[12,0],[11,1],[10,1],[9.5,1]];
+ try{for(var k=0;k<steps.length;k++){sp.style.fontSize=steps[k][0]+"px";sp.style.whiteSpace=steps[k][1]?"normal":"nowrap";sp.style.lineHeight=steps[k][1]?"1.1":"1.15";
+  if(steps[k][1]?sp.scrollHeight<=sp.clientHeight+1:sp.scrollWidth<=sp.clientWidth+1)break}}catch(e){}
+ var ms=Math.min(10000,Math.max(4500,3200+m.length*45))+(bad?1500:0);
  tt0=setTimeout(function(){t.classList.add("hide")},ms)}
 window.toast=toast;
 window.alert=toast;
@@ -1062,7 +1068,7 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
   var sv=null,raw=null,loadBad=false,keptCopy=false;try{raw=localStorage.getItem(LK)}catch(x){}if(raw){try{sv=JSON.parse(raw)}catch(x){loadBad=true;try{localStorage.setItem(LK+"_corrupt",raw);keptCopy=true}catch(y){}}}try{if(sv){entries=sv.entries||[];pays=sv.pays||[];advs=sv.advs||[];fuels=sv.fuels||[];trashE=sv.trashE||[];trashF=sv.trashF||[];trashA=sv.trashA||[];trashP=sv.trashP||[];if(sv.cfg)cfg=sv.cfg;if(sv.locks)locks=sv.locks;if(sv.fcfg)fcfg=sv.fcfg;paySaved=!!sv.paySaved;
    fillVeh();showCfg();$("frs").value=fcfg.sell||"";$("frc").value=fcfg.cost||"";fautofill();frchk();chkR();setDdp();render();renderFuel();prev()}}catch(x){}
   var lastS=null,pt=null,loadMsg=loadBad?"Saved data on this phone could not be read."+(keptCopy?" A copy was kept, so it is not lost. Ask the owner for help before entering new data.":" Nothing new will be saved on this phone until this is fixed."):"";
-  var swLast="";var sw=function(m,btn){if(m&&m!==swLast){try{toast(m,true)}catch(e){}}swLast=m||"";$("sbanner").innerHTML=m?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+m+'</b>'+(btn?' <button class="x" onclick="bkNow()">Back up now</button>':"")+'</div>':""};
+  var swLast="";var sw=function(m,btn){if(m&&m!==swLast){try{toast(m.split(". ")[0].replace(/\.$/,""),true)}catch(e){}}swLast=m||"";$("sbanner").innerHTML=m?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+m+'</b>'+(btn?' <button class="x" onclick="bkNow()">Back up now</button>':"")+'</div>':""};
   window.persistLocal=function(){if(loadBad&&!keptCopy){sw(loadMsg);return}
    var s;try{s=JSON.stringify({entries:entries,pays:pays,advs:advs,fuels:fuels,trashE:trashE,trashF:trashF,trashA:trashA,trashP:trashP,cfg:cfg,fcfg:fcfg,paySaved:paySaved,locks:locks})}catch(x){sw("Could not prepare data to save on this phone.",true);return}
    if(s===lastS)return;
