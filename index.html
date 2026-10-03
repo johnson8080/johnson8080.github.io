@@ -354,7 +354,7 @@ button{transition:background .15s,color .15s,transform .12s}
 #logl .wrap th:first-child,#logl .wrap td:first-child,#ftab th:first-child,#ftab td:first-child,table.ov th:first-child,table.ov td:first-child{position:sticky;left:0;box-shadow:1px 0 0 var(--ln)}
 .cfr{text-align:right;margin-top:6px;line-height:1}.cfr .ed{padding:4px 2px}.cfr.cfl{text-align:left;margin-top:8px}
 #unp>.card{border-color:var(--ac)}#unp>.card:has(.ufr),#pvt>.card:first-child{padding-top:12px}.card,.modal .card,:root[data-theme="light"] .card,:root[data-theme="dark"] .card{border-color:var(--ac)!important}
-#unp .ut,#pvt .ut{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}@media print{.cfr{display:none!important}}
+#unp .ut,#pvt .ut{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}@media print{.cfr{display:none!important}}.ct{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}.rh{text-align:center;text-transform:uppercase;letter-spacing:.6px;font-size:15px;line-height:21px;margin-bottom:10px}#trashc>b,#lockc>b{display:block;text-align:center;letter-spacing:.6px}b.ct,b.ut,.rh,#trashc>b,#lockc>b,#fltitle{font-size:15px!important;line-height:21px!important;font-weight:700!important;letter-spacing:.6px!important;text-transform:uppercase!important}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -415,7 +415,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="row hide" id="hdw" style="grid-template-columns:1fr"><div><label>Date</label><input type="date" id="hday"></div></div>
 <div class="row hide" id="hmw" style="grid-template-columns:1fr"><div><label>Month</label><input type="month" id="hmo"></div></div>
 <div class="row hide" id="hyw" style="grid-template-columns:1fr"><div><label>Year</label><input type="number" inputmode="numeric" id="hyr" min="2000" max="2100"></div></div>
-<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span class="mut" id="hcnt"></span><button class="ed" id="hclr">Clear filters</button></div></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px"><span class="mut" id="hcnt"></span><button class="ed hide" id="hclr">Clear filters</button></div></div>
 <div class="card" id="hl"></div><div class="card" id="hpay"></div></section>
 <section id="pguide" class="hide"><div class="pgs" id="pgs"><button type="button" class="pgc" data-cat="Payment"><b>DOWNLOAD ALL TODAY'S TRIP ENTRIES</b><span>Clicking here will direct you to the requested data, click download button</span></button><button type="button" class="pgc" data-cat="Fuel"><b>DOWNLOAD ALL TODAY'S FUEL ENTRIES</b><span>Clicking here will direct you to the requested data, click download button</span></button><button type="button" class="pgc" data-cat="Payment" data-mode="month"><b>DOWNLOAD THIS MONTH TRIP ENTRIES</b><span>Clicking here will direct you to the requested data, click download button</span></button><button type="button" class="pgc" data-cat="Fuel" data-mode="month"><b>DOWNLOAD THIS MONTH FUEL ENTRIES</b><span>Clicking here will direct you to the requested data, click download button</span></button><button type="button" class="pgc" data-bk="1"><b>BACKUP EVERYTHING NOW</b><span>Clicking here will direct you to the backup button, click it</span></button></div></section>
 <section id="enter" class="hide">
@@ -431,22 +431,21 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="pvb"><div class="mut">Total trip expense</div><div class="pay" id="prev">0</div></div>
 <div class="neg" id="lkw" style="margin-top:8px;font-size:14px"></div><button class="btn" id="save">Save entry</button><div class="mut" id="mine" style="margin-top:8px"></div></div></section>
 
-<section id="log"><div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b>Trip entries</b><span class="mut" style="font-size:12px;white-space:nowrap">Swipe right | Tap for details</span></div><div id="logl"></div></div></section>
+<section id="log"><div class="card"><b class="ct">Trip entries</b><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><div id="logl"></div></div></section>
 
-<section id="advt" class="hide"><div class="card"><b>Give advance</b><div class="mut">Taken from the driver's total balance (held per working day, minus earlier advances and payments). Going over it shows negative in red.</div>
+<section id="advt" class="hide"><div class="card"><b class="ct">Give advance</b><div class="mut">Taken from the driver's total balance (held per working day, minus earlier advances and payments). Going over it shows negative in red.</div>
 <label>Date</label><input type="date" id="adate">
 <label>Driver</label><select id="adrv"></select>
 <label>Amount</label><input type="number" inputmode="decimal" id="aamt" placeholder="0">
 <div class="mut" style="margin-top:12px" id="abefore"></div><div class="mut">BALANCE AFTER ADVANCE</div><div class="pay" id="aafter">—</div>
 <button class="btn" id="asave">Give advance</button></div>
-<div class="card"><b>Driver balances</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Balance</th></tr></thead><tbody id="abal"></tbody></table></div></div>
-<div class="card"><b>Advances given</b><div class="wrap"><table><tbody id="ahist"></tbody></table></div></div></section>
-<section id="sum" class="hide"><div class="card"><div class="fgrid"><div><label>Period</label><select id="pper" onchange="render()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pdw" class="hide"><label>Date</label><input type="date" id="pday"></div><div id="pmw" class="hide"><label>Month</label><input type="month" id="mon"></div><div id="pyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfsum"><button type="button" class="ed" data-cf="sum">Clear filters</button></div>
-<div class="row" id="trow" style="margin-top:10px"><div><div class="mut">Total tonnes</div><div class="pay" id="tt">0</div></div><div><div class="mut">Total trip expense</div><div class="pay" id="tp">0</div></div><div id="tunp" role="button" tabindex="0" style="cursor:pointer"><div class="mut">Total unpaid ›</div><div class="pay" id="tup" style="color:var(--bad)">0</div></div></div></div>
-<div class="card" id="top3"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><b>Top 3 drivers</b><div class="t3c" id="t3c"><button data-v="p">This Period</button><button data-v="a" class="on">Overall</button></div></div><div class="mut" id="t3l" style="margin-top:4px"></div><div id="t3b"></div></div>
-<div class="card" id="pwkc"><b>By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="wk"></tbody></table></div></div>
-<div class="card"><b>Total held balance per driver</b><div class="mut">Selected period: held balance minus advances = driver balance.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Days</th><th>Held</th><th>Advances</th><th>Balance</th></tr></thead><tbody id="dtot"></tbody></table></div><b style="display:block;margin-top:12px">Loader pay per driver</b><div class="mut">Tonnes × loader rate. One fixed rate however many loaders there are.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Tonnes</th><th>Loader pay</th></tr></thead><tbody id="lt"></tbody></table></div></div>
-<div class="card"><b>Expenses by reason</b><div class="wrap"><table><thead><tr><th>Reason</th><th>Entries</th><th>Total</th></tr></thead><tbody id="ex"></tbody></table></div></div>
+<div class="card"><b class="ct">Driver balances</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Balance</th></tr></thead><tbody id="abal"></tbody></table></div></div>
+<div class="card"><b class="ct">Advances given</b><div class="wrap"><table><tbody id="ahist"></tbody></table></div></div></section>
+<section id="sum" class="hide"><div class="card" id="top3"><b class="ct">Top 3 drivers</b><div class="fgrid"><div><label>Period</label><select id="pper" onchange="render()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pdw" class="hide"><label>Date</label><input type="date" id="pday"></div><div id="pmw" class="hide"><label>Month</label><input type="month" id="mon"></div><div id="pyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfsum"><button type="button" class="ed" data-cf="sum">Clear filters</button></div>
+<div class="row" id="trow" style="margin-top:10px"><div><div class="mut">Total tonnes</div><div class="pay" id="tt">0</div></div><div><div class="mut">Total trip expense</div><div class="pay" id="tp">0</div></div><div id="tunp" role="button" tabindex="0" style="cursor:pointer"><div class="mut">Total unpaid ›</div><div class="pay" id="tup" style="color:var(--bad)">0</div></div></div><div class="mut" id="t3l" style="margin-top:12px"></div><div id="t3b"></div></div>
+<div class="card" id="pwkc"><b class="ct">By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="wk"></tbody></table></div></div>
+<div class="card"><b class="ct">Total held balance per driver</b><div class="mut">Selected period: held balance minus advances = driver balance.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Days</th><th>Held</th><th>Advances</th><th>Balance</th></tr></thead><tbody id="dtot"></tbody></table></div><b style="display:block;margin-top:12px">Loader pay per driver</b><div class="mut">Tonnes × loader rate. One fixed rate however many loaders there are.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Tonnes</th><th>Loader pay</th></tr></thead><tbody id="lt"></tbody></table></div></div>
+<div class="card"><b class="ct">Expenses by reason</b><div class="wrap"><table><thead><tr><th>Reason</th><th>Entries</th><th>Total</th></tr></thead><tbody id="ex"></tbody></table></div></div>
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
 <section id="pvt" class="hide"><div class="card"><b class="ut">PRIVATE STAFF</b><div class="fgrid"><div><label>Period</label><select id="pvper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pvdw" class="hide"><label>Date</label><input type="date" id="pvday"></div><div id="pvmw" class="hide"><label>Month</label><input type="month" id="pvmon"></div><div id="pvyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pvyr" min="2000" max="2100"></div></div><div class="ufr" style="margin-top:12px"><div class="ucol"><div class="ul">TOTAL PAID</div><div class="utb" style="border-color:var(--ok)"><b id="pvtp">0.00</b></div></div><div class="ucol"><div class="ul">TOTAL UNPAID</div><div class="utb"><b id="pvtu">0.00</b></div></div></div><div class="cfr cfl noprt hide" id="cfpvt"><button type="button" class="ed" data-cf="pvt">Clear filters</button></div></div><div class="card"><b class="ut">PRIVATE STAFF SALARIES</b><div class="wrap"><table><thead><tr><th>Staff</th><th>Salary</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="pvb"></tbody></table></div></div><div class="card"><b class="ut">PAYMENTS THIS MONTH</b><div class="wrap"><table><thead><tr><th>Date</th><th>Staff</th><th>Amount</th><th></th></tr></thead><tbody id="pvh"></tbody></table></div></div></section>
@@ -478,10 +477,10 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="pvb"><div class="mut">Net profit</div><div class="pay" id="fnp">0</div></div>
 <div class="neg" id="flkw" style="margin-top:8px;font-size:14px"></div><button class="btn" id="fsave" disabled>Save fuel</button><div class="mut" style="margin-top:8px">Prices fill in from Update Rates → Fuel rates. You can change them for this entry.</div></div>
 </section><section id="fsm" class="hide"><div class="card"><div class="fgrid"><div><label>Period</label><select id="fper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="fdw" class="hide"><label>Date</label><input type="date" id="fday"></div><div id="fmw" class="hide"><label>Month</label><input type="month" id="fmon"></div><div id="fyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="fyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cffsm"><button type="button" class="ed" data-cf="fsm">Clear filters</button></div><div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))"><div><div class="mut">Litres</div><div class="pay" id="fl" style="font-size:20px">0</div></div><div><div class="mut">Net profit</div><div class="pay" id="fp" style="font-size:20px">0</div></div><div><div class="mut">Profit %</div><div class="pay" id="fpc" style="font-size:20px">0%</div></div></div></div>
-<div class="card" id="fwkc"><b>By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fwk"></tbody></table></div></div>
-<div class="card"><b>By vehicle</b><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fvh"></tbody></table></div></div>
-<div class="card"><b>Year by month</b><div class="wrap"><table><thead><tr><th>Month</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fmo"></tbody></table></div><div id="fbars"></div></div>
-</section><section id="flg" class="hide"><div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><b id="fltitle">Fuel entries</b><span class="mut" style="font-size:12px;white-space:nowrap">Swipe right | Tap for details</span></div><div class="wrap"><table id="ftab"><thead><tr><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Litres</th><th>Sell/ltr</th><th>Cost/ltr</th><th>Amount</th><th>Profit</th><th class="l">Collected by</th><th class="l">Issued by</th><th class="l">Notes</th></tr></thead><tbody id="flist"></tbody></table></div></div></section>
+<div class="card" id="fwkc"><b class="ct">By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fwk"></tbody></table></div></div>
+<div class="card"><b class="ct">By vehicle</b><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fvh"></tbody></table></div></div>
+<div class="card"><b class="ct">Year by month</b><div class="wrap"><table><thead><tr><th>Month</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fmo"></tbody></table></div><div id="fbars"></div></div>
+</section><section id="flg" class="hide"><div class="card"><b class="ct" id="fltitle">Fuel entries</b><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><div class="wrap"><table id="ftab"><thead><tr><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Litres</th><th>Sell/ltr</th><th>Cost/ltr</th><th>Amount</th><th>Profit</th><th class="l">Collected by</th><th class="l">Issued by</th><th class="l">Notes</th></tr></thead><tbody id="flist"></tbody></table></div></div></section>
 
 
 <section id="ov" class="hide"><div class="card noprt" id="dsc"><b style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
@@ -490,7 +489,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="acts" style="margin:12px 0 0"><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button></div></div><div class="card ovx" id="ovf"><b class="noprt" style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
 <div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
-<div class="card" id="allc"><b style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
+<div class="card" id="allc"><b class="ct">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
 <div class="noprt"><div class="fgrid"><div><label>Category</label><select id="ocat"><option value="all">All</option><option value="Payment">Trips only</option><option value="Fuel">Fuel only</option></select></div><div><label>Date</label><select id="odf"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div></div>
 <div id="odw" class="hide"><label>Date</label><input type="date" id="oday"></div><div id="omw2" class="hide"><label>Month</label><input type="month" id="ofm"></div><div id="oyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="oyr" min="2000" max="2100"></div><div class="cfr noprt hide" id="cfallc"><button type="button" class="ed" data-cf="allc">Clear filters</button></div></div>
 <div class="mut" id="ocnt" style="margin:8px 0"></div>
@@ -503,7 +502,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="setrow col"><div class="st"><b>Restore</b><small>You will see a summary and confirm before anything changes.</small></div></div>
 <div class="sacts"><label class="btn alt" id="rbtn" style="position:relative;overflow:hidden;cursor:pointer;display:inline-block;text-align:center"><span>Full restore (JSON)</span><input type="file" id="rfile" accept=".json,application/json,text/plain" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0"></label><button class="btn alt" id="rpaste">Full text restore (JSON)</button></div>
 <div class="mut sh" style="padding-bottom:12px">If the file picker does not open, use Paste backup text.</div></div></section><section id="dhs" class="hide"><div class="card" id="trashc"></div></section>  <section id="sales" class="hide"><div class="card" style="text-align:center;padding:36px 18px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Sales</b><div style="font-size:16px;line-height:1.5">A project of selling 30T cane fleet carrier</div></div></section>
-<section id="nts" class="hide"><div class="card"><b>Notes</b><div class="mut" id="ntc"></div><div id="ntl"></div></div></section>
+<section id="nts" class="hide"><div class="card"><b class="ct">Notes</b><div class="mut" id="ntc"></div><div id="ntl"></div></div></section>
 
 <section id="stg" class="hide"><div class="ssec" id="s-alerts"><div class="sh2">Alerts</div><div class="ssub">The unpaid alert saves with the Save button. The other two apply on this device straight away.</div>
 <div class="card sc"><div class="mut" id="sappnote"></div>
@@ -758,12 +757,12 @@ function stSnap(a){return a.map(function(e){return e.n+"|"+Number(e.s)}).join("~
 function stChk(){var rows=stRows(),ok=[],bad=false,seen={},dup=false;rows.forEach(function(r){if(r.n&&r.s!==""&&isFinite(Number(r.s))&&Number(r.s)>0){var k=r.n.toLowerCase();if(seen[k])dup=true;seen[k]=1;ok.push(r)}else if(r.n||r.s!=="")bad=true});
  var nt=$("enote");if(nt)nt.textContent=bad?"Each staff needs a name and a salary above zero.":dup?"Each staff name must be different.":"";
  $("eset").disabled=!(isAdmin&&!bad&&!dup&&stSnap(ok)!==stSnap(staff))}
-function stBind(){if(stBound||!db)return;stBound=true;try{db.collection("pvpays").onSnapshot(function(sn){pvp=sn.docs.map(function(d){return Object.assign({id:d.id},d.data())});pvRender()},function(){})}catch(x){}try{db.doc("config/staff").onSnapshot(function(sn){staff=sn.exists&&sn.data().list||[];stLoaded=true;stBuild();try{gateCheck()}catch(e){}},function(){stLoaded=true;try{gateCheck()}catch(e){}})}catch(x){}}
+function stBind(){if(stBound||!db)return;stBound=true;try{db.collection("pvpays").onSnapshot(function(sn){var _v=sn.docs.map(function(d){return Object.assign({id:d.id},d.data())});pvp=_v.filter(function(x){return!x.deleted});trashV=_v.filter(function(x){return x.deleted});pvRender();try{renderTrash()}catch(e){}},function(){})}catch(x){}try{db.doc("config/staff").onSnapshot(function(sn){staff=sn.exists&&sn.data().list||[];stLoaded=true;stBuild();try{gateCheck()}catch(e){}},function(){stLoaded=true;try{gateCheck()}catch(e){}})}catch(x){}}
 ["pvper","pvday","pvmon","pvyr"].forEach(function(i){$(i).addEventListener("change",pvRender);$(i).addEventListener("input",pvRender)});
 $("pvb").addEventListener("click",function(ev){var b=ev.target.closest("button[data-i]");if(!b)return;var w=pvKeys[b.dataset.i];if(w)pvPay(w)});
 $("pvh").addEventListener("click",async function(ev){var b=ev.target.closest("button[data-p]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
  var id=b.dataset.p,x=pvp.find(function(y){return String(y.id)===id});if(x&&isLocked(x.date)){toast("That month is locked");return}
- try{if(db)await db.collection("pvpays").doc(id).delete();else{pvp=pvp.filter(function(y){return String(y.id)!==id});pvSave();pvRender()}toast("Payment removed")}catch(e){toast("Could not remove")}});
+ try{if(!x)throw new Error("Payment not found");await softDel("pvpays",x.id,pvp,trashV);pvSave();pvRender();try{renderTrash()}catch(e){}toast("Payment moved to Deleted")}catch(e){toast("Could not remove: "+(e&&e.message||e))}});
 $("eadd").onclick=function(){$("erows").appendChild(erow("",""));var i=$("erows").querySelectorAll(".en");i[i.length-1].focus();stChk()};
 $("erows").addEventListener("input",stChk);
 $("erows").addEventListener("click",function(ev){var b=ev.target.closest(".ex");if(!b)return;var r=b.parentNode,nm=r.querySelector(".en").value.trim(),sl=r.querySelector(".es").value.trim();
@@ -773,8 +772,8 @@ $("erows").addEventListener("click",function(ev){var b=ev.target.closest(".ex");
 $("eset").onclick=async function(){var wasNeed=needRates();var l=stRows().filter(function(r){return r.n&&r.s!==""}).map(function(r){return{n:r.n,s:Number(r.s)}});
  try{if(db)await db.doc("config/staff").set({list:l});staff=l;try{localStorage.setItem("staff_v1",JSON.stringify(l))}catch(x){}stBuild();if(wasNeed&&!needRates()){toast("All set. You can now add data.");try{document.querySelector('.main [data-g="pay"]').click()}catch(e){}}else if(wasNeed&&staff.length){toast("Staff saved. Finish the other rates.");goRates(!paySaved?"set":"frt")}else toast("Staff salaries saved")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}};
 
-var pvp=[];try{pvp=JSON.parse(localStorage.getItem("pvp_v1")||"[]")}catch(x){}
-function pvSave(){try{localStorage.setItem("pvp_v1",JSON.stringify(pvp))}catch(x){}}
+var pvp=[],trashV=[];try{pvp=JSON.parse(localStorage.getItem("pvp_v1")||"[]")}catch(x){}try{trashV=JSON.parse(localStorage.getItem("pvt_v1")||"[]")}catch(x){}
+function pvSave(){try{localStorage.setItem("pvp_v1",JSON.stringify(pvp));localStorage.setItem("pvt_v1",JSON.stringify(trashV))}catch(x){}}
 var pvKeys=[];
 function pvP(){var k=$("pvper").value||"all",td=today();
  if(k==="day"){var dd=$("pvday").value||td;return{k:"d",t:function(x){return x.date===dd}}}
@@ -787,7 +786,7 @@ function pvRender(){if(!$("pvper"))return;var td=today();if(!$("pvday").value)$(
  $("pvdw").classList.toggle("hide",P.k!=="d");$("pvmw").classList.toggle("hide",P.k!=="m");$("pvyw").classList.toggle("hide",P.k!=="y");
  var inP=pvp.filter(P.t);
  var rows=staff.map(function(e){var pd=0;inP.forEach(function(x){if(x.who===e.n)pd+=+x.amount||0});tS+=e.s;tP+=pd;
-  var u=P.k==="m"?Math.round((e.s-pd)*100)/100:e.s;tU+=u;var i=pvKeys.push({k:e.n,s:e.s})-1;
+  var u=Math.max(0,Math.round((e.s-pd)*100)/100);tU+=u;var i=pvKeys.push({k:e.n,s:e.s})-1;
   return'<tr><td>'+esc(e.n)+'</td><td>'+fmt(e.s)+'</td><td>'+fmt(pd)+'</td><td class="'+(u>0?"neg":"")+'">'+fmt(u)+'<br><button class="mp" data-i="'+i+'">Pay</button></td></tr>'}).join("");
  $("pvtp").textContent=fmt(tP);$("pvtu").textContent=fmt(Math.round(tU*100)/100);$("pvb").innerHTML=rows?rows+'<tr><td><b>Total</b></td><td><b>'+fmt(tS)+'</b></td><td><b>'+fmt(tP)+'</b></td><td class="neg"><b>'+fmt(Math.round(tU*100)/100)+'</b></td></tr>':'<tr><td colspan="4" class="mut">No staff yet. Add them in Rates \u2192 Staff salaries.</td></tr>';
  var h=inP.slice().sort(function(a,b){return(b.ts||0)-(a.ts||0)});
@@ -1175,7 +1174,7 @@ async function setLock(m,on){if(!(isAdmin&&canWrite))return;if(on&&m>today().sli
  try{if(db)await db.doc("config/locks").set({months:nl});locks=nl;render();toast(on?"Month locked":"Month unlocked")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}}
 function renderLocks(){var el=$("lockc");if(!el)return;var adm=!!(isAdmin&&canWrite);
  if(el.dataset.a!==String(adm)){el.dataset.a=String(adm);
-  el.innerHTML='<b>Month lock</b><div class="mut">A locked month cannot get new, edited or deleted payments, fuel entries, advances or salary paid, and cannot be restored into. The lock is enforced by this app.'+(adm?"":" Only editors and the owner can lock or unlock.")+'</div>'+(adm?'<label>Month</label><div class="lkw empty" id="lkwrap"><input type="month" id="lkm"><span class="lkph">Select a month to lock editing</span></div><button class="btn" id="lkb" disabled>Lock this month</button>':"")+'<div id="lkl" style="margin-top:12px"></div>';
+  el.innerHTML='<b class="ct">Month lock</b><div class="mut">A locked month cannot get new, edited or deleted payments, fuel entries, advances or salary paid, and cannot be restored into. The lock is enforced by this app.'+(adm?"":" Only editors and the owner can lock or unlock.")+'</div>'+(adm?'<label>Month</label><div class="lkw empty" id="lkwrap"><input type="month" id="lkm"><span class="lkph">Select a month to lock editing</span></div><button class="btn" id="lkb" disabled>Lock this month</button>':"")+'<div id="lkl" style="margin-top:12px"></div>';
   if(adm){$("lkm").value="";$("lkm").oninput=renderLocks;
    $("lkb").onclick=function(){var m=$("lkm").value;if(!m){toast("Pick a month");return}if(!this.dataset.s){this.dataset.s="1";this.textContent="Sure?";return}this.dataset.s="";setLock(m,!locks[m])}}
   $("lkl").onclick=function(ev){var b=ev.target.closest("button[data-m]");if(!b)return;if(!b.dataset.s){b.dataset.s="1";b.textContent="Sure?";return}setLock(b.dataset.m,false)}}
@@ -1214,18 +1213,19 @@ function advWarns(d,x,dt){var w=[];
  var r=remain(d);if(x>r)w.push("Advance ("+fmt(x)+") is more than "+esc(d)+"'s balance ("+fmt(r)+"); balance goes negative.");
  if(advs.some(function(a){return a.driver===d&&a.date===dt&&a.amount===x}))w.push("An identical advance for "+esc(d)+" on "+esc(dt)+" already exists.");
  return w}
-function trashSet(k){return{E:["entries",trashE,entries],F:["fuel",trashF,fuels],A:["advances",trashA,advs],P:["payments",trashP,pays]}[k]}
+function trashSet(k){return{E:["entries",trashE,entries],F:["fuel",trashF,fuels],A:["advances",trashA,advs],P:["payments",trashP,pays],V:["pvpays",trashV,pvp]}[k]}
 function renderTrash(){var el=$("trashc");if(!el)return;var L=[];
  trashE.forEach(function(x){L.push({k:"E",o:x,t:"Trip · "+x.vehicle,s:x.date+" · "+(x.driver||"—")+" · "+x.tonnes+" t"})});
  trashF.forEach(function(x){L.push({k:"F",o:x,t:"Fuel · "+x.vehicle,s:x.date+" · "+x.litres+" L"})});
  trashA.forEach(function(x){L.push({k:"A",o:x,t:"Advance · "+x.driver,s:x.date+" · "+fmt(x.amount)})});
+ trashV.forEach(function(x){L.push({k:"V",o:x,t:"Private staff payment \u00b7 "+x.who,s:x.date+" \u00b7 "+fmt(x.amount)+" \u00b7 "+(x.month||"")})});
  trashP.forEach(function(x){L.push({k:"P",o:x,t:(x.kind==="loader"?"Loader":"Driver")+" payment · "+x.who,s:x.date+" · "+fmt(x.amount)})});
  L.sort(function(a,b){return(b.o.deletedAt||0)-(a.o.deletedAt||0)});
  var can=canWrite&&isAdmin;
- el.innerHTML='<b>Deleted items</b><div class="mut">Deleted records are kept with who deleted them and when. They no longer count in any total until restored.</div>'+(L.length?L.slice(0,50).map(function(x){return'<div class="item" style="align-items:flex-start"><div style="min-width:0;flex:1"><b>'+esc(x.t)+'</b><div class="mut">'+esc(x.s)+'</div><div class="mut">Deleted '+esc(x.o.deletedAt?new Date(x.o.deletedAt).toLocaleString():"")+'</div></div>'+(can?'<button class="mp" data-rk="'+x.k+'" data-rid="'+esc(x.o.id)+'">Restore</button>':"")+'</div>'}).join(""):'<div class="mut" style="margin-top:8px">Nothing deleted.</div>')+(can&&L.length?'<button class="btn alt" id="clrTrash" style="margin-top:12px;width:100%">Clear deleted history ('+L.length+')</button>':"")}
+ el.innerHTML='<b class="ct">Deleted items</b><div class="mut">Deleted records are kept with who deleted them and when. They no longer count in any total until restored.</div>'+(L.length?L.slice(0,50).map(function(x){return'<div class="item" style="align-items:flex-start"><div style="min-width:0;flex:1"><b>'+esc(x.t)+'</b><div class="mut">'+esc(x.s)+'</div><div class="mut">Deleted '+esc(x.o.deletedAt?new Date(x.o.deletedAt).toLocaleString():"")+'</div></div>'+(can?'<button class="mp" data-rk="'+x.k+'" data-rid="'+esc(x.o.id)+'">Restore</button>':"")+'</div>'}).join(""):'<div class="mut" style="margin-top:8px">Nothing deleted.</div>')+(can&&L.length?'<button class="btn alt" id="clrTrash" style="margin-top:12px;width:100%">Clear deleted history ('+L.length+')</button>':"")}
 $("trashc").onclick=async function(ev){var b=ev.target.closest("button[data-rk]");if(!b)return;var m=trashSet(b.dataset.rk),id=b.dataset.rid,o=m[1].find(function(x){return x.id===id});if(!o)return;if(isLocked(o.date)){toast("That month is locked. Unlock it first.");return}b.disabled=true;
  var c=stripId(o);delete c.deleted;delete c.deletedBy;delete c.deletedAt;c.restoredBy=me||"local";c.restoredAt=Date.now();
- try{if(db)await db.doc(m[0]+"/"+id).set(c);m[1].splice(m[1].indexOf(o),1);m[2].push(Object.assign({id:id},c));render();try{renderFuel()}catch(x){}renderTrash();toast("Restored")}catch(x){b.disabled=false;toast("Could not restore: "+(x&&x.message||"no permission"))}};
+ try{if(db)await db.doc(m[0]+"/"+id).set(c);m[1].splice(m[1].indexOf(o),1);m[2].push(Object.assign({id:id},c));pvSave();render();try{renderFuel()}catch(x){}try{pvRender()}catch(x){}renderTrash();toast("Restored")}catch(x){b.disabled=false;toast("Could not restore: "+(x&&x.message||"no permission"))}};
 var BK={l:"fleetLastBackup",i:"fleetBackupDays",z:"fleetBkSnooze"};
 function bkGet(k,d){try{var v=localStorage.getItem(k);return v==null?d:v}catch(x){return d}}
 function bkSet(k,v){try{localStorage.setItem(k,String(v))}catch(x){}}
@@ -1241,7 +1241,7 @@ function confirmX(t,m,yes){return new Promise(function(res){var M=document.getEl
 function orphLists(){return{A:advs.filter(function(x){return noEnt(x.driver)}),P:pays.filter(function(x){return noEnt(x.who)})}}
 function renderOrph(){var el=document.getElementById("orphc");if(!el)return;var o=orphLists();
  if(!(o.A.length||o.P.length)||!(canWrite&&isAdmin)){el.innerHTML="";return}
- el.innerHTML='<div class="card"><b>Leftover balances</b><div class="mut" style="margin-top:4px">'+o.A.length+' advance(s) and '+o.P.length+' payment(s) belong to drivers or loaders that have no trips. They still show as unpaid balances.</div><button class="btn alt" id="orphb" style="margin-top:10px;width:100%">Clear leftover balances</button></div>'}
+ el.innerHTML='<div class="card"><b class="ct">Leftover balances</b><div class="mut" style="margin-top:4px">'+o.A.length+' advance(s) and '+o.P.length+' payment(s) belong to drivers or loaders that have no trips. They still show as unpaid balances.</div><button class="btn alt" id="orphb" style="margin-top:10px;width:100%">Clear leftover balances</button></div>'}
 document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.closest?ev.target.closest("#orphb,#clrTrash"):null;if(!t)return;
  if(t.id==="orphb"){var o=orphLists();if(!o.A.length&&!o.P.length)return;
   if(!(await confirmX("Clear leftover balances?",o.A.length+" advance(s) and "+o.P.length+" payment(s) for drivers with no trips will be moved to Deleted items. You can restore them from there, or erase them with Clear deleted history.","Clear balances")))return;
@@ -1250,14 +1250,14 @@ document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.
   for(var i=0;i<jobs.length&&!stop;i++){var j=jobs[i];try{await softDel(j[0],j[1],j[2],j[3]);ok++}catch(e){var m=String(e&&e.message||e);if(/locked/i.test(m))sk++;else if(/cancel|password/i.test(m))stop=1;else fl++}}
   render();try{renderFuel()}catch(x){}
   toast(stop?"Cancelled. "+ok+" cleared":ok+" cleared"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""));return}
- if(t.id==="clrTrash"){var S=[["entries",trashE],["fuel",trashF],["advances",trashA],["payments",trashP]],n=0;S.forEach(function(x){n+=x[1].length});if(!n)return;
+ if(t.id==="clrTrash"){var S=[["entries",trashE],["fuel",trashF],["advances",trashA],["payments",trashP],["pvpays",trashV]],n=0;S.forEach(function(x){n+=x[1].length});if(!n)return;
   if(db&&navigator.onLine===false){toast("Connect to the internet to erase deleted history");return}
   if(!(await confirmX("Clear deleted history?",n+" deleted item(s) will be erased permanently. This cannot be undone.","Erase permanently")))return;
   t.disabled=true;var ok=0,sk=0,fl=0,stop=0;
   for(var a=0;a<S.length&&!stop;a++){var arr=S[a][1],items=arr.slice();
    for(var b=0;b<items.length&&!stop;b++){var it=items[b];if(isLocked(it.date)){sk++;continue}
     try{if(db)await db.doc(S[a][0]+"/"+it.id).delete();var k=arr.indexOf(it);if(k>=0)arr.splice(k,1);ok++}catch(e){var m2=String(e&&e.message||e);if(/cancel|password/i.test(m2))stop=1;else fl++}}}
-  renderTrash();toast(stop?"Cancelled. "+ok+" erased":ok+" erased"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""))}
+  pvSave();renderTrash();toast(stop?"Cancelled. "+ok+" erased":ok+" erased"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""))}
 });
 var _inR=0,_r=render;render=function(){var v;_inR++;try{v=_r.apply(this,arguments)}finally{_inR--}try{bkCheck();renderTrash();renderLocks();renderOrph()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v};
 if(typeof renderFuel==="function"){var _rf=renderFuel;renderFuel=function(){var v=_rf.apply(this,arguments);if(_inR)return v;try{bkCheck();renderTrash();renderLocks()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v}}
@@ -1312,7 +1312,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    PR=PR.filter(function(x){if(!HP(x.d))return false;if(q&&(x.d+" "+x.t+" "+x.w+" "+fmt(x.a)+" "+x.a).toLowerCase().indexOf(q)<0)return false;return true}).sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:b.ts-a.ts});
    var pt=0;PR.forEach(function(x){pt+=x.a});
    var hp=HT==="o"||HT==="a";$("hpay").classList.toggle("hide",!hp);$("hl").classList.toggle("hide",hp);
-   $("hpay").innerHTML='<b>'+(isA?"Advance history":"Salary history")+'</b><div class="mut">'+(isA?"Advances given to drivers.":"Salary payments marked as paid.")+'</div>'+(PR.length?'<div class="wrap"><table><thead><tr><th>Date</th>'+(isA?"":"<th>Type</th>")+'<th>'+(isA?"Driver":"Name")+'</th><th>Amount</th></tr></thead><tbody>'+PR.slice(0,300).map(function(x){return"<tr><td>"+esc(x.d.slice(5))+"</td>"+(isA?"":"<td>"+esc(x.t)+"</td>")+"<td>"+esc(x.w)+"</td><td>"+fmt(x.a)+"</td></tr>"}).join("")+'<tr style="font-weight:700"><td colspan="'+(isA?2:3)+'">Total</td><td>'+fmt(pt)+"</td></tr></tbody></table></div>":'<div class="mut" style="padding:10px 0">'+(isA?"No advances match.":"No salary payments match.")+"</div>")}catch(px){}
+   $("hpay").innerHTML='<b class="ct">'+(isA?"Advance history":"Salary history")+'</b><div class="mut">'+(isA?"Advances given to drivers.":"Salary payments marked as paid.")+'</div>'+(PR.length?'<div class="wrap"><table><thead><tr><th>Date</th>'+(isA?"":"<th>Type</th>")+'<th>'+(isA?"Driver":"Name")+'</th><th>Amount</th></tr></thead><tbody>'+PR.slice(0,300).map(function(x){return"<tr><td>"+esc(x.d.slice(5))+"</td>"+(isA?"":"<td>"+esc(x.t)+"</td>")+"<td>"+esc(x.w)+"</td><td>"+fmt(x.a)+"</td></tr>"}).join("")+'<tr style="font-weight:700"><td colspan="'+(isA?2:3)+'">Total</td><td>'+fmt(pt)+"</td></tr></tbody></table></div>":'<div class="mut" style="padding:10px 0">'+(isA?"No advances match.":"No salary payments match.")+"</div>")}catch(px){}
    try{var CT={p:0,f:0,o:0,a:0},mm=function(d){return HP(d)},hy=function(a){return!q||a.join(" ").toLowerCase().indexOf(q)>=0};
    entries.forEach(function(e){if(mm(e.date)&&(!vh||e.vehicle===vh)&&hy([e.date,e.vehicle,e.driver,e.note,"trip payment "+(e.reason||"")]))CT.p++});
    fuels.forEach(function(f){if(mm(f.date)&&(!vh||f.vehicle===vh)&&hy([f.date,f.vehicle,f.driver||(cfg.vd||{})[f.vehicle]||"",f.note,"fuel "+(f.collected||"")+" "+(f.issued||"")]))CT.f++});
@@ -1334,7 +1334,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    var L=Object.keys(m).map(function(k){return m[k]}).sort(function(a,b){return b.t-a.t||b.n-a.n||(a.k<b.k?-1:1)}).slice(0,3),mx=L.length?L[0].t:1;
    $("t3l").textContent=(T3==="a"?"All time":P.lab)+" · ranked by tonnes";
    $("t3b").innerHTML=L.length?L.map(function(o,i){return'<div class="t3"><span class="rk r'+(i+1)+'">'+(i+1)+'</span><div class="tl"><b>'+esc(o.k)+'</b><div class="tb" style="width:'+Math.max(4,o.t/mx*100)+'%"></div></div><div class="tr"><b>'+o.t.toFixed(2)+' t</b><div class="mut">'+o.n+(o.n===1?" trip":" trips")+'</div></div></div>'}).join(""):'<div class="mut" style="padding:10px 0 0">No trips with a driver name in this range.</div>'}
-  $("t3c").onclick=function(ev){var b=ev.target.closest("button");if(!b)return;T3=b.dataset.v;[].forEach.call($("t3c").querySelectorAll("button"),function(x){x.classList.toggle("on",x===b)});renderTop3()};
+ 
   $("mon").addEventListener("change",renderTop3);$("pday").addEventListener("change",renderTop3);$("pyr").addEventListener("change",renderTop3);$("pper").addEventListener("change",renderTop3);
   function unpaidAll(){var D={},L={};
    entries.forEach(function(e){var k=e.driver||"(No driver name)",d=D[k]||(D[k]={h:0,a:0,p:0});d.h+=dheld(e);d.a+=e.advance||0;if(e.deposit>0){var l=L[k]||(L[k]={o:0,p:0});l.o+=e.tonnes*rt(e)-e.deposit}});
@@ -1348,7 +1348,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
   function renderUnpCard(){var U=unpaidAll();$("tup").textContent=fmt(U.t)}
   function showUnp(){var U=unpaidAll(),h='<b style="font-size:18px">Total unpaid</b><div class="pay" style="color:var(--bad);margin:2px 0 8px">'+fmt(U.t)+'</div><div class="mut" style="margin-bottom:8px">Everything not yet paid, all time.</div>';
    if(!U.dr.length&&!U.lo.length)h+='<div class="mut">Nothing unpaid.</div>';
-   if(U.dr.length)h+='<b>Driver balances</b><div class="wrap"><table class="ut"><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody>'+U.dr.map(function(x){return'<tr><td>'+esc(x.k)+'</td><td>'+fmt(x.h)+'</td><td>'+fmt(x.a)+'</td><td>'+fmt(x.p)+'</td><td class="bd">'+fmt(x.u)+'</td></tr>'}).join("")+'<tr style="font-weight:700"><td colspan="4">Total</td><td class="bd">'+fmt(U.td)+'</td></tr></tbody></table></div>';
+   if(U.dr.length)h+='<b class="ct">Driver balances</b><div class="wrap"><table class="ut"><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody>'+U.dr.map(function(x){return'<tr><td>'+esc(x.k)+'</td><td>'+fmt(x.h)+'</td><td>'+fmt(x.a)+'</td><td>'+fmt(x.p)+'</td><td class="bd">'+fmt(x.u)+'</td></tr>'}).join("")+'<tr style="font-weight:700"><td colspan="4">Total</td><td class="bd">'+fmt(U.td)+'</td></tr></tbody></table></div>';
    if(U.lo.length)h+='<b style="display:block;margin-top:10px">Loader balances</b><div class="wrap"><table class="ut"><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody>'+U.lo.map(function(x){return'<tr><td>'+esc(x.k)+'</td><td>'+fmt(x.o)+'</td><td>'+fmt(x.p)+'</td><td class="bd">'+fmt(x.u)+'</td></tr>'}).join("")+'<tr style="font-weight:700"><td colspan="3">Total</td><td class="bd">'+fmt(U.tl)+'</td></tr></tbody></table></div>';
    h+='<div class="b2"><button id="uCl">Close</button></div>';
    $("mbody").innerHTML=h;$("modal").classList.remove("hide");$("uCl").onclick=closeM}
@@ -1586,8 +1586,8 @@ function fire(e){if(e)e.dispatchEvent(new Event("change",{bubbles:true}))}
 function clr(ids){ids.forEach(function(i){if($(i))$(i).value=""})}
 /* each entry: dirty() = a filter is applied, reset() = back to default (re-runs the page's own render code) */
 var F={
- sum:{dirty:function(){var b=$("t3c").querySelector("button.on");return $("pper").value!=="all"||!!(b&&b.dataset.v!=="a")},
-  reset:function(){clr(["pday","mon","pyr"]);$("pper").value="all";fire($("pper"));var a=$("t3c").querySelector('button[data-v="a"]');if(a&&!a.classList.contains("on"))a.click()},
+ sum:{dirty:function(){return $("pper").value!=="all"},
+  reset:function(){clr(["pday","mon","pyr"]);$("pper").value="all";fire($("pper"))},
   btn:$("cfsum"),show:function(){return $("pper").value!=="all"}},
  fsm:{dirty:function(){return $("fper").value!=="all"},
   reset:function(){clr(["fday","fmon","fyr"]);$("fper").value="all";fire($("fper"))},
@@ -1608,14 +1608,16 @@ var F={
   reset:function(){clr(["pvday","pvmon","pvyr"]);$("pvper").value="all";fire($("pvper"))},
   btn:$("cfpvt"),show:function(){return $("pvper").value!=="all"}},
  hist:{dirty:function(){var b=$("hch").querySelector("button.on");return $("hq").value!==""||$("hper").value!=="all"||$("hveh").value!==""||!!(b&&b.dataset.v!=="all")},
-  reset:function(){$("hclr").click()}}
+  reset:function(){$("hclr").click()},btn:$("hclr"),show:function(){return F.hist.dirty()}}
 };
-function sync(){["sum","fsm","dsc","ovf","allc","unp","pvt"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
+function sync(){["sum","fsm","dsc","ovf","allc","unp","pvt","hist"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
 var later=0;function sched(){clearTimeout(later);later=setTimeout(sync,0)}
 /* Clear filters buttons */
 document.addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("[data-cf]");if(!b)return;var f=F[b.dataset.cf];if(!f)return;f.reset();sync()});
 /* keep the buttons in step with the filters */
 ["pper","fper","dsd","dsp","oper","ocat","odf","umon","pvper"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
+["hq","hper","hmo","hday","hyr","hveh"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
+["hch","hclr"].forEach(function(i){var e=$(i);if(e)e.addEventListener("click",sched)});
 try{new MutationObserver(sched).observe($("dsd"),{childList:true})}catch(x){}
 /* leaving a tab (any way: sub-tab, top tab, bottom bar, History, Settings) puts its filters back to default */
 var AREA={sum:["sum"],fsm:["fsm"],ov:["dsc","ovf","allc"],unp:["unp"],pvt:["pvt"],hist:["hist"]},seen={};
