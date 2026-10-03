@@ -383,7 +383,7 @@ button{transition:background .15s,color .15s,transform .12s}
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>(function(){
 var CFG={apiKey:"AIzaSyA6nXEX_xskZnCY3Z113-d7Fs9GjO9LcPs",authDomain:"fleet-9e308.firebaseapp.com",projectId:"fleet-9e308",storageBucket:"fleet-9e308.firebasestorage.app",messagingSenderId:"258425450498",appId:"1:258425450498:web:74cb05c2364b0d7011771b"};
-var COLS={entries:1,fuel:1,advances:1,payments:1};function bg(p){p.catch(function(e){try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}});return Promise.resolve()}var IS="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #334;background:#141a26;color:#fff;font-size:16px;box-sizing:border-box";
+var COLS={entries:1,fuel:1,advances:1,payments:1,pvpays:1};function bg(p){p.catch(function(e){try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}});return Promise.resolve()}var IS="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #334;background:#141a26;color:#fff;font-size:16px;box-sizing:border-box";
 function login(auth){return new Promise(function(res){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;z-index:99999;background:#0a0e16;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px 24px calc(24px + var(--kb,0px));overflow-y:auto;transition:padding-bottom .2s ease";
 o.innerHTML='<div style="width:100%;max-width:340px"><h2 style="margin:0 0 6px">FUEL &amp; TRIPS</h2><p style="margin:0 0 16px;opacity:.7">Sign in to continue</p><input id="fbE" type="email" placeholder="Email" autocomplete="username" style="'+IS+'"><input id="fbP" type="password" placeholder="Password" autocomplete="current-password" style="'+IS+'"><div id="fbM" style="color:#f87171;min-height:20px;margin:6px 0"></div><button id="fbB" style="width:100%;padding:13px;border:0;border-radius:10px;background:#3b82f6;color:#fff;font-size:16px;font-weight:700">Sign in</button></div>';
 document.body.appendChild(o);var b=o.querySelector("#fbB"),m=o.querySelector("#fbM");o.addEventListener("focusin",function(e){var t=e.target;setTimeout(function(){try{t.scrollIntoView({block:"center",behavior:"smooth"})}catch(x){}},250)});
@@ -396,14 +396,14 @@ var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){
 var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs)}
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
 setTimeout(function(){var s=document.getElementById("stg");if(!s)return;var b=document.createElement("button");b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){auth.signOut().then(function(){location.reload()})};s.appendChild(b)},800);
-var lastOk=0,gOpen=null;
+var lastOk=0,gOpen=null,hold=false;
 function gate(){
-if(ro||Date.now()-lastOk<20000)return Promise.resolve();
+if(ro||hold)return Promise.resolve();
 if(gOpen)return gOpen;
 gOpen=new Promise(function(res,rej){
 var o=document.createElement("div");
 o.style.cssText="position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.6);display:flex;align-items:flex-start;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 24px 24px;overflow-y:auto";
-o.innerHTML='<div style="width:100%;max-width:340px;background:#141a26;color:#fff;border:1px solid #334;border-radius:12px;padding:18px"><h3 style="margin:0 0 4px">Confirm your password</h3><p id="gW" style="margin:0 0 12px;opacity:.7;font-size:13px"></p><input id="gP" type="password" placeholder="Password" autocomplete="current-password" style="'+IS+'"><div id="gM" style="color:#f87171;min-height:20px;margin:2px 0 8px;font-size:13px"></div><div style="display:flex;gap:8px"><button id="gC" style="flex:1;padding:12px;border-radius:10px;border:1px solid #334;background:none;color:#fff;font-size:15px">Cancel</button><button id="gB" style="flex:1;padding:12px;border:0;border-radius:10px;background:#3b82f6;color:#fff;font-size:15px;font-weight:700">Confirm</button></div></div>';
+o.innerHTML='<div style="width:100%;max-width:340px;background:#141a26;color:#fff;border:1px solid #334;border-radius:12px;padding:18px"><h3 style="margin:0 0 4px">Confirm your password</h3><p id="gW" style="margin:0 0 12px;opacity:.7;font-size:13px"></p><input id="gP" type="password" placeholder="Password" autocomplete="new-password" name="gp-confirm" readonly onfocus="this.readOnly=false" data-lpignore="true" data-1p-ignore="true" autocapitalize="off" autocorrect="off" spellcheck="false" style="'+IS+'"><div id="gM" style="color:#f87171;min-height:20px;margin:2px 0 8px;font-size:13px"></div><div style="display:flex;gap:8px"><button id="gC" style="flex:1;padding:12px;border-radius:10px;border:1px solid #334;background:none;color:#fff;font-size:15px">Cancel</button><button id="gB" style="flex:1;padding:12px;border:0;border-radius:10px;background:#3b82f6;color:#fff;font-size:15px;font-weight:700">Confirm</button></div></div>';
 document.body.appendChild(o);
 o.querySelector("#gW").textContent=who+" - needed to edit or delete";
 var p=o.querySelector("#gP"),m=o.querySelector("#gM"),b=o.querySelector("#gB");
@@ -414,6 +414,7 @@ u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.emai
 b.onclick=go;p.onkeydown=function(e){if(e.key==="Enter")go()};
 setTimeout(function(){try{p.focus()}catch(x){}},50)});
 return gOpen}
+window.askPw=function(){return gate()};window.gateHold=async function(on){if(on){await gate();hold=true}else hold=false};
 var root=fs.collection("fuelTrips").doc("app");
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
@@ -756,8 +757,8 @@ $("sset").onclick=async function(){
  if(dv===""||!isFinite(nv[1])||nv[1]<0){alert("Enter the default driver deposit (0 or more)");return}
  if(bv===""||!isFinite(nv[2])||nv[2]<0){alert("Enter the driver balance held per day (0 or more)");return}
  var c={rate:nv[0],dday:nv[1],dbal:nv[2],veh:vv,vd:vd};
- var was=!needRates();try{if(db)await db.doc("config/main").set(c);else{cfg=c}
-  cfg=c;paySaved=true;if(!editing)setDdp();fillVeh();render();chkR();afterSave("pay",was)}catch(x){alert("Could not save (need contributor access)")}};
+ var was=!needRates();try{if(db){if(was)await pwOk();await db.doc("config/main").set(c)}else{cfg=c}
+  cfg=c;paySaved=true;if(!editing)setDdp();fillVeh();render();chkR();afterSave("pay",was)}catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}};
 function vrow(pl,dr){var r=document.createElement("div");r.className="vrow";r.innerHTML='<input class="vp" placeholder="Plate number"><input class="vd" placeholder="Driver name"><button type="button" class="x vx">✕</button>';r.querySelector(".vp").value=pl||"";r.querySelector(".vd").value=dr||"";return r}
 var MINV=5;function padRows(){if(paySaved)return;var c=$("vrows");while(c.querySelectorAll(".vrow").length<MINV)c.appendChild(vrow("",""))}
 function buildRows(){var c=$("vrows");c.innerHTML="";cfg.veh.forEach(function(v){c.appendChild(vrow(v,(cfg.vd||{})[v]))});padRows();chkR()}
@@ -795,7 +796,7 @@ $("erows").addEventListener("click",function(ev){var b=ev.target.closest(".ex");
  $("mbody").innerHTML='<b style="font-size:18px">Delete staff?</b><div class="kv"><span>Name</span><span>'+esc(nm||"(none)")+'</span></div><div class="kv"><span>Salary</span><span>'+esc(sl||"(none)")+'</span></div><div class="mut" style="margin-top:8px">Tap Save/Update Salary afterwards to apply it.</div><div class="b2"><button class="dg" id="eY">Delete</button><button id="eN">Cancel</button></div>';
  $("modal").classList.remove("hide");$("eN").onclick=closeM;$("eY").onclick=function(){r.remove();if(!$("erows").children.length)$("erows").appendChild(erow("",""));closeM();stChk()}});
 $("eset").onclick=async function(){var wasNeed=needRates();var l=stRows().filter(function(r){return r.n&&r.s!==""}).map(function(r){return{n:r.n,s:Number(r.s)}});
- try{if(db)await db.doc("config/staff").set({list:l});staff=l;try{localStorage.setItem("staff_v1",JSON.stringify(l))}catch(x){}stBuild();if(wasNeed&&!needRates()){toast("All set. You can now add data.");goHome()}else if(wasNeed&&staff.length&&nextRates()){toast("Staff saved. Finish the other rates.");goRates(nextRates())}else toast("Staff salaries saved")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}};
+ try{if(db){if(!wasNeed)await pwOk();await db.doc("config/staff").set({list:l})}staff=l;try{localStorage.setItem("staff_v1",JSON.stringify(l))}catch(x){}stBuild();if(wasNeed&&!needRates()){toast("All set. You can now add data.");goHome()}else if(wasNeed&&staff.length&&nextRates()){toast("Staff saved. Finish the other rates.");goRates(nextRates())}else toast("Staff salaries saved")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}};
 
 var pvp=[],trashV=[];try{pvp=JSON.parse(localStorage.getItem("pvp_v1")||"[]")}catch(x){}try{trashV=JSON.parse(localStorage.getItem("pvt_v1")||"[]")}catch(x){}
 function pvSave(){try{localStorage.setItem("pvp_v1",JSON.stringify(pvp));localStorage.setItem("pvt_v1",JSON.stringify(trashV))}catch(x){}}
@@ -891,7 +892,7 @@ function frchk(){var a=n($("frs").value),c=n($("frc").value);$("frn").textConten
  $("frm").innerHTML="Profit per litre: <b>"+mn(a-c)+"</b>";$("frsave").disabled=!(canWrite&&isAdmin&&(a!==fcfg.sell||c!==fcfg.cost))}
 ["frs","frc"].forEach(function(i){$(i).addEventListener("input",frchk)});["fsp","fap"].forEach(function(i){$(i).addEventListener("input",function(){fdirty=true})});
 $("frsave").onclick=async function(){var c={sell:n($("frs").value),cost:n($("frc").value)};if(c.sell<=0||c.cost<=0){alert("Enter both fuel prices above zero");return}var was=!needRates();$("frsave").disabled=true;
- try{if(db)await db.doc("config/fuel").set(c);fcfg=c;fautofill();afterSave("fuel",was);if(window.schedPersist)schedPersist()}catch(x){alert("Could not save (need contributor access)")}frchk()};
+ try{if(db){if(was)await pwOk();await db.doc("config/fuel").set(c)}fcfg=c;fautofill();afterSave("fuel",was);if(window.schedPersist)schedPersist()}catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}frchk()};
 frchk();
 function csvq(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
 function csvl(a){return a.map(csvq).join(",")}
@@ -1037,7 +1038,8 @@ function rAsk(R){var rate=(R.rates||R.fuelRates)?(isAdmin?"Rates and vehicles in
  b.innerHTML='<button class="btn" id="rM" style="margin:0">Restore (keep existing data)</button><button class="btn alt" id="rR" style="margin:0">Replace all data</button><button class="btn alt" id="rC" style="margin:0;background:var(--card);color:var(--tx);border:1px solid var(--ln)">Cancel</button>';
  $("mbody").appendChild(b);$("rC").onclick=closeM;$("rM").onclick=function(){rRun(R,false)};
  $("rR").onclick=function(){if(!this.dataset.s){this.dataset.s=1;this.textContent="Sure? Tap again to replace everything";return}rRun(R,true)}}
-async function rRun(R,replace){
+async function rRun(R,replace){try{if(db)await holdPw(true)}catch(e){rRes("Cannot restore","Password not confirmed.",1);return}try{return await rRun0(R,replace)}finally{holdPw(false)}}
+async function rRun0(R,replace){
  if(!canWrite){rRes("Cannot restore","You have view-only access. Ask the owner to make you a Contributor.",1);return}
  var lkm=Object.keys(locks);if(lkm.length){var hit=function(a){return a.some(function(x){return isLocked(x.date)})};
   if(hit(R.entries)||hit(R.fuel)||hit(R.advances)||hit(R.payments)||(replace&&(hit(entries)||hit(fuels)||hit(advs)||hit(pays)))){rRes("Cannot restore","This restore would change a locked month ("+lkm.sort().join(", ")+"). Unlock the month first, then restore.",1);return}}
@@ -1078,6 +1080,7 @@ $("rfile").onchange=async function(){var f=this.files&&this.files[0];if(!f)retur
  if(f.size>8*1024*1024){alert("That file is too large to be a backup");return}
  try{var txt=await new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(fr.result)};fr.onerror=function(){rej(new Error("Could not read the file"))};fr.readAsText(f)});rAsk(rParse(txt))}
  catch(x){rErr(x&&x.message)}finally{try{inp.value=""}catch(x){}}};
+function pwOk(){return window.askPw?window.askPw():Promise.resolve()}function holdPw(on){return window.gateHold?window.gateHold(on):Promise.resolve()}function pwCancel(x){return!!(x&&/cancel|password/i.test(String(x.message||x)))}
 var paySaved=false,cfgLoaded=false,fcfgLoaded=false,gateDone=false,GATED={enter:1,advt:1,fen:1};
 function needRates(){if(db)try{stBind()}catch(e){}var loaded=db?(cfgLoaded&&fcfgLoaded&&stLoaded):true;return loaded&&!(paySaved&&fcfg.sell>0&&fcfg.cost>0&&staff.length>0)}
 function goRates(t){document.querySelector('.main [data-g="rates"]').click();var el=$(t==="frt"?"rfuel":t==="stf"?"rstaff":"rpay");if(!el)return;
@@ -1198,7 +1201,7 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
 var LIM={maxT:35,maxDays:45,maxLit:300,maxExp:2000,dev:0.2};
 async function setLock(m,on){if(!(isAdmin&&canWrite))return;if(on&&m>today().slice(0,7)){toast("A future month can't be locked yet");return}
  var nl=Object.assign({},locks);if(on)nl[m]={at:Date.now(),by:me||"local"};else delete nl[m];
- try{if(db)await db.doc("config/locks").set({months:nl});locks=nl;render();toast(on?"Month locked":"Month unlocked")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}}
+ try{if(db){await pwOk();await db.doc("config/locks").set({months:nl})}locks=nl;render();toast(on?"Month locked":"Month unlocked")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}}
 function renderLocks(){var el=$("lockc");if(!el)return;var adm=!!(isAdmin&&canWrite);
  if(el.dataset.a!==String(adm)){el.dataset.a=String(adm);
   el.innerHTML='<b class="ct">Month lock</b><div class="mut">A locked month cannot get new, edited or deleted payments, fuel entries, advances or salary paid, and cannot be restored into. The lock is enforced by this app.'+(adm?"":" Only editors and the owner can lock or unlock.")+'</div>'+(adm?'<label>Month</label><div class="lkw empty" id="lkwrap"><input type="month" id="lkm"><span class="lkph">Select a month to lock editing</span></div><button class="btn" id="lkb" disabled>Lock this month</button>':"")+'<div id="lkl" style="margin-top:12px"></div>';
@@ -1272,19 +1275,21 @@ function renderOrph(){var el=document.getElementById("orphc");if(!el)return;var 
 document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.closest?ev.target.closest("#orphb,#clrTrash"):null;if(!t)return;
  if(t.id==="orphb"){var o=orphLists();if(!o.A.length&&!o.P.length)return;
   if(!(await confirmX("Clear leftover balances?",o.A.length+" advance(s) and "+o.P.length+" payment(s) for drivers with no trips will be moved to Deleted items. You can restore them from there, or erase them with Clear deleted history.","Clear balances")))return;
+  try{await holdPw(true)}catch(e){toast("Cancelled");return}
   t.disabled=true;var ok=0,sk=0,fl=0,stop=0;
   var jobs=o.A.map(function(x){return["advances",x.id,advs,trashA]}).concat(o.P.map(function(x){return["payments",x.id,pays,trashP]}));
   for(var i=0;i<jobs.length&&!stop;i++){var j=jobs[i];try{await softDel(j[0],j[1],j[2],j[3]);ok++}catch(e){var m=String(e&&e.message||e);if(/locked/i.test(m))sk++;else if(/cancel|password/i.test(m))stop=1;else fl++}}
-  render();try{renderFuel()}catch(x){}
+  holdPw(false);render();try{renderFuel()}catch(x){}
   toast(stop?"Cancelled. "+ok+" cleared":ok+" cleared"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""));return}
  if(t.id==="clrTrash"){var S=[["entries",trashE],["fuel",trashF],["advances",trashA],["payments",trashP],["pvpays",trashV]],n=0;S.forEach(function(x){n+=x[1].length});if(!n)return;
   if(db&&navigator.onLine===false){toast("Connect to the internet to erase deleted history");return}
   if(!(await confirmX("Clear deleted history?",n+" deleted item(s) will be erased permanently. This cannot be undone.","Erase permanently")))return;
+  try{await holdPw(true)}catch(e){toast("Cancelled");return}
   t.disabled=true;var ok=0,sk=0,fl=0,stop=0;
   for(var a=0;a<S.length&&!stop;a++){var arr=S[a][1],items=arr.slice();
    for(var b=0;b<items.length&&!stop;b++){var it=items[b];if(isLocked(it.date)){sk++;continue}
     try{if(db)await db.doc(S[a][0]+"/"+it.id).delete();var k=arr.indexOf(it);if(k>=0)arr.splice(k,1);ok++}catch(e){var m2=String(e&&e.message||e);if(/cancel|password/i.test(m2))stop=1;else fl++}}}
-  pvSave();renderTrash();toast(stop?"Cancelled. "+ok+" erased":ok+" erased"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""))}
+  holdPw(false);pvSave();renderTrash();toast(stop?"Cancelled. "+ok+" erased":ok+" erased"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""))}
 });
 var _inR=0,_r=render;render=function(){var v;_inR++;try{v=_r.apply(this,arguments)}finally{_inR--}try{bkCheck();renderTrash();renderLocks();renderOrph()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v};
 if(typeof renderFuel==="function"){var _rf=renderFuel;renderFuel=function(){var v=_rf.apply(this,arguments);if(_inR)return v;try{bkCheck();renderTrash();renderLocks()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v}}
