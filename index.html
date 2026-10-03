@@ -353,8 +353,8 @@ button{transition:background .15s,color .15s,transform .12s}
 .wrap th:first-child,.wrap td:first-child{position:static;box-shadow:none}
 #logl .wrap th:first-child,#logl .wrap td:first-child,#ftab th:first-child,#ftab td:first-child,table.ov th:first-child,table.ov td:first-child{position:sticky;left:0;box-shadow:1px 0 0 var(--ln)}
 .cfr{text-align:right;margin-top:6px;line-height:1}.cfr .ed{padding:4px 2px}.cfr.cfl{text-align:left;margin-top:8px}
-#unp>.card{border-color:var(--ac)}#unp>.card:has(.ufr){padding-top:12px}.card,.modal .card,:root[data-theme="light"] .card,:root[data-theme="dark"] .card{border-color:var(--ac)!important}
-#unp .ut{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}@media print{.cfr{display:none!important}}
+#unp>.card{border-color:var(--ac)}#unp>.card:has(.ufr),#pvt>.card:first-child{padding-top:12px}.card,.modal .card,:root[data-theme="light"] .card,:root[data-theme="dark"] .card{border-color:var(--ac)!important}
+#unp .ut,#pvt .ut{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}@media print{.cfr{display:none!important}}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -402,7 +402,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <header class="hd"><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1></div><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Sales</button></div>
-<div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">Private Workers</button></div>
+<div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIVATE STAFF</button></div>
 <div class="tabs hide" id="barrates" data-g="rates" style="grid-template-columns:minmax(0,1fr)"><button data-t="set" class="on">Update Rates</button></div>
 <div class="tabs hide" id="barfuel" data-g="fuel" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-t="fen">ADD FUEL</button><button data-t="flg" class="on">ALL FUEL LOGS</button></div>
 <div class="tabs hide" id="barov" data-g="ov"><button data-t="ov" class="on">DOWNLOAD REPORT</button><button data-t="pguide">DOWNLOAD GUIDE</button><button data-t="nts">All Notes</button><button data-t="sum">Trips</button><button data-t="fsm">Fuel</button><button data-t="dhs">DELETE HISTORY</button></div>
@@ -449,7 +449,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card"><b>Expenses by reason</b><div class="wrap"><table><thead><tr><th>Reason</th><th>Entries</th><th>Total</th></tr></thead><tbody id="ex"></tbody></table></div></div>
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
-<section id="pvt" class="hide"><div class="card" style="text-align:center;padding:36px 16px"><b style="font-size:18px">Private Workers</b><div class="mut" style="margin:10px 0 14px">A list of Mr. Njoroge's home &amp; private workers that are paid separately</div></div></section>
+<section id="pvt" class="hide"><div class="card"><b class="ut">PRIVATE STAFF</b><div class="fgrid"><div><label>Period</label><select id="pvper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pvdw" class="hide"><label>Date</label><input type="date" id="pvday"></div><div id="pvmw" class="hide"><label>Month</label><input type="month" id="pvmon"></div><div id="pvyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pvyr" min="2000" max="2100"></div></div><div class="ufr" style="margin-top:12px"><div class="ucol"><div class="ul">TOTAL PAID</div><div class="utb" style="border-color:var(--ok)"><b id="pvtp">0.00</b></div></div><div class="ucol"><div class="ul">TOTAL UNPAID</div><div class="utb"><b id="pvtu">0.00</b></div></div></div><div class="cfr cfl noprt hide" id="cfpvt"><button type="button" class="ed" data-cf="pvt">Clear filters</button></div></div><div class="card"><b class="ut">PRIVATE STAFF SALARIES</b><div class="wrap"><table><thead><tr><th>Staff</th><th>Salary</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="pvb"></tbody></table></div></div><div class="card"><b class="ut">PAYMENTS THIS MONTH</b><div class="wrap"><table><thead><tr><th>Date</th><th>Staff</th><th>Amount</th><th></th></tr></thead><tbody id="pvh"></tbody></table></div></div></section>
 <section id="unp" class="hide"><div id="ualert"></div><div id="orphc"></div><div class="card"><b class="ut">TOTAL UNPAID BALANCES</b><div class="ufr"><div class="ucol"><div class="ul">MONTH</div><div class="umw em"><input type="month" id="umon" required><span class="uph">Select month</span></div></div><div class="ucol"><div class="ul" id="utl">TOTAL UNPAID</div><div class="utb"><b id="utot">0</b></div></div></div><div class="cfr cfl noprt hide" id="cfunp"><button type="button" class="ed" data-cf="unp">Clear filters</button></div></div>
 <div class="card"><b class="ut">UNPAID DRIVER BALANCES</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ud"></tbody></table></div></div>
 <div class="card"><b class="ut">UNPAID LOADER BALANCES</b><div class="mut">Only entries with a loader deposit. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ul"></tbody></table></div></div>
@@ -465,7 +465,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <label>Loader rate per tonne</label><input type="number" id="rate">
 <label>Default driver deposit (paid each working day)</label><input type="number" id="dday">
 <label>Driver balance held per working day</label><input type="number" id="dbal">
-<label>Vehicles and drivers</label><div class="mut">Each plate is tied to one driver. Picking the plate on the Enter tab fills the driver automatically.</div><div class="mut" id="vnote" style="margin-top:6px"></div><div id="vrows"></div><button type="button" class="btn" id="vadd" style="background:var(--mut);margin-top:10px">+ Add vehicle</button><button class="btn" id="sset" disabled>Update/Save Rates &amp; Data</button></div><div class="card" id="lockc"></div></section>
+<label>Vehicles and drivers</label><div class="mut">Each plate is tied to one driver. Picking the plate on the Enter tab fills the driver automatically.</div><div class="mut" id="vnote" style="margin-top:6px"></div><div id="vrows"></div><button type="button" class="btn" id="vadd" style="background:var(--mut);margin-top:10px">+ Add vehicle</button><button class="btn" id="sset" disabled>Update/Save Rates &amp; Data</button></div><div class="card" id="rstaff"><div class="rh">Staff salaries</div><div class="mut">Private staff and their monthly salary. These are used to pay them on the Salary tab, PRIVATE STAFF page.</div><div class="mut" id="enote" style="margin-top:6px"></div><div id="erows"></div><button type="button" class="btn" id="eadd" style="background:var(--mut);margin-top:10px">+ Add Staff</button><button class="btn" id="eset" disabled>Save/Update Salary</button></div><div class="card" id="lockc"></div></section>
 
 <section id="fen" class="hide">
 <div class="acts"><button type="button" class="btn alt sm" id="fnBack">← ALL FUEL LOGS</button></div>
@@ -749,7 +749,59 @@ function rOK(){var f=["rate","dday","dbal"].every(function(i){var v=$(i).value.t
  return ok>0&&!bad}
 function chkR(){var vn=$("vnote");if(vn){if(paySaved)vn.textContent="";else{var rw=document.querySelectorAll("#vrows .vrow"),fl=0;rw.forEach(function(x){if(x.querySelector(".vp").value.trim()&&x.querySelector(".vd").value.trim())fl++});vn.textContent="First setup: fill in every slot (plate and driver, each plate different). "+fl+" of "+rw.length+" filled."}}$("sset").disabled=!(isAdmin&&rOK()&&rsnap()!==csnap())}
 ["rate","dday","dbal"].forEach(function(i){$(i).addEventListener("input",chkR)});$("vrows").addEventListener("input",function(ev){var t=ev.target;if(t.classList.contains("vp")){var a=t.selectionStart,b=t.selectionEnd;t.value=t.value.toUpperCase();try{t.setSelectionRange(a,b)}catch(x){}}},true);$("vrows").addEventListener("input",chkR);
-function showCfg(){var s=paySaved;$("rate").value=s?cfg.rate:"";$("dday").value=s?cfg.dday:"";$("dbal").value=s?cfg.dbal:"";buildRows()}
+
+var staff=[],stBound=false,stLoaded=false;try{staff=JSON.parse(localStorage.getItem("staff_v1")||"[]")}catch(x){}
+function erow(nm,sl){var r=document.createElement("div");r.className="vrow erow";r.innerHTML='<input class="en" placeholder="Staff name"><input class="es" type="number" inputmode="decimal" placeholder="Salary"><button type="button" class="x ex">\u2715</button>';r.querySelector(".en").value=nm||"";r.querySelector(".es").value=(sl===0||sl)?sl:"";return r}
+function stRows(){var o=[];document.querySelectorAll("#erows .erow").forEach(function(r){o.push({n:r.querySelector(".en").value.trim(),s:r.querySelector(".es").value.trim()})});return o}
+function stBuild(){var c=$("erows");if(!c)return;c.innerHTML="";staff.forEach(function(e){c.appendChild(erow(e.n,e.s))});if(!staff.length)c.appendChild(erow("",""));stChk();pvRender()}
+function stSnap(a){return a.map(function(e){return e.n+"|"+Number(e.s)}).join("~")}
+function stChk(){var rows=stRows(),ok=[],bad=false,seen={},dup=false;rows.forEach(function(r){if(r.n&&r.s!==""&&isFinite(Number(r.s))&&Number(r.s)>0){var k=r.n.toLowerCase();if(seen[k])dup=true;seen[k]=1;ok.push(r)}else if(r.n||r.s!=="")bad=true});
+ var nt=$("enote");if(nt)nt.textContent=bad?"Each staff needs a name and a salary above zero.":dup?"Each staff name must be different.":"";
+ $("eset").disabled=!(isAdmin&&!bad&&!dup&&stSnap(ok)!==stSnap(staff))}
+function stBind(){if(stBound||!db)return;stBound=true;try{db.collection("pvpays").onSnapshot(function(sn){pvp=sn.docs.map(function(d){return Object.assign({id:d.id},d.data())});pvRender()},function(){})}catch(x){}try{db.doc("config/staff").onSnapshot(function(sn){staff=sn.exists&&sn.data().list||[];stLoaded=true;stBuild();try{gateCheck()}catch(e){}},function(){stLoaded=true;try{gateCheck()}catch(e){}})}catch(x){}}
+["pvper","pvday","pvmon","pvyr"].forEach(function(i){$(i).addEventListener("change",pvRender);$(i).addEventListener("input",pvRender)});
+$("pvb").addEventListener("click",function(ev){var b=ev.target.closest("button[data-i]");if(!b)return;var w=pvKeys[b.dataset.i];if(w)pvPay(w)});
+$("pvh").addEventListener("click",async function(ev){var b=ev.target.closest("button[data-p]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
+ var id=b.dataset.p,x=pvp.find(function(y){return String(y.id)===id});if(x&&isLocked(x.date)){toast("That month is locked");return}
+ try{if(db)await db.collection("pvpays").doc(id).delete();else{pvp=pvp.filter(function(y){return String(y.id)!==id});pvSave();pvRender()}toast("Payment removed")}catch(e){toast("Could not remove")}});
+$("eadd").onclick=function(){$("erows").appendChild(erow("",""));var i=$("erows").querySelectorAll(".en");i[i.length-1].focus();stChk()};
+$("erows").addEventListener("input",stChk);
+$("erows").addEventListener("click",function(ev){var b=ev.target.closest(".ex");if(!b)return;var r=b.parentNode,nm=r.querySelector(".en").value.trim(),sl=r.querySelector(".es").value.trim();
+ if(!nm&&!sl){r.remove();if(!$("erows").children.length)$("erows").appendChild(erow("",""));stChk();return}
+ $("mbody").innerHTML='<b style="font-size:18px">Delete staff?</b><div class="kv"><span>Name</span><span>'+esc(nm||"(none)")+'</span></div><div class="kv"><span>Salary</span><span>'+esc(sl||"(none)")+'</span></div><div class="mut" style="margin-top:8px">Tap Save/Update Salary afterwards to apply it.</div><div class="b2"><button class="dg" id="eY">Delete</button><button id="eN">Cancel</button></div>';
+ $("modal").classList.remove("hide");$("eN").onclick=closeM;$("eY").onclick=function(){r.remove();if(!$("erows").children.length)$("erows").appendChild(erow("",""));closeM();stChk()}});
+$("eset").onclick=async function(){var wasNeed=needRates();var l=stRows().filter(function(r){return r.n&&r.s!==""}).map(function(r){return{n:r.n,s:Number(r.s)}});
+ try{if(db)await db.doc("config/staff").set({list:l});staff=l;try{localStorage.setItem("staff_v1",JSON.stringify(l))}catch(x){}stBuild();if(wasNeed&&!needRates()){toast("All set. You can now add data.");try{document.querySelector('.main [data-g="pay"]').click()}catch(e){}}else if(wasNeed&&staff.length){toast("Staff saved. Finish the other rates.");goRates(!paySaved?"set":"frt")}else toast("Staff salaries saved")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}};
+
+var pvp=[];try{pvp=JSON.parse(localStorage.getItem("pvp_v1")||"[]")}catch(x){}
+function pvSave(){try{localStorage.setItem("pvp_v1",JSON.stringify(pvp))}catch(x){}}
+var pvKeys=[];
+function pvP(){var k=$("pvper").value||"all",td=today();
+ if(k==="day"){var dd=$("pvday").value||td;return{k:"d",t:function(x){return x.date===dd}}}
+ if(k==="month"){var mm=$("pvmon").value||td.slice(0,7);return{k:"m",mm:mm,t:function(x){return x.month===mm}}}
+ if(k==="year"){var yy=String($("pvyr").value||td.slice(0,4));return{k:"y",t:function(x){return String(x.month||"").slice(0,4)===yy}}}
+ return{k:"all",t:function(){return true}}}
+function pvUn(nm,sal,m){var pd=0;pvp.forEach(function(x){if(x.who===nm&&x.month===m)pd+=+x.amount||0});return Math.round((sal-pd)*100)/100}
+function pvRender(){if(!$("pvper"))return;var td=today();if(!$("pvday").value)$("pvday").value=td;if(!$("pvmon").value)$("pvmon").value=td.slice(0,7);if(!$("pvyr").value)$("pvyr").value=td.slice(0,4);
+ var P=pvP(),tS=0,tP=0,tU=0;pvKeys=[];
+ $("pvdw").classList.toggle("hide",P.k!=="d");$("pvmw").classList.toggle("hide",P.k!=="m");$("pvyw").classList.toggle("hide",P.k!=="y");
+ var inP=pvp.filter(P.t);
+ var rows=staff.map(function(e){var pd=0;inP.forEach(function(x){if(x.who===e.n)pd+=+x.amount||0});tS+=e.s;tP+=pd;
+  var u=P.k==="m"?Math.round((e.s-pd)*100)/100:e.s;tU+=u;var i=pvKeys.push({k:e.n,s:e.s})-1;
+  return'<tr><td>'+esc(e.n)+'</td><td>'+fmt(e.s)+'</td><td>'+fmt(pd)+'</td><td class="'+(u>0?"neg":"")+'">'+fmt(u)+'<br><button class="mp" data-i="'+i+'">Pay</button></td></tr>'}).join("");
+ $("pvtp").textContent=fmt(tP);$("pvtu").textContent=fmt(Math.round(tU*100)/100);$("pvb").innerHTML=rows?rows+'<tr><td><b>Total</b></td><td><b>'+fmt(tS)+'</b></td><td><b>'+fmt(tP)+'</b></td><td class="neg"><b>'+fmt(Math.round(tU*100)/100)+'</b></td></tr>':'<tr><td colspan="4" class="mut">No staff yet. Add them in Rates \u2192 Staff salaries.</td></tr>';
+ var h=inP.slice().sort(function(a,b){return(b.ts||0)-(a.ts||0)});
+ $("pvh").innerHTML=h.length?h.map(function(x){return'<tr><td>'+esc(x.date||"")+'</td><td>'+esc(x.who)+'<div class="mut">'+esc(x.month||"")+'</div></td><td>'+fmt(x.amount)+'</td><td><button class="undo" data-p="'+esc(String(x.id))+'">Remove</button></td></tr>'}).join(""):'<tr><td colspan="4" class="mut">No payments found.</td></tr>'}
+function pvPay(w){if(needRates()){gatePop();return}var P=pvP(),m0=P.k==="m"?P.mm:today().slice(0,7);
+ $("mbody").innerHTML='<b style="font-size:18px">Pay salary</b><div class="mut">'+esc(w.k)+'</div><label>Salary month</label><input type="month" id="pvsm" value="'+m0+'"><label>Amount paid</label><input type="number" inputmode="decimal" id="pvamt"><div class="mut" id="pvun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="pvdate" value="'+today()+'"><div class="b2"><button class="pr" id="pvOK">Confirm paid</button><button id="pvNo">Cancel</button></div>';
+ $("modal").classList.remove("hide");$("pvNo").onclick=closeM;
+ var up=function(){var u=pvUn(w.k,w.s,$("pvsm").value);$("pvamt").value=u>0?u:"";$("pvun").textContent="Unpaid for this month: "+fmt(u)+". Lower the amount for a part payment."};up();$("pvsm").onchange=up;
+ $("pvOK").onclick=async function(){var a=n($("pvamt").value),m=$("pvsm").value;if(!m){alert("Pick the salary month");return}if(a<=0){alert("Enter an amount");return}var pd=$("pvdate").value||today(),u=pvUn(w.k,w.s,m);
+  if(isLocked(pd)){alert("That month is locked. Unlock it in Update Rates first.");return}
+  if(a>u+0.001&&$("pvOK").dataset.c!=="1"){$("pvOK").dataset.c="1";$("pvOK").textContent="Amount is more than unpaid. Tap again";return}
+  var q={who:w.k,month:m,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pvOK").disabled=true;
+  try{if(db)await db.collection("pvpays").add(q);else{q.id="v"+q.ts;pvp.push(q);pvSave();pvRender()}closeM();toast("Salary marked paid")}catch(x){$("pvOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
+function showCfg(){stBind();stBuild();var s=paySaved;$("rate").value=s?cfg.rate:"";$("dday").value=s?cfg.dday:"";$("dbal").value=s?cfg.dbal:"";buildRows()}
 var fuels=[];
 function fdset(){if(fedit)return;if(!$("fveh").value){$("fdrv").value="";$("fdh").textContent="Pick a plate first. The driver fills in from the plate.";return}var d=(cfg.vd||{})[$("fveh").value]||"";$("fdrv").value=d;$("fdh").textContent=d?"Driver comes from the vehicle. Change it in Update Rates → Pay rates.":"No driver set for this plate. Set it in Update Rates → Pay rates."}
 function fdrop(sel,inp,k){var o={},cv=inp.value.trim(),shown=!inp.classList.contains("hide");fuels.forEach(function(f){if(f[k])o[f[k]]=1});var nm=Object.keys(o).sort();
@@ -935,25 +987,27 @@ $("bcsv").onclick=function(){PM=alloc();var y=String($("byr").value||today().sli
  L.push("",csvl(["ADVANCES "+y]),csvl(["Date","Driver","Amount"]));advs.filter(iy).sort(bd).forEach(function(a){L.push(csvl([a.date,a.driver,a.amount]))});
  L.push("",csvl(["SALARY PAID "+y]),csvl(["Date","Type","Who","Amount"]));pays.filter(iy).sort(bd).forEach(function(a){L.push(csvl([a.date,a.kind,a.who,a.amount]))});
  dlf("fuel-trips-"+y+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
-$("bjson").onclick=function(){dlf("fuel-trips-backup-"+today()+".json",new Blob([JSON.stringify({app:"FUEL & TRIPS",exported:new Date().toISOString(),rates:cfg,fuelRates:fcfg,entries:entries,fuel:fuels,advances:advs,payments:pays,deleted:{entries:trashE,fuel:trashF,advances:trashA,payments:trashP}},null,1)],{type:"application/json"}))};
+$("bjson").onclick=function(){dlf("fuel-trips-backup-"+today()+".json",new Blob([JSON.stringify({app:"FUEL & TRIPS",exported:new Date().toISOString(),rates:cfg,fuelRates:fcfg,entries:entries,fuel:fuels,advances:advs,payments:pays,staff:staff,privateStaffPayments:pvp,deleted:{entries:trashE,fuel:trashF,advances:trashA,payments:trashP}},null,1)],{type:"application/json"}))};
 function rOk(d){return typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d)}
 function rNum(v){return typeof v==="number"&&isFinite(v)}
 function rObj(o){return o&&typeof o==="object"&&!Array.isArray(o)}
 function rClean(o){var c={};Object.keys(o).forEach(function(k){if(k!=="id"&&o[k]!==undefined)c[k]=o[k]});return c}
 function rParse(txt){var j=JSON.parse(txt);if(!rObj(j))throw new Error("This is not a backup file");
- var A=function(x){return Array.isArray(x)?x:[]},sk=0,R={exported:j.exported||"",entries:[],fuel:[],advances:[],payments:[],rates:null,fuelRates:null,skipped:0};
+ var A=function(x){return Array.isArray(x)?x:[]},sk=0,R={exported:j.exported||"",entries:[],fuel:[],advances:[],payments:[],pvp:[],emps:null,rates:null,fuelRates:null,skipped:0};
  A(j.entries).forEach(function(e){if(rObj(e)&&rOk(e.date)&&typeof e.vehicle==="string"&&e.vehicle&&(e.tonnes==null||rNum(e.tonnes)))R.entries.push(e);else sk++});
  A(j.fuel).forEach(function(f){if(rObj(f)&&rOk(f.date)&&typeof f.vehicle==="string"&&f.vehicle&&rNum(f.litres)&&rNum(f.sell)&&rNum(f.cost))R.fuel.push(f);else sk++});
  A(j.advances).forEach(function(a){if(rObj(a)&&rOk(a.date)&&typeof a.driver==="string"&&a.driver&&rNum(a.amount))R.advances.push(a);else sk++});
  A(j.payments).forEach(function(p){if(rObj(p)&&(p.kind==="loader"||p.kind==="driver")&&typeof p.who==="string"&&rNum(p.amount))R.payments.push(p);else sk++});
  var r=j.rates;if(rObj(r)&&rNum(r.rate)&&rNum(r.dday)&&rNum(r.dbal)&&Array.isArray(r.veh)&&r.veh.length&&r.veh.every(function(v){return typeof v==="string"&&v}))R.rates={rate:r.rate,dday:r.dday,dbal:r.dbal,veh:r.veh,vd:rObj(r.vd)?r.vd:{}};
+ A(j.privateStaffPayments||j.privatePayments).forEach(function(p){if(rObj(p)&&typeof p.who==="string"&&p.who&&rNum(p.amount)&&typeof p.month==="string")R.pvp.push(p);else sk++});
+ if(Array.isArray(j.staff||j.employees)){var jst=j.staff||j.employees,em=jst.filter(function(e){return rObj(e)&&typeof e.n==="string"&&e.n&&rNum(e.s)});sk+=jst.length-em.length;if(em.length)R.emps=em}
  var fr=j.fuelRates;if(rObj(fr)&&rNum(fr.sell)&&rNum(fr.cost))R.fuelRates={sell:fr.sell,cost:fr.cost};
- if(!(R.entries.length||R.fuel.length||R.advances.length||R.payments.length||R.rates||R.fuelRates))throw new Error("No payment or fuel data found in this file");
+ if(!(R.entries.length||R.fuel.length||R.advances.length||R.payments.length||R.pvp.length||R.emps||R.rates||R.fuelRates))throw new Error("No payment or fuel data found in this file");
  R.skipped=sk;return R}
 function rRes(h,b,bad){closeM();toast(h+": "+b,!!bad)}
 function rMsg(h,b){$("mbody").innerHTML='<b style="font-size:18px">'+h+'</b><div class="mut" style="margin-top:8px;line-height:1.5">'+b+'</div>';$("modal").classList.remove("hide")}
 function rAsk(R){var rate=(R.rates||R.fuelRates)?(isAdmin?"Rates and vehicles in the file will also be restored (they replace the current ones).":"Rates are in the file but only editors and the owner can restore them, so they will be skipped."):"No rates in this file.";
- rMsg("Restore from backup",(R.exported?"Backup made: "+esc(String(R.exported).slice(0,10))+"<br>":"")+"Trip entries: <b>"+R.entries.length+"</b><br>Fuel entries: <b>"+R.fuel.length+"</b><br>Advances: <b>"+R.advances.length+"</b><br>Salary paid: <b>"+R.payments.length+"</b><br>"+rate+(R.skipped?'<br><span class="neg">'+R.skipped+' invalid record'+(R.skipped>1?"s":"")+' will be skipped.</span>':"")
+ rMsg("Restore from backup",(R.exported?"Backup made: "+esc(String(R.exported).slice(0,10))+"<br>":"")+"Trip entries: <b>"+R.entries.length+"</b><br>Fuel entries: <b>"+R.fuel.length+"</b><br>Advances: <b>"+R.advances.length+"</b><br>Salary paid: <b>"+R.payments.length+"</b><br>Private staff payments: <b>"+R.pvp.length+"</b><br>Staff: <b>"+(R.emps?R.emps.length:0)+"</b><br>"+rate+(R.skipped?'<br><span class="neg">'+R.skipped+' invalid record'+(R.skipped>1?"s":"")+' will be skipped.</span>':"")
   +'<br><br><b>Restore</b> adds everything in the file and overwrites entries that have the same ID. Nothing else is deleted.<br><b>Replace all</b> makes the app match the file exactly and deletes anything not in it.');
  var b=document.createElement("div");b.style.cssText="display:flex;flex-direction:column;gap:8px;margin-top:14px";
  b.innerHTML='<button class="btn" id="rM" style="margin:0">Restore (keep existing data)</button><button class="btn alt" id="rR" style="margin:0">Replace all data</button><button class="btn alt" id="rC" style="margin:0;background:var(--card);color:var(--tx);border:1px solid var(--ln)">Cancel</button>';
@@ -963,22 +1017,23 @@ async function rRun(R,replace){
  if(!canWrite){rRes("Cannot restore","You have view-only access. Ask the owner to make you a Contributor.",1);return}
  var lkm=Object.keys(locks);if(lkm.length){var hit=function(a){return a.some(function(x){return isLocked(x.date)})};
   if(hit(R.entries)||hit(R.fuel)||hit(R.advances)||hit(R.payments)||(replace&&(hit(entries)||hit(fuels)||hit(advs)||hit(pays)))){rRes("Cannot restore","This restore would change a locked month ("+lkm.sort().join(", ")+"). Unlock the month first, then restore.",1);return}}
- var cols=[["entries",R.entries],["fuel",R.fuel],["advances",R.advances],["payments",R.payments]],fails=0,done=0,total=0,ids={};
+ var cols=[["entries",R.entries],["fuel",R.fuel],["advances",R.advances],["payments",R.payments],["pvpays",R.pvp]],fails=0,done=0,total=0,ids={};
  cols.forEach(function(c){total+=c[1].length;ids[c[0]]={}});
- var rt=isAdmin&&(R.rates||R.fuelRates);if(R.rates&&isAdmin)total++;if(R.fuelRates&&isAdmin)total++;
+ var rt=isAdmin&&(R.rates||R.fuelRates);if(R.rates&&isAdmin)total++;if(R.fuelRates&&isAdmin)total++;if(R.emps&&isAdmin)total++;
  var prog=function(){rMsg("Restoring…",done+" of "+total+" done. Please keep this screen open.")};prog();
  try{
-   var old={entries:entries.map(function(x){return x.id}),fuel:fuels.map(function(x){return x.id}),advances:advs.map(function(x){return x.id}),payments:pays.map(function(x){return x.id})};
+   var old={entries:entries.map(function(x){return x.id}),fuel:fuels.map(function(x){return x.id}),advances:advs.map(function(x){return x.id}),payments:pays.map(function(x){return x.id}),pvpays:pvp.map(function(x){return x.id})};
   if(db){var jobs=[];
    cols.forEach(function(c){c[1].forEach(function(o){var id=o.id!=null&&o.id!==""?String(o.id).replace(/[\/\s]/g,"_"):"";if(id)ids[c[0]][id]=1;jobs.push(function(){return id?db.doc(c[0]+"/"+id).set(rClean(o)):db.collection(c[0]).add(rClean(o))})})});
    if(R.rates&&isAdmin)jobs.push(function(){return db.doc("config/main").set(R.rates)});
    if(R.fuelRates&&isAdmin)jobs.push(function(){return db.doc("config/fuel").set(R.fuelRates)});
+   if(R.emps&&isAdmin)jobs.push(function(){return db.doc("config/staff").set({list:R.emps})});
    var i=0;await Promise.all([0,1,2,3,4,5].map(async function(){while(i<jobs.length){var j=jobs[i++];try{await j()}catch(x){fails++}done++;if(done%10===0)prog()}}));
    if(replace&&!fails){var dj=[];Object.keys(old).forEach(function(k){old[k].forEach(function(id){if(id&&!ids[k][id])dj.push(k+"/"+id)})});
     total+=dj.length;i=0;await Promise.all([0,1,2,3,4,5].map(async function(){while(i<dj.length){var p=dj[i++];try{await db.doc(p).delete()}catch(x){fails++}done++;if(done%10===0)prog()}}))}
   }else{
    var up=function(cur,rec,pre){var m={},o=replace?[]:cur.slice();o.forEach(function(x){m[x.id]=1});var n=0;rec.forEach(function(r){var c=Object.assign({},r);c.id=c.id!=null&&c.id!==""?String(c.id):pre+Date.now()+"_"+(n++);var k=o.findIndex(function(x){return x.id===c.id});if(k>=0)o[k]=c;else o.push(c)});return o};
-   entries=up(entries,R.entries,"l");fuels=up(fuels,R.fuel,"f");advs=up(advs,R.advances,"a");pays=up(pays,R.payments,"p");done=total;
+   entries=up(entries,R.entries,"l");fuels=up(fuels,R.fuel,"f");advs=up(advs,R.advances,"a");pays=up(pays,R.payments,"p");pvp=up(pvp,R.pvp,"v");pvSave();if(R.emps&&isAdmin){staff=R.emps;try{localStorage.setItem("staff_v1",JSON.stringify(staff))}catch(x){}stBuild()}pvRender();done=total;
    if(R.rates&&isAdmin){cfg=Object.assign({},cfg,R.rates);paySaved=true}if(R.fuelRates&&isAdmin){fcfg=R.fuelRates}
    fillVeh();showCfg();$("frs").value=fcfg.sell||"";$("frc").value=fcfg.cost||"";fautofill();frchk();chkR();setDdp();render();renderFuel();prev()}
  }catch(x){fails++}
@@ -1000,21 +1055,22 @@ $("rfile").onchange=async function(){var f=this.files&&this.files[0];if(!f)retur
  try{var txt=await new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(fr.result)};fr.onerror=function(){rej(new Error("Could not read the file"))};fr.readAsText(f)});rAsk(rParse(txt))}
  catch(x){rErr(x&&x.message)}finally{try{inp.value=""}catch(x){}}};
 var paySaved=false,cfgLoaded=false,fcfgLoaded=false,gateDone=false,GATED={enter:1,advt:1,fen:1};
-function needRates(){var loaded=db?(cfgLoaded&&fcfgLoaded):true;return loaded&&!(paySaved&&fcfg.sell>0&&fcfg.cost>0)}
-function goRates(t){document.querySelector('.main [data-g="rates"]').click();var el=$(t==="frt"?"rfuel":"rpay");if(!el)return;
+function needRates(){if(db)try{stBind()}catch(e){}var loaded=db?(cfgLoaded&&fcfgLoaded&&stLoaded):true;return loaded&&!(paySaved&&fcfg.sell>0&&fcfg.cost>0&&staff.length>0)}
+function goRates(t){document.querySelector('.main [data-g="rates"]').click();var el=$(t==="frt"?"rfuel":t==="stf"?"rstaff":"rpay");if(!el)return;
  var slide=function(){try{var h=document.querySelector(".hd"),off=(h?h.offsetHeight:0)+10,y=el.getBoundingClientRect().top+(window.pageYOffset||document.documentElement.scrollTop||0)-off;window.scrollTo({top:Math.max(0,y),behavior:"smooth"})}catch(x){try{el.scrollIntoView()}catch(z){}}};
  setTimeout(slide,80);setTimeout(slide,650);
  setTimeout(function(){el.style.transition="box-shadow .3s";el.style.boxShadow="0 0 0 2px var(--ac)";setTimeout(function(){el.style.boxShadow=""},1800)},700)}
-function gatePop(){var pOk=paySaved,fOk=fcfg.sell>0&&fcfg.cost>0,st=function(ok){return ok?'<span style="color:var(--ok);font-weight:700">Saved ✓</span>':'<span class="neg">Not saved</span>'};
- if(isAdmin)goRates(fOk?"set":"frt");
- $("mbody").innerHTML='<b style="font-size:18px">Set your rates first</b><div class="mut" style="margin:6px 0 10px">Data can only be entered after every rate below has been saved.</div>'+
+function gatePop(){var pOk=paySaved,fOk=fcfg.sell>0&&fcfg.cost>0,sOk=staff.length>0,st=function(ok){return ok?'<span style="color:var(--ok);font-weight:700">Saved ✓</span>':'<span class="neg">Not saved</span>'};
+ if(isAdmin)goRates(!fOk?"frt":!pOk?"set":"stf");
+ $("mbody").innerHTML='<b style="font-size:18px">Set your rates first</b><div class="mut" style="margin:6px 0 10px">Data can only be entered after everything below has been saved.</div>'+
   kv("Payment rates",st(pOk))+'<div class="mut" style="margin:4px 0 12px">Loader rate, driver deposit, driver balance held, vehicles and drivers</div>'+
-  kv("Fuel rates",st(fOk))+'<div class="mut" style="margin:4px 0 0">Selling price and actual price per litre</div>'+
-  (isAdmin?"":'<div class="mut" style="margin-top:10px">Only editors and the owner can save rates. Ask them to do it first.</div>')+
+  kv("Fuel rates",st(fOk))+'<div class="mut" style="margin:4px 0 12px">Selling price and actual price per litre</div>'+kv("Staff salaries",st(sOk))+'<div class="mut" style="margin:4px 0 0">Add at least one staff name and salary</div>'+
+  (isAdmin?"":'<div class="mut" style="margin-top:10px">Only editors and the owner can save rates and staff. Ask them to do it first.</div>')+
   '<div class="b2"><button class="pr" id="gY">'+(isAdmin?"Go to Update Rates":"OK")+'</button></div>';
  $("modal").classList.remove("hide");$("gY").onclick=closeM}
 function gateCheck(){if(needRates()&&!gateDone){gateDone=true;gatePop()}}
 function afterSave(kind,was){var fOk=fcfg.sell>0&&fcfg.cost>0;
+ if(paySaved&&fOk&&staff.length<1){toast("Rates saved. Now add at least one staff.");goRates("stf");return}
  if(paySaved&&fOk){toast(was?(kind==="pay"?"Rates saved":"Fuel rates saved"):"All rates saved. You can now add data.");if(!was)document.querySelector('.main [data-g="pay"]').click();return}
  if(kind==="pay"){toast("Payment rates saved. Now set the fuel rates.");goRates("frt")}
  else{toast("Fuel rates saved. Now set the payment rates.");goRates("set")}}
@@ -1174,7 +1230,7 @@ var BK={l:"fleetLastBackup",i:"fleetBackupDays",z:"fleetBkSnooze"};
 function bkGet(k,d){try{var v=localStorage.getItem(k);return v==null?d:v}catch(x){return d}}
 function bkSet(k,v){try{localStorage.setItem(k,String(v))}catch(x){}}
 function bkSnooze(){bkSet(BK.z,Date.now()+864e5);bkCheck()}
-function bkCheck(){var last=+bkGet(BK.l,0),days=+bkGet(BK.i,7)||7,all=[].concat(entries,fuels,advs,pays),age=last?(Date.now()-last)/864e5:Infinity,
+function bkCheck(){var last=+bkGet(BK.l,0),days=+bkGet(BK.i,7)||7,all=[].concat(entries,fuels,advs,pays,pvp),age=last?(Date.now()-last)/864e5:Infinity,
  since=all.filter(function(x){return(x.ts||0)>last}).length,st=$("bkst"),bb=$("bkbanner"),due=all.length>0&&age>=days;
  if(st)st.innerHTML=last?'Last full backup on this device: <b>'+esc(new Date(last).toLocaleString())+'</b> ('+Math.floor(age)+' day(s) ago). New records since: <b>'+since+'</b>.':'<span class="neg">No full backup made from this device yet.</span>';
  if(bb)bb.innerHTML=(due&&isAdmin&&Date.now()>+bkGet(BK.z,0))?'<div class="note" style="border-color:var(--bad)"><b>Backup due.</b> '+(last?'Last backup was '+Math.floor(age)+' days ago':'No backup made yet')+' · '+since+' new record(s). <button class="x" onclick="$(\'bjson\').click()">Back up now</button><button class="x" onclick="bkSnooze()" style="color:var(--mut)">Later</button></div>':""}
@@ -1234,7 +1290,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    [].forEach.call(document.querySelectorAll(".qm button"),function(b){b.onclick=function(){closeM();go(L[b.dataset.i][0])}})}
   h.onclick=openQ;h.onkeydown=function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();openQ()}}})();
  var MP={hist:"h",enter:"t",advt:"p",log:"t",fen:"f",flg:"f",unp:"p",pvt:"p",sum:"r",fsm:"r",ov:"r",pguide:"r",dhs:"r",nts:"r",sales:"s",set:"m"};
-  var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","Private Workers","pvt"]],r:[["ov:ov","DOWNLOAD REPORT","ov"],["ov:pguide","DOWNLOAD GUIDE","pguide"],["ov:nts","ALL NOTES","nts"],["ov:sum","TRIPS","sum"],["ov:fsm","FUEL","fsm"],["ov:dhs","DELETE HISTORY","dhs"]],m:[["rates:set","Update Rates","set"]]};
+  var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","PRIVATE STAFF","pvt"]],r:[["ov:ov","DOWNLOAD REPORT","ov"],["ov:pguide","DOWNLOAD GUIDE","pguide"],["ov:nts","ALL NOTES","nts"],["ov:sum","TRIPS","sum"],["ov:fsm","FUEL","fsm"],["ov:dhs","DELETE HISTORY","dhs"]],m:[["rates:set","Update Rates","set"]]};
   var lastK=null;
   function sub(k,cur){var bar=$("sn"),L=CATS[k]||[];
    if(L.length<2){bar.classList.add("hide");bar.innerHTML="";lastK=null;return}
@@ -1548,18 +1604,21 @@ var F={
  unp:{dirty:function(){return $("umon").value!==""},
   reset:function(){$("umon").value="";fire($("umon"))},
   btn:$("cfunp"),show:function(){return $("umon").value!==""}},
+ pvt:{dirty:function(){return $("pvper").value!=="all"},
+  reset:function(){clr(["pvday","pvmon","pvyr"]);$("pvper").value="all";fire($("pvper"))},
+  btn:$("cfpvt"),show:function(){return $("pvper").value!=="all"}},
  hist:{dirty:function(){var b=$("hch").querySelector("button.on");return $("hq").value!==""||$("hper").value!=="all"||$("hveh").value!==""||!!(b&&b.dataset.v!=="all")},
   reset:function(){$("hclr").click()}}
 };
-function sync(){["sum","fsm","dsc","ovf","allc","unp"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
+function sync(){["sum","fsm","dsc","ovf","allc","unp","pvt"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
 var later=0;function sched(){clearTimeout(later);later=setTimeout(sync,0)}
 /* Clear filters buttons */
 document.addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("[data-cf]");if(!b)return;var f=F[b.dataset.cf];if(!f)return;f.reset();sync()});
 /* keep the buttons in step with the filters */
-["pper","fper","dsd","dsp","oper","ocat","odf","umon"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
+["pper","fper","dsd","dsp","oper","ocat","odf","umon","pvper"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
 try{new MutationObserver(sched).observe($("dsd"),{childList:true})}catch(x){}
 /* leaving a tab (any way: sub-tab, top tab, bottom bar, History, Settings) puts its filters back to default */
-var AREA={sum:["sum"],fsm:["fsm"],ov:["dsc","ovf","allc"],unp:["unp"],hist:["hist"]},seen={};
+var AREA={sum:["sum"],fsm:["fsm"],ov:["dsc","ovf","allc"],unp:["unp"],pvt:["pvt"],hist:["hist"]},seen={};
 Object.keys(AREA).forEach(function(id){var sec=$(id);if(!sec)return;seen[id]=!sec.classList.contains("hide");
  new MutationObserver(function(){var vis=!sec.classList.contains("hide");
   if(seen[id]&&!vis||(id==="unp"&&!seen[id]&&vis)){AREA[id].forEach(function(k){try{if(F[k].dirty())F[k].reset()}catch(x){}});sync()}
