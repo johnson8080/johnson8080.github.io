@@ -362,7 +362,21 @@ button{transition:background .15s,color .15s,transform .12s}
 #hch .bdg{min-width:12px;padding:0 3px;margin-left:1px;font-size:9px;line-height:13px}
 /* driver statement preview: room for the summary rows */
 #dsc .cap5{max-height:340px}
-#dsb tr.sh td{background:var(--card);color:var(--mut);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding-top:12px}
+#dsc .dsg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#dsc .dsk{border:1px solid var(--ln);padding:8px 10px;min-width:0}
+#dsc .dsk span{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mut)}
+#dsc .dsk b{display:block;font-size:17px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#dsc .dsk small{display:block;font-size:11px;color:var(--mut);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#dsc .dsk.bal{grid-column:1/-1;border-color:var(--ac);border-width:2px}#dsc .dsk.bal b{font-size:22px}
+#dsc .dsw{margin:10px 0 4px;padding:8px 10px;background:var(--fld,transparent);border:1px dashed var(--ln);font-size:12.5px;line-height:1.5}
+#dsc .dsw div{display:flex;justify-content:space-between;gap:8px}#dsc .dsw .t{border-top:1px solid var(--ln);margin-top:3px;padding-top:3px;font-weight:800}
+#dsc .dsh{margin:12px 0 2px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mut)}
+#dsc .dse{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--ln)}#dsc .dse:last-child{border:0}
+#dsc .dse .c{width:24px;height:24px;display:grid;place-items:center;font-size:12px;font-weight:800;color:#fff;grid-row:span 2}
+#dsc .dse .c.t{background:#2563eb}#dsc .dse .c.f{background:#d97706}#dsc .dse .c.a{background:#7c3aed}#dsc .dse .c.s{background:#0f9d6b}
+#dsc .dse .n{font-weight:700;font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#dsc .dse .v{text-align:right;font-weight:800;font-size:13.5px;white-space:nowrap}.dse .v.pl{color:var(--ok)}.dse .v.mi{color:var(--bad)}
+#dsc .dse .m,#dsc .dse .r{font-size:11.5px;color:var(--mut);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#dsc .dse .r{text-align:right}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -495,7 +509,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <section id="ov" class="hide"><div class="card noprt" id="dsc"><b class="ct">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
 <label>Driver</label><select id="dsd"></select>
 <div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfdsc"><button type="button" class="ed" data-cf="dsc">Clear filters</button></div>
-<div class="wrap cap5 noprt" style="margin-top:12px"><table class="ov"><thead><tr><th class="l">Date</th><th>Trips</th><th>Fuel</th><th>Advance</th><th>Salary paid</th><th>Balance</th></tr></thead><tbody id="dsb"><tr><td colspan="6" class="mut">Select a driver to preview the statement.</td></tr></tbody></table></div>
+<div id="dsv" class="noprt" style="margin-top:12px"><div class="mut">Select a driver to preview the statement.</div></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm" id="dscsv" disabled>Download CSV</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button><button class="btn sm" id="dssh" disabled>Share PDF</button></div></div><div class="card ovx" id="ovf"><b class="ct noprt">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
 <div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
@@ -1461,22 +1475,31 @@ document.addEventListener("touchcancel",function(){ok=false},{passive:true});
 <script>(function(){
 var $=function(i){return document.getElementById(i)};
 function hasD(nm){if(!nm)return false;var P=per();return entries.some(function(e){return e.driver===nm&&P.t(e.date)})||fuels.some(function(f){return(f.driver||(cfg.vd||{})[f.vehicle])===nm&&P.t(f.date)})||advs.some(function(x){return x.driver===nm&&P.t(x.date)})||pays.some(function(x){return x.who===nm&&P.t(x.date)})}
-function dsPrev(){var b=$("dsb");if(!b)return;var on=false;try{on=hasD($("dsd").value)}catch(e){}
- if(!$("dsd").value){b.innerHTML='<tr><td colspan="6" class="mut">Select a driver to preview the statement.</td></tr>';return}
- if(!on){b.innerHTML='<tr><td colspan="6" class="mut">No entries for this driver in this period.</td></tr>';return}
- var d=make(true);if(!d){return}var R=[];
- d.tr.forEach(function(e){R.push({d:e.date,ts:e.ts||0,k:0,trip:pay(e),tv:e.vehicle,tt:(+e.tonnes||0).toFixed(2)+" t",adv:(+e.advance||0)>0?+e.advance:null,av:(+e.advance||0)>0?"on trip":"",net:dheld(e)-(+e.advance||0)})});
- d.fu.forEach(function(f){R.push({d:f.date,ts:f.ts||0,k:1,fuel:f.litres*f.sell,fv:f.vehicle,fl:f.litres+" L",net:0})});
- d.av.forEach(function(x){R.push({d:x.date,ts:x.ts||0,k:2,adv:+x.amount||0,av:"given",net:-(+x.amount||0)})});
- d.pd.forEach(function(x){if(x.kind!=="loader")R.push({d:x.date,ts:x.ts||0,k:3,sal:+x.amount||0,net:-(+x.amount||0)})});
+function dsPrev(){var b=$("dsv");if(!b)return;var on=false;try{on=hasD($("dsd").value)}catch(e){}
+ var E=function(msg){var z=fmt(0),K=function(l,v,sm,c){return'<div class="dsk'+(c?" "+c:"")+'"><span>'+l+'</span><b>'+v+'</b>'+(sm?'<small>'+sm+'</small>':"")+'</div>'};
+  b.innerHTML='<div class="dsg">'+K("Trips",z,"0 trips \u00b7 0.00 t")+K("Fuel taken",z,"0 L \u00b7 not deducted")+K("Advances",z,"trip "+z+" \u00b7 given "+z)+K("Salary paid",z,"")+K("Unpaid balance",z,per().lab,"bal")+'</div><div class="dsw"><div><span>Driver balance held</span><span>'+z+'</span></div><div><span>\u2212 Advances</span><span>'+z+'</span></div><div><span>\u2212 Salary paid</span><span>'+z+'</span></div><div class="t"><span>= Unpaid balance</span><span>'+z+'</span></div></div><div class="dsh">Entries</div><div class="mut" style="padding:10px 0">'+msg+'</div>'};
+ if(!$("dsd").value){E("Select a driver to preview the statement.");return}
+ if(!on){E("No entries for this driver in this period.");return}
+ var d=make(true);if(!d){return}
+ var rd=function(v){return Math.round((+v||0)*100)/100};
+ var R=[];
+ d.tr.forEach(function(e){var h=dheld(e),ad=+e.advance||0;R.push({d:e.date,ts:e.ts||0,k:"t",n:"Trip \u00b7 "+(e.vehicle||""),m:(+e.tonnes||0).toFixed(2)+" t \u00b7 trip expense "+fmt(pay(e)),v:h,net:h});
+  if(ad>0)R.push({d:e.date,ts:(e.ts||0)+.5,k:"a",n:"Advance on trip \u00b7 "+(e.vehicle||""),m:"taken from held balance",v:-ad,net:-ad})});
+ d.fu.forEach(function(f){R.push({d:f.date,ts:f.ts||0,k:"f",n:"Fuel \u00b7 "+(f.vehicle||""),m:f.litres+" L \u00d7 "+fmt(f.sell)+" \u00b7 not deducted",v:f.litres*f.sell,net:0,plain:1})});
+ d.av.forEach(function(x){R.push({d:x.date,ts:x.ts||0,k:"a",n:"Advance given",m:"deducted from balance",v:-(+x.amount||0),net:-(+x.amount||0)})});
+ d.pd.forEach(function(x){if(x.kind!=="loader")R.push({d:x.date,ts:x.ts||0,k:"s",n:"Salary paid",m:"driver balance paid",v:-(+x.amount||0),net:-(+x.amount||0)})});
  R.sort(function(a,c){return a.d<c.d?-1:a.d>c.d?1:a.ts-c.ts});
- var sub=function(t){return t?'<br><small class="mut">'+esc(t)+'</small>':""},cell=function(v,t){return v==null?"":fmt(v)+sub(t)};
- var run=0,tT=0,tF=0,tA=0,tS=0;
- var rows=R.map(function(r){run+=r.net;if(r.trip!=null)tT+=r.trip;if(r.fuel!=null)tF+=r.fuel;if(r.adv!=null)tA+=r.adv;if(r.sal!=null)tS+=r.sal;
-  return'<tr><td class="l">'+esc(r.d)+'</td><td>'+cell(r.trip,r.trip!=null?r.tv+" \u00b7 "+r.tt:"")+'</td><td>'+cell(r.fuel,r.fuel!=null?r.fv+" \u00b7 "+r.fl:"")+'</td><td>'+cell(r.adv,r.av)+'</td><td>'+cell(r.sal)+'</td><td>'+mn(run)+'</td></tr>'}).join("");
- var SR=function(lab,val){return'<tr><td class="l" colspan="5">'+lab+'</td><td>'+val+'</td></tr>'};
- var sm=SR("Driver balance held",fmt(d.held))+(d.lo>0||d.lp>0?SR("Loader paid",fmt(d.lp))+SR("Loader unpaid",fmt(d.lo-d.lp)):"")+(per().lab!=="All dates"?SR("Driver balance now (all dates)",mn(d.now)):"");
- b.innerHTML=rows+sm+'<tr><td class="l"><b>Total</b></td><td><b>'+fmt(tT)+'</b></td><td><b>'+fmt(tF)+'</b></td><td><b>'+fmt(tA)+'</b></td><td><b>'+fmt(tS)+'</b></td><td><b>'+mn(d.bal)+'</b></td></tr>'}
+ var run=0,L={t:"T",f:"F",a:"A",s:"S"};
+ var list=R.map(function(r){run=rd(run+r.net);var cls=r.plain?"":r.v>0?" pl":" mi",vt=(r.plain?"":r.v>0?"+":"\u2212")+fmt(Math.abs(r.v));
+  return'<div class="dse"><span class="c '+r.k+'">'+L[r.k]+'</span><span class="n">'+esc(r.n)+'</span><span class="v'+cls+'">'+vt+'</span><span class="m">'+esc(r.d.slice(5))+" \u00b7 "+esc(r.m)+'</span><span class="r">Bal '+mn(run)+'</span></div>'}).join("");
+ var adT=d.advE+d.advS,ok=rd(run)===rd(d.bal);
+ var K=function(l,v,sm,c){return'<div class="dsk'+(c?" "+c:"")+'"><span>'+l+'</span><b>'+v+'</b>'+(sm?'<small>'+sm+'</small>':"")+'</div>'};
+ var h='<div class="dsg">'+K("Trips",fmt(d.trTot),d.tr.length+" trips \u00b7 "+d.tn.toFixed(2)+" t")+K("Fuel taken",fmt(d.fuAmt),(+d.fuL.toFixed(1))+" L \u00b7 not deducted")+K("Advances",fmt(adT),"trip "+fmt(d.advE)+" \u00b7 given "+fmt(d.advS))+K("Salary paid",fmt(d.paidD),"")+K("Unpaid balance",mn(d.bal),per().lab,"bal")+'</div>'
+ +'<div class="dsw"><div><span>Driver balance held</span><span>'+fmt(d.held)+'</span></div><div><span>\u2212 Advances</span><span>'+fmt(adT)+'</span></div><div><span>\u2212 Salary paid</span><span>'+fmt(d.paidD)+'</span></div><div class="t"><span>= Unpaid balance</span><span>'+mn(d.bal)+'</span></div>'
+ +(d.lo>0||d.lp>0?'<div><span>Loader paid / unpaid</span><span>'+fmt(d.lp)+' / '+fmt(d.lo-d.lp)+'</span></div>':"")
+ +(per().lab!=="All dates"?'<div><span>Balance now (all dates)</span><span>'+mn(d.now)+'</span></div>':"")+'</div>'
+ +'<div class="dsh">Entries</div>'+list;
+ b.innerHTML=h}
 function btns(){var on=false;try{on=hasD($("dsd").value)}catch(e){}$("dssh").disabled=!on;$("dsdl").disabled=!on;$("dscsv").disabled=!on;try{dsPrev()}catch(e){}}
 /* grey out export/share buttons when the current selection has no data */
 function setD(ids,on){ids.forEach(function(i){var b=$(i);if(b)b.disabled=!on})}
@@ -1530,7 +1553,7 @@ function make(raw){var nm=$("dsd").value;if(!nm){if(!raw)toast("Pick a driver fi
  if(raw)return{it:it,P:P,nm:nm,tr:tr,fu:fu,av:av,pd:pd,bal:bal,paidD:paidD,lp:lp,advS:advS,held:held,advE:advE,lo:lo,now:now,trTot:sum(tr,pay),fuAmt:sum(fu,function(f){return f.litres*f.sell}),fuL:sum(fu,function(f){return f.litres}),tn:sum(tr,function(e){return e.tonnes})};
  var safe=function(v){return v.replace(/[^\w-]+/g,"-")};
  return{blob:pdfBlob("Driver statement - "+nm,"Period: "+P.lab,it),name:"statement-"+safe(nm)+"-"+safe(P.lab)+".pdf",title:"Driver statement - "+nm}}
-$("dsd").onchange=btns;
+$("dsd").onchange=btns;try{dsPrev()}catch(e){}
 $("dsp").onchange=function(){var k=this.value;$("dsmw").classList.toggle("hide",k!=="month");$("dsyw").classList.toggle("hide",k!=="year");if(k==="month"&&!$("dsm").value)$("dsm").value=today().slice(0,7);if(k==="year"&&!$("dsy").value)$("dsy").value=today().slice(0,4)};
 $("dscsv").onclick=function(){try{var d=make(true);if(!d)return;var L=[csvl(["Driver statement - "+d.nm]),csvl(["Period: "+d.P.lab])];
  d.it.forEach(function(x){if(x.t==="h")L.push("",csvl([x.s]));else if(x.t==="tbl"){L.push(csvl(x.h));x.rows.forEach(function(r){L.push(csvl(r))})}else if(x.t==="p")L.push(csvl([x.s]))});
