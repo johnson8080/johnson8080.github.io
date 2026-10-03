@@ -850,7 +850,10 @@ $("erows").addEventListener("click",function(ev){var b=ev.target.closest(".ex");
  $("mbody").innerHTML='<b style="font-size:18px">Delete staff?</b><div class="kv"><span>Name</span><span>'+esc(nm||"(none)")+'</span></div><div class="kv"><span>Salary</span><span>'+esc(sl||"(none)")+'</span></div><div class="mut" style="margin-top:8px">Tap Save/Update Salary afterwards to apply it.</div><div class="b2"><button class="dg" id="eY">Delete</button><button id="eN">Cancel</button></div>';
  $("modal").classList.remove("hide");$("eN").onclick=closeM;$("eY").onclick=function(){r.remove();if(!$("erows").children.length)$("erows").appendChild(erow("",""));closeM();stChk()}});
 $("eset").onclick=async function(){var wasNeed=needRates();var l=stRows().filter(function(r){return r.n&&r.s!==""}).map(function(r){return{n:r.n,s:Number(r.s)}});
- try{if(db){if(!wasNeed)await pwOk();await db.doc("config/staff").set({list:l})}staff=l;try{localStorage.setItem("staff_v1",JSON.stringify(l))}catch(x){}stBuild();if(wasNeed&&!needRates()){toast("All set. You can now add data.");goHome()}else if(wasNeed&&staff.length&&nextRates()){toast("Staff saved. Finish the other rates.");goRates(nextRates())}else toast("Staff salaries saved")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}};
+ var keep={};l.forEach(function(e){keep[e.n]=1});var gone=[],gA=pvp.filter(function(x){return!keep[x.who]}),gB=trashV.filter(function(x){return!keep[x.who]});gA.concat(gB).forEach(function(x){if(gone.indexOf(x.who)<0)gone.push(x.who)});staff.forEach(function(e){if(!keep[e.n]&&gone.indexOf(e.n)<0)gone.push(e.n)});
+ if(gone.length&&!(await confirmX("Delete removed staff?",esc(gone.join(", "))+" will be removed from Private Staff together with "+(gA.length+gB.length)+" payment record(s), including deleted history. This cannot be undone.","Delete everything")))return;
+ try{if(db){if(!wasNeed||gone.length)await pwOk();await db.doc("config/staff").set({list:l});for(var gi=0;gi<gA.length+gB.length;gi++){var gx=gi<gA.length?gA[gi]:gB[gi-gA.length];await db.doc("pvpays/"+gx.id).delete()}}
+  pvp=pvp.filter(function(x){return keep[x.who]});trashV=trashV.filter(function(x){return keep[x.who]});pvSave();staff=l;try{localStorage.setItem("staff_v1",JSON.stringify(l))}catch(x){}stBuild();if(wasNeed&&!needRates()){toast("All set. You can now add data.");goHome()}else if(wasNeed&&staff.length&&nextRates()){toast("Staff saved. Finish the other rates.");goRates(nextRates())}else toast("Staff salaries saved")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}};
 
 var pvp=[],trashV=[];try{pvp=JSON.parse(localStorage.getItem("pvp_v1")||"[]")}catch(x){}try{trashV=JSON.parse(localStorage.getItem("pvt_v1")||"[]")}catch(x){}
 function pvSave(){try{localStorage.setItem("pvp_v1",JSON.stringify(pvp));localStorage.setItem("pvt_v1",JSON.stringify(trashV))}catch(x){}}
@@ -864,7 +867,7 @@ function pvUn(nm,sal,m){var pd=0;pvp.forEach(function(x){if(x.who===nm&&x.month=
 function pvRender(){if(!$("pvper"))return;var td=today();if(!$("pvday").value)$("pvday").value=td;if(!$("pvmon").value)$("pvmon").value=td.slice(0,7);if(!$("pvyr").value)$("pvyr").value=td.slice(0,4);
  var P=pvP(),tS=0,tP=0,tU=0;pvKeys=[];
  $("pvdw").classList.toggle("hide",P.k!=="d");$("pvmw").classList.toggle("hide",P.k!=="m");$("pvyw").classList.toggle("hide",P.k!=="y");
- var inP=pvp.filter(P.t);
+ var _sn={};staff.forEach(function(e){_sn[e.n]=1});var inP=pvp.filter(function(x){return _sn[x.who]&&P.t(x)});
  var rows=staff.map(function(e){var pd=0;inP.forEach(function(x){if(x.who===e.n)pd+=+x.amount||0});tS+=e.s;tP+=pd;
   var u=Math.max(0,Math.round((e.s-pd)*100)/100);tU+=u;var i=pvKeys.push({k:e.n,s:e.s})-1;
   return'<tr><td>'+esc(e.n)+'</td><td>'+fmt(e.s)+'</td><td>'+fmt(pd)+'</td><td class="'+(u>0?"neg":"")+'">'+fmt(u)+'<br><button class="mp" data-i="'+i+'">Pay</button></td></tr>'}).join("");
