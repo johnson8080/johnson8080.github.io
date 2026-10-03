@@ -364,7 +364,8 @@ button{transition:background .15s,color .15s,transform .12s}
 #dsc .cap5{max-height:340px}
 #dsc .dsg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 #dsc .dsk{border:1px solid var(--ln);padding:8px 10px;min-width:0}
-#dsc .dsk span{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--mut)}
+#dsc .dsk span{display:block;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.2px;color:var(--mut);line-height:1.25}
+#dsc .dsl{overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 #dsc .dsk b{display:block;font-size:17px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #dsc .dsk small{display:block;font-size:11px;color:var(--mut);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #dsc .dsk.bal{grid-column:1/-1;border-color:var(--ac);border-width:2px}#dsc .dsk.bal b{font-size:22px}
@@ -1477,7 +1478,7 @@ var $=function(i){return document.getElementById(i)};
 function hasD(nm){if(!nm)return false;var P=per();return entries.some(function(e){return e.driver===nm&&P.t(e.date)})||fuels.some(function(f){return(f.driver||(cfg.vd||{})[f.vehicle])===nm&&P.t(f.date)})||advs.some(function(x){return x.driver===nm&&P.t(x.date)})||pays.some(function(x){return x.who===nm&&P.t(x.date)})}
 function dsPrev(){var b=$("dsv");if(!b)return;var on=false;try{on=hasD($("dsd").value)}catch(e){}
  var E=function(msg){var z=fmt(0),K=function(l,v,sm,c){return'<div class="dsk'+(c?" "+c:"")+'"><span>'+l+'</span><b>'+v+'</b>'+(sm?'<small>'+sm+'</small>':"")+'</div>'};
-  b.innerHTML='<div class="dsg">'+K("Trips",z,"0 trips \u00b7 0.00 t")+K("Fuel taken",z,"0 L \u00b7 not deducted")+K("Advances",z,"trip "+z+" \u00b7 given "+z)+K("Salary paid",z,"")+K("Unpaid balance",z,per().lab,"bal")+'</div><div class="dsw"><div><span>Driver balance held</span><span>'+z+'</span></div><div><span>\u2212 Advances</span><span>'+z+'</span></div><div><span>\u2212 Salary paid</span><span>'+z+'</span></div><div class="t"><span>= Unpaid balance</span><span>'+z+'</span></div></div><div class="dsh">Entries</div><div class="mut" style="padding:10px 0">'+msg+'</div>'};
+  b.innerHTML='<div class="dsg">'+K("Trips expenses",z,"0 trips \u00b7 0.00 t")+K("Fuel taken",z,"0 L \u00b7 not deducted")+K("Advances",z,"trip "+z+" \u00b7 given "+z)+K("Salary paid",z,"")+K("Unpaid balance",z,per().lab,"bal")+'</div><div class="dsw"><div><span>Driver balance held</span><span>'+z+'</span></div><div><span>\u2212 Advances</span><span>'+z+'</span></div><div><span>\u2212 Salary paid</span><span>'+z+'</span></div><div class="t"><span>= Unpaid balance</span><span>'+z+'</span></div></div><div class="dsh">Entries</div><div class="mut" style="padding:10px 0">'+msg+'</div>'};
  if(!$("dsd").value){E("Select a driver to preview the statement.");return}
  if(!on){E("No entries for this driver in this period.");return}
  var d=make(true);if(!d){return}
@@ -1494,12 +1495,13 @@ function dsPrev(){var b=$("dsv");if(!b)return;var on=false;try{on=hasD($("dsd").
   return'<div class="dse"><span class="c '+r.k+'">'+L[r.k]+'</span><span class="n">'+esc(r.n)+'</span><span class="v'+cls+'">'+vt+'</span><span class="m">'+esc(r.d.slice(5))+" \u00b7 "+esc(r.m)+'</span><span class="r">Bal '+mn(run)+'</span></div>'}).join("");
  var adT=d.advE+d.advS,ok=rd(run)===rd(d.bal);
  var K=function(l,v,sm,c){return'<div class="dsk'+(c?" "+c:"")+'"><span>'+l+'</span><b>'+v+'</b>'+(sm?'<small>'+sm+'</small>':"")+'</div>'};
- var h='<div class="dsg">'+K("Trips",fmt(d.trTot),d.tr.length+" trips \u00b7 "+d.tn.toFixed(2)+" t")+K("Fuel taken",fmt(d.fuAmt),(+d.fuL.toFixed(1))+" L \u00b7 not deducted")+K("Advances",fmt(adT),"trip "+fmt(d.advE)+" \u00b7 given "+fmt(d.advS))+K("Salary paid",fmt(d.paidD),"")+K("Unpaid balance",mn(d.bal),per().lab,"bal")+'</div>'
+ var h='<div class="dsg">'+K("Trips expenses",fmt(d.trTot),d.tr.length+(d.tr.length===1?" trip":" trips")+" \u00b7 "+d.tn.toFixed(2)+" t")+K("Fuel taken",fmt(d.fuAmt),(+d.fuL.toFixed(1))+" L \u00b7 not deducted")+K("Advances",fmt(adT),"trip "+fmt(d.advE)+" \u00b7 given "+fmt(d.advS))+K("Salary paid",fmt(d.paidD),"")+K("Unpaid balance",mn(d.bal),per().lab,"bal")+'</div>'
  +'<div class="dsw"><div><span>Driver balance held</span><span>'+fmt(d.held)+'</span></div><div><span>\u2212 Advances</span><span>'+fmt(adT)+'</span></div><div><span>\u2212 Salary paid</span><span>'+fmt(d.paidD)+'</span></div><div class="t"><span>= Unpaid balance</span><span>'+mn(d.bal)+'</span></div>'
  +(d.lo>0||d.lp>0?'<div><span>Loader paid / unpaid</span><span>'+fmt(d.lp)+' / '+fmt(d.lo-d.lp)+'</span></div>':"")
  +(per().lab!=="All dates"?'<div><span>Balance now (all dates)</span><span>'+mn(d.now)+'</span></div>':"")+'</div>'
- +'<div class="dsh">Entries</div>'+list;
- b.innerHTML=h}
+ +'<div class="dsh">Entries ('+R.length+')'+(R.length>5?' \u00b7 scroll for more':'')+'</div><div class="dsl" id="dsl">'+list+'</div>';
+ b.innerHTML=h;
+ var L2=$("dsl");if(L2&&L2.children.length>5){var hh=0;for(var i=0;i<5;i++)hh+=L2.children[i].offsetHeight;L2.style.maxHeight=hh+"px"}}
 function btns(){var on=false;try{on=hasD($("dsd").value)}catch(e){}$("dssh").disabled=!on;$("dsdl").disabled=!on;$("dscsv").disabled=!on;try{dsPrev()}catch(e){}}
 /* grey out export/share buttons when the current selection has no data */
 function setD(ids,on){ids.forEach(function(i){var b=$(i);if(b)b.disabled=!on})}
