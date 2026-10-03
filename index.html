@@ -444,7 +444,8 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <section id="sum" class="hide"><div class="card" id="top3"><b class="ct">Top 3 drivers</b><div class="fgrid"><div><label>Period</label><select id="pper" onchange="render()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pdw" class="hide"><label>Date</label><input type="date" id="pday"></div><div id="pmw" class="hide"><label>Month</label><input type="month" id="mon"></div><div id="pyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfsum"><button type="button" class="ed" data-cf="sum">Clear filters</button></div>
 <div class="row" id="trow" style="margin-top:10px"><div><div class="mut">Total tonnes</div><div class="pay" id="tt">0</div></div><div><div class="mut">Total trip expense</div><div class="pay" id="tp">0</div></div><div id="tunp" role="button" tabindex="0" style="cursor:pointer"><div class="mut">Total unpaid ›</div><div class="pay" id="tup" style="color:var(--bad)">0</div></div></div><div class="mut" id="t3l" style="margin-top:12px"></div><div id="t3b"></div></div>
 <div class="card" id="pwkc"><b class="ct">By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="wk"></tbody></table></div></div>
-<div class="card"><b class="ct">Total held balance per driver</b><div class="mut">Selected period: held balance minus advances = driver balance.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Days</th><th>Held</th><th>Advances</th><th>Balance</th></tr></thead><tbody id="dtot"></tbody></table></div><b style="display:block;margin-top:12px">Loader pay per driver</b><div class="mut">Tonnes × loader rate. One fixed rate however many loaders there are.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Tonnes</th><th>Loader pay</th></tr></thead><tbody id="lt"></tbody></table></div></div>
+<div class="card"><b class="ct">Total held balance per driver</b><div class="mut">Selected period: held balance minus advances = driver balance.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Days</th><th>Held</th><th>Advances</th><th>Balance</th></tr></thead><tbody id="dtot"></tbody></table></div></div>
+<div class="card"><b class="ct">Loader pay per driver</b><div class="mut">Tonnes × loader rate. One fixed rate however many loaders there are.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Tonnes</th><th>Loader pay</th></tr></thead><tbody id="lt"></tbody></table></div></div>
 <div class="card"><b class="ct">Expenses by reason</b><div class="wrap"><table><thead><tr><th>Reason</th><th>Entries</th><th>Total</th></tr></thead><tbody id="ex"></tbody></table></div></div>
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
@@ -483,10 +484,11 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 </section><section id="flg" class="hide"><div class="card"><b class="ct" id="fltitle">Fuel entries</b><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><div class="wrap"><table id="ftab"><thead><tr><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Litres</th><th>Sell/ltr</th><th>Cost/ltr</th><th>Amount</th><th>Profit</th><th class="l">Collected by</th><th class="l">Issued by</th><th class="l">Notes</th></tr></thead><tbody id="flist"></tbody></table></div></div></section>
 
 
-<section id="ov" class="hide"><div class="card noprt" id="dsc"><b style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
+<section id="ov" class="hide"><div class="card noprt" id="dsc"><b class="ct">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
 <label>Driver</label><select id="dsd"></select>
 <div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfdsc"><button type="button" class="ed" data-cf="dsc">Clear filters</button></div>
-<div class="acts" style="margin:12px 0 0"><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button></div></div><div class="card ovx" id="ovf"><b class="noprt" style="display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
+<div class="wrap cap5 noprt" style="margin-top:12px"><table class="ov"><thead><tr><th class="l">Date</th><th class="l">Type</th><th class="l">Details</th><th>Amount</th></tr></thead><tbody id="dsb"><tr><td colspan="4" class="mut">Select a driver to preview the statement.</td></tr></tbody></table></div>
+<div class="acts" style="margin:10px 0 0"><button class="btn sm" id="dscsv" disabled>Download CSV</button><button class="btn sm alt" id="dsdl" disabled>Download PDF</button><button class="btn sm" id="dssh" disabled>Share PDF</button></div></div><div class="card ovx" id="ovf"><b class="ct noprt">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
 <div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
 <div class="card" id="allc"><b class="ct">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
@@ -1447,7 +1449,17 @@ document.addEventListener("touchcancel",function(){ok=false},{passive:true});
 <script>(function(){
 var $=function(i){return document.getElementById(i)};
 function hasD(nm){if(!nm)return false;var P=per();return entries.some(function(e){return e.driver===nm&&P.t(e.date)})||fuels.some(function(f){return(f.driver||(cfg.vd||{})[f.vehicle])===nm&&P.t(f.date)})||advs.some(function(x){return x.driver===nm&&P.t(x.date)})||pays.some(function(x){return x.who===nm&&P.t(x.date)})}
-function btns(){var on=false;try{on=hasD($("dsd").value)}catch(e){}$("dssh").disabled=!on;$("dsdl").disabled=!on}
+function dsPrev(){var b=$("dsb");if(!b)return;var on=false;try{on=hasD($("dsd").value)}catch(e){}
+ if(!$("dsd").value){b.innerHTML='<tr><td colspan="4" class="mut">Select a driver to preview the statement.</td></tr>';return}
+ if(!on){b.innerHTML='<tr><td colspan="4" class="mut">No entries for this driver in this period.</td></tr>';return}
+ var d=make(true);if(!d){return}var R=[];
+ d.tr.forEach(function(e){R.push([e.date,"Trip",(e.vehicle||"")+" \u00b7 "+(+e.tonnes||0).toFixed(2)+" t",fmt(pay(e)),e.ts])});
+ d.fu.forEach(function(f){R.push([f.date,"Fuel",(f.vehicle||"")+" \u00b7 "+f.litres+" L",fmt(f.litres*f.sell),f.ts])});
+ d.av.forEach(function(x){R.push([x.date,"Advance","",fmt(x.amount),x.ts])});
+ d.pd.forEach(function(x){R.push([x.date,x.kind==="loader"?"Loader paid":"Salary paid","",fmt(x.amount),x.ts])});
+ R.sort(function(a,b){return a[0]<b[0]?-1:a[0]>b[0]?1:(a[4]||0)-(b[4]||0)});
+ b.innerHTML=R.map(function(r){return'<tr><td class="l">'+esc(r[0])+'</td><td class="l">'+esc(r[1])+'</td><td class="l">'+esc(r[2])+'</td><td>'+esc(r[3])+'</td></tr>'}).join("")+'<tr><td class="l"><b>Total</b></td><td class="l"></td><td class="l"><b>Balance for period</b></td><td><b>'+fmt(d.bal)+'</b></td></tr>'}
+function btns(){var on=false;try{on=hasD($("dsd").value)}catch(e){}$("dssh").disabled=!on;$("dsdl").disabled=!on;$("dscsv").disabled=!on;try{dsPrev()}catch(e){}}
 /* grey out export/share buttons when the current selection has no data */
 function setD(ids,on){ids.forEach(function(i){var b=$(i);if(b)b.disabled=!on})}
 function gate(){var ovOK=false,allOK=false;
@@ -1463,7 +1475,7 @@ function per(){var k=$("dsp").value,td=today();
  if(k==="year"){var y=String($("dsy").value||td.slice(0,4));return{lab:"Year "+y,t:function(x){return String(x).slice(0,4)===y}}}
  return{lab:"All dates",t:function(){return true}}}
 function asc(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}
-function make(){var nm=$("dsd").value;if(!nm){toast("Pick a driver first");return null}
+function make(raw){var nm=$("dsd").value;if(!nm){if(!raw)toast("Pick a driver first");return null}
  PM=alloc();var P=per(),sum=function(a,f){return a.reduce(function(t,x){return t+(+f(x)||0)},0)};
  var tr=entries.filter(function(e){return e.driver===nm&&P.t(e.date)}).sort(asc),
   fu=fuels.filter(function(f){return(f.driver||(cfg.vd||{})[f.vehicle])===nm&&P.t(f.date)}).sort(asc),
@@ -1497,10 +1509,16 @@ function make(){var nm=$("dsd").value;if(!nm){toast("Pick a driver first");retur
  it.push({t:"h",s:"Salary and loader payments"});
  if(pd.length){var pr=pd.map(function(x){return[x.date,x.kind==="loader"?"Loader":"Salary",fmt(x.amount)]});pr.push(["Total","",fmt(paidD+lp)]);it.push({t:"tbl",h:["Date","Type","Amount"],rows:pr})}
  else it.push({t:"p",s:"No payments in this period."});
+ if(raw)return{it:it,P:P,nm:nm,tr:tr,fu:fu,av:av,pd:pd,bal:bal,paidD:paidD,lp:lp,advS:advS};
  var safe=function(v){return v.replace(/[^\w-]+/g,"-")};
  return{blob:pdfBlob("Driver statement - "+nm,"Period: "+P.lab,it),name:"statement-"+safe(nm)+"-"+safe(P.lab)+".pdf",title:"Driver statement - "+nm}}
 $("dsd").onchange=btns;
 $("dsp").onchange=function(){var k=this.value;$("dsmw").classList.toggle("hide",k!=="month");$("dsyw").classList.toggle("hide",k!=="year");if(k==="month"&&!$("dsm").value)$("dsm").value=today().slice(0,7);if(k==="year"&&!$("dsy").value)$("dsy").value=today().slice(0,4)};
+$("dscsv").onclick=function(){try{var d=make(true);if(!d)return;var L=[csvl(["Driver statement - "+d.nm]),csvl(["Period: "+d.P.lab])];
+ d.it.forEach(function(x){if(x.t==="h")L.push("",csvl([x.s]));else if(x.t==="tbl"){L.push(csvl(x.h));x.rows.forEach(function(r){L.push(csvl(r))})}else if(x.t==="p")L.push(csvl([x.s]))});
+ var sf=function(v){return v.replace(/[^\w-]+/g,"-")};dlf("statement-"+sf(d.nm)+"-"+sf(d.P.lab)+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}));toast("CSV downloaded")}catch(x){alert("Could not create the CSV")}};
+["dsm","dsy"].forEach(function(i){var e=$(i);if(e){e.addEventListener("input",btns);e.addEventListener("change",btns)}});
+$("dsp").addEventListener("change",btns);
 $("dsdl").onclick=function(){try{var b=make();if(!b)return;dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}};
 function sharePdf(blob,name,title){var f=null;try{f=new File([blob],name,{type:"application/pdf"})}catch(x){}
  if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:title}).catch(function(){})}
