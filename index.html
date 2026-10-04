@@ -489,7 +489,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card" id="rpay"><div class="rh">Pay rates</div><div class="mut" id="rolenote"></div>
 <label>Loader rate per tonne</label><input type="number" id="rate">
 <label>Default driver deposit (paid each working day)</label><input type="number" id="dday">
-<label>Driver balance held per working day</label><input type="number" id="dbal">
+<label>Driver balance held per working day</label><input type="number" id="dbal"><label>Held reduction for a repeat trip on the same day</label><input type="number" id="drep"><div class="mut" style="margin-top:4px">Own figure, not tied to the driver deposit. For a driver's second trip the same day the deposit is paid again and the balance held is reduced by this amount.</div>
 <label>Vehicles and drivers</label><div class="mut">Each plate is tied to one driver. Picking the plate on the Enter tab fills the driver automatically.</div><div class="mut" id="vnote" style="margin-top:6px"></div><div id="vrows"></div><button type="button" class="btn" id="vadd" style="background:var(--mut);margin-top:10px">+ Add vehicle</button><button class="btn" id="sset" disabled>Update/Save Rates &amp; Data</button></div><div class="card" id="lockc"></div><div class="card" id="rrsn"><div class="rh">Expense reasons</div><div class="mut">Reasons you can pick for Other expense when filling a trip entry. Changes save straight away.</div><div id="rsnrows"></div><div id="rsnorph"></div><div class="vrow" style="grid-template-columns:1fr auto"><input id="rsnin" maxlength="40" placeholder="New reason, e.g. Food"><button type="button" class="btn" id="rsnadd" style="margin:0;width:auto;padding:0 16px">Add</button></div><div class="mut" style="margin-top:8px">Tap ✎ to rename a reason. Reports and entries then show the new name, and past entries are not edited. Removing a reason does not change past entries either.</div></div></section>
 
 <section id="fen" class="hide">
@@ -588,7 +588,14 @@ var up=function(v){return Math.round(v)===0?fmt(v):'<span class="neg">'+fmt(v)+'
 function today(){var t=new Date(),z=function(x){return(x<10?"0":"")+x};return t.getFullYear()+"-"+z(t.getMonth()+1)+"-"+z(t.getDate())}
 function rt(e){return e.rate!=null?e.rate:cfg.rate}
 function dpaid(e){return e.tonnes>0?(e.ddep==null?cfg.dday:e.ddep):0}
-function dheld(e){return e.tonnes>0?Math.max(0,(e.hold!=null?e.hold:cfg.dday+cfg.dbal)-dpaid(e)):0}
+function repCfg(){return cfg.rep!=null&&isFinite(+cfg.rep)?+cfg.rep:200}
+var _ri={ref:null,len:-1,m:null};
+function repIdx(){if(_ri.ref!==entries||_ri.len!==entries.length){var m={};entries.forEach(function(x){if(x.tonnes>0&&x.driver&&x.date){var k=x.driver+"|"+x.date;(m[k]||(m[k]=[])).push(x)}});_ri={ref:entries,len:entries.length,m:m}}return _ri.m}
+/* true when the same driver already has an earlier trip on the same day (this one is a repeat trip) */
+function isRep(e){if(!(e.tonnes>0)||!e.driver||!e.date)return false;var L=repIdx()[e.driver+"|"+e.date];if(!L)return false;var me=e.id||editing,ts=e.ts==null?Infinity:e.ts;
+ return L.some(function(x){if(x.id===me)return false;var xt=x.ts||0;return xt<ts||(xt===ts&&String(x.id)<String(me||"\uffff"))})}
+/* first trip of the day: held = rate - deposit (e.g. 800). Repeat trip the same day: deposit is paid again, and held is reduced by the separate repeat-trip figure (default 200, set in Update Rates) */
+function dheld(e){return e.tonnes>0?Math.max(0,(e.hold!=null?e.hold:cfg.dday+cfg.dbal)-(isRep(e)?(e.rep!=null?e.rep:repCfg()):0)):0}
 function setDdp(){$("ddp").value=cfg.dday}
 function pay(e){return ((e.deposit||0)>0?e.deposit:e.tonnes*rt(e))+dpaid(e)+(e.expense||0)+(e.advance||0)+((e.id&&PM[e.id])?(PM[e.id].dp||0)+(PM[e.id].lp||0):0)}
 function own(e){return canWrite&&(isAdmin||!db||e.by===me)&&!isLocked(e.date)}
@@ -633,7 +640,7 @@ function detail(id){PM=alloc();var e=entries.find(function(x){return x.id===id})
  var h='<b style="font-size:18px">'+esc(e.vehicle)+'</b><div class="mut" style="margin-bottom:8px">'+esc(e.date)+'</div>'+
   kv("Driver",esc(e.driver||"—"))+kv("Tonnes",(+e.tonnes||0).toFixed(2))+
   kv("Loader pay ("+(+e.tonnes||0).toFixed(2)+" × "+(+rt(e)).toFixed(2)+")",fmt(gross))+kv("Loader deposit",'+ '+fmt(e.deposit||0))+
-  kv("Driver deposit (paid today)",fmt(paid))+kv("Driver balance held",fmt(held))+kv("Driver advance (from balance)",fmt(e.advance||0))+kv("Other expense"+(rsnName(e.reason)?" ("+esc(rsnName(e.reason))+")":""),fmt(e.expense||0))+
+  kv("Driver deposit (paid today)",fmt(paid))+kv("Driver balance held"+(isRep(e)?" (repeat trip same day)":""),fmt(held))+kv("Driver advance (from balance)",fmt(e.advance||0))+kv("Other expense"+(rsnName(e.reason)?" ("+esc(rsnName(e.reason))+")":""),fmt(e.expense||0))+
   (A.da>0?kv("Taken by advances",fmt(A.da)):"")+(A.dp>0?kv("Driver balance paid",fmt(A.dp)):"")+kv("Driver Balance",up(A.dr),1)+(e.deposit>0?(A.lp>0?kv("Loader balance paid",fmt(A.lp)):"")+kv("Loader Balance",up(A.lr),1):"")+(e.note?noteBlk(e.note):"")+'<div class="tot"><span>TOTAL TRIP EXPENSE</span><span>'+fmt(pay(e))+'</span></div><div class="mut" style="margin-top:8px">Saved '+(when?esc(when):"")+(e.editedAt?" · edited":"")+'</div>'+
   histBlk(e)+'<div class="b2">'+(own(e)?'<button class="pr" id="mE">Edit</button><button class="dg" id="mD">Delete</button>':"")+'<button id="mC">Close</button></div>';
  $("mbody").innerHTML=h;$("modal").classList.remove("hide");$("mC").onclick=closeM;
@@ -645,11 +652,11 @@ function esc(s){var d=document.createElement("div");d.textContent=s==null?"":Str
 function fillVeh(){var cv=$("veh").value;$("veh").innerHTML='<option value="">Select plate…</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)$("veh").value=cv;if(!editing)applyDrv();chk();try{renderFuel()}catch(x){}}
 function applyDrv(){var d=(cfg.vd||{})[$("veh").value],i=$("drv");if(!$("veh").value){i.value="";i.readOnly=true;$("dhint").textContent="Pick a plate first. The driver fills in from the plate.";return}if(d){i.value=d;i.readOnly=true;$("dhint").textContent="Driver is set by the vehicle. Change it in Update Rates → Pay rates."}else{i.readOnly=!!editing;$("dhint").textContent="No driver set for this plate. Set it in Update Rates → Pay rates."}}
 function chk(){var lk=isLocked($("date").value);$("lkw").textContent=lk?"This month is locked. Unlock it in Update Rates → Pay rates to add or change entries.":"";$("save").disabled=!(canWrite&&!lk&&$("date").value&&$("veh").value&&$("drv").value.trim()&&$("ton").value!==""&&!(editing&&esnap!==null&&tsnap()===esnap))}
-function cur(){return{tonnes:n($("ton").value),deposit:n($("dep").value),expense:n($("exp").value),advance:n($("adv").value),id:editing,ddep:$("ddp").value===""?null:n($("ddp").value)}}
+function cur(){return{tonnes:n($("ton").value),deposit:n($("dep").value),expense:n($("exp").value),advance:n($("adv").value),id:editing,date:$("date").value,driver:($("drv").value||"").trim(),ts:(function(){var o=editing&&entries.find(function(x){return x.id===editing});return o?o.ts:undefined})(),ddep:$("ddp").value===""?null:n($("ddp").value)}}
 function remain(nm){var h=0,a=0,p=0;entries.forEach(function(e){if((e.driver||"")===nm&&e.id!==editing){h+=dheld(e);a+=e.advance||0}});livePays().forEach(function(x){if(x.kind==="driver"&&x.who===nm)p+=x.amount});liveAdvs().forEach(function(x){if(x.driver===nm)a+=x.amount});return h-a-p}
 function prev(){chk();var c=cur();$("prev").textContent=fmt(pay(c));var nm=$("drv").value.trim(),r=$("rem");
  if(!nm){r.innerHTML="";return}
- var v=remain(nm)+dheld(c)-c.advance;r.innerHTML="Driver's remaining balance after this entry: <b>"+mn(v)+"</b>"+(c.advance>0?" (advance taken from it)":"")}
+ var v=remain(nm)+dheld(c)-c.advance;r.innerHTML="Driver's remaining balance after this entry: <b>"+mn(v)+"</b>"+(c.advance>0?" (advance taken from it)":"")+(isRep(c)?"<br>Repeat trip today: balance held is reduced by "+fmt(c.rep!=null?c.rep:repCfg())+" ("+fmt(dheld(c))+" held).":"")}
 ["ton","dep","ddp","exp","adv","drv","rsn","nte"].forEach(function(i){$(i).addEventListener("input",prev)});$("date").addEventListener("input",prev);$("date").addEventListener("change",prev);$("veh").addEventListener("change",function(){applyDrv();prev()});
 var G={pay:"log",fuel:"flg",ov:"ov",rates:"set"};
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){if(GATED[b.dataset.t]&&needRates()){gatePop();return}var bar=b.parentNode;G[bar.dataset.g]=b.dataset.t;
@@ -739,11 +746,11 @@ function banner(t){if(t&&t.indexOf("Offline copy")===0){offCopy=true;window.offM
 $("save").onclick=async function(){if(needRates()){gatePop();return}
  var d=$("date").value;if(!d||!$("veh").value||!$("drv").value.trim()||$("ton").value===""){alert("Fill date, vehicle, driver and tonnes");return}
  if(n($("exp").value)>0&&!$("rsn").value){alert(reasons.length?"Choose a reason for the expense":"No expense reasons set yet. Add them in Update Rates, at the bottom (Expense reasons).");return}
- var e={date:d,vehicle:$("veh").value,driver:$("drv").value.trim(),tonnes:n($("ton").value),deposit:n($("dep").value),ddep:$("ddp").value===""?cfg.dday:n($("ddp").value),advance:n($("adv").value),expense:n($("exp").value),reason:n($("exp").value)>0?$("rsn").value:"",note:$("nte").value.trim(),rate:cfg.rate,hold:cfg.dday+cfg.dbal,by:me||"local",ts:Date.now()};
- if(editing){var o=entries.find(function(x){return x.id===editing});if(o){e.by=o.by;e.ts=o.ts;if(o.rate!=null){e.rate=o.rate;e.hold=o.hold}}}
+ var e={date:d,vehicle:$("veh").value,driver:$("drv").value.trim(),tonnes:n($("ton").value),deposit:n($("dep").value),ddep:$("ddp").value===""?cfg.dday:n($("ddp").value),advance:n($("adv").value),expense:n($("exp").value),reason:n($("exp").value)>0?$("rsn").value:"",note:$("nte").value.trim(),rate:cfg.rate,hold:cfg.dday+cfg.dbal,rep:repCfg(),by:me||"local",ts:Date.now()};
+ if(editing){var o=entries.find(function(x){return x.id===editing});if(o){e.by=o.by;e.ts=o.ts;if(o.rate!=null){e.rate=o.rate;e.hold=o.hold;if(o.rep!=null)e.rep=o.rep;else delete e.rep}}}
  if(editing){e.editedBy=me||"local";e.editedAt=Date.now();var o2=entries.find(function(x){return x.id===editing});if(o2)e.hist=histAdd(o2)}
  if(e.tonnes<0||e.deposit<0||e.ddep<0||e.advance<0||e.expense<0){alert("Amounts can't be negative");return}  var oe0=editing&&entries.find(function(x){return x.id===editing});if(isLocked(e.date)||(oe0&&isLocked(oe0.date))){alert("That month is locked. Unlock it in Update Rates → Pay rates first.");return}var W=entryWarns(e);if(W.length&&!(await ask("Please check this entry",W.join("<br>"))))return;
- if(entries.some(function(x){return x.vehicle===e.vehicle&&x.date===e.date&&x.id!==editing})&&!(await ask("Duplicate entry",esc(e.vehicle)+" already has an entry on "+esc(e.date)+". A second entry adds another held balance for the driver.")))return;
+ if(entries.some(function(x){return x.vehicle===e.vehicle&&x.date===e.date&&x.id!==editing})&&!(await ask("Duplicate entry",esc(e.vehicle)+" already has an entry on "+esc(e.date)+". A second trip the same day pays the driver deposit again, but its balance held is reduced by the repeat-trip figure in Update Rates.")))return;
  $("save").disabled=true;
  try{if(editing){if(db)await db.doc("entries/"+editing).set(e);else{e.id=editing;entries=entries.map(function(x){return x.id===editing?e:x})}}
   else if(db){await db.collection("entries").add(e)}else{e.id="l"+e.ts;entries.push(e)}
@@ -756,11 +763,12 @@ $("sset").onclick=async function(){
  var vv=[],vd={};document.querySelectorAll("#vrows .vrow").forEach(function(r){var pl=r.querySelector(".vp").value.trim().toUpperCase(),dr=r.querySelector(".vd").value.trim();if(!pl||vv.indexOf(pl)>=0)return;vv.push(pl);if(dr)vd[pl]=dr});
  if(!paySaved&&vv.length<MINV){alert("Add at least "+MINV+" different plates, each with a driver");return}
  var miss=vv.filter(function(v){return!vd[v]});if(miss.length){alert("Add a driver for "+miss[0]+" first, then tap Save again");return}
- var rv=$("rate").value.trim(),dv=$("dday").value.trim(),bv=$("dbal").value.trim(),nv=[rv,dv,bv].map(Number);
+ var rv=$("rate").value.trim(),dv=$("dday").value.trim(),bv=$("dbal").value.trim(),nv=[rv,dv,bv].map(Number),rpv=$("drep").value.trim();
  if(rv===""||!isFinite(nv[0])||nv[0]<=0){alert("Enter a loader rate above zero");return}
  if(dv===""||!isFinite(nv[1])||nv[1]<0){alert("Enter the default driver deposit (0 or more)");return}
  if(bv===""||!isFinite(nv[2])||nv[2]<0){alert("Enter the driver balance held per day (0 or more)");return}
- var c={rate:nv[0],dday:nv[1],dbal:nv[2],veh:vv,vd:vd};
+ if(rpv===""||!isFinite(Number(rpv))||Number(rpv)<0){alert("Enter the held reduction for a repeat trip (0 or more)");return}
+ var c={rate:nv[0],dday:nv[1],dbal:nv[2],rep:Number(rpv),veh:vv,vd:vd};
  var was=!needRates();try{if(db){if(was)await pwOk();await db.doc("config/main").set(c)}else{cfg=c}
   cfg=c;paySaved=true;if(!editing)setDdp();fillVeh();render();chkR();afterSave("pay",was)}catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}};
 function vrow(pl,dr){var r=document.createElement("div");r.className="vrow";r.innerHTML='<input class="vp" placeholder="Plate number"><input class="vd" placeholder="Driver name"><button type="button" class="x vx">✕</button>';r.querySelector(".vp").value=pl||"";r.querySelector(".vd").value=dr||"";return r}
@@ -771,13 +779,13 @@ $("vrows").onclick=function(ev){var b=ev.target.closest(".vx");if(!b)return;var 
  if(!pl&&!dr){r.remove();padRows();chkR();return}
  $("mbody").innerHTML='<b style="font-size:18px">Delete plate and driver?</b><div class="kv"><span>Plate</span><span>'+esc(pl||"(none)")+'</span></div><div class="kv"><span>Driver</span><span>'+esc(dr||"(none)")+'</span></div><div class="mut" style="margin-top:8px">This removes the plate and its driver from the list. Past entries keep their data. Tap Update/Save Rates &amp; Data afterwards to apply it.</div><div class="b2"><button class="dg" id="vY">Delete</button><button id="vN">Cancel</button></div>';
  $("modal").classList.remove("hide");$("vN").onclick=closeM;$("vY").onclick=function(){r.remove();padRows();closeM();chkR()}};
-function rsnap(){var r=[];document.querySelectorAll("#vrows .vrow").forEach(function(x){var pl=x.querySelector(".vp").value.trim();if(pl)r.push(pl+"|"+x.querySelector(".vd").value.trim())});return[n($("rate").value),n($("dday").value),n($("dbal").value)].concat(r).join("~")}
-function csnap(){return[cfg.rate,cfg.dday,cfg.dbal].concat(cfg.veh.map(function(v){return v+"|"+((cfg.vd||{})[v]||"")})).join("~")}
-function rOK(){var f=["rate","dday","dbal"].every(function(i){var v=$(i).value.trim();return v!==""&&isFinite(Number(v))});if(!f||!(Number($("rate").value)>0))return false;if(Number($("dday").value)<0||Number($("dbal").value)<0)return false;var rows=document.querySelectorAll("#vrows .vrow"),ok=0,bad=false,seen={},dup=false;rows.forEach(function(x){var p=x.querySelector(".vp").value.trim().toUpperCase(),d=x.querySelector(".vd").value.trim();if(p&&d){ok++;if(seen[p])dup=true;seen[p]=1}else if(p||d)bad=true});
+function rsnap(){var r=[];document.querySelectorAll("#vrows .vrow").forEach(function(x){var pl=x.querySelector(".vp").value.trim();if(pl)r.push(pl+"|"+x.querySelector(".vd").value.trim())});return[n($("rate").value),n($("dday").value),n($("dbal").value),n($("drep").value)].concat(r).join("~")}
+function csnap(){return[cfg.rate,cfg.dday,cfg.dbal,repCfg()].concat(cfg.veh.map(function(v){return v+"|"+((cfg.vd||{})[v]||"")})).join("~")}
+function rOK(){var f=["rate","dday","dbal","drep"].every(function(i){var v=$(i).value.trim();return v!==""&&isFinite(Number(v))});if(!f||!(Number($("rate").value)>0))return false;if(Number($("dday").value)<0||Number($("dbal").value)<0||Number($("drep").value)<0)return false;var rows=document.querySelectorAll("#vrows .vrow"),ok=0,bad=false,seen={},dup=false;rows.forEach(function(x){var p=x.querySelector(".vp").value.trim().toUpperCase(),d=x.querySelector(".vd").value.trim();if(p&&d){ok++;if(seen[p])dup=true;seen[p]=1}else if(p||d)bad=true});
  if(!paySaved)return rows.length>=MINV&&ok===rows.length&&!bad&&!dup;
  return ok>0&&!bad}
 function chkR(){var vn=$("vnote");if(vn){if(paySaved)vn.textContent="";else{var rw=document.querySelectorAll("#vrows .vrow"),fl=0;rw.forEach(function(x){if(x.querySelector(".vp").value.trim()&&x.querySelector(".vd").value.trim())fl++});vn.textContent="First setup: fill in every slot (plate and driver, each plate different). "+fl+" of "+rw.length+" filled."}}$("sset").disabled=!(isAdmin&&rOK()&&rsnap()!==csnap())}
-["rate","dday","dbal"].forEach(function(i){$(i).addEventListener("input",chkR)});$("vrows").addEventListener("input",function(ev){var t=ev.target;if(t.classList.contains("vp")){var a=t.selectionStart,b=t.selectionEnd;t.value=t.value.toUpperCase();try{t.setSelectionRange(a,b)}catch(x){}}},true);$("vrows").addEventListener("input",chkR);
+["rate","dday","dbal","drep"].forEach(function(i){$(i).addEventListener("input",chkR)});$("vrows").addEventListener("input",function(ev){var t=ev.target;if(t.classList.contains("vp")){var a=t.selectionStart,b=t.selectionEnd;t.value=t.value.toUpperCase();try{t.setSelectionRange(a,b)}catch(x){}}},true);$("vrows").addEventListener("input",chkR);
 
 var reasons=[],ren={},rsnOrphArr=[];try{reasons=JSON.parse(localStorage.getItem("reasons_v1")||"[]")}catch(x){}if(!Array.isArray(reasons))reasons=[];try{ren=JSON.parse(localStorage.getItem("reasons_ren_v1")||"{}")}catch(x){}
 function rsnClean(a){var o=[],seen={};(Array.isArray(a)?a:[]).forEach(function(v){v=String(v==null?"":v).replace(/\s+/g," ").trim().slice(0,40);var k=v.toLowerCase();if(v&&!seen[k]){seen[k]=1;o.push(v)}});return o}
@@ -825,7 +833,7 @@ function numBox(id){var el=$(id);if(!el||el._nb||!_nbD)return;el._nb=1;var cur=_
  el.addEventListener("blur",function(){_nbD.set.call(el,nbFmt(el.value))});
  el.addEventListener("input",function(){var t=_nbD.get.call(el),c=t.replace(/[^0-9.]/g,"").replace(/\./g,function(m,off,str){return str.indexOf(".")===off?".":""});if(c!==t)_nbD.set.call(el,c)},true);
  if(cur!=="")_nbD.set.call(el,nbFmt(cur))}
-["rate","dday","dbal","frs","frc","ddp","exp","adv","dep","aamt","fsp","fap","salert"].forEach(numBox);
+["rate","dday","dbal","drep","frs","frc","ddp","exp","adv","dep","aamt","fsp","fap","salert"].forEach(numBox);
 var staff=[],stBound=false,stLoaded=false;try{staff=JSON.parse(localStorage.getItem("staff_v1")||"[]")}catch(x){}
 function sRawSal(v){return String(v==null?"":v).replace(/[,\s]/g,"")}
 function sFmtSal(v){var t=sRawSal(v);return t!==""&&isFinite(Number(t))?fmt(Number(t)):String(v)}
@@ -946,7 +954,7 @@ function pvPay(w){if(needRates()){gatePop();return}var P=pvP(),m0=P.k==="m"?P.mm
   if(a>u+0.001&&$("pvOK").dataset.c!=="1"){$("pvOK").dataset.c="1";$("pvOK").textContent="Amount is more than unpaid. Tap again";return}
   var q={who:w.k,month:m,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pvOK").disabled=true;
   try{if(db)await db.collection("pvpays").add(q);else{q.id="v"+q.ts;pvp.push(q);pvSave();pvRender()}closeM();toast("Salary marked paid")}catch(x){$("pvOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
-function showCfg(){stBind();stBuild();var s=paySaved;$("rate").value=s?cfg.rate:"";$("dday").value=s?cfg.dday:"";$("dbal").value=s?cfg.dbal:"";buildRows()}
+function showCfg(){stBind();stBuild();var s=paySaved;$("rate").value=s?cfg.rate:"";$("dday").value=s?cfg.dday:"";$("dbal").value=s?cfg.dbal:"";$("drep").value=s?repCfg():"";buildRows()}
 var fuels=[];
 function fdset(){if(fedit)return;if(!$("fveh").value){$("fdrv").value="";$("fdh").textContent="Pick a plate first. The driver fills in from the plate.";return}var d=(cfg.vd||{})[$("fveh").value]||"";$("fdrv").value=d;$("fdh").textContent=d?"Driver comes from the vehicle. Change it in Update Rates → Pay rates.":"No driver set for this plate. Set it in Update Rates → Pay rates."}
 function fdrop(sel,inp,k){var o={},cv=inp.value.trim(),shown=!inp.classList.contains("hide");fuels.forEach(function(f){if(f[k])o[f[k]]=1});var nm=Object.keys(o).sort();
@@ -1144,7 +1152,7 @@ function rParse(txt){var j=JSON.parse(txt);if(!rObj(j))throw new Error("This is 
  A(j.fuel).forEach(function(f){if(rObj(f)&&rOk(f.date)&&typeof f.vehicle==="string"&&f.vehicle&&rNum(f.litres)&&rNum(f.sell)&&rNum(f.cost))R.fuel.push(f);else sk++});
  A(j.advances).forEach(function(a){if(rObj(a)&&rOk(a.date)&&typeof a.driver==="string"&&a.driver&&rNum(a.amount))R.advances.push(a);else sk++});
  A(j.payments).forEach(function(p){if(rObj(p)&&(p.kind==="loader"||p.kind==="driver")&&typeof p.who==="string"&&rNum(p.amount))R.payments.push(p);else sk++});
- var r=j.rates;if(rObj(r)&&rNum(r.rate)&&rNum(r.dday)&&rNum(r.dbal)&&Array.isArray(r.veh)&&r.veh.length&&r.veh.every(function(v){return typeof v==="string"&&v}))R.rates={rate:r.rate,dday:r.dday,dbal:r.dbal,veh:r.veh,vd:rObj(r.vd)?r.vd:{}};
+ var r=j.rates;if(rObj(r)&&rNum(r.rate)&&rNum(r.dday)&&rNum(r.dbal)&&Array.isArray(r.veh)&&r.veh.length&&r.veh.every(function(v){return typeof v==="string"&&v}))R.rates={rate:r.rate,dday:r.dday,dbal:r.dbal,rep:rNum(r.rep)?r.rep:200,veh:r.veh,vd:rObj(r.vd)?r.vd:{}};
  A(j.privateStaffPayments||j.privatePayments).forEach(function(p){if(rObj(p)&&typeof p.who==="string"&&p.who&&rNum(p.amount)&&typeof p.month==="string")R.pvp.push(p);else sk++});
  if(Array.isArray(j.staff||j.employees)){var jst=j.staff||j.employees,em=jst.filter(function(e){return rObj(e)&&typeof e.n==="string"&&e.n&&rNum(e.s)});sk+=jst.length-em.length;if(em.length)R.emps=em}
  if(Array.isArray(j.expenseReasons)){var rr=rsnClean(j.expenseReasons);if(rr.length){R.rsn=rr;R.ren=renClean(renFromArr(j.reasonRenames))}}
