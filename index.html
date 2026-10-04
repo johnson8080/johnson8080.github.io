@@ -473,7 +473,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card"><b class="ct">Expenses by reason</b><div class="wrap"><table><thead><tr><th>Reason</th><th>Entries</th><th>Total</th></tr></thead><tbody id="ex"></tbody></table></div></div>
 <div class="card"><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Total trip expense</th></tr></thead><tbody id="vt"></tbody></table></div><div id="bars"></div></div></section>
 
-<section id="pvt" class="hide"><div class="card"><b class="ut">PRIVATE STAFF</b><div class="fgrid"><div><label>Period</label><select id="pvper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pvdw" class="hide"><label>Date</label><input type="date" id="pvday"></div><div id="pvmw" class="hide"><label>Month</label><input type="month" id="pvmon"></div><div id="pvyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pvyr" min="2000" max="2100"></div></div><div class="ufr" style="margin-top:12px"><div class="ucol"><div class="ul">TOTAL PAID</div><div class="utb" style="border-color:var(--ok)"><b id="pvtp">0.00</b></div></div><div class="ucol"><div class="ul">TOTAL UNPAID</div><div class="utb"><b id="pvtu">0.00</b></div></div></div><div class="cfr cfl noprt hide" id="cfpvt"><button type="button" class="ed" data-cf="pvt">Clear filters</button></div></div><div class="card"><b class="ut">PRIVATE STAFF SALARIES</b><div class="wrap"><table><thead><tr><th>Staff</th><th>Salary</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="pvb"></tbody></table></div></div><div class="card"><b class="ut">PAYMENTS THIS MONTH</b><div class="wrap"><table><thead><tr><th>Date</th><th>Staff</th><th>Amount</th><th></th></tr></thead><tbody id="pvh"></tbody></table></div></div></section>
+<section id="pvt" class="hide"><div class="card"><b class="ut">PRIVATE STAFF</b><div class="fgrid"><div><label>Period</label><select id="pvper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="pvdw" class="hide"><label>Date</label><input type="date" id="pvday"></div><div id="pvmw" class="hide"><label>Month</label><input type="month" id="pvmon"></div><div id="pvyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pvyr" min="2000" max="2100"></div></div><div class="ufr" style="margin-top:12px"><div class="ucol"><div class="ul">TOTAL PAID</div><div class="utb" style="border-color:var(--ok)"><b id="pvtp">0.00</b></div></div><div class="ucol"><div class="ul">TOTAL UNPAID</div><div class="utb"><b id="pvtu">0.00</b></div></div></div><div class="cfr cfl noprt hide" id="cfpvt"><button type="button" class="ed" data-cf="pvt">Clear filters</button></div></div><div class="card"><b class="ut">PRIVATE STAFF SALARIES</b><div class="wrap"><table><thead><tr><th>Staff</th><th>Salary</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="pvb"></tbody></table></div><div class="acts noprt" style="margin:10px 0 0"><button class="btn sm alt" id="pvdl" disabled>Download PDF</button><button class="btn sm" id="pvsh" disabled>Share PDF</button><button class="btn sm alt" id="pvtx" disabled>Share text</button></div></div><div class="card"><b class="ut">PAYMENTS THIS MONTH</b><div class="wrap"><table><thead><tr><th>Date</th><th>Staff</th><th>Amount</th><th></th></tr></thead><tbody id="pvh"></tbody></table></div></div></section>
 <section id="pvadd" class="hide"><div class="card" id="pvstaff"><b class="ut">STAFF</b><div class="mut" style="text-align:center">Add a staff here, then tap Add to payroll to put them on the PRIV STAFF salary list.</div><div class="vrow" id="pvsadd" style="margin-top:12px"><input id="pvsn" maxlength="40" placeholder="Staff name" autocomplete="off"><input id="pvss" type="text" inputmode="decimal" autocomplete="off" placeholder="Monthly salary"><button type="button" class="btn" id="pvsa" disabled style="margin:0;width:auto;padding:0 16px">Add</button></div><div class="mut neg" id="pvsnote" style="margin-top:6px;min-height:0"></div><div id="pvsl" style="margin-top:6px"></div></div></section>
 <section id="unp" class="hide"><div id="ualert"></div><div id="orphc"></div><div class="card"><b class="ut">TOTAL UNPAID BALANCES</b><div class="ufr"><div class="ucol"><div class="ul">MONTH</div><div class="umw em"><input type="month" id="umon" required><span class="uph">Select month</span></div></div><div class="ucol"><div class="ul" id="utl">TOTAL UNPAID</div><div class="utb"><b id="utot">0</b></div></div></div><div class="cfr cfl noprt hide" id="cfunp"><button type="button" class="ed" data-cf="unp">Clear filters</button></div></div>
 <div class="card"><b class="ut">UNPAID DRIVER BALANCES</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ud"></tbody></table></div></div>
@@ -835,10 +835,28 @@ function stBuild(){var c=$("pvsl");if(!c)return;var adm=isAdmin,a=$("pvsadd");if
  c.innerHTML=staff.length?staff.map(function(e,i){var on=stOn(e);
   return'<div class="item" style="align-items:center"><div style="min-width:0;flex:1"><b>'+esc(e.n)+'</b><div class="mut">'+fmt(e.s)+' / month \u00b7 '+(on?'<span style="color:var(--ok);font-weight:700">On payroll</span>':'Not on payroll')+'</div></div>'+(adm?'<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:62%">'+(on?'<button type="button" class="mp rm" data-a="off" data-i="'+i+'">Remove from payroll</button>':'<button type="button" class="mp" data-a="on" data-i="'+i+'">Add to payroll</button>')+'<button type="button" class="ed" data-a="ed" data-i="'+i+'">Edit</button><button type="button" class="x" data-a="del" data-i="'+i+'">Delete</button></div>':'')+'</div>'}).join(""):'<div class="mut" style="padding:8px 0">No staff yet. Add one above.</div>';
  stChk();pvRender()}
-function stChk(){var a=$("pvsa");if(!a)return;var n=$("pvsn").value.trim(),raw=$("pvss").value.trim(),v=stNum(raw),nt=$("pvsnote");
- var dup=!!n&&staff.some(function(e){return e.n.toLowerCase()===n.toLowerCase()}),bad=(n||raw!=="")&&(!n||!(v>0));
- if(nt)nt.textContent=dup?"That staff name already exists.":bad?"Enter a name and a salary above zero.":"";
- a.disabled=!(isAdmin&&n&&v>0&&!dup)}
+var stBusy=false;
+function stNorm(s){return String(s||"").toLowerCase().replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim()}
+function stLev(a,b){var m=a.length,n=b.length,p=[],i,j;if(Math.abs(m-n)>2)return 9;for(j=0;j<=n;j++)p[j]=j;
+ for(i=1;i<=m;i++){var c=[i];for(j=1;j<=n;j++)c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));p=c}return p[n]}
+/* returns {e:existing staff, same:bool} when the name equals or looks like an existing staff name; skip = index being edited */
+function stSimilar(name,skip){var a=stNorm(name);if(!a)return null;var at=a.split(" "),ac=a.replace(/ /g,"");
+ for(var i=0;i<staff.length;i++){if(i===skip)continue;var e=staff[i],b=stNorm(e.n);if(!b)continue;
+  if(b===a)return{e:e,same:true};
+  var bt=b.split(" "),bc=b.replace(/ /g,"");
+  if(ac===bc)return{e:e,same:false};
+  if(at.slice().sort().join(" ")===bt.slice().sort().join(" "))return{e:e,same:false};
+  var sh=at.length<=bt.length?at:bt,lg=at.length<=bt.length?bt:at;
+  if(sh.length<lg.length&&sh.every(function(w){return lg.indexOf(w)>=0}))return{e:e,same:false};
+  var mn=Math.min(ac.length,bc.length);
+  if(mn>=4&&stLev(ac,bc)<=(mn>=9?2:1))return{e:e,same:false}}
+ return null}
+function stSimMsg(r){return r.same?'That staff name already exists.':'Too similar to existing staff "'+r.e.n+'". Change the name (add a surname or initial) so they are not confused.'}
+function stChk(){var a=$("pvsa");if(!a)return;var nt=$("pvsnote");if(stBusy){if(nt)nt.textContent="";return}
+ var n=$("pvsn").value.trim(),raw=$("pvss").value.trim(),v=stNum(raw);
+ var sim=n?stSimilar(n,-1):null,bad=(n||raw!=="")&&(!n||!(v>0));
+ if(nt)nt.textContent=sim?stSimMsg(sim):bad?"Enter a name and a salary above zero.":"";
+ a.disabled=!(isAdmin&&n&&v>0&&!sim)}
 function stBind(){if(stBound||!db)return;stBound=true;rsnBind();try{db.collection("pvpays").onSnapshot(function(sn){var _v=sn.docs.map(function(d){return Object.assign({id:d.id},d.data())});pvp=_v.filter(function(x){return!x.deleted});trashV=_v.filter(function(x){return x.deleted});pvRender();try{renderTrash()}catch(e){}},function(){})}catch(x){}try{db.doc("config/staff").onSnapshot(function(sn){staff=sn.exists&&sn.data().list||[];stLoaded=true;stBuild();try{gateCheck()}catch(e){}},function(){stLoaded=true;try{gateCheck()}catch(e){}})}catch(x){}}
 ["pvper","pvday","pvmon","pvyr"].forEach(function(i){$(i).addEventListener("change",pvRender);$(i).addEventListener("input",pvRender)});
 $("pvb").addEventListener("click",function(ev){var b=ev.target.closest("button[data-i]");if(!b)return;var w=pvKeys[b.dataset.i];if(w)pvPay(w)});
@@ -860,7 +878,7 @@ function stEdit(i){var e=staff[i];if(!e)return;
  $("modal").classList.remove("hide");$("seN").onclick=closeM;
  $("seY").onclick=async function(){var nn=$("sen").value.trim(),v=stNum($("ses").value),m=$("sem");
   if(!nn||!(v>0)){m.textContent="Enter a name and a salary above zero.";return}
-  if(staff.some(function(x,j){return j!==i&&x.n.toLowerCase()===nn.toLowerCase()})){m.textContent="That staff name already exists.";return}
+  var sim=stSimilar(nn,i);if(sim){m.textContent=stSimMsg(sim);return}
   if(nn===e.n&&v===e.s){closeM();return}
   var b=$("seY");b.disabled=true;
   try{await stPut(staff.map(function(x,j){return j===i?Object.assign({},x,{n:nn,s:v}):x}),false);if(nn!==e.n)await stRename(e.n,nn);closeM();toast("Staff updated")}catch(x){b.disabled=false;if(!pwCancel(x))stErr(x)}}}
@@ -870,9 +888,11 @@ async function stDel(i){var e=staff[i];if(!e)return;var n=pvp.filter(function(x)
 $("pvsn").addEventListener("input",stChk);$("pvss").addEventListener("input",stChk);
 $("pvss").addEventListener("focusin",function(){var t=sRawSal(this.value);if(t!==""&&isFinite(Number(t)))this.value=String(Number(t))});
 $("pvss").addEventListener("focusout",function(){this.value=sFmtSal(this.value)});
-$("pvsa").onclick=async function(){var n=$("pvsn").value.trim(),v=stNum($("pvss").value);if(!n||!(v>0)||staff.some(function(e){return e.n.toLowerCase()===n.toLowerCase()}))return;var b=this;b.disabled=true;
+$("pvsa").onclick=async function(){var n=$("pvsn").value.trim().replace(/\s+/g," "),v=stNum($("pvss").value);if(!n||!(v>0))return;
+ var sim=stSimilar(n,-1);if(sim){stChk();toast(stSimMsg(sim),true);return}
+ var b=this;b.disabled=true;stBusy=true;
  try{await stPut(staff.concat([{n:n,s:v,p:false}]),false);$("pvsn").value="";$("pvss").value="";toast("Staff added. Tap Add to payroll to put them on the salary list")}catch(x){if(!pwCancel(x))stErr(x)}
- stChk()};
+ stBusy=false;stChk()};
 $("pvsl").addEventListener("click",function(ev){var b=ev.target.closest("button[data-a]");if(!b)return;var i=+b.dataset.i,a=b.dataset.a;if(a==="on")stPay(i,true);else if(a==="off")stPay(i,false);else if(a==="ed")stEdit(i);else if(a==="del")stDel(i)});
 
 var pvp=[],trashV=[];try{pvp=JSON.parse(localStorage.getItem("pvp_v1")||"[]")}catch(x){}try{trashV=JSON.parse(localStorage.getItem("pvt_v1")||"[]")}catch(x){}
@@ -892,8 +912,31 @@ function pvRender(){if(!$("pvper"))return;var td=today();if(!$("pvday").value)$(
   var u=Math.max(0,Math.round((e.s-pd)*100)/100);tU+=u;var i=pvKeys.push({k:e.n,s:e.s})-1;
   return'<tr><td>'+esc(e.n)+'</td><td>'+fmt(e.s)+'</td><td>'+fmt(pd)+'</td><td class="'+(u>0?"neg":"")+'">'+fmt(u)+'<br><button class="mp" data-i="'+i+'">Pay</button></td></tr>'}).join("");
  $("pvtp").textContent=fmt(tP);$("pvtu").textContent=fmt(Math.round(tU*100)/100);$("pvb").innerHTML=rows?rows+'<tr><td><b>Total</b></td><td><b>'+fmt(tS)+'</b></td><td><b>'+fmt(tP)+'</b></td><td class="neg"><b>'+fmt(Math.round(tU*100)/100)+'</b></td></tr>':'<tr><td colspan="4" class="mut">No staff on payroll yet. Add a staff below, then tap Add to payroll.</td></tr>';
+ try{var _pn=staff.filter(stOn).length;["pvdl","pvsh","pvtx"].forEach(function(i){var b=$(i);if(b)b.disabled=!_pn})}catch(e){}
  var h=inP.slice().sort(function(a,b){return(b.ts||0)-(a.ts||0)});
  $("pvh").innerHTML=h.length?h.map(function(x){return'<tr><td>'+esc(x.date||"")+'</td><td>'+esc(x.who)+'<div class="mut">'+esc(x.month||"")+'</div></td><td>'+fmt(x.amount)+'</td><td><button class="undo" data-p="'+esc(String(x.id))+'">Remove</button></td></tr>'}).join(""):'<tr><td colspan="4" class="mut">No payments found.</td></tr>'}
+function pvSharePdf(blob,name,title){var f=null;try{f=new File([blob],name,{type:"application/pdf"})}catch(x){}
+ if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:title}).catch(function(){})}
+ else{dlf(name,blob);toast("Sharing is not available here. PDF downloaded instead.")}}
+function pvDoc(){var P=pvP(),td=today(),lab=P.k==="d"?"Date: "+($("pvday").value||td):P.k==="m"?"Month: "+($("pvmon").value||td.slice(0,7)):P.k==="y"?"Year: "+String($("pvyr").value||td.slice(0,4)):"All dates";
+ var pr=staff.filter(stOn);if(!pr.length){toast("No staff on payroll yet");return null}
+ var all={};staff.forEach(function(e){all[e.n]=1});var inP=pvp.filter(function(x){return all[x.who]&&P.t(x)});
+ var tS=0,tP=0,tU=0,rows=pr.map(function(e){var pd=0;inP.forEach(function(x){if(x.who===e.n)pd+=+x.amount||0});var u=Math.max(0,Math.round((e.s-pd)*100)/100);tS+=e.s;tP+=pd;tU+=u;return{n:e.n,s:e.s,p:pd,u:u}});
+ tU=Math.round(tU*100)/100;
+ var h=inP.slice().sort(function(a,b){return(b.ts||0)-(a.ts||0)}),pt=0;h.forEach(function(x){pt+=+x.amount||0});
+ var it=[{t:"h",s:"Private staff salaries"},{t:"tbl",h:["Staff","Salary","Paid","Unpaid"],rows:rows.map(function(r){return[r.n,fmt(r.s),fmt(r.p),fmt(r.u)]}).concat([["Total",fmt(tS),fmt(tP),fmt(tU)]])},{t:"h",s:"Payments"}];
+ if(h.length)it.push({t:"tbl",h:["Date","Staff","For month","Amount"],rows:h.map(function(x){return[x.date||"",x.who,x.month||"",fmt(x.amount)]}).concat([["Total","","",fmt(pt)]])});else it.push({t:"p",s:"No payments in this period."});
+ return{it:it,lab:lab,rows:rows,tS:tS,tP:tP,tU:tU,h:h,pt:pt,name:"private-staff-"+lab.replace(/[^\w-]+/g,"-")+".pdf"}}
+$("pvdl").onclick=function(){try{var d=pvDoc();if(!d)return;dlf(d.name,pdfBlob("Private staff salaries","Period: "+d.lab,d.it));toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}};
+$("pvsh").onclick=function(){try{var d=pvDoc();if(d)pvSharePdf(pdfBlob("Private staff salaries","Period: "+d.lab,d.it),d.name,"Private staff salaries")}catch(x){alert("Could not create the PDF")}};
+$("pvtx").onclick=function(){try{var d=pvDoc();if(!d)return;var L=["*Private staff salaries*","Period: "+d.lab,""];
+ d.rows.forEach(function(r){L.push(r.n+": salary "+fmt(r.s)+", paid "+fmt(r.p)+", unpaid "+fmt(r.u))});
+ L.push("","*Total: salary "+fmt(d.tS)+", paid "+fmt(d.tP)+", unpaid "+fmt(d.tU)+"*");
+ if(d.h.length){L.push("","Payments:");d.h.forEach(function(x){L.push((x.date||"")+" | "+x.who+(x.month?" ("+x.month+")":"")+" | "+fmt(x.amount))});L.push("Total paid: "+fmt(d.pt))}else L.push("","No payments in this period.");
+ if(typeof appCfg==="object"&&appCfg.footer)L.push("",appCfg.footer);
+ var txt=L.join("\n");
+ if(navigator.share){navigator.share({title:"Private staff salaries",text:txt}).catch(function(){})}
+ else{window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}}catch(x){alert("Could not create the text")}};
 function pvPay(w){if(needRates()){gatePop();return}var P=pvP(),m0=P.k==="m"?P.mm:today().slice(0,7);
  $("mbody").innerHTML='<b style="font-size:18px">Pay salary</b><div class="mut">'+esc(w.k)+'</div><label>Salary month</label><input type="month" id="pvsm" value="'+m0+'"><label>Amount paid</label><input type="number" inputmode="decimal" id="pvamt"><div class="mut" id="pvun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="pvdate" value="'+today()+'"><div class="b2"><button class="pr" id="pvOK">Confirm paid</button><button id="pvNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("pvNo").onclick=closeM;
