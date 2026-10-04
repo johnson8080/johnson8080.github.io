@@ -478,6 +478,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <section id="unp" class="hide"><div id="ualert"></div><div id="orphc"></div><div class="card"><b class="ut">TOTAL UNPAID BALANCES</b><div class="ufr"><div class="ucol"><div class="ul">MONTH</div><div class="umw em"><input type="month" id="umon" required><span class="uph">Select month</span></div></div><div class="ucol"><div class="ul" id="utl">TOTAL UNPAID</div><div class="utb"><b id="utot">0</b></div></div></div><div class="cfr cfl noprt hide" id="cfunp"><button type="button" class="ed" data-cf="unp">Clear filters</button></div></div>
 <div class="card"><b class="ut">UNPAID DRIVER BALANCES</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ud"></tbody></table></div></div>
 <div class="card"><b class="ut">UNPAID LOADER BALANCES</b><div class="mut">Only entries with a loader deposit. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ul"></tbody></table></div></div>
+<div class="card"><b class="ut">UNPAID PRIV STAFF BALANCES</b><div class="mut" id="usn">Monthly salary minus salary paid for the month. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Staff</th><th>Salary</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="us"></tbody></table></div></div>
 <div class="card"><b class="ut">PAID SALARY HISTORY</b><div class="wrap"><table><tbody id="ph"></tbody></table></div></div>
 </section>
 <section id="set" class="hide"><div class="card" id="rfuel"><div class="rh">Fuel rates</div><div class="mut" id="frn"></div>
@@ -674,6 +675,7 @@ function payM(kind,who,u){if(needRates()){gatePop();return}$("mbody").innerHTML=
   if(wm.length&&$("pOK").dataset.c!==wm.join("|")){$("pOK").dataset.c=wm.join("|");$("pwarn").innerHTML=wm.join("<br>")+"<br>Tap again to confirm.";$("pOK").textContent="Confirm anyway";return}
   var p={kind:kind,who:who,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pOK").disabled=true;
   try{if(db)await db.collection("payments").add(p);else{p.id="p"+p.ts;pays.push(p);render()}closeM();toast("Marked paid")}catch(x){$("pOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
+$("us").onclick=function(ev){var b=ev.target.closest("button[data-i]");if(!b)return;var w=payKeys.staff[b.dataset.i];if(w)pvPay(w,$("umon").value||today().slice(0,7))};
 ["driver","loader"].forEach(function(kd){$(kd==="driver"?"ud":"ul").onclick=function(ev){var b=ev.target.closest("button[data-i]");if(!b)return;var w=payKeys[kd][b.dataset.i];if(w)payM(kd,w.k,w.u)}});
 $("ph").onclick=async function(ev){var b=ev.target.closest("button[data-p]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
  var pid=b.dataset.p;try{await softDel("payments",pid,pays,trashP);render();prev();toast("Payment moved to Deleted")}catch(x){toast("Could not remove")}};
@@ -701,7 +703,7 @@ function render(){
  var PL=livePays().filter(function(p){return inr(p.date)}).sort(function(a,b){return b.ts-a.ts});
  PL.forEach(function(p){var ld=p.kind==="loader",T=ld?L:D,x=T[p.who]||(T[p.who]=ld?{o:0,p:0}:{h:0,a:0,p:0});x.p+=p.amount});
  var btn=function(u){return u>0&&canWrite?'<div style="margin-top:5px"><button class="mp" data-i="#">Pay</button></div>':""};
- payKeys={driver:[],loader:[]};
+ payKeys={driver:[],loader:[],staff:[]};
  $("ud").innerHTML=Object.keys(D).map(function(k){var x=D[k],u=x.h-x.a-x.p;uD+=u;uAl+=ualN(u);var i=payKeys.driver.push({k:k,u:u})-1;
   return"<tr><td>"+esc(k)+orph(k)+ualB(u)+"</td><td>"+fmt(x.h)+"</td><td>"+fmt(x.a)+"</td><td>"+fmt(x.p)+"</td><td><b>"+up(u)+"</b>"+btn(u).replace("#",i)+"</td></tr>"}).join("")
   +(Object.keys(D).length?'<tr style="font-weight:700"><td colspan="4">Total driver balance</td><td>'+up(uD)+'</td></tr>':'<tr><td class="mut" colspan="5">No driver balances</td></tr>');
@@ -709,7 +711,10 @@ function render(){
   return"<tr><td>"+esc(k)+(x.o===0&&x.p>0?' <span class="mut">(no loader entries)</span>':"")+ualB(u)+"</td><td>"+fmt(x.o)+"</td><td>"+fmt(x.p)+"</td><td><b>"+up(u)+"</b>"+btn(u).replace("#",i)+"</td></tr>"}).join("")
   +(Object.keys(L).length?'<tr style="font-weight:700"><td colspan="3">Total loader balance</td><td>'+up(uL)+'</td></tr>':'<tr><td class="mut" colspan="4">No loader balances</td></tr>');
  $("ph").innerHTML=PL.length?PL.map(function(p){return"<tr><td>"+esc(p.date.slice(5))+"</td><td>"+esc(p.who)+" ("+esc(p.kind)+")</td><td>"+fmt(p.amount)+"</td><td>"+(own(p)?'<button class="undo" data-p="'+esc(p.id)+'">Delete</button>':"")+"</td></tr>"}).join(""):'<tr><td class="mut">No payments yet</td></tr>';
- $("utot").textContent=fmt(uD+uL);$("utl").textContent=um?"MONTHLY UNPAID":"TOTAL UNPAID";var ua=$("ualert");if(ua)ua.innerHTML=uAl?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+uAl+" balance"+(uAl>1?"s are":" is")+" above "+fmt(appCfg.alertAt)+"</b> (marked &#9888; below).</div>":"";hookRender();
+ var smon=um||today().slice(0,7),SU=staffUnpaid(smon),uS=0;
+ $("us").innerHTML=SU.rows.length?SU.rows.map(function(x){uS+=x.u;uAl+=ualN(x.u);var i=payKeys.staff.push({k:x.k,s:x.s})-1;return"<tr><td>"+esc(x.k)+ualB(x.u)+"</td><td>"+fmt(x.s)+"</td><td>"+fmt(x.p)+"</td><td><b>"+up(x.u)+"</b>"+btn(x.u).replace("#",i)+"</td></tr>"}).join("")+'<tr style="font-weight:700"><td colspan="3">Total priv staff balance</td><td>'+up(uS)+'</td></tr>':'<tr><td class="mut" colspan="4">No staff on payroll</td></tr>';
+ $("usn").textContent="Salary month: "+smon+(um?"":" (current month)")+". Monthly salary minus salary paid for that month. Tap Pay to record a payment (full or part).";
+ $("utot").textContent=fmt(uD+uL+uS);$("utl").textContent=um?"MONTHLY UNPAID":"TOTAL UNPAID";var ua=$("ualert");if(ua)ua.innerHTML=uAl?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+uAl+" balance"+(uAl>1?"s are":" is")+" above "+fmt(appCfg.alertAt)+"</b> (marked &#9888; below).</div>":"";hookRender();
  var TT=0,TP=0,AL=alloc();sorted.forEach(function(e){TT+=e.tonnes;TP+=pay(e)});
  $("logl").innerHTML='<div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Trip expense</th><th>Unpaid</th><th>Notes</th></tr></thead><tbody>'+(sorted.length?sorted.slice(0,300).map(function(e){var o=AL[e.id]||{dn:0,dr:0,ln:0,lr:0},hb=o.dn!==0||(e.deposit>0&&o.ln!==0),u=o.dr+(e.deposit>0?o.lr:0),uc=!hb?"—":Math.round(u)===0?'<span style="color:var(--ok);font-weight:700">'+(o.da>0&&!o.dp&&!o.lp?"Advance":"Paid")+'</span>':up(u);
   return'<tr data-id="'+esc(e.id)+'" style="cursor:pointer"><td>'+esc(e.date.slice(5))+'</td><td>'+esc(e.vehicle)+'</td><td>'+esc(e.driver||"—")+'</td><td>'+(+e.tonnes||0).toFixed(2)+'</td><td>'+fmt(pay(e))+'</td><td>'+uc+'</td><td>'+(e.note?"Available":"—")+'</td></tr>'}).join("")+
@@ -819,7 +824,7 @@ function ualHome(){var el=$("ualhome");if(!el)return;var c=0;try{var al=+appCfg.
  entries.forEach(function(e){var k=e.driver||"(No driver name)",d=D[k]||(D[k]={h:0,a:0,p:0});d.h+=dheld(e);d.a+=e.advance||0;if(e.deposit>0){var l=L[k]||(L[k]={o:0,p:0});l.o+=e.tonnes*rt(e)-e.deposit}});
  liveAdvs().forEach(function(x){var d=D[x.driver]||(D[x.driver]={h:0,a:0,p:0});d.a+=x.amount});
  livePays().forEach(function(q){var ld=q.kind==="loader",T=ld?L:D,x=T[q.who]||(T[q.who]=ld?{o:0,p:0}:{h:0,a:0,p:0});x.p+=q.amount});
- Object.keys(D).forEach(function(k){c+=ualN(D[k].h-D[k].a-D[k].p)});Object.keys(L).forEach(function(k){c+=ualN(L[k].o-L[k].p)})}}catch(x){c=0}
+ Object.keys(D).forEach(function(k){c+=ualN(D[k].h-D[k].a-D[k].p)});Object.keys(L).forEach(function(k){c+=ualN(L[k].o-L[k].p)});staffUnpaid(today().slice(0,7)).rows.forEach(function(x){c+=ualN(x.u)})}}catch(x){c=0}
  var h=c?'<div class="note" id="ualgo" role="button" tabindex="0" style="border:2px solid var(--bad);color:var(--tx);cursor:pointer"><b>'+c+' unpaid balance'+(c>1?'s':'')+' above '+fmt(appCfg.alertAt)+'</b> \u00b7 tap to view \u203a</div>':"";if(el.__h!==h){el.innerHTML=h;el.__h=h}}
 $("ualhome").addEventListener("click",function(ev){if(!ev.target.closest("#ualgo"))return;var g=document.querySelector('.main [data-g="pay"]');if(g)g.click();var t=document.querySelector('#barpay [data-t="unp"]');if(t)t.click();try{scrollTo(0,0)}catch(x){}});
 function hookRender(){try{ualHome()}catch(x){}try{rsnOrphUi()}catch(x){}}
@@ -842,7 +847,7 @@ function stOn(e){return e.p!==false}
 function stBuild(){var c=$("pvsl");if(!c)return;var adm=isAdmin,a=$("pvsadd");if(a)a.classList.toggle("hide",!adm);
  c.innerHTML=staff.length?staff.map(function(e,i){var on=stOn(e);
   return'<div class="item" style="align-items:center"><div style="min-width:0;flex:1"><b>'+esc(e.n)+'</b><div class="mut">'+fmt(e.s)+' / month \u00b7 '+(on?'<span style="color:var(--ok);font-weight:700">On payroll</span>':'Not on payroll')+'</div></div>'+(adm?'<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:62%">'+(on?'<button type="button" class="mp rm" data-a="off" data-i="'+i+'">Remove from payroll</button>':'<button type="button" class="mp" data-a="on" data-i="'+i+'">Add to payroll</button>')+'<button type="button" class="ed" data-a="ed" data-i="'+i+'">Edit</button><button type="button" class="x" data-a="del" data-i="'+i+'">Delete</button></div>':'')+'</div>'}).join(""):'<div class="mut" style="padding:8px 0">No staff yet. Add one above.</div>';
- stChk();pvRender()}
+ stChk();pvRender();try{rq()}catch(e){}}
 var stBusy=false;
 function stNorm(s){return String(s||"").toLowerCase().replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim()}
 function stLev(a,b){var m=a.length,n=b.length,p=[],i,j;if(Math.abs(m-n)>2)return 9;for(j=0;j<=n;j++)p[j]=j;
@@ -865,7 +870,7 @@ function stChk(){var a=$("pvsa");if(!a)return;var nt=$("pvsnote");if(stBusy){if(
  var sim=n?stSimilar(n,-1):null,bad=(n||raw!=="")&&(!n||!(v>0));
  if(nt)nt.textContent=sim?stSimMsg(sim):bad?"Enter a name and a salary above zero.":"";
  a.disabled=!(isAdmin&&n&&v>0&&!sim)}
-function stBind(){if(stBound||!db)return;stBound=true;rsnBind();try{db.collection("pvpays").onSnapshot(function(sn){var _v=sn.docs.map(function(d){return Object.assign({id:d.id},d.data())});pvp=_v.filter(function(x){return!x.deleted});trashV=_v.filter(function(x){return x.deleted});pvRender();try{renderTrash()}catch(e){}},function(){})}catch(x){}try{db.doc("config/staff").onSnapshot(function(sn){staff=sn.exists&&sn.data().list||[];stLoaded=true;stBuild();try{gateCheck()}catch(e){}},function(){stLoaded=true;try{gateCheck()}catch(e){}})}catch(x){}}
+function stBind(){if(stBound||!db)return;stBound=true;rsnBind();try{db.collection("pvpays").onSnapshot(function(sn){var _v=sn.docs.map(function(d){return Object.assign({id:d.id},d.data())});pvp=_v.filter(function(x){return!x.deleted});trashV=_v.filter(function(x){return x.deleted});pvRender();try{renderTrash()}catch(e){}try{rq()}catch(e){}},function(){})}catch(x){}try{db.doc("config/staff").onSnapshot(function(sn){staff=sn.exists&&sn.data().list||[];stLoaded=true;stBuild();try{gateCheck()}catch(e){}},function(){stLoaded=true;try{gateCheck()}catch(e){}})}catch(x){}}
 ["pvper","pvday","pvmon","pvyr"].forEach(function(i){$(i).addEventListener("change",pvRender);$(i).addEventListener("input",pvRender)});
 $("pvb").addEventListener("click",function(ev){var b=ev.target.closest("button[data-i]");if(!b)return;var w=pvKeys[b.dataset.i];if(w)pvPay(w)});
 $("pvh").addEventListener("click",async function(ev){var b=ev.target.closest("button[data-p]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
@@ -911,6 +916,7 @@ function pvP(){var k=$("pvper").value||"all",td=today();
  if(k==="month"){var mm=$("pvmon").value||td.slice(0,7);return{k:"m",mm:mm,t:function(x){return x.month===mm}}}
  if(k==="year"){var yy=String($("pvyr").value||td.slice(0,4));return{k:"y",t:function(x){return String(x.month||"").slice(0,4)===yy}}}
  return{k:"all",t:function(){return true}}}
+function staffUnpaid(m){var rows=[],t=0;staff.filter(stOn).forEach(function(e){var pd=0;pvp.forEach(function(x){if(x.who===e.n&&x.month===m)pd+=+x.amount||0});var u=Math.max(0,Math.round((e.s-pd)*100)/100);rows.push({k:e.n,s:e.s,p:pd,u:u});t+=u});return{rows:rows,t:Math.round(t*100)/100,m:m}}
 function pvUn(nm,sal,m){var pd=0;pvp.forEach(function(x){if(x.who===nm&&x.month===m)pd+=+x.amount||0});return Math.round((sal-pd)*100)/100}
 function pvRender(){if(!$("pvper"))return;var td=today();if(!$("pvday").value)$("pvday").value=td;if(!$("pvmon").value)$("pvmon").value=td.slice(0,7);if(!$("pvyr").value)$("pvyr").value=td.slice(0,4);
  var P=pvP(),tS=0,tP=0,tU=0;pvKeys=[];
@@ -945,7 +951,7 @@ $("pvtx").onclick=function(){try{var d=pvDoc();if(!d)return;var L=["*Private sta
  var txt=L.join("\n");
  if(navigator.share){navigator.share({title:"Private staff salaries",text:txt}).catch(function(){})}
  else{window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}}catch(x){alert("Could not create the text")}};
-function pvPay(w){if(needRates()){gatePop();return}var P=pvP(),m0=P.k==="m"?P.mm:today().slice(0,7);
+function pvPay(w,mon){if(needRates()){gatePop();return}var P=pvP(),m0=mon||(P.k==="m"?P.mm:today().slice(0,7));
  $("mbody").innerHTML='<b style="font-size:18px">Pay salary</b><div class="mut">'+esc(w.k)+'</div><label>Salary month</label><input type="month" id="pvsm" value="'+m0+'"><label>Amount paid</label><input type="number" inputmode="decimal" id="pvamt"><div class="mut" id="pvun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="pvdate" value="'+today()+'"><div class="b2"><button class="pr" id="pvOK">Confirm paid</button><button id="pvNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("pvNo").onclick=closeM;
  var up=function(){var u=pvUn(w.k,w.s,$("pvsm").value);$("pvamt").value=u>0?u:"";$("pvun").textContent="Unpaid for this month: "+fmt(u)+". Lower the amount for a part payment."};up();$("pvsm").onchange=up;
@@ -953,7 +959,7 @@ function pvPay(w){if(needRates()){gatePop();return}var P=pvP(),m0=P.k==="m"?P.mm
   if(isLocked(pd)){alert("That month is locked. Unlock it in Update Rates first.");return}
   if(a>u+0.001&&$("pvOK").dataset.c!=="1"){$("pvOK").dataset.c="1";$("pvOK").textContent="Amount is more than unpaid. Tap again";return}
   var q={who:w.k,month:m,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pvOK").disabled=true;
-  try{if(db)await db.collection("pvpays").add(q);else{q.id="v"+q.ts;pvp.push(q);pvSave();pvRender()}closeM();toast("Salary marked paid")}catch(x){$("pvOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
+  try{if(db)await db.collection("pvpays").add(q);else{q.id="v"+q.ts;pvp.push(q);pvSave();pvRender();try{rq()}catch(e){}}closeM();toast("Salary marked paid")}catch(x){$("pvOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
 function showCfg(){stBind();stBuild();var s=paySaved;$("rate").value=s?cfg.rate:"";$("dday").value=s?cfg.dday:"";$("dbal").value=s?cfg.dbal:"";$("drep").value=s?repCfg():"";buildRows()}
 var fuels=[];
 function fdset(){if(fedit)return;if(!$("fveh").value){$("fdrv").value="";$("fdh").textContent="Pick a plate first. The driver fills in from the plate.";return}var d=(cfg.vd||{})[$("fveh").value]||"";$("fdrv").value=d;$("fdh").textContent=d?"Driver comes from the vehicle. Change it in Update Rates → Pay rates.":"No driver set for this plate. Set it in Update Rates → Pay rates."}
@@ -1513,12 +1519,13 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    Object.keys(D).forEach(function(k){var x=D[k],u=x.h-x.a-x.p;if(Math.round(u)>0){dr.push({k:k,h:x.h,a:x.a,p:x.p,u:u});td+=u}});
    Object.keys(L).forEach(function(k){var x=L[k],u=x.o-x.p;if(Math.round(u)>0){lo.push({k:k,o:x.o,p:x.p,u:u});tl+=u}});
    dr.sort(function(a,b){return b.u-a.u});lo.sort(function(a,b){return b.u-a.u});
-   return{dr:dr,lo:lo,td:td,tl:tl,t:td+tl}}
+   var SU=staffUnpaid(today().slice(0,7)),sr=SU.rows.filter(function(x){return Math.round(x.u)>0});return{dr:dr,lo:lo,sr:sr,td:td,tl:tl,ts:SU.t,sm:SU.m,t:td+tl+SU.t}}
   function renderUnpCard(){var U=unpaidAll();$("tup").textContent=fmt(U.t)}
-  function showUnp(){var U=unpaidAll(),h='<b style="font-size:18px">Total unpaid</b><div class="pay" style="color:var(--bad);margin:2px 0 8px">'+fmt(U.t)+'</div><div class="mut" style="margin-bottom:8px">Everything not yet paid, all time.</div>';
-   if(!U.dr.length&&!U.lo.length)h+='<div class="mut">Nothing unpaid.</div>';
+  function showUnp(){var U=unpaidAll(),h='<b style="font-size:18px">Total unpaid</b><div class="pay" style="color:var(--bad);margin:2px 0 8px">'+fmt(U.t)+'</div><div class="mut" style="margin-bottom:8px">Drivers and loaders: everything not yet paid, all time. Priv staff: salary for the current month.</div>';
+   if(!U.dr.length&&!U.lo.length&&!U.sr.length)h+='<div class="mut">Nothing unpaid.</div>';
    if(U.dr.length)h+='<b class="ct">Driver balances</b><div class="wrap"><table class="ut"><thead><tr><th>Driver</th><th>Held</th><th>Adv.</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody>'+U.dr.map(function(x){return'<tr><td>'+esc(x.k)+'</td><td>'+fmt(x.h)+'</td><td>'+fmt(x.a)+'</td><td>'+fmt(x.p)+'</td><td class="bd">'+fmt(x.u)+'</td></tr>'}).join("")+'<tr style="font-weight:700"><td colspan="4">Total</td><td class="bd">'+fmt(U.td)+'</td></tr></tbody></table></div>';
    if(U.lo.length)h+='<b style="display:block;margin-top:10px">Loader balances</b><div class="wrap"><table class="ut"><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody>'+U.lo.map(function(x){return'<tr><td>'+esc(x.k)+'</td><td>'+fmt(x.o)+'</td><td>'+fmt(x.p)+'</td><td class="bd">'+fmt(x.u)+'</td></tr>'}).join("")+'<tr style="font-weight:700"><td colspan="3">Total</td><td class="bd">'+fmt(U.tl)+'</td></tr></tbody></table></div>';
+   if(U.sr.length)h+='<b style="display:block;margin-top:10px">Priv staff balances ('+esc(U.sm)+')</b><div class="wrap"><table class="ut"><thead><tr><th>Staff</th><th>Salary</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody>'+U.sr.map(function(x){return'<tr><td>'+esc(x.k)+'</td><td>'+fmt(x.s)+'</td><td>'+fmt(x.p)+'</td><td class="bd">'+fmt(x.u)+'</td></tr>'}).join('')+'<tr style="font-weight:700"><td colspan="3">Total</td><td class="bd">'+fmt(U.ts)+'</td></tr></tbody></table></div>';
    h+='<div class="b2"><button id="uCl">Close</button></div>';
    $("mbody").innerHTML=h;$("modal").classList.remove("hide");$("uCl").onclick=closeM}
   $("tunp").onclick=showUnp;$("tunp").onkeydown=function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();showUnp()}};
