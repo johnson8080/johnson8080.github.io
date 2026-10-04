@@ -1761,6 +1761,18 @@ document.addEventListener("touchend",end,{passive:true});document.addEventListen
 try{var rf=0;try{if(sessionStorage.getItem("fleetPtr")==="1"){sessionStorage.removeItem("fleetPtr");rf=1}}catch(e){}try{if(window.name==="fleetPtr1"){window.name="";rf=1}}catch(e){}if(rf)setTimeout(function(){try{toast("Refreshed!",false)}catch(e){}},900)}catch(e){}
 })();</script>
 <script>(function(){
+/* stop the phone's autofill / password manager from filling saved emails into app boxes (login boxes are left alone) */
+var n=0,SKIP={fbE:1,fbP:1,gP:1},NO={password:1,hidden:1,checkbox:1,radio:1,file:1,button:1,submit:1,range:1,color:1};
+function fix(r){if(!r||r.nodeType!==1)return;var L=(r.matches&&r.matches("input,textarea"))?[r]:[];if(r.querySelectorAll)L=L.concat([].slice.call(r.querySelectorAll("input,textarea")));
+ L.forEach(function(i){if(i.getAttribute("data-nf")||SKIP[i.id])return;var t=(i.type||"text").toLowerCase();if(NO[t])return;
+  i.setAttribute("data-nf","1");
+  i.setAttribute("autocomplete",(t==="number"||t==="date"||t==="month")?"off":"new-password");
+  i.setAttribute("name","nf"+(++n)+"x");
+  i.setAttribute("data-lpignore","true");i.setAttribute("data-1p-ignore","true");i.setAttribute("data-bwignore","true");i.setAttribute("data-form-type","other")})}
+fix(document.body);
+try{new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(fix)})}).observe(document.body,{childList:true,subtree:true})}catch(e){}
+})();</script>
+<script>(function(){
 var $=function(i){return document.getElementById(i)};
 function fire(e){if(e)e.dispatchEvent(new Event("change",{bubbles:true}))}
 function clr(ids){ids.forEach(function(i){if($(i))$(i).value=""})}
