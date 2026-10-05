@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.1.7">
+<meta name="app-version" content="1.1.8">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -421,7 +421,7 @@ setTimeout(function(){try{p.focus()}catch(x){}},50)});
 return gOpen}
 window.askPw=function(){return gate()};window.gateHold=async function(on){if(on){await gate();hold=true}else hold=false};
 var root=fs.collection("fuelTrips").doc("app");
-var OWN="ondeyojohnson@gmail.com",isOwn=(u.email||"").toLowerCase()===OWN,pdoc=fs.collection("presence").doc(u.uid),FV=firebase.firestore.FieldValue;
+var OWN="ondeyojohnson@gmail.com",isOwn=(u.email||"").toLowerCase()===OWN;window.fbIsOwn=isOwn;var pdoc=fs.collection("presence").doc(u.uid),FV=firebase.firestore.FieldValue;
 var PERR="",RERR="";var beat=function(){if(document.visibilityState==="hidden")return;try{pdoc.set({name:who,t:FV.serverTimestamp(),off:false}).then(function(){PERR=""}).catch(function(e){PERR=(e&&e.code)||"error"})}catch(e){}};
 beat();setInterval(beat,60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")beat()});
 window.fbPresenceOff=function(){try{return pdoc.set({name:who,t:FV.serverTimestamp(),off:true}).catch(function(){})}catch(e){return Promise.resolve()}};
@@ -451,7 +451,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button></div>
 <div class="tabs hide" id="barrates" data-g="rates" style="grid-template-columns:minmax(0,1fr)"><button data-t="set" class="on">Update Rates</button></div>
 <div class="tabs hide" id="barfuel" data-g="fuel" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-t="fen">ADD FUEL</button><button data-t="flg" class="on">ALL FUEL LOGS</button></div>
-<div class="tabs hide" id="barov" data-g="ov"><button data-t="ov" class="on">DOWNLOAD REPORT</button><button data-t="sum">Trips</button><button data-t="nts">All Notes</button><button data-t="pguide">DOWNLOAD GUIDE</button><button data-t="fsm">Fuel</button><button data-t="dhs">DELETE HISTORY</button></div>
+<div class="tabs hide" id="barov" data-g="ov"><button data-t="ov" class="on">DOWNLOAD REPORT</button><button data-t="sum">Trips</button><button data-t="nts">All Notes</button><button data-t="pguide">DOWNLOAD GUIDE</button><button data-t="fsm">Fuel</button><button data-t="dhs">ACTIVITY LOG</button></div>
 
 <div id="st1" class="hide"><div class="stats"><div class="stat b"><span>Today's tonnes</span><b id="s1a">0.00 ton</b><small id="s1b">All time: 0.00 ton</small></div><div class="stat g"><span>Today's trip expenses</span><b id="s1c">0.00</b><small id="s1d">All time: 0.00</small></div></div></div><div id="st2" class="hide"><div class="stats"><div class="stat b"><span>Today's litres</span><b id="s2a">0 ltrs</b><small id="s2b">All time: 0 ltrs</small></div><div class="stat g"><span>Today's net profit</span><b id="s2c">0.00</b><small id="s2d">All time: 0.00</small></div></div></div>
 <div class="sn hide" id="sn"></div>
@@ -553,7 +553,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="setrow col"><div class="st"><b>Restore</b><small>You will see a summary and confirm before anything changes.</small></div></div>
 <div class="sacts"><label class="btn alt" id="rbtn" style="position:relative;overflow:hidden;cursor:pointer;display:inline-block;text-align:center"><span>Full restore (JSON)</span><input type="file" id="rfile" accept=".json,application/json,text/plain" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0"></label><button class="btn alt" id="rpaste">Full text restore (JSON)</button></div>
 <div class="sacts"><button class="btn alt" id="snapnow">Save cloud snapshot now</button><button class="btn alt" id="snaprestore">Restore from cloud snapshot</button></div>
-<div class="mut sh" style="padding-bottom:12px">If the file picker does not open, use Paste backup text.</div></div></section><section id="dhs" class="hide"><div class="card" id="trashc"></div></section>  <section id="sales" class="hide"><div class="card" style="text-align:center;padding:36px 18px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Sales</b><div style="font-size:16px;line-height:1.5">A project of selling 30T cane fleet carrier</div></div></section>
+<div class="mut sh" style="padding-bottom:12px">If the file picker does not open, use Paste backup text.</div></div></section><section id="dhs" class="hide"><div class="card hide" id="actc"></div><div class="card" id="trashc"></div></section>  <section id="sales" class="hide"><div class="card" style="text-align:center;padding:36px 18px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Sales</b><div style="font-size:16px;line-height:1.5">A project of selling 30T cane fleet carrier</div></div></section>
 <section id="nts" class="hide"><div class="card"><b class="ct">Notes</b><div class="mut" id="ntc"></div><div id="ntl"></div></div></section>
 
 <section id="stg" class="hide"><div class="ssec" id="s-alerts"><div class="sh2">Alerts</div><div class="ssub">The unpaid alert saves with the Save button. The other two apply on this device straight away.</div>
@@ -1475,7 +1475,30 @@ function advWarns(d,x,dt){var w=[];
  if(advs.some(function(a){return a.driver===d&&a.date===dt&&a.amount===x}))w.push("An identical advance for "+esc(d)+" on "+esc(dt)+" already exists.");
  return w}
 function trashSet(k){return{E:["entries",trashE,entries],F:["fuel",trashF,fuels],A:["advances",trashA,advs],P:["payments",trashP,pays],V:["pvpays",trashV,pvp]}[k]}
-function renderTrash(){var el=$("trashc");if(!el)return;var L=[];
+
+var ACTN=60,ACTF="all";
+function renderAct(){var el=$("actc");if(!el)return;if(!window.fbIsOwn){el.classList.add("hide");return}el.classList.remove("hide");
+ var ev=[],src=[["Trip",entries,trashE,function(x){return(x.vehicle||"")+" · "+(x.driver||"—")+" · "+(+x.tonnes||0)+" t"}],
+  ["Fuel",fuels,trashF,function(x){return(x.vehicle||"")+" · "+(x.litres||0)+" L"}],
+  ["Advance",advs,trashA,function(x){return(x.driver||"")+" · "+fmt(x.amount)}],
+  ["Payment",pays,trashP,function(x){return(x.kind==="loader"?"Loader":"Driver")+" · "+(x.who||"")+" · "+fmt(x.amount)}]];
+ src.forEach(function(sr){sr[1].concat(sr[2]).forEach(function(x){var d=sr[3](x),add=function(at,by,a){if(at)ev.push({at:at,by:by||"",a:a,k:sr[0],d:d,dt:x.date||""})};
+  add(x.ts,x.by,"Added");
+  if(x.hist&&x.hist.length)x.hist.forEach(function(h){add(h.at,h.by,"Edited")});else if(x.editedAt)add(x.editedAt,x.editedBy,"Edited");
+  if(x.restoredAt)add(x.restoredAt,x.restoredBy,"Restored");
+  if(x.deleted&&x.deletedAt)add(x.deletedAt,x.deletedBy,"Deleted")})});
+ ev.sort(function(a,b){return b.at-a.at});
+ var who_=function(b){return!b||b==="local"||b===window.me?"You":b},
+  col={Added:"var(--ok)",Edited:"var(--ac)",Restored:"var(--ac)",Deleted:"var(--bad)"};
+ var L=ACTF==="all"?ev:ev.filter(function(e){return e.a===ACTF}),sh=L.slice(0,ACTN);
+ el.innerHTML='<b class="ct">Activity log</b><div class="mut">Who added, edited, deleted or restored records, and when. Only you can see this.</div>'
+  +'<div class="hch" id="actf" style="margin:10px 0">'+["all","Added","Edited","Deleted","Restored"].map(function(f){return'<button data-f="'+f+'"'+(f===ACTF?' class="on"':"")+'>'+(f==="all"?"All":f)+'</button>'}).join("")+'</div>'
+  +(sh.length?sh.map(function(e){return'<div class="item" style="align-items:flex-start"><div style="min-width:0;flex:1"><b><span style="color:'+col[e.a]+'">'+e.a+'</span> · '+esc(e.k)+'</b><div class="mut">'+esc(e.d)+(e.dt?" · "+esc(e.dt):"")+'</div><div class="mut">'+esc(who_(e.by))+" · "+esc(new Date(e.at).toLocaleString())+'</div></div></div>'}).join("")
+   :'<div class="mut" style="margin-top:8px">No activity yet.</div>')
+  +(L.length>sh.length?'<button class="btn alt" id="actmore" style="margin-top:12px;width:100%">Show more ('+(L.length-sh.length)+' older)</button>':"");
+ $("actf").onclick=function(ev2){var b=ev2.target.closest("button[data-f]");if(!b)return;ACTF=b.dataset.f;ACTN=60;renderAct()};
+ var m=$("actmore");if(m)m.onclick=function(){ACTN+=60;renderAct()}}
+function renderTrash(){try{renderAct()}catch(x){}var el=$("trashc");if(!el)return;var L=[];
  trashE.forEach(function(x){L.push({k:"E",o:x,t:"Trip · "+x.vehicle,s:x.date+" · "+(x.driver||"—")+" · "+x.tonnes+" t"})});
  trashF.forEach(function(x){L.push({k:"F",o:x,t:"Fuel · "+x.vehicle,s:x.date+" · "+x.litres+" L"})});
  trashA.forEach(function(x){L.push({k:"A",o:x,t:"Advance · "+x.driver,s:x.date+" · "+fmt(x.amount)})});
@@ -1558,7 +1581,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    [].forEach.call(document.querySelectorAll(".qm button"),function(b){b.onclick=function(){closeM();go(L[b.dataset.i][0])}})}
   h.onclick=openQ;h.onkeydown=function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();openQ()}}})();
  var MP={hist:"h",enter:"t",advt:"p",log:"t",fen:"f",flg:"f",unp:"p",pvt:"p",pvadd:"p",psl:"p",sum:"r",fsm:"r",ov:"r",pguide:"r",dhs:"r",nts:"r",sales:"s",set:"m"};
-  var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","PRIV STAFF","pvt"],["pay:pvadd","ADD PRIV STAFF","pvadd"],["pay:psl","PAYSLIP","psl"]],r:[["ov:ov","DOWNLOAD REPORT","ov"],["ov:sum","TRIPS","sum"],["ov:nts","ALL NOTES","nts"],["ov:pguide","DOWNLOAD GUIDE","pguide"],["ov:fsm","FUEL","fsm"],["ov:dhs","DELETE HISTORY","dhs"]],m:[["rates:set","Update Rates","set"]]};
+  var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","PRIV STAFF","pvt"],["pay:pvadd","ADD PRIV STAFF","pvadd"],["pay:psl","PAYSLIP","psl"]],r:[["ov:ov","DOWNLOAD REPORT","ov"],["ov:sum","TRIPS","sum"],["ov:nts","ALL NOTES","nts"],["ov:pguide","DOWNLOAD GUIDE","pguide"],["ov:fsm","FUEL","fsm"],["ov:dhs","ACTIVITY LOG","dhs"]],m:[["rates:set","Update Rates","set"]]};
   var lastK=null;
   function sub(k,cur){var bar=$("sn"),L=CATS[k]||[];
    if(L.length<2){bar.classList.add("hide");bar.innerHTML="";lastK=null;return}
