@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.1.6">
+<meta name="app-version" content="1.1.7">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -422,21 +422,22 @@ return gOpen}
 window.askPw=function(){return gate()};window.gateHold=async function(on){if(on){await gate();hold=true}else hold=false};
 var root=fs.collection("fuelTrips").doc("app");
 var OWN="ondeyojohnson@gmail.com",isOwn=(u.email||"").toLowerCase()===OWN,pdoc=fs.collection("presence").doc(u.uid),FV=firebase.firestore.FieldValue;
-var beat=function(){if(document.visibilityState==="hidden")return;try{pdoc.set({name:who,t:FV.serverTimestamp()}).catch(function(){})}catch(e){}};
+var PERR="",RERR="";var beat=function(){if(document.visibilityState==="hidden")return;try{pdoc.set({name:who,t:FV.serverTimestamp(),off:false}).then(function(){PERR=""}).catch(function(e){PERR=(e&&e.code)||"error"})}catch(e){}};
 beat();setInterval(beat,60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")beat()});
-window.fbPresenceOff=function(){try{return pdoc.delete().catch(function(){})}catch(e){return Promise.resolve()}};
+window.fbPresenceOff=function(){try{return pdoc.set({name:who,t:FV.serverTimestamp(),off:true}).catch(function(){})}catch(e){return Promise.resolve()}};
 if(isOwn){var pb=document.getElementById("onl"),pp=null,PL=[];
 var ago=function(t){if(!t)return"not seen yet";var m=Math.floor((Date.now()-t)/60000);if(m<1)return"just now";if(m<60)return m+" min ago";var h=Math.floor(m/60);if(h<24)return h+" h ago";return new Date(t).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})};
-var draw=function(){if(!pb)return;var now=Date.now(),L=PL.slice().sort(function(a,b){return b.t-a.t}),on=L.filter(function(x){return x.t&&now-x.t<150000});
+var draw=function(){if(!pb)return;var now=Date.now(),L=PL.slice().sort(function(a,b){return b.t-a.t}),on=L.filter(function(x){return x.t&&!x.off&&now-x.t<150000});
 pb.classList.add("on");pb.querySelector("b").textContent=on.length;pb.querySelector(".od").style.background=on.length?"#22c55e":"#6b7280";
 if(pp&&pp.style.display!=="none"){pp.textContent="";var hd=document.createElement("div");hd.textContent="Other accounts";hd.style.cssText="font-weight:800;margin-bottom:6px";pp.appendChild(hd);
-if(!L.length){var em=document.createElement("div");em.textContent="No other account has opened the app yet.";em.style.opacity=".7";pp.appendChild(em)}
-L.forEach(function(x){var r=document.createElement("div");r.style.cssText="display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--ln)";var a=document.createElement("span");a.textContent=x.name;var st=document.createElement("span"),o=x.t&&now-x.t<150000;st.textContent=o?"Online":"Last seen "+ago(x.t);st.style.cssText="font-weight:700;color:"+(o?"#22c55e":"var(--mut)");r.appendChild(a);r.appendChild(st);pp.appendChild(r)})}};
+[RERR?"Cannot read other accounts ("+RERR+"). Check the Firestore rules for presence.":"",PERR?"This device could not save its own presence ("+PERR+"). Check the Firestore rules.":""].forEach(function(t){if(!t)return;var w=document.createElement("div");w.textContent=t;w.style.cssText="color:#f87171;font-size:12.5px;margin:4px 0";pp.appendChild(w)});
+if(!L.length&&!RERR){var em=document.createElement("div");em.textContent="No other account is listed yet.";em.style.opacity=".7";pp.appendChild(em)}
+L.forEach(function(x){var r=document.createElement("div");r.style.cssText="display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--ln)";var a=document.createElement("span");a.textContent=x.name;var st=document.createElement("span"),o=x.t&&!x.off&&now-x.t<150000;st.textContent=o?"Online":"Last seen "+ago(x.t);st.style.cssText="font-weight:700;color:"+(o?"#22c55e":"var(--mut)");r.appendChild(a);r.appendChild(st);pp.appendChild(r)})}};
 if(pb){pp=document.createElement("div");pp.id="onp";pp.style.display="none";document.body.appendChild(pp);
 pb.onclick=function(ev){ev.stopPropagation();pp.style.display=pp.style.display==="none"?"block":"none";draw()};
 document.addEventListener("click",function(ev){if(pp.style.display!=="none"&&!pp.contains(ev.target))pp.style.display="none"});
 draw();setInterval(draw,20000)}
-fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({name:x.name||"user",t:x.t&&x.t.toMillis?x.t.toMillis():0})});draw()},function(){})}
+fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({name:x.name||"user",t:x.t&&x.t.toMillis?x.t.toMillis():0,off:!!x.off})});RERR="";draw()},function(e){RERR=(e&&e.code)||"error";draw()})}
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
 set:function(d){if(!COLS[c])return r.set(d);return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
