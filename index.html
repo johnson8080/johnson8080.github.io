@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.1.5">
+<meta name="app-version" content="1.1.6">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -400,7 +400,7 @@ firebase.initializeApp(CFG);var auth=firebase.auth(),fs=firebase.firestore();fs.
 var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){off();r(x)})});if(!u)u=await login(auth);
 var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs)}
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
-setTimeout(function(){var s=document.getElementById("stg");if(!s)return;var b=document.createElement("button");b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){auth.signOut().then(function(){location.reload()})};s.appendChild(b)},800);
+setTimeout(function(){var s=document.getElementById("stg");if(!s)return;var b=document.createElement("button");b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};s.appendChild(b)},800);
 var lastOk=0,gOpen=null,hold=false;
 function gate(){
 if(ro||hold)return Promise.resolve();
@@ -421,6 +421,22 @@ setTimeout(function(){try{p.focus()}catch(x){}},50)});
 return gOpen}
 window.askPw=function(){return gate()};window.gateHold=async function(on){if(on){await gate();hold=true}else hold=false};
 var root=fs.collection("fuelTrips").doc("app");
+var OWN="ondeyojohnson@gmail.com",isOwn=(u.email||"").toLowerCase()===OWN,pdoc=fs.collection("presence").doc(u.uid),FV=firebase.firestore.FieldValue;
+var beat=function(){if(document.visibilityState==="hidden")return;try{pdoc.set({name:who,t:FV.serverTimestamp()}).catch(function(){})}catch(e){}};
+beat();setInterval(beat,60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")beat()});
+window.fbPresenceOff=function(){try{return pdoc.delete().catch(function(){})}catch(e){return Promise.resolve()}};
+if(isOwn){var pb=document.getElementById("onl"),pp=null,PL=[];
+var ago=function(t){if(!t)return"not seen yet";var m=Math.floor((Date.now()-t)/60000);if(m<1)return"just now";if(m<60)return m+" min ago";var h=Math.floor(m/60);if(h<24)return h+" h ago";return new Date(t).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})};
+var draw=function(){if(!pb)return;var now=Date.now(),L=PL.slice().sort(function(a,b){return b.t-a.t}),on=L.filter(function(x){return x.t&&now-x.t<150000});
+pb.classList.add("on");pb.querySelector("b").textContent=on.length;pb.querySelector(".od").style.background=on.length?"#22c55e":"#6b7280";
+if(pp&&pp.style.display!=="none"){pp.textContent="";var hd=document.createElement("div");hd.textContent="Other accounts";hd.style.cssText="font-weight:800;margin-bottom:6px";pp.appendChild(hd);
+if(!L.length){var em=document.createElement("div");em.textContent="No other account has opened the app yet.";em.style.opacity=".7";pp.appendChild(em)}
+L.forEach(function(x){var r=document.createElement("div");r.style.cssText="display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--ln)";var a=document.createElement("span");a.textContent=x.name;var st=document.createElement("span"),o=x.t&&now-x.t<150000;st.textContent=o?"Online":"Last seen "+ago(x.t);st.style.cssText="font-weight:700;color:"+(o?"#22c55e":"var(--mut)");r.appendChild(a);r.appendChild(st);pp.appendChild(r)})}};
+if(pb){pp=document.createElement("div");pp.id="onp";pp.style.display="none";document.body.appendChild(pp);
+pb.onclick=function(ev){ev.stopPropagation();pp.style.display=pp.style.display==="none"?"block":"none";draw()};
+document.addEventListener("click",function(ev){if(pp.style.display!=="none"&&!pp.contains(ev.target))pp.style.display="none"});
+draw();setInterval(draw,20000)}
+fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({name:x.name||"user",t:x.t&&x.t.toMillis?x.t.toMillis():0})});draw()},function(){})}
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
 set:function(d){if(!COLS[c])return r.set(d);return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
@@ -428,7 +444,7 @@ delete:function(){return gate().then(function(){return r.delete()})},onSnapshot:
 collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return bg(cr.add(o))},onSnapshot:function(a,b){return cr.onSnapshot(a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
 </head><body>
-<header class="hd"><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1></div><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
+<header class="hd"><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Sales</button></div>
 <div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button></div>
@@ -1905,6 +1921,7 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 #ptr.spin svg{animation:ptrs .8s linear infinite}
 #ptr.spin circle{stroke-dashoffset:44}
 @keyframes ptrs{from{transform:rotate(-90deg)}to{transform:rotate(270deg)}}.dr2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dr2>div{min-width:0}.dr2 input,.dr2 select{width:100%!important;min-width:0;box-sizing:border-box}
+.hd .onb{display:none;height:36px;box-sizing:border-box;min-width:44px;padding:0 10px;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ln);border-radius:6px;background:var(--card);color:var(--tx);font-size:11px;font-weight:700;line-height:1;cursor:pointer}.hd .onb.on{display:inline-flex}.onb .od{width:8px;height:8px;border-radius:50%;background:#6b7280;flex:0 0 auto}#onp{position:fixed;z-index:9990;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);width:min(320px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card);color:var(--tx);font-size:13px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
 </style>
 <script>(function(){
 var TH=56,MAXP=84,HOLD=52,pull=0,sx=0,sy=0,armed=false,on=false,busy=false,el=document.createElement("div"),sv,ci;
