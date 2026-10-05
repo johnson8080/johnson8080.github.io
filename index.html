@@ -477,7 +477,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="pvb"><div class="mut">Total trip expense</div><div class="pay" id="prev">0</div></div>
 <div class="neg" id="lkw" style="margin-top:8px;font-size:14px"></div><button class="btn" id="save">Save entry</button><div class="mut" id="mine" style="margin-top:8px"></div></div></section>
 
-<section id="log"><div id="ualhome"></div><div class="card"><b class="ct">Trip entries</b><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><div id="logl"></div></div></section>
+<section id="log"><div id="ualhome"></div><div class="card"><b class="ct">Trip entries</b><input type="search" id="lq" placeholder="Search date, vehicle, driver, note…" autocomplete="off" style="margin:4px 0 8px"><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><div id="logl"></div></div></section>
 
 <section id="advt" class="hide"><div class="card"><b class="ct">Give advance</b><div class="mut">Taken from the driver's total balance (held per working day, minus earlier advances and payments). Going over it shows negative in red.</div>
 <div class="dr2"><div><label>Date</label><input type="date" id="adate"></div><div><label>Driver</label><select id="adrv"></select></div></div>
@@ -529,22 +529,23 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card" id="fwkc"><b class="ct">By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fwk"></tbody></table></div></div>
 <div class="card"><b class="ct">By vehicle</b><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fvh"></tbody></table></div></div>
 <div class="card"><b class="ct">Year by month</b><div class="wrap"><table><thead><tr><th>Month</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fmo"></tbody></table></div><div id="fbars"></div></div>
-</section><section id="flg" class="hide"><div class="card"><b class="ct" id="fltitle">Fuel entries</b><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><div class="wrap"><table id="ftab"><thead><tr><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Litres</th><th>Sell/ltr</th><th>Cost/ltr</th><th>Amount</th><th>Profit</th><th class="l">Collected by</th><th class="l">Issued by</th><th class="l">Notes</th></tr></thead><tbody id="flist"></tbody></table></div></div></section>
+</section><section id="flg" class="hide"><div class="card"><b class="ct" id="fltitle">Fuel entries</b><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><input type="search" id="fq" placeholder="Search date, plate, driver, notes…" autocomplete="off" style="margin:0 0 8px"><div class="wrap"><table id="ftab"><thead><tr><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Litres</th><th>Sell/ltr</th><th>Cost/ltr</th><th>Amount</th><th>Profit</th><th class="l">Collected by</th><th class="l">Issued by</th><th class="l">Notes</th></tr></thead><tbody id="flist"></tbody></table></div></div></section>
 
 
-<section id="ov" class="hide"><div class="card noprt" id="dsc"><b class="ct">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
-<label>Driver</label><select id="dsd"></select>
-<div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfdsc"><button type="button" class="ed" data-cf="dsc">Clear filters</button></div>
-<div id="dsv" class="noprt" style="margin-top:12px"><div class="mut">Select a driver to preview the statement.</div></div>
-<div class="acts" style="margin:10px 0 0"><button class="btn sm alt" id="dsdl" disabled>Download PDF</button><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dstx" disabled>Share text</button></div></div><div class="card ovx" id="ovf"><b class="ct noprt">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
-<div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
-<div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
-<div class="card" id="allc"><b class="ct">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
+<section id="ov" class="hide"><div class="card noprt" id="hsum"><b class="ct">Month summary</b><div class="fgrid"><div><label>Month</label><input type="month" id="hsm"></div></div><div class="row" style="margin-top:10px;grid-template-columns:repeat(2,minmax(0,1fr))"><div><div class="mut">Tonnes</div><div class="pay" id="hs1" style="font-size:20px">0</div></div><div><div class="mut">Trip expense</div><div class="pay" id="hs2" style="font-size:20px">0</div></div><div><div class="mut">Fuel litres</div><div class="pay" id="hs3" style="font-size:20px">0</div></div><div><div class="mut">Drivers unpaid</div><div class="pay" id="hs4" style="font-size:20px">0</div></div></div><div class="acts" style="margin:10px 0 0"><button type="button" class="btn sm alt" id="hsdl">Download month report</button><button type="button" class="btn sm" id="hswa">Share on WhatsApp</button></div></div><div class="card" id="allc"><b class="ct">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
 <div class="noprt"><div class="fgrid"><div><label>Category</label><select id="ocat"><option value="all">All</option><option value="Payment">Trips only</option><option value="Fuel">Fuel only</option></select></div><div><label>Date</label><select id="odf"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div></div>
 <div id="odw" class="hide"><label>Date</label><input type="date" id="oday"></div><div id="omw2" class="hide"><label>Month</label><input type="month" id="ofm"></div><div id="oyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="oyr" min="2000" max="2100"></div><div class="cfr noprt hide" id="cfallc"><button type="button" class="ed" data-cf="allc">Clear filters</button></div></div>
 <div class="mut" id="ocnt" style="margin:8px 0"></div>
 <div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Category</th><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Quantity</th><th>Trip expense</th><th>Fuel profit</th></tr></thead><tbody id="oab"></tbody></table></div>
 <div class="acts noprt" style="margin:10px 0 0"><button class="btn" id="oacsv">Download CSV</button><button class="btn alt" id="oapdf">Download PDF</button><button class="btn" id="oashare">Share PDF</button></div></div>
+<div class="card ovx" id="ovf"><b class="ct noprt">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
+<div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
+<div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
+<div class="card noprt" id="dsc"><b class="ct">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
+<label>Driver</label><select id="dsd"></select>
+<div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfdsc"><button type="button" class="ed" data-cf="dsc">Clear filters</button></div>
+<div id="dsv" class="noprt" style="margin-top:12px"><div class="mut">Select a driver to preview the statement.</div></div>
+<div class="acts" style="margin:10px 0 0"><button class="btn sm alt" id="dsdl" disabled>Download PDF</button><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dstx" disabled>Share text</button></div></div>
 <div class="card bkc"><div id="bkst" class="bkst"></div><div class="mut" id="snapst" style="margin:6px 0 4px"></div>
 <div class="setrow"><div class="st"><b>Remind me every</b><small>A banner shows when a backup is due</small></div><select id="bkint" class="ssel"><option value="3">3 days</option><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option></select></div>
 <div class="setrow"><div class="st"><b>Year for CSV</b><small>CSV covers one year. The full backup (JSON) has everything.</small></div><label class="sf"><input type="number" inputmode="numeric" id="byr" placeholder="Type year in full"></label></div>
@@ -738,6 +739,7 @@ function render(){
  $("us").innerHTML=SU.rows.length?SU.rows.map(function(x){uS+=x.u;uAl+=ualN(x.u);var i=payKeys.staff.push({k:x.k,s:x.s,fm:x.fm})-1;return"<tr><td>"+esc(x.k)+ualB(x.u)+(x.n>1?'<div class="mut">'+x.n+" months</div>":"")+"</td><td>"+fmt(x.o)+"</td><td>"+fmt(x.p)+"</td><td><b>"+up(x.u)+"</b>"+btn(x.u).replace("#",i)+"</td></tr>"}).join("")+'<tr style="font-weight:700"><td colspan="3">Total priv staff balance</td><td>'+up(uS)+'</td></tr>':'<tr><td class="mut" colspan="4">No staff on payroll</td></tr>';
  $("usn").textContent="Owed up to "+smon+(um?"":" (current month)")+": monthly salary for each month since the payroll start month. Unpaid carries over. Tap Pay to record a payment (full or part).";
  $("utot").textContent=fmt(uD+uL+uS);$("utl").textContent=um?"MONTHLY UNPAID":"TOTAL UNPAID";var ua=$("ualert");if(ua)ua.innerHTML=uAl?'<div class="note" style="border:2px solid var(--bad);color:var(--tx)"><b>'+uAl+" balance"+(uAl>1?"s are":" is")+" above "+fmt(appCfg.alertAt)+"</b> (marked &#9888; below).</div>":"";hookRender();
+ var lqv=(($("lq")||{}).value||"").trim().toLowerCase();if(lqv)sorted=sorted.filter(function(e){return[e.date,e.vehicle,e.driver,e.note].join(" ").toLowerCase().indexOf(lqv)>=0});
  var TT=0,TP=0,AL=alloc();sorted.forEach(function(e){TT+=e.tonnes;TP+=pay(e)});
  $("logl").innerHTML='<div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Trip expense</th><th>Unpaid</th><th>Notes</th></tr></thead><tbody>'+(sorted.length?sorted.slice(0,300).map(function(e){var o=AL[e.id]||{dn:0,dr:0,ln:0,lr:0},hb=o.dn!==0||(e.deposit>0&&o.ln!==0),u=o.dr+(e.deposit>0?o.lr:0),uc=!hb?"—":Math.round(u)===0?'<span style="color:var(--ok);font-weight:700">'+(o.da>0&&!o.dp&&!o.lp?"Advance":"Paid")+'</span>':up(u);
   return'<tr data-id="'+esc(e.id)+'" style="cursor:pointer"><td>'+esc(e.date.slice(5))+'</td><td>'+esc(e.vehicle)+'</td><td>'+esc(e.driver||"—")+'</td><td>'+(+e.tonnes||0).toFixed(2)+'</td><td>'+fmt(pay(e))+'</td><td>'+uc+'</td><td>'+(e.note?"Available":"—")+'</td></tr>'}).join("")+
@@ -853,7 +855,7 @@ function ualHome(){var el=$("ualhome");if(!el)return;var c=0;try{var al=+appCfg.
  Object.keys(D).forEach(function(k){c+=ualN(D[k].h-D[k].a-D[k].p)});Object.keys(L).forEach(function(k){c+=ualN(L[k].o-L[k].p)});staffUnpaid(today().slice(0,7)).rows.forEach(function(x){c+=ualN(x.u)})}}catch(x){c=0}
  var h=c?'<div class="note" id="ualgo" role="button" tabindex="0" style="border:2px solid var(--bad);color:var(--tx);cursor:pointer"><b>'+c+' unpaid balance'+(c>1?'s':'')+' above '+fmt(appCfg.alertAt)+'</b> \u00b7 tap to view \u203a</div>':"";if(el.__h!==h){el.innerHTML=h;el.__h=h}}
 $("ualhome").addEventListener("click",function(ev){if(!ev.target.closest("#ualgo"))return;var g=document.querySelector('.main [data-g="pay"]');if(g)g.click();var t=document.querySelector('#barpay [data-t="unp"]');if(t)t.click();try{scrollTo(0,0)}catch(x){}});
-function hookRender(){try{ualHome()}catch(x){}try{rsnOrphUi()}catch(x){}}
+function hookRender(){try{ualHome()}catch(x){}try{homeSum()}catch(x){}try{rsnOrphUi()}catch(x){}}
 /* Money boxes: thousand separators + 2 decimals, plain number for the rest of the code */
 var _nbD=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value");
 function nbFmt(v){var t=String(v==null?"":v).replace(/,/g,"").trim();return t!==""&&isFinite(Number(t))?fmt(Number(t)):String(v==null?"":v)}
@@ -1067,6 +1069,7 @@ function fper(){var k=$("fper").value||"all",td=today();
  if(k==="month"){var mm=$("fmon").value||td.slice(0,7);return{k:"m",y:mm.slice(0,4),lab:"Month "+mm,t:function(f){return f.date.slice(0,7)===mm}}}
  if(k==="year"){var yy=String($("fyr").value||td.slice(0,4));return{k:"y",y:yy,lab:"Year "+yy,t:function(f){return f.date.slice(0,4)===yy}}}
  return{k:"all",y:td.slice(0,4),lab:"All dates",t:function(){return true}}}
+var flLim=100;
 function renderFuel(){var sel=$("fveh"),cv=sel.value,fresh=!sel.options.length;sel.innerHTML='<option value="">Select plate…</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)sel.value=cv;
  if(!$("fmon").value)$("fmon").value=today().slice(0,7);if(!$("fday").value)$("fday").value=today();if(!$("fyr").value)$("fyr").value=today().slice(0,4);if(fresh)fautofill();fdset();
  var m=$("fmon").value,rows=fuels,P=fper(),y=P.y,sr=fuels.filter(P.t);$("fdw").classList.toggle("hide",P.k!=="d");$("fmw").classList.toggle("hide",P.k!=="m");$("fyw").classList.toggle("hide",P.k!=="y");$("fwkc").classList.toggle("hide",P.k!=="m");
@@ -1083,10 +1086,12 @@ function renderFuel(){var sel=$("fveh"),cv=sel.value,fresh=!sel.options.length;s
  $("fmo").innerHTML=M.map(function(o,k){return tr(N[k],o)}).join("")+tot(Y);
  $("fbars").innerHTML='<div class="mut" style="margin-top:12px">Net profit by month, '+esc(y)+"</div>"+M.map(function(o,k){return'<div class="mut" style="margin-top:6px">'+N[k]+'</div><div class="bar" style="width:'+Math.max(0,(o.s-o.c)/mx*100)+'%"></div>'}).join("");
  $("fltitle").textContent="Fuel entries";var fl=rows.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0)}),tl=0,ta=0,tq=0;
- $("flist").innerHTML=fl.length?fl.map(function(f){var am=f.litres*f.sell;tl+=f.litres;ta+=am;tq+=f.litres*(f.sell-f.cost);return'<tr data-id="'+esc(f.id)+'" style="cursor:pointer"><td>'+esc(String(f.date||"").slice(5))+"</td><td>"+esc(f.vehicle)+'</td><td class="l">'+esc(f.driver||(cfg.vd||{})[f.vehicle]||"—")+"</td><td>"+f.litres+"</td><td>"+fmt(f.sell)+"</td><td>"+fmt(f.cost)+"</td><td>"+fmt(am)+"</td><td>"+mn(f.litres*(f.sell-f.cost))+'</td><td class="l">'+esc(f.collected||"—")+'</td><td class="l">'+esc(f.issued||"—")+'</td><td class="l">'+(f.note?"Available":"—")+"</td></tr>"}).join("")+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+tl.toFixed(1)+"</td><td></td><td></td><td>"+fmt(ta)+"</td><td>"+mn(tq)+"</td><td></td><td></td><td></td></tr>":'<tr><td class="mut" colspan="11">No fuel entries yet</td></tr>';
+ var fqv=(($("fq")||{}).value||"").trim().toLowerCase();if(fqv)fl=fl.filter(function(f){return[f.date,f.vehicle,f.driver,f.collected,f.issued,f.note].join(" ").toLowerCase().indexOf(fqv)>=0});
+ $("flist").innerHTML=fl.length?fl.map(function(f,ix){var am=f.litres*f.sell;tl+=f.litres;ta+=am;tq+=f.litres*(f.sell-f.cost);if(ix>=flLim)return"";return'<tr data-id="'+esc(f.id)+'" style="cursor:pointer"><td>'+esc(String(f.date||"").slice(5))+"</td><td>"+esc(f.vehicle)+'</td><td class="l">'+esc(f.driver||(cfg.vd||{})[f.vehicle]||"—")+"</td><td>"+f.litres+"</td><td>"+fmt(f.sell)+"</td><td>"+fmt(f.cost)+"</td><td>"+fmt(am)+"</td><td>"+mn(f.litres*(f.sell-f.cost))+'</td><td class="l">'+esc(f.collected||"—")+'</td><td class="l">'+esc(f.issued||"—")+'</td><td class="l">'+(f.note?"Available":"—")+"</td></tr>"}).join("")+(fl.length>flLim?'<tr class="smr"><td colspan="11"><button type="button" class="btn sm alt" data-more="fl" style="margin:4px 0">Show more ('+(fl.length-flLim)+' left)</button></td></tr>':"")+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+tl.toFixed(1)+"</td><td></td><td></td><td>"+fmt(ta)+"</td><td>"+mn(tq)+"</td><td></td><td></td><td></td></tr>":'<tr><td class="mut" colspan="11">No fuel entries yet</td></tr>';
  fdrop($("fcs"),$("fcb"),"collected");fdrop($("fis"),$("fib"),"issued");fprev();renderNotes()}
 $("fcs").onchange=function(){fsel(this,$("fcb"))};$("fis").onchange=function(){fsel(this,$("fib"))};
-["fdate","flt","fsp","fap","fcb","fib","fnt"].forEach(function(i){$(i).addEventListener("input",fprev)});$("fveh").addEventListener("change",function(){fdset();fprev()});$("fmon").onchange=renderFuel;$("fday").onchange=renderFuel;$("fyr").onchange=renderFuel;$("fper").onchange=renderFuel;$("fdate").value=today();
+["fdate","flt","fsp","fap","fcb","fib","fnt"].forEach(function(i){$(i).addEventListener("input",fprev)});$("fveh").addEventListener("change",function(){fdset();fprev()});var flR=function(){flLim=100;renderFuel()};$("fmon").onchange=flR;$("fday").onchange=flR;$("fyr").onchange=flR;$("fper").onchange=flR;
+$("flist").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-more]");if(b){flLim+=100;renderFuel()}});$("fdate").value=today();
 function fend(){fedit=null;fsnap=null;$("fdate").value=today();$("feb").classList.add("hide");$("fsave").textContent="Save fuel";$("flt").value="";$("fnt").value="";$("fcb").value="";$("fcb").classList.add("hide");$("fib").value="";$("fib").classList.add("hide");fdirty=false;$("fveh").value="";fdset();fautofill(true);renderFuel();toTop()}
 function fsn(){return JSON.stringify([$("fdate").value,$("fveh").value,n($("flt").value),n($("fsp").value),n($("fap").value),($("fcb").value||"").trim(),($("fib").value||"").trim(),($("fnt").value||"").trim()])}
 function fed(id){var f=fuels.find(function(x){return x.id===id});if(!f)return;if(cfg.veh.indexOf(f.vehicle)<0){toast("That plate is no longer in Update Rates → Pay rates");return}
@@ -1214,19 +1219,22 @@ function allRows(){var c=$("ocat").value,k=$("odf").value,td=today(),ok;
 function allLabel(){var c=$("ocat").value,k=$("odf").value,dl={month:"Month "+($("ofm").value||today().slice(0,7)),day:"Date "+($("oday").value||today()),year:"Year "+($("oyr").value||today().slice(0,4)),all:"All dates"}[k];
  return(c==="all"?"Trips and fuel":(c==="Payment"?"Trips":c)+" only")+" · "+dl}
 function entName(){var c=$("ocat").value;return(c==="all"?"fuel-and-trips":(c==="Payment"?"trips":"fuel"))+"-entries-"+today()+".pdf"}
+var oabLim=100;function oabFull(f){oabLim=f?1e9:100}
 function renderOb(){if(!$("oday").value)$("oday").value=today();if(!$("oyr").value)$("oyr").value=today().slice(0,4);if(!$("ofm").value)$("ofm").value=today().slice(0,7);$("omw2").classList.toggle("hide",$("odf").value!=="month");$("odw").classList.toggle("hide",$("odf").value!=="day");$("oyw").classList.toggle("hide",$("odf").value!=="year");
  var R=allRows(),T=0,Q=0,L=0,P=0,pn=0,fn=0;
- $("oab").innerHTML=R.length?R.map(function(r){if(r.cat==="Payment"){P+=r.pay;T+=r.t;pn++}else{Q+=r.fp;L+=r.l;fn++}
-  return'<tr><td class="l"><b>'+(r.cat==="Payment"?"Trips":r.cat)+'</b></td><td>'+esc(r.date)+'</td><td>'+esc(r.veh)+'</td><td class="l">'+esc(r.drv||"—")+'</td><td>'+r.qty+'</td><td>'+(r.pay==null?"—":fmt(r.pay))+'</td><td>'+(r.fp==null?"—":mn(r.fp))+'</td></tr>'}).join("")
+ $("oab").innerHTML=R.length?R.map(function(r,ix){if(r.cat==="Payment"){P+=r.pay;T+=r.t;pn++}else{Q+=r.fp;L+=r.l;fn++}
+  if(ix>=oabLim)return"";return'<tr><td class="l"><b>'+(r.cat==="Payment"?"Trips":r.cat)+'</b></td><td>'+esc(r.date)+'</td><td>'+esc(r.veh)+'</td><td class="l">'+esc(r.drv||"—")+'</td><td>'+r.qty+'</td><td>'+(r.pay==null?"—":fmt(r.pay))+'</td><td>'+(r.fp==null?"—":mn(r.fp))+'</td></tr>'}).join("")
+  +(R.length>oabLim?'<tr class="smr"><td class="l" colspan="7"><button type="button" class="btn sm alt" data-more="oab" style="margin:4px 0">Show more ('+(R.length-oabLim)+' left)</button></td></tr>':"")
   +'<tr style="font-weight:700"><td class="l">Total</td><td></td><td></td><td></td><td>'+(pn?T.toFixed(2)+" t":"")+(pn&&fn?" · ":"")+(fn?L+" L":"")+'</td><td>'+(pn?fmt(P):"—")+'</td><td>'+(fn?mn(Q):"—")+'</td></tr>'
   :'<tr><td class="l" colspan="7">No entries for this filter</td></tr>';
  $("ocnt").textContent=R.length+" entr"+(R.length===1?"y":"ies")+" · "+pn+" trips, "+fn+" fuel";$("alllab").textContent=allLabel();capAll()}
-["ocat","odf","oday","oyr","ofm"].forEach(function(i){$(i).addEventListener("change",renderOb)});$("oday").addEventListener("input",renderOb);$("ofm").addEventListener("input",renderOb);$("oyr").addEventListener("input",renderOb);
+var oabR=function(){oabLim=100;renderOb()};["ocat","odf","oday","oyr","ofm"].forEach(function(i){$(i).addEventListener("change",oabR)});$("oday").addEventListener("input",oabR);$("ofm").addEventListener("input",oabR);$("oyr").addEventListener("input",oabR);
+$("oab").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-more]");if(b){oabLim+=100;renderOb()}});
 $("oacsv").onclick=function(){var R=allRows(),L=[csvl(["Category","Date","Vehicle","Driver","Quantity","Unit","Trip expense","Fuel profit"])];
  R.forEach(function(r){L.push(csvl([r.cat==="Payment"?"Trips":r.cat,r.date,r.veh,r.drv,r.cat==="Payment"?r.t:r.l,r.cat==="Payment"?"tonnes":"litres",r.pay==null?"":(+(r.pay)||0).toFixed(2),r.fp==null?"":(+(r.fp)||0).toFixed(2)]))});
  var nm=(($("ocat").value==="all"?"all":$("ocat").value.toLowerCase())+"-"+$("odf").value+($("odf").value==="day"?"-"+($("oday").value||today()):"")+($("odf").value==="year"?"-"+($("oyr").value||today().slice(0,4)):"")+($("odf").value==="month"?"-"+($("ofm").value||today().slice(0,7)):"")+"-"+today());
  dlf("entries-"+nm+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
-$("oapdf").onclick=function(){renderOb();exportPdf($("allc"),"Trips and fuel entries",allLabel(),entName())};
+$("oapdf").onclick=function(){oabFull(1);try{renderOb();exportPdf($("allc"),"Trips and fuel entries",allLabel(),entName())}finally{oabFull(0);renderOb()}};
 $("opdf").onclick=function(){PM=alloc();renderOv();var P=oper();exportPdf($("ovc"),"Vehicle overview: trips and fuel","Period: "+P.lab,"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf")};
 $("byr").value="";(function(){var ck=function(){var ok=/^\d{4}$/.test($("byr").value.trim()),b=$("bcsv");b.disabled=!ok;b.classList.toggle("alt",!ok)};$("byr").addEventListener("input",ck);ck()})();
 $("ocsv").onclick=function(){PM=alloc();var G=ovDetail(),L=[csvl(["Vehicle","Date","Type","Driver","Tonnes","Trip expense","Fuel litres","Litres per tonne","Fuel profit"])];
@@ -1842,7 +1850,7 @@ $("dstx").onclick=function(){try{var d=make(true);if(!d)return;var adT=d.advE+d.
  else{window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}
 }catch(x){alert("Could not create the text")}};
 $("oshare").onclick=function(){try{PM=alloc();renderOv();var P=oper();sharePdf(pdfBlob("Vehicle overview: trips and fuel","Period: "+P.lab,domItems($("ovc"))),"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf","Vehicle overview")}catch(x){alert("Could not create the PDF")}};
-$("oashare").onclick=function(){try{renderOb();sharePdf(pdfBlob("Trips and fuel entries",allLabel(),domItems($("allc"))),entName(),"Trips and fuel entries")}catch(x){alert("Could not create the PDF")}};
+$("oashare").onclick=function(){oabFull(1);try{renderOb();sharePdf(pdfBlob("Trips and fuel entries",allLabel(),domItems($("allc"))),entName(),"Trips and fuel entries")}catch(x){alert("Could not create the PDF")}finally{oabFull(0);renderOb()}};
 var _r=render;render=function(){var v=_r.apply(this,arguments);try{fillD();gate()}catch(x){}return v};
 ["oper","ovday","omon","ovyr","ocat","odf","oday","ofm","oyr","dsd","dsp","dsm","dsy"].forEach(function(i){var e=$(i);if(!e)return;e.addEventListener("change",gate);e.addEventListener("input",gate)});
 fillD();gate()})();</script>
@@ -2041,5 +2049,45 @@ F.forEach(function(f){var el=document.getElementById(f.id);if(!el)return;
  [].forEach.call(el.querySelectorAll("input,textarea"),function(i){i.setAttribute("autocomplete","off")});
  f.vis=!el.classList.contains("hide");
  new MutationObserver(function(){var v=!el.classList.contains("hide");if(f.vis&&!v)f.reset();f.vis=v}).observe(el,{attributes:true,attributeFilter:["class"]})})
+})();</script>
+<script>(function(){
+function z(m){return $("hsm").value||today().slice(0,7)}
+function agg(m,before){var D={};function d(k){return D[k]||(D[k]={h:0,a:0,p:0})}
+ var inr=before?function(x){return x.slice(0,7)<m}:function(x){return x.slice(0,7)===m};
+ entries.forEach(function(e){if(!inr(e.date))return;var x=d(e.driver||"(No driver name)");x.h+=dheld(e);x.a+=e.advance||0});
+ advs.forEach(function(a){if(inr(a.date))d(a.driver).a+=a.amount});
+ pays.forEach(function(p){if(p.kind==="driver"&&inr(p.date))d(p.who).p+=p.amount});return D}
+window.homeSum=function(){if(!$("hsm"))return;if(!$("hsm").value)$("hsm").value=today().slice(0,7);var m=z(),T=0,P=0,L=0,u=0;PM=alloc();
+ entries.forEach(function(e){if(e.date.slice(0,7)===m){T+=e.tonnes||0;P+=pay(e)}});fuels.forEach(function(f){if(String(f.date).slice(0,7)===m)L+=+f.litres||0});
+ var A=agg(m,false),B=agg(m,true);Object.keys(A).concat(Object.keys(B)).filter(function(k,i,a){return a.indexOf(k)===i}).forEach(function(k){var a=A[k]||{h:0,a:0,p:0},b=B[k]||{h:0,a:0,p:0};u+=(b.h-b.a-b.p)+(a.h-a.a-a.p)});
+ $("hs1").textContent=T.toFixed(2);$("hs2").textContent=fmt(P);$("hs3").textContent=+L.toFixed(1);$("hs4").textContent=fmt(u)};
+$("hsm").addEventListener("change",function(){homeSum()});
+$("hsm").addEventListener("input",function(){homeSum()});
+$("lq").addEventListener("input",function(){rq()});
+$("fq").addEventListener("input",function(){flLim=100;renderFuel()});
+$("hsdl").onclick=function(){var m=z(),w=document.createElement("div");w.style.cssText="position:absolute;left:-9999px;top:0;width:700px";PM=alloc();
+ var A=agg(m,false),B=agg(m,true),ks=Object.keys(A).concat(Object.keys(B)).filter(function(k,i,a){return a.indexOf(k)===i}).sort(),h='<b class="ct">Drivers</b><table><thead><tr><th>Driver</th><th>Brought forward</th><th>Held</th><th>Advances</th><th>Paid</th><th>Closing balance</th></tr></thead><tbody>',t=[0,0,0,0,0];
+ ks.forEach(function(k){var a=A[k]||{h:0,a:0,p:0},b=B[k]||{h:0,a:0,p:0},bf=b.h-b.a-b.p,c=bf+a.h-a.a-a.p;t[0]+=bf;t[1]+=a.h;t[2]+=a.a;t[3]+=a.p;t[4]+=c;h+="<tr><td>"+esc(k)+"</td><td>"+fmt(bf)+"</td><td>"+fmt(a.h)+"</td><td>"+fmt(a.a)+"</td><td>"+fmt(a.p)+"</td><td>"+fmt(c)+"</td></tr>"});
+ h+="<tr><td>Total</td>"+t.map(function(x){return"<td>"+fmt(x)+"</td>"}).join("")+"</tr></tbody></table><b class=\"ct\">Vehicles</b><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Trip expense</th><th>Fuel litres</th><th>Fuel profit</th></tr></thead><tbody>";
+ var V={},g=function(v){return V[v]||(V[v]={l:0,t:0,p:0,q:0,f:0})},s=[0,0,0,0,0];
+ entries.forEach(function(e){if(e.date.slice(0,7)===m){var o=g(e.vehicle);if(e.tonnes>0)o.l++;o.t+=e.tonnes||0;o.p+=pay(e)}});
+ fuels.forEach(function(f){if(String(f.date).slice(0,7)===m){var o=g(f.vehicle);o.q+=+f.litres||0;o.f+=f.litres*(f.sell-f.cost)}});
+ Object.keys(V).sort().forEach(function(k){var o=V[k];s[0]+=o.l;s[1]+=o.t;s[2]+=o.p;s[3]+=o.q;s[4]+=o.f;h+="<tr><td>"+esc(k)+"</td><td>"+o.l+"</td><td>"+o.t.toFixed(2)+"</td><td>"+fmt(o.p)+"</td><td>"+(+o.q.toFixed(1))+"</td><td>"+fmt(o.f)+"</td></tr>"});
+ h+="<tr><td>Total</td><td>"+s[0]+"</td><td>"+s[1].toFixed(2)+"</td><td>"+fmt(s[2])+"</td><td>"+(+s[3].toFixed(1))+"</td><td>"+fmt(s[4])+"</td></tr></tbody></table>";
+ w.innerHTML=h;document.body.appendChild(w);try{exportPdf(w,"Monthly report","Month "+m,"month-report-"+m+".pdf")}finally{document.body.removeChild(w)}};
+$("hswa").onclick=function(){try{var m=z();PM=alloc();
+ var A=agg(m,false),B=agg(m,true),ks=Object.keys(A).concat(Object.keys(B)).filter(function(k,i,a){return a.indexOf(k)===i}).sort(),
+ sg=function(v){return(Math.round(v)<0?"-":"")+fmt(Math.abs(v))},
+ L=["*Monthly report*","Month: "+m,"","Tonnes: "+$("hs1").textContent,"Trip expense: "+$("hs2").textContent,"Fuel litres: "+$("hs3").textContent,"*Drivers unpaid: "+$("hs4").textContent+"*"];
+ if(ks.length){L.push("","*Drivers*");ks.forEach(function(k){var a=A[k]||{h:0,a:0,p:0},b=B[k]||{h:0,a:0,p:0},bf=b.h-b.a-b.p,c=bf+a.h-a.a-a.p;
+  L.push(k+": b/f "+sg(bf)+", held "+fmt(a.h)+", advances "+fmt(a.a)+", paid "+fmt(a.p)+", *closing "+sg(c)+"*")})}
+ var V={},g=function(v){return V[v]||(V[v]={l:0,t:0,p:0,q:0,f:0})};
+ entries.forEach(function(e){if(e.date.slice(0,7)===m){var o=g(e.vehicle);if(e.tonnes>0)o.l++;o.t+=e.tonnes||0;o.p+=pay(e)}});
+ fuels.forEach(function(f){if(String(f.date).slice(0,7)===m){var o=g(f.vehicle);o.q+=+f.litres||0;o.f+=f.litres*(f.sell-f.cost)}});
+ var vk=Object.keys(V).sort();
+ if(vk.length){L.push("","*Vehicles*");vk.forEach(function(k){var o=V[k];L.push(k+": "+o.l+" loads, "+o.t.toFixed(2)+" t, trip expense "+fmt(o.p)+", fuel "+(+o.q.toFixed(1))+" L, fuel profit "+fmt(o.f))})}
+ if(appCfg.footer)L.push("",appCfg.footer);
+ window.open("https://wa.me/?text="+encodeURIComponent(L.join("\n")),"_blank")}catch(x){alert("Could not create the report text")}};
+try{homeSum()}catch(x){}
 })();</script>
 </body></html>
