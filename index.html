@@ -532,7 +532,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 </section><section id="flg" class="hide"><div class="card"><b class="ct" id="fltitle">Fuel entries</b><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><input type="search" id="fq" placeholder="Search date, plate, driver, notes…" autocomplete="off" style="margin:0 0 8px"><div class="wrap"><table id="ftab"><thead><tr><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Litres</th><th>Sell/ltr</th><th>Cost/ltr</th><th>Amount</th><th>Profit</th><th class="l">Collected by</th><th class="l">Issued by</th><th class="l">Notes</th></tr></thead><tbody id="flist"></tbody></table></div></div></section>
 
 
-<section id="ov" class="hide"><div class="card noprt" id="hsum"><b class="ct">Month summary</b><div class="fgrid"><div><label>Month</label><input type="month" id="hsm"></div></div><div class="row" style="margin-top:10px;grid-template-columns:repeat(2,minmax(0,1fr))"><div><div class="mut">Tonnes</div><div class="pay" id="hs1" style="font-size:20px">0</div></div><div><div class="mut">Trip expense</div><div class="pay" id="hs2" style="font-size:20px">0</div></div><div><div class="mut">Fuel litres</div><div class="pay" id="hs3" style="font-size:20px">0</div></div><div><div class="mut">Drivers unpaid</div><div class="pay" id="hs4" style="font-size:20px">0</div></div></div><div class="acts" style="margin:10px 0 0"><button type="button" class="btn sm alt" id="hsdl">Download month report</button><button type="button" class="btn sm" id="hswa">Share on WhatsApp</button></div></div><div class="card" id="allc"><b class="ct">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
+<section id="ov" class="hide"><div class="card" id="allc"><b class="ct">All Trips &amp; Fuel Entries</b><div class="pho mut" id="alllab"></div>
 <div class="noprt"><div class="fgrid"><div><label>Category</label><select id="ocat"><option value="all">All</option><option value="Payment">Trips only</option><option value="Fuel">Fuel only</option></select></div><div><label>Date</label><select id="odf"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option></select></div></div>
 <div id="odw" class="hide"><label>Date</label><input type="date" id="oday"></div><div id="omw2" class="hide"><label>Month</label><input type="month" id="ofm"></div><div id="oyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="oyr" min="2000" max="2100"></div><div class="cfr noprt hide" id="cfallc"><button type="button" class="ed" data-cf="allc">Clear filters</button></div></div>
 <div class="mut" id="ocnt" style="margin:8px 0"></div>
@@ -2051,43 +2051,7 @@ F.forEach(function(f){var el=document.getElementById(f.id);if(!el)return;
  new MutationObserver(function(){var v=!el.classList.contains("hide");if(f.vis&&!v)f.reset();f.vis=v}).observe(el,{attributes:true,attributeFilter:["class"]})})
 })();</script>
 <script>(function(){
-function z(m){return $("hsm").value||today().slice(0,7)}
-function agg(m,before){var D={};function d(k){return D[k]||(D[k]={h:0,a:0,p:0})}
- var inr=before?function(x){return x.slice(0,7)<m}:function(x){return x.slice(0,7)===m};
- entries.forEach(function(e){if(!inr(e.date))return;var x=d(e.driver||"(No driver name)");x.h+=dheld(e);x.a+=e.advance||0});
- advs.forEach(function(a){if(inr(a.date))d(a.driver).a+=a.amount});
- pays.forEach(function(p){if(p.kind==="driver"&&inr(p.date))d(p.who).p+=p.amount});return D}
-window.homeSum=function(){if(!$("hsm"))return;if(!$("hsm").value)$("hsm").value=today().slice(0,7);var m=z(),T=0,P=0,L=0,u=0;PM=alloc();
- entries.forEach(function(e){if(e.date.slice(0,7)===m){T+=e.tonnes||0;P+=pay(e)}});fuels.forEach(function(f){if(String(f.date).slice(0,7)===m)L+=+f.litres||0});
- var A=agg(m,false),B=agg(m,true);Object.keys(A).concat(Object.keys(B)).filter(function(k,i,a){return a.indexOf(k)===i}).forEach(function(k){var a=A[k]||{h:0,a:0,p:0},b=B[k]||{h:0,a:0,p:0};u+=(b.h-b.a-b.p)+(a.h-a.a-a.p)});
- $("hs1").textContent=T.toFixed(2);$("hs2").textContent=fmt(P);$("hs3").textContent=+L.toFixed(1);$("hs4").textContent=fmt(u)};
-$("hsm").addEventListener("change",function(){homeSum()});
-$("hsm").addEventListener("input",function(){homeSum()});
 $("lq").addEventListener("input",function(){rq()});
 $("fq").addEventListener("input",function(){flLim=100;renderFuel()});
-$("hsdl").onclick=function(){var m=z(),w=document.createElement("div");w.style.cssText="position:absolute;left:-9999px;top:0;width:700px";PM=alloc();
- var A=agg(m,false),B=agg(m,true),ks=Object.keys(A).concat(Object.keys(B)).filter(function(k,i,a){return a.indexOf(k)===i}).sort(),h='<b class="ct">Drivers</b><table><thead><tr><th>Driver</th><th>Brought forward</th><th>Held</th><th>Advances</th><th>Paid</th><th>Closing balance</th></tr></thead><tbody>',t=[0,0,0,0,0];
- ks.forEach(function(k){var a=A[k]||{h:0,a:0,p:0},b=B[k]||{h:0,a:0,p:0},bf=b.h-b.a-b.p,c=bf+a.h-a.a-a.p;t[0]+=bf;t[1]+=a.h;t[2]+=a.a;t[3]+=a.p;t[4]+=c;h+="<tr><td>"+esc(k)+"</td><td>"+fmt(bf)+"</td><td>"+fmt(a.h)+"</td><td>"+fmt(a.a)+"</td><td>"+fmt(a.p)+"</td><td>"+fmt(c)+"</td></tr>"});
- h+="<tr><td>Total</td>"+t.map(function(x){return"<td>"+fmt(x)+"</td>"}).join("")+"</tr></tbody></table><b class=\"ct\">Vehicles</b><table><thead><tr><th>Vehicle</th><th>Loads</th><th>Tonnes</th><th>Trip expense</th><th>Fuel litres</th><th>Fuel profit</th></tr></thead><tbody>";
- var V={},g=function(v){return V[v]||(V[v]={l:0,t:0,p:0,q:0,f:0})},s=[0,0,0,0,0];
- entries.forEach(function(e){if(e.date.slice(0,7)===m){var o=g(e.vehicle);if(e.tonnes>0)o.l++;o.t+=e.tonnes||0;o.p+=pay(e)}});
- fuels.forEach(function(f){if(String(f.date).slice(0,7)===m){var o=g(f.vehicle);o.q+=+f.litres||0;o.f+=f.litres*(f.sell-f.cost)}});
- Object.keys(V).sort().forEach(function(k){var o=V[k];s[0]+=o.l;s[1]+=o.t;s[2]+=o.p;s[3]+=o.q;s[4]+=o.f;h+="<tr><td>"+esc(k)+"</td><td>"+o.l+"</td><td>"+o.t.toFixed(2)+"</td><td>"+fmt(o.p)+"</td><td>"+(+o.q.toFixed(1))+"</td><td>"+fmt(o.f)+"</td></tr>"});
- h+="<tr><td>Total</td><td>"+s[0]+"</td><td>"+s[1].toFixed(2)+"</td><td>"+fmt(s[2])+"</td><td>"+(+s[3].toFixed(1))+"</td><td>"+fmt(s[4])+"</td></tr></tbody></table>";
- w.innerHTML=h;document.body.appendChild(w);try{exportPdf(w,"Monthly report","Month "+m,"month-report-"+m+".pdf")}finally{document.body.removeChild(w)}};
-$("hswa").onclick=function(){try{var m=z();PM=alloc();
- var A=agg(m,false),B=agg(m,true),ks=Object.keys(A).concat(Object.keys(B)).filter(function(k,i,a){return a.indexOf(k)===i}).sort(),
- sg=function(v){return(Math.round(v)<0?"-":"")+fmt(Math.abs(v))},
- L=["*Monthly report*","Month: "+m,"","Tonnes: "+$("hs1").textContent,"Trip expense: "+$("hs2").textContent,"Fuel litres: "+$("hs3").textContent,"*Drivers unpaid: "+$("hs4").textContent+"*"];
- if(ks.length){L.push("","*Drivers*");ks.forEach(function(k){var a=A[k]||{h:0,a:0,p:0},b=B[k]||{h:0,a:0,p:0},bf=b.h-b.a-b.p,c=bf+a.h-a.a-a.p;
-  L.push(k+": b/f "+sg(bf)+", held "+fmt(a.h)+", advances "+fmt(a.a)+", paid "+fmt(a.p)+", *closing "+sg(c)+"*")})}
- var V={},g=function(v){return V[v]||(V[v]={l:0,t:0,p:0,q:0,f:0})};
- entries.forEach(function(e){if(e.date.slice(0,7)===m){var o=g(e.vehicle);if(e.tonnes>0)o.l++;o.t+=e.tonnes||0;o.p+=pay(e)}});
- fuels.forEach(function(f){if(String(f.date).slice(0,7)===m){var o=g(f.vehicle);o.q+=+f.litres||0;o.f+=f.litres*(f.sell-f.cost)}});
- var vk=Object.keys(V).sort();
- if(vk.length){L.push("","*Vehicles*");vk.forEach(function(k){var o=V[k];L.push(k+": "+o.l+" loads, "+o.t.toFixed(2)+" t, trip expense "+fmt(o.p)+", fuel "+(+o.q.toFixed(1))+" L, fuel profit "+fmt(o.f))})}
- if(appCfg.footer)L.push("",appCfg.footer);
- window.open("https://wa.me/?text="+encodeURIComponent(L.join("\n")),"_blank")}catch(x){alert("Could not create the report text")}};
-try{homeSum()}catch(x){}
 })();</script>
 </body></html>
