@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.1.3">
+<meta name="app-version" content="1.1.5">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -463,8 +463,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <section id="log"><div id="ualhome"></div><div class="card"><b class="ct">Trip entries</b><div class="mut" style="text-align:center;font-size:12px;margin:-4px 0 8px">Swipe right | Tap for details</div><div id="logl"></div></div></section>
 
 <section id="advt" class="hide"><div class="card"><b class="ct">Give advance</b><div class="mut">Taken from the driver's total balance (held per working day, minus earlier advances and payments). Going over it shows negative in red.</div>
-<label>Date</label><input type="date" id="adate">
-<label>Driver</label><select id="adrv"></select>
+<div class="dr2"><div><label>Date</label><input type="date" id="adate"></div><div><label>Driver</label><select id="adrv"></select></div></div>
 <label>Amount</label><input type="number" inputmode="decimal" id="aamt" placeholder="0">
 <div class="mut" style="margin-top:12px" id="abefore"></div><div class="mut">BALANCE AFTER ADVANCE</div><div class="pay" id="aafter">—</div>
 <button class="btn" id="asave">Give advance</button></div>
@@ -1197,6 +1196,7 @@ function allRows(){var c=$("ocat").value,k=$("odf").value,td=today(),ok;
  R.sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts-a.ts)||(a.cat<b.cat?-1:1)});return R}
 function allLabel(){var c=$("ocat").value,k=$("odf").value,dl={month:"Month "+($("ofm").value||today().slice(0,7)),day:"Date "+($("oday").value||today()),year:"Year "+($("oyr").value||today().slice(0,4)),all:"All dates"}[k];
  return(c==="all"?"Trips and fuel":(c==="Payment"?"Trips":c)+" only")+" · "+dl}
+function entName(){var c=$("ocat").value;return(c==="all"?"fuel-and-trips":(c==="Payment"?"trips":"fuel"))+"-entries-"+today()+".pdf"}
 function renderOb(){if(!$("oday").value)$("oday").value=today();if(!$("oyr").value)$("oyr").value=today().slice(0,4);if(!$("ofm").value)$("ofm").value=today().slice(0,7);$("omw2").classList.toggle("hide",$("odf").value!=="month");$("odw").classList.toggle("hide",$("odf").value!=="day");$("oyw").classList.toggle("hide",$("odf").value!=="year");
  var R=allRows(),T=0,Q=0,L=0,P=0,pn=0,fn=0;
  $("oab").innerHTML=R.length?R.map(function(r){if(r.cat==="Payment"){P+=r.pay;T+=r.t;pn++}else{Q+=r.fp;L+=r.l;fn++}
@@ -1209,7 +1209,7 @@ $("oacsv").onclick=function(){var R=allRows(),L=[csvl(["Category","Date","Vehicl
  R.forEach(function(r){L.push(csvl([r.cat==="Payment"?"Trips":r.cat,r.date,r.veh,r.drv,r.cat==="Payment"?r.t:r.l,r.cat==="Payment"?"tonnes":"litres",r.pay==null?"":(+(r.pay)||0).toFixed(2),r.fp==null?"":(+(r.fp)||0).toFixed(2)]))});
  var nm=(($("ocat").value==="all"?"all":$("ocat").value.toLowerCase())+"-"+$("odf").value+($("odf").value==="day"?"-"+($("oday").value||today()):"")+($("odf").value==="year"?"-"+($("oyr").value||today().slice(0,4)):"")+($("odf").value==="month"?"-"+($("ofm").value||today().slice(0,7)):"")+"-"+today());
  dlf("entries-"+nm+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
-$("oapdf").onclick=function(){renderOb();exportPdf($("allc"),"Trips and fuel entries",allLabel(),"entries-"+today()+".pdf")};
+$("oapdf").onclick=function(){renderOb();exportPdf($("allc"),"Trips and fuel entries",allLabel(),entName())};
 $("opdf").onclick=function(){PM=alloc();renderOv();var P=oper();exportPdf($("ovc"),"Vehicle overview: trips and fuel","Period: "+P.lab,"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf")};
 $("byr").value="";(function(){var ck=function(){var ok=/^\d{4}$/.test($("byr").value.trim()),b=$("bcsv");b.disabled=!ok;b.classList.toggle("alt",!ok)};$("byr").addEventListener("input",ck);ck()})();
 $("ocsv").onclick=function(){PM=alloc();var G=ovDetail(),L=[csvl(["Vehicle","Date","Type","Driver","Tonnes","Trip expense","Fuel litres","Litres per tonne","Fuel profit"])];
@@ -1480,11 +1480,11 @@ function bkCheck(){var last=+bkGet(BK.l,0),days=+bkGet(BK.i,7)||7,all=[].concat(
  if(bb)bb.innerHTML=(due&&isAdmin&&Date.now()>+bkGet(BK.z,0))?'<div class="note" style="border-color:var(--bad)"><b>Backup due.</b> '+(last?'Last backup was '+Math.floor(age)+' days ago':'No backup made yet')+' · '+since+' new record(s). <button class="x" onclick="$(\'bjson\').click()">Back up now</button><button class="x" onclick="bkSnooze()" style="color:var(--mut)">Later</button></div>':""}
 $("bkint").value=bkGet(BK.i,"7");$("bkint").onchange=function(){bkSet(BK.i,$("bkint").value);bkSet(BK.z,0);bkCheck()};
 $("bjson").addEventListener("click",function(){bkSet(BK.l,Date.now());bkSet(BK.z,0);bkCheck()});
-$("bshare").onclick=async function(){try{var o=bkObj();if(appCfg.footer)o.footer=appCfg.footer;o.developer=WM;var txt=JSON.stringify(o,null,2),name="fuel-trips-backup-"+today()+".json",f=null,ok=false,ty=["application/json","text/plain"];
- for(var i=0;i<ty.length&&!ok;i++){try{f=new File([txt],name,{type:ty[i]});if(navigator.canShare&&navigator.canShare({files:[f]}))ok=true}catch(x){}}
+$("bshare").onclick=async function(){try{var o=bkObj();if(appCfg.footer)o.footer=appCfg.footer;o.developer=WM;var txt=JSON.stringify(o,null,2),base="fuel-trips-backup-"+today(),f=null,ok=false,opts=[[base+".txt","text/plain"],[base+".json","application/json"]];
+ for(var i=0;i<opts.length&&!ok;i++){try{f=new File([txt],opts[i][0],{type:opts[i][1]});if(navigator.canShare&&navigator.canShare({files:[f]}))ok=true}catch(x){}}
  if(ok){await navigator.share({files:[f],title:"Fuel & Trips backup "+today()});bkSet(BK.l,Date.now());bkSet(BK.z,0);bkCheck();toast("Backup shared")}
  else{$("bjson").click();toast("Sharing is not available here. Backup downloaded instead.")}
-}catch(x){if(!x||x.name!=="AbortError")toast("Could not share the backup")}};
+}catch(x){if(x&&x.name==="AbortError")return;try{$("bjson").click()}catch(y){}toast("Could not share ("+((x&&x.name)||"error")+"). Backup downloaded instead - send it from your Files app.")}};
 
 function confirmX(t,m,yes){return new Promise(function(res){var M=document.getElementById("mbody");M.innerHTML='<b style="font-size:18px">'+t+'</b><div class="mut" style="margin-top:8px">'+m+'</div><div class="b2"><button class="pr" id="cxY">'+yes+'</button><button id="cxN">Cancel</button></div>';document.getElementById("modal").classList.remove("hide");document.getElementById("cxY").onclick=function(){closeM();res(true)};document.getElementById("cxN").onclick=function(){closeM();res(false)}})}
 function orphLists(){return{A:advs.filter(function(x){return noEnt(x.driver)}),P:pays.filter(function(x){return noEnt(x.who)})}}
@@ -1802,7 +1802,7 @@ $("dstx").onclick=function(){try{var d=make(true);if(!d)return;var adT=d.advE+d.
  else{window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}
 }catch(x){alert("Could not create the text")}};
 $("oshare").onclick=function(){try{PM=alloc();renderOv();var P=oper();sharePdf(pdfBlob("Vehicle overview: trips and fuel","Period: "+P.lab,domItems($("ovc"))),"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf","Vehicle overview")}catch(x){alert("Could not create the PDF")}};
-$("oashare").onclick=function(){try{renderOb();sharePdf(pdfBlob("Trips and fuel entries",allLabel(),domItems($("allc"))),"entries-"+today()+".pdf","Trips and fuel entries")}catch(x){alert("Could not create the PDF")}};
+$("oashare").onclick=function(){try{renderOb();sharePdf(pdfBlob("Trips and fuel entries",allLabel(),domItems($("allc"))),entName(),"Trips and fuel entries")}catch(x){alert("Could not create the PDF")}};
 var _r=render;render=function(){var v=_r.apply(this,arguments);try{fillD();gate()}catch(x){}return v};
 ["oper","ovday","omon","ovyr","ocat","odf","oday","ofm","oyr","dsd","dsp","dsm","dsy"].forEach(function(i){var e=$(i);if(!e)return;e.addEventListener("change",gate);e.addEventListener("input",gate)});
 fillD();gate()})();</script>
@@ -1904,7 +1904,8 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 #ptr circle{fill:none;stroke:var(--ac);stroke-width:3;stroke-linecap:round;stroke-dasharray:62.8;stroke-dashoffset:62.8}
 #ptr.spin svg{animation:ptrs .8s linear infinite}
 #ptr.spin circle{stroke-dashoffset:44}
-@keyframes ptrs{from{transform:rotate(-90deg)}to{transform:rotate(270deg)}}</style>
+@keyframes ptrs{from{transform:rotate(-90deg)}to{transform:rotate(270deg)}}.dr2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dr2>div{min-width:0}.dr2 input,.dr2 select{width:100%!important;min-width:0;box-sizing:border-box}
+</style>
 <script>(function(){
 var TH=56,MAXP=84,HOLD=52,pull=0,sx=0,sy=0,armed=false,on=false,busy=false,el=document.createElement("div"),sv,ci;
 el.id="ptr";el.innerHTML='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>';document.body.appendChild(el);sv=el.firstChild;ci=sv.firstChild;
