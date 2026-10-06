@@ -388,7 +388,7 @@ button{transition:background .15s,color .15s,transform .12s}
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script>(function(){
 var CFG={apiKey:"AIzaSyA6nXEX_xskZnCY3Z113-d7Fs9GjO9LcPs",authDomain:"fleet-9e308.firebaseapp.com",projectId:"fleet-9e308",storageBucket:"fleet-9e308.firebasestorage.app",messagingSenderId:"258425450498",appId:"1:258425450498:web:74cb05c2364b0d7011771b"};
-var COLS={entries:1,fuel:1,advances:1,payments:1,pvpays:1};function bg(p){p.catch(function(e){try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}});return Promise.resolve()}var IS="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #334;background:#141a26;color:#fff;font-size:16px;box-sizing:border-box";
+var COLS={entries:1,fuel:1,advances:1,payments:1,pvpays:1};function bg(p){p.catch(function(e){try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}});return Promise.resolve()}function soft(p){return new Promise(function(res,rej){var done=false,t=null;function ok(){if(done)return;done=true;clearTimeout(t);res()}p.then(ok,function(e){if(!done){done=true;clearTimeout(t);rej(e)}else{try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}}});if(window.NETREAL===false)ok();else t=setTimeout(ok,3000)})}var IS="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #334;background:#141a26;color:#fff;font-size:16px;box-sizing:border-box";
 function login(auth){return new Promise(function(res){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;z-index:99999;background:#0a0e16;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px 24px calc(24px + var(--kb,0px));overflow-y:auto;transition:padding-bottom .2s ease";
 o.innerHTML='<div style="width:100%;max-width:340px"><h2 style="margin:0 0 6px">FUEL &amp; TRIPS</h2><p style="margin:0 0 16px;opacity:.7">Sign in to continue</p><input id="fbE" type="email" placeholder="Email" autocomplete="username" style="'+IS+'"><input id="fbP" type="password" placeholder="Password" autocomplete="current-password" style="'+IS+'"><div id="fbM" style="color:#f87171;min-height:20px;margin:6px 0"></div><button id="fbB" style="width:100%;padding:13px;border:0;border-radius:10px;background:#3b82f6;color:#fff;font-size:16px;font-weight:700">Sign in</button></div>';
 document.body.appendChild(o);var b=o.querySelector("#fbB"),m=o.querySelector("#fbM");o.addEventListener("focusin",function(e){var t=e.target;setTimeout(function(){try{t.scrollIntoView({block:"center",behavior:"smooth"})}catch(x){}},250)});
@@ -440,8 +440,8 @@ draw();setInterval(draw,20000)}
 fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({name:x.name||"user",t:x.t&&x.t.toMillis?x.t.toMillis():0,off:!!x.off})});RERR="";draw()},function(e){RERR=(e&&e.code)||"error";draw()})}
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
-set:function(d){if(!COLS[c])return r.set(d);return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
-delete:function(){return gate().then(function(){return r.delete()})},onSnapshot:function(a,b){return r.onSnapshot(a,b)}}},
+set:function(d){if(!COLS[c])return c==="backups"?r.set(d):soft(r.set(d));return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
+delete:function(){return gate().then(function(){return soft(r.delete())})},onSnapshot:function(a,b){return r.onSnapshot(a,b)}}},
 collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return bg(cr.add(o))},onSnapshot:function(a,b){return cr.onSnapshot(a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
 </head><body>
@@ -825,7 +825,7 @@ function rsnap(){var r=[];document.querySelectorAll("#vrows .vrow").forEach(func
 function csnap(){return[cfg.rate,cfg.dday,cfg.dbal,repCfg()].concat(cfg.veh.map(function(v){return v+"|"+((cfg.vd||{})[v]||"")})).join("~")}
 function rOK(){var f=["rate","dday","dbal","drep"].every(function(i){var v=$(i).value.trim();return v!==""&&isFinite(Number(v))});if(!f||!(Number($("rate").value)>0))return false;if(Number($("dday").value)<0||Number($("dbal").value)<0||Number($("drep").value)<0)return false;var rows=document.querySelectorAll("#vrows .vrow"),ok=0,bad=false,seen={},dup=false;rows.forEach(function(x){var p=x.querySelector(".vp").value.trim().toUpperCase(),d=x.querySelector(".vd").value.trim();if(p&&d){ok++;if(seen[p])dup=true;seen[p]=1}else if(p||d)bad=true});
  if(!paySaved)return rows.length>=MINV&&ok===rows.length&&!bad&&!dup;
- return ok>0&&!bad}
+ return !bad}
 function chkR(){var vn=$("vnote");if(vn){if(paySaved)vn.textContent="";else{var rw=document.querySelectorAll("#vrows .vrow"),fl=0;rw.forEach(function(x){if(x.querySelector(".vp").value.trim()&&x.querySelector(".vd").value.trim())fl++});vn.textContent="First setup: fill in every slot (plate and driver, each plate different). "+fl+" of "+rw.length+" filled."}}$("sset").disabled=!(isAdmin&&rOK()&&rsnap()!==csnap())}
 ["rate","dday","dbal","drep"].forEach(function(i){$(i).addEventListener("input",chkR)});$("vrows").addEventListener("input",function(ev){var t=ev.target;if(t.classList.contains("vp")){var a=t.selectionStart,b=t.selectionEnd;t.value=t.value.toUpperCase();try{t.setSelectionRange(a,b)}catch(x){}}},true);$("vrows").addEventListener("input",chkR);
 
@@ -840,17 +840,18 @@ function rsnOrph(){var seen={},o=[],inl={};reasons.forEach(function(r){inl[r.toL
 function rsnFill(cur){var el=$("rsn");if(!el)return;var v=cur!=null?cur:el.value,l=reasons.slice();if(v&&l.indexOf(v)<0)l.push(v);el.innerHTML='<option value="">'+(l.length?"Select…":"No reasons set")+'</option>'+l.map(function(r){return"<option>"+esc(r)+"</option>"}).join("");el.value=v||"";var nt=$("rsnnote");if(nt)nt.textContent=reasons.length?"":"Add reasons in Update Rates, at the bottom (Expense reasons)."}
 function rsnOrphUi(){var c=$("rsnorph");if(!c)return;rsnOrphArr=rsnOrph();var h=rsnOrphArr.length?'<div class="mut" style="margin-top:14px">Used in past entries but not in your list</div>'+rsnOrphArr.map(function(r,i){return'<div class="vrow" style="grid-template-columns:1fr auto auto"><div style="padding:8px 0">'+esc(r)+'</div><button type="button" class="x" style="color:var(--ac);font-size:14px;padding:8px 10px" data-act="oren" data-i="'+i+'">Rename</button><button type="button" class="x" style="color:var(--ac);font-size:14px;padding:8px 10px" data-act="oadd" data-i="'+i+'">Add</button></div>'}).join(""):"";if(c.__h!==h){c.innerHTML=h;c.__h=h}}
 function rsnBuild(){var c=$("rsnrows");if(!c)return;c.innerHTML=reasons.length?reasons.map(function(r,i){return'<div class="vrow" style="grid-template-columns:1fr auto auto"><div style="padding:8px 0">'+esc(r)+'</div><button type="button" class="x" style="color:var(--ac);font-size:19px;padding:8px 12px" data-act="ren" data-i="'+i+'" aria-label="Rename">\u270E</button><button type="button" class="x" style="font-size:19px;padding:8px 12px" data-act="del" data-i="'+i+'" aria-label="Remove">\u2715</button></div>'}).join(""):'<div class="mut" style="margin-top:6px">No reasons yet.</div>';rsnFill();rsnOrphUi()}
-async function rsnSave(l,r){r=r||ren;try{if(db)await db.doc("config/reasons").set({list:l,ren:renToArr(r)});reasons=l;ren=r;try{localStorage.setItem("reasons_v1",JSON.stringify(l));localStorage.setItem("reasons_ren_v1",JSON.stringify(r))}catch(x){}rsnBuild();try{render()}catch(x){}return true}catch(x){toast("Could not save: "+(x&&x.message||"no permission"));return false}}
+async function rsnSave(l,r){r=r||ren;try{reasons=l;ren=r;try{localStorage.setItem("reasons_v1",JSON.stringify(l));localStorage.setItem("reasons_ren_v1",JSON.stringify(r))}catch(x){}rsnBuild();try{render()}catch(x){}
+ if(db){var pr=db.doc("config/reasons").set({list:l,ren:renToArr(r)});if(pr&&pr.catch)pr.catch(function(x){toast("Could not save: "+(x&&x.message||"no permission"))})}return true}catch(x){toast("Could not save: "+(x&&x.message||"error"));return false}}
+function renDrop(o,n){var nl=String(n).toLowerCase();Object.keys(o).forEach(function(k){if(k.toLowerCase()===nl)delete o[k]})}
 async function rsnRenameDo(X,Y){
  if(Y===X)return true;
- if(renGet(Y)!==null)return'"'+Y+'" was renamed to "'+renGet(Y)+'" earlier. Pick a different name.';
  var tgt=null;reasons.forEach(function(r){if(r!==X&&r.toLowerCase()===Y.toLowerCase())tgt=r});if(tgt)Y=tgt;
  var l=[];reasons.forEach(function(r){var v=r===X?Y:r;if(l.indexOf(v)<0)l.push(v)});if(reasons.indexOf(X)<0&&l.indexOf(Y)<0)l.push(Y);
- var rn=Object.assign({},ren);Object.keys(rn).forEach(function(k){if(rn[k]===X)rn[k]=Y});rn[X]=Y;delete rn[Y];
+ var rn=Object.assign({},ren);Object.keys(rn).forEach(function(k){if(rn[k]===X)rn[k]=Y});renDrop(rn,Y);rn[X]=Y;
  return(await rsnSave(l,rn))?true:"Could not save. Try again."}
 function rsnAsk(X){$("mbody").innerHTML='<b style="font-size:18px">Rename reason</b><div class="mut" style="margin-top:6px">"'+esc(X)+'" will show under the new name in entries and reports. Past entries are not edited, so month locks are not affected. Typing a name that already exists merges them.</div><label>New name</label><input id="rnIn" maxlength="40" autocomplete="off"><div class="neg" id="rnW" style="margin-top:6px;font-size:14px"></div><div class="b2"><button class="pr" id="rnOK">Save</button><button id="rnNo">Cancel</button></div>';$("modal").classList.remove("hide");var i=$("rnIn");i.value=X;$("rnNo").onclick=closeM;
  $("rnOK").onclick=async function(){var Y=rsnClean([i.value])[0];if(!Y){$("rnW").textContent="Type a name";return}var w=await rsnRenameDo(X,Y);if(w===true)closeM();else $("rnW").textContent=w}}
-$("rsnadd").onclick=async function(){var i=$("rsnin"),v=rsnClean([i.value])[0];if(!v)return;if(reasons.some(function(r){return r.toLowerCase()===v.toLowerCase()})){toast("That reason already exists");return}if(renGet(v)!==null){toast('"'+v+'" was renamed to "'+renGet(v)+'" earlier. Use a different name.');return}if(await rsnSave(reasons.concat([v]),ren))i.value=""};
+$("rsnadd").onclick=async function(){var i=$("rsnin"),v=rsnClean([i.value])[0];if(!v)return;if(reasons.some(function(r){return r.toLowerCase()===v.toLowerCase()})){toast("That reason already exists");return}var rn=Object.assign({},ren);renDrop(rn,v);i.value="";if(!(await rsnSave(reasons.concat([v]),rn)))i.value=v};
 $("rsnin").addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();$("rsnadd").onclick()}});
 $("rrsn").addEventListener("click",function(ev){var b=ev.target.closest("button[data-act]");if(!b)return;var a=b.dataset.act,i=+b.dataset.i;
  if(a==="del"){var l=reasons.slice();l.splice(i,1);rsnSave(l,ren)}else if(a==="ren"){if(reasons[i]!=null)rsnAsk(reasons[i])}else if(a==="oren"){if(rsnOrphArr[i]!=null)rsnAsk(rsnOrphArr[i])}else if(a==="oadd"){if(rsnOrphArr[i]!=null)rsnSave(reasons.concat([rsnOrphArr[i]]),ren)}});
@@ -1269,7 +1270,7 @@ function rParse(txt){var j=JSON.parse(txt);if(!rObj(j))throw new Error("This is 
  A(j.fuel).forEach(function(f){if(rObj(f)&&rOk(f.date)&&typeof f.vehicle==="string"&&f.vehicle&&rNum(f.litres)&&rNum(f.sell)&&rNum(f.cost))R.fuel.push(f);else sk++});
  A(j.advances).forEach(function(a){if(rObj(a)&&rOk(a.date)&&typeof a.driver==="string"&&a.driver&&rNum(a.amount))R.advances.push(a);else sk++});
  A(j.payments).forEach(function(p){if(rObj(p)&&(p.kind==="loader"||p.kind==="driver")&&typeof p.who==="string"&&rNum(p.amount))R.payments.push(p);else sk++});
- var r=j.rates;if(rObj(r)&&rNum(r.rate)&&rNum(r.dday)&&rNum(r.dbal)&&Array.isArray(r.veh)&&r.veh.length&&r.veh.every(function(v){return typeof v==="string"&&v}))R.rates={rate:r.rate,dday:r.dday,dbal:r.dbal,rep:rNum(r.rep)?r.rep:200,veh:r.veh,vd:rObj(r.vd)?r.vd:{}};
+ var r=j.rates;if(rObj(r)&&rNum(r.rate)&&rNum(r.dday)&&rNum(r.dbal)&&Array.isArray(r.veh)&&r.veh.every(function(v){return typeof v==="string"&&v}))R.rates={rate:r.rate,dday:r.dday,dbal:r.dbal,rep:rNum(r.rep)?r.rep:200,veh:r.veh,vd:rObj(r.vd)?r.vd:{}};
  A(j.privateStaffPayments||j.privatePayments).forEach(function(p){if(rObj(p)&&typeof p.who==="string"&&p.who&&rNum(p.amount)&&typeof p.month==="string")R.pvp.push(p);else sk++});
  if(Array.isArray(j.staff||j.employees)){var jst=j.staff||j.employees,em=jst.filter(function(e){return rObj(e)&&typeof e.n==="string"&&e.n&&rNum(e.s)});sk+=jst.length-em.length;if(em.length)R.emps=em}
  if(Array.isArray(j.expenseReasons)){var rr=rsnClean(j.expenseReasons);if(rr.length){R.rsn=rr;R.ren=renClean(renFromArr(j.reasonRenames))}}
@@ -1924,7 +1925,7 @@ function slotNow(){return Math.floor(Date.now()/(7*DAY))%4}
 function once(p){return new Promise(function(res,rej){var un=null,done=false;try{un=db.doc(p).onSnapshot(function(s){if(done)return;done=true;setTimeout(function(){try{un&&un()}catch(e){}},0);res(s)},function(e){if(!done){done=true;rej(e)}})}catch(e){rej(e)}})}
 function paint(){var el=$("snapst");if(!el)return;var L=Object.keys(meta.snaps||{}).map(function(k){return meta.snaps[k]});
  el.innerHTML=meta.last?"Cloud snapshots: last saved <b>"+esc(new Date(meta.last).toLocaleString())+"</b>. "+L.length+" kept (rotating, about 4 weeks). A new one is saved automatically every 7 days when the app is opened.":"No cloud snapshot yet. One is saved automatically every 7 days when the app is opened."}
-async function snap(manual){if(!db||busy||window.readOnly)return false;busy=true;
+async function snap(manual){if(!db||busy||window.readOnly)return false;if(window.NETREAL===false){if(manual)toast("No internet connection",true);return false}busy=true;
  try{var txt=JSON.stringify(bkObj()),parts=[],i;for(i=0;i<txt.length;i+=SC)parts.push(txt.slice(i,i+SC));var sl=slotNow();
   for(i=0;i<parts.length;i++)await db.doc("backups/s"+sl+"_"+i).set({t:parts[i],i:i});
   var sn=Object.assign({},meta.snaps||{});sn["s"+sl]={at:Date.now(),parts:parts.length,e:entries.length,f:fuels.length};
@@ -2062,5 +2063,11 @@ F.forEach(function(f){var el=document.getElementById(f.id);if(!el)return;
 <script>(function(){
 $("lq").addEventListener("input",function(){rq()});
 $("fq").addEventListener("input",function(){flLim=100;renderFuel()});
+})();</script>
+<script>(function(){
+var Q="#drv,#pvsn,#rsnin,#fcb,#fib,#rnIn,#sen,.vd";
+function isName(e){return e&&e.matches&&e.matches(Q)}
+document.addEventListener("focusin",function(ev){var e=ev.target;if(isName(e)&&e.getAttribute("autocapitalize")!=="words")e.setAttribute("autocapitalize","words")});
+document.addEventListener("input",function(ev){var e=ev.target;if(!isName(e))return;var v=e.value;if(!v)return;var i=v.search(/\S/);if(i<0)return;var c=v.charAt(i),u=c.toUpperCase();if(c===u)return;var a=e.selectionStart,b=e.selectionEnd;e.value=v.slice(0,i)+u+v.slice(i+1);try{e.setSelectionRange(a,b)}catch(x){}})
 })();</script>
 </body></html>
