@@ -1331,15 +1331,15 @@ $("rfile").onchange=async function(){var f=this.files&&this.files[0];if(!f)retur
  catch(x){rErr(x&&x.message)}finally{try{inp.value=""}catch(x){}}};
 function pwOk(){return window.askPw?window.askPw():Promise.resolve()}function holdPw(on){return window.gateHold?window.gateHold(on):Promise.resolve()}function pwCancel(x){return!!(x&&/cancel|password/i.test(String(x.message||x)))}
 var paySaved=false,cfgLoaded=false,fcfgLoaded=false,gateDone=false,GATED={enter:1,advt:1,fen:1};
-function needRates(){if(db)try{stBind()}catch(e){}var loaded=db?(cfgLoaded&&fcfgLoaded):true;return loaded&&!(paySaved&&fcfg.sell>0&&fcfg.cost>0)}
+function needRates(){if(db)try{stBind()}catch(e){}var loaded=db?(cfgLoaded&&fcfgLoaded):true;return loaded&&!(paySaved&&cfg.veh&&cfg.veh.length>0&&fcfg.sell>0&&fcfg.cost>0)}
 function goRates(t){document.querySelector('.main [data-g="rates"]').click();var el=$(t==="frt"?"rfuel":t==="stf"?"rstaff":"rpay");if(!el)return;
  var st=$("set");if(st)st.style.paddingBottom="85vh";
  var slide=function(){try{var h=document.querySelector(".hd"),off=(h?h.offsetHeight:0)+8,y=el.getBoundingClientRect().top+(window.pageYOffset||document.documentElement.scrollTop||0)-off;window.scrollTo({top:Math.max(0,y),behavior:"smooth"})}catch(x){try{el.scrollIntoView()}catch(z){}}};
  setTimeout(slide,80);setTimeout(slide,650);
  setTimeout(function(){el.style.transition="box-shadow .3s";el.style.boxShadow="0 0 0 2px var(--ac)";setTimeout(function(){el.style.boxShadow=""},2200)},700)}
 function goHome(){var st=$("set");if(st)st.style.paddingBottom="";var up=function(){document.documentElement.scrollTop=0;document.body.scrollTop=0;scrollTo(0,0)};try{document.querySelector('.main [data-g="pay"]').click();var t=document.querySelector('.tabs [data-t="log"]');if(t)t.click()}catch(e){}up();setTimeout(up,60);setTimeout(up,300);setTimeout(up,700)}
-function nextRates(){var fOk=fcfg.sell>0&&fcfg.cost>0,pOk=paySaved;if(!fOk)return"frt";if(!pOk)return"set";return""}
-function gatePop(){var pOk=paySaved,fOk=fcfg.sell>0&&fcfg.cost>0,st=function(ok){return ok?'<span style="color:var(--ok);font-weight:700">Saved ✓</span>':'<span class="neg">Not saved</span>'};
+function nextRates(){var fOk=fcfg.sell>0&&fcfg.cost>0,pOk=paySaved&&cfg.veh&&cfg.veh.length>0;if(!fOk)return"frt";if(!pOk)return"set";return""}
+function gatePop(){var pOk=paySaved&&cfg.veh&&cfg.veh.length>0,fOk=fcfg.sell>0&&fcfg.cost>0,st=function(ok){return ok?'<span style="color:var(--ok);font-weight:700">Saved ✓</span>':'<span class="neg">Not saved</span>'};
  if(isAdmin)goRates(nextRates()||"set");
  $("mbody").innerHTML='<b style="font-size:18px">Set your rates first</b><div class="mut" style="margin:6px 0 10px">Data can only be entered after everything below has been saved.</div>'+
   kv("Payment rates",st(pOk))+'<div class="mut" style="margin:4px 0 12px">Loader rate, driver deposit, driver balance held, vehicles and drivers</div>'+
@@ -1349,6 +1349,7 @@ function gatePop(){var pOk=paySaved,fOk=fcfg.sell>0&&fcfg.cost>0,st=function(ok)
  $("modal").classList.remove("hide");$("gY").onclick=closeM}
 function gateCheck(){if(needRates()&&!gateDone){gateDone=true;gatePop()}}
 function afterSave(kind,was){var nx=nextRates();
+ if(nx==="set"&&kind==="pay"){toast("Saved. Add at least one plate and driver to start adding data.");return}
  if(!nx){toast(was?(kind==="pay"?"Rates saved":"Fuel rates saved"):"All rates saved. You can now add data.");if(!was)goHome();return}
  var nm={frt:"fuel rates",set:"payment rates"};
  toast((kind==="pay"?"Payment rates saved":"Fuel rates saved")+". Now set the "+nm[nx]+".");goRates(nx)}
