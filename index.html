@@ -2071,9 +2071,18 @@ $("lq").addEventListener("input",function(){rq()});
 $("fq").addEventListener("input",function(){flLim=100;renderFuel()});
 })();</script>
 <script>(function(){
-var Q="#drv,#pvsn,#rsnin,#fcb,#fib,#rnIn,#sen,.vd";
+var Q="#drv,#pvsn,#rsnin,#fcb,#fib,#rnIn,#sen,.vd",EM=/^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
 function isName(e){return e&&e.matches&&e.matches(Q)}
-document.addEventListener("focusin",function(ev){var e=ev.target;if(isName(e)&&e.getAttribute("autocapitalize")!=="words")e.setAttribute("autocapitalize","words")});
-document.addEventListener("input",function(ev){var e=ev.target;if(!isName(e))return;var v=e.value;if(!v)return;var i=v.search(/\S/);if(i<0)return;var c=v.charAt(i),u=c.toUpperCase();if(c===u)return;var a=e.selectionStart,b=e.selectionEnd;e.value=v.slice(0,i)+u+v.slice(i+1);try{e.setSelectionRange(a,b)}catch(x){}})
+/* keep the phone's autofill (saved email/password) out of the app's data fields */
+function harden(e){if(!e||e.nodeType!==1||e.tagName!=="INPUT"||e.__h)return;var t=(e.getAttribute("type")||"text").toLowerCase();if(t!=="text"&&t!=="search")return;if(e.id==="fbE"||e.id==="gP")return;e.__h=1;
+ e.setAttribute("autocomplete","off");e.setAttribute("data-lpignore","true");e.setAttribute("data-1p-ignore","true");e.setAttribute("data-form-type","other");
+ if(!e.getAttribute("name"))e.setAttribute("name","f_"+(e.id||e.className||"x").toString().replace(/[^a-z0-9]/gi,"")+Math.floor(Math.random()*1e6))}
+function sweep(r){try{(r||document).querySelectorAll("input").forEach(harden)}catch(x){}}
+sweep();new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType!==1)return;if(n.tagName==="INPUT")harden(n);else sweep(n)})})}).observe(document.documentElement,{childList:true,subtree:true});
+document.addEventListener("focusin",function(ev){var e=ev.target;if(e&&e.tagName==="INPUT")harden(e);if(isName(e)&&e.getAttribute("autocapitalize")!=="words")e.setAttribute("autocapitalize","words")});
+function fix(ev){var e=ev.target;if(!isName(e))return;var v=e.value;if(!v)return;
+ if(EM.test(v.trim())){e.value="";return}
+ var i=v.search(/\S/);if(i<0)return;var c=v.charAt(i),u=c.toUpperCase();if(c===u)return;var a=e.selectionStart,b=e.selectionEnd;e.value=v.slice(0,i)+u+v.slice(i+1);try{e.setSelectionRange(a,b)}catch(x){}}
+document.addEventListener("input",fix);document.addEventListener("change",fix)
 })();</script>
 </body></html>
