@@ -402,16 +402,17 @@ var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
 setTimeout(function(){var s=document.getElementById("stg");if(!s)return;var b=document.createElement("button");b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};s.appendChild(b)},800);
 var lastOk=0,gOpen=null,hold=false;
-var PW_CONFIRM=false; /* true = ask for the password again before edits and deletes (turned off for now) */
-function gate(){
-if(!PW_CONFIRM||ro||hold)return Promise.resolve();
+var PW_CONFIRM=(function(){try{return localStorage.getItem("pwconfirm_v1")==="1"}catch(e){return false}})(); /* ON = ask for the password again before edits and deletes. Default OFF. */
+window.getPwConfirm=function(){return PW_CONFIRM};window.setPwConfirm=function(v){PW_CONFIRM=!!v;try{localStorage.setItem("pwconfirm_v1",v?"1":"0")}catch(e){}};
+function gate(force){
+if(ro||(!force&&(!PW_CONFIRM||hold)))return Promise.resolve();
 if(gOpen)return gOpen;
 gOpen=new Promise(function(res,rej){
 var o=document.createElement("div");
 o.style.cssText="position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,.6);display:flex;align-items:flex-start;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 24px 24px;overflow-y:auto";
 o.innerHTML='<div style="width:100%;max-width:340px;background:#141a26;color:#fff;border:1px solid #334;border-radius:12px;padding:18px"><h3 style="margin:0 0 4px">Confirm your password</h3><p id="gW" style="margin:0 0 12px;opacity:.7;font-size:13px"></p><input id="gP" type="password" placeholder="Password" autocomplete="new-password" name="gp-confirm" readonly onfocus="this.readOnly=false" data-lpignore="true" data-1p-ignore="true" autocapitalize="off" autocorrect="off" spellcheck="false" style="'+IS+'"><div id="gM" style="color:#f87171;min-height:20px;margin:2px 0 8px;font-size:13px"></div><div style="display:flex;gap:8px"><button id="gC" style="flex:1;padding:12px;border-radius:10px;border:1px solid #334;background:none;color:#fff;font-size:15px">Cancel</button><button id="gB" style="flex:1;padding:12px;border:0;border-radius:10px;background:#3b82f6;color:#fff;font-size:15px;font-weight:700">Confirm</button></div></div>';
 document.body.appendChild(o);
-o.querySelector("#gW").textContent=who+" - needed to edit or delete";
+o.querySelector("#gW").textContent=who+(force?" - needed to turn the password check off":" - needed to edit or delete");
 var p=o.querySelector("#gP"),m=o.querySelector("#gM"),b=o.querySelector("#gB");
 var done=function(ok,err){o.remove();gOpen=null;if(ok){lastOk=Date.now();res()}else rej(err||new Error("Password not confirmed"))};
 o.querySelector("#gC").onclick=function(){done(false,new Error("Cancelled"))};
@@ -420,7 +421,7 @@ u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.emai
 b.onclick=go;p.onkeydown=function(e){if(e.key==="Enter")go()};
 setTimeout(function(){try{p.focus()}catch(x){}},50)});
 return gOpen}
-window.askPw=function(){return gate()};window.gateHold=async function(on){if(on){await gate();hold=true}else hold=false};
+window.askPw=function(){return gate()};window.askPwForce=function(){return gate(true)};window.gateHold=async function(on){if(on){await gate();hold=true}else hold=false};
 var root=fs.collection("fuelTrips").doc("app");
 var OWN="ondeyojohnson@gmail.com",isOwn=(u.email||"").toLowerCase()===OWN;window.fbIsOwn=isOwn;var pdoc=fs.collection("presence").doc(u.uid),FV=firebase.firestore.FieldValue;
 var PERR="",RERR="";var beat=function(){if(document.visibilityState==="hidden")return;(window.netProbe?window.netProbe():Promise.resolve(true)).then(function(ok){if(!ok)return;try{pdoc.set({name:who,t:FV.serverTimestamp(),off:false}).then(function(){PERR=""}).catch(function(e){PERR=(e&&e.code)||"error"})}catch(e){}})};
@@ -565,6 +566,8 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="setrow"><div class="st"><b>Daily reminder<span class="nw">NEW</span></b><small>Shows a banner after this time if no trip or fuel is logged today</small></div><button type="button" class="sw" id="srmsw" role="switch" aria-checked="false" aria-label="Daily reminder"><i></i></button></div>
 <div class="setrow hide" id="srmrow"><div class="st"><b>Reminder time</b></div><input type="time" id="srmtime" class="ssel" value="18:00" aria-label="Reminder time"></div>
 </div></div>
+<div class="ssec" id="s-sec"><div class="sh2">Security</div><div class="ssub">Applies on this device.</div>
+<div class="card sc"><div class="setrow"><div class="st"><b>Password for edits &amp; deletes</b><small id="spwnote">Off. Edits and deletes go through without asking. Turning it off needs your password.</small></div><button type="button" class="sw" id="spwsw" role="switch" aria-checked="false" aria-label="Ask password for edits and deletes"><i></i></button></div></div></div>
 <div class="ssec" id="s-data"><div class="sh2">Data &amp; backup</div><div class="ssub">Keep a copy outside the app.</div><div id="bkhost"></div></div>
 <div class="ssec" id="s-app"><div class="sh2">App</div><div class="ssub">Look and feel.</div>
 <div class="card sc">
@@ -2094,5 +2097,16 @@ function fix(ev){var e=ev.target;if(!isName(e))return;var v=e.value;if(!v)return
  if(EM.test(v.trim())){e.value="";return}
  var i=v.search(/\S/);if(i<0)return;var c=v.charAt(i),u=c.toUpperCase();if(c===u)return;var a=e.selectionStart,b=e.selectionEnd;e.value=v.slice(0,i)+u+v.slice(i+1);try{e.setSelectionRange(a,b)}catch(x){}}
 document.addEventListener("input",fix);document.addEventListener("change",fix)
+})();</script>
+<script>(function(){
+var sw=document.getElementById("spwsw"),nt=document.getElementById("spwnote");if(!sw)return;
+var T={on:"On. Your password is asked before every edit or delete. Turning it off needs your password.",off:"Off. Edits and deletes go through without asking. Turning it on takes effect straight away."};
+function paint(){var on=!!(window.getPwConfirm&&window.getPwConfirm());sw.setAttribute("aria-checked",on?"true":"false");nt.textContent=on?T.on:T.off}
+var busy=false;
+sw.addEventListener("click",function(){if(busy)return;if(!window.setPwConfirm){try{toast("Sign in first")}catch(e){}return}
+ var on=window.getPwConfirm();
+ if(!on){window.setPwConfirm(true);paint();try{toast("Password check is on")}catch(e){}return}
+ busy=true;Promise.resolve().then(function(){return window.askPwForce()}).then(function(){window.setPwConfirm(false);paint();try{toast("Password check is off")}catch(e){}},function(){paint();try{toast("Not changed. Password check stays on",true)}catch(e){}}).then(function(){busy=false})});
+paint();setInterval(paint,2000);
 })();</script>
 </body></html>
