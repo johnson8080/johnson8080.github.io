@@ -247,14 +247,14 @@ html{scroll-padding-top:62px}
 .ufr{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:start}
 .ucol{min-width:0;display:flex;flex-direction:column;gap:6px}
 .ul{font-size:11px;font-weight:700;letter-spacing:.4px;line-height:1.2;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ufr #umon{height:46px;box-sizing:border-box;margin:0;width:100%;font-size:15px;padding-left:12px;padding-right:6px;min-width:0}
+.ufr #pmon,.ufr #umon{height:46px;box-sizing:border-box;margin:0;width:100%;font-size:15px;padding-left:12px;padding-right:6px;min-width:0}
 .utb{height:46px;width:100%;box-sizing:border-box;border:1px solid var(--bad);border-radius:12px;background:transparent;color:var(--tx);display:flex;align-items:center;padding:0 12px;min-width:0}
 .utb span{font-size:10.5px;font-weight:600;color:var(--mut);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px}
 .utb b{font-size:17px;font-weight:700;color:var(--tx);line-height:1.25;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .umw{position:relative;min-width:0;height:46px}
 .umw .uph{display:none;position:absolute;left:13px;right:34px;top:0;height:46px;align-items:center;color:var(--mut);font-size:15px;white-space:nowrap;overflow:hidden;pointer-events:none}
 .umw.em .uph{display:flex}
-.umw.em #umon{color:transparent}
+.umw.em #umon,.umw.em #pmon{color:transparent}
 /* Trip logs: swipe sideways, Date column frozen, Total row like the Fuel tab */
 #logl .wrap{overflow-x:auto;overflow-y:hidden;max-width:100%;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior-x:contain}
 /* compact footer nav to match the compact header */
@@ -353,8 +353,8 @@ button{transition:background .15s,color .15s,transform .12s}
 .wrap th:first-child,.wrap td:first-child{position:static;box-shadow:none}
 #logl .wrap th:first-child,#logl .wrap td:first-child,#ftab th:first-child,#ftab td:first-child,table.ov th:first-child,table.ov td:first-child{position:sticky;left:0;box-shadow:1px 0 0 var(--ln)}
 .cfr{text-align:right;margin-top:6px;line-height:1}.cfr .ed{padding:4px 2px}.cfr.cfl{text-align:left;margin-top:8px}
-#unp>.card{border-color:var(--ac)}#unp>.card:has(.ufr),#pvt>.card:first-child,#pvadd>.card:first-child,#psl>.card:first-child{padding-top:12px}.card,.modal .card,:root[data-theme="light"] .card,:root[data-theme="dark"] .card{border-color:var(--ac)!important}
-#unp .ut,#pvt .ut,#pvadd .ut{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}@media print{.cfr{display:none!important}}.ct{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}.rh{text-align:center;text-transform:uppercase;letter-spacing:.6px;font-size:15px;line-height:21px;margin-bottom:10px}#trashc>b,#lockc>b{display:block;text-align:center;letter-spacing:.6px}b.ct,b.ut,.rh,#trashc>b,#lockc>b,#fltitle{font-size:15px!important;line-height:21px!important;font-weight:700!important;letter-spacing:.6px!important;text-transform:uppercase!important}
+#unp>.card{border-color:var(--ac)}#unp>.card:has(.ufr),#pdt>.card:has(.ufr),#pvt>.card:first-child,#pvadd>.card:first-child,#psl>.card:first-child{padding-top:12px}.card,.modal .card,:root[data-theme="light"] .card,:root[data-theme="dark"] .card{border-color:var(--ac)!important}
+#unp .ut,#pdt .ut,#pvt .ut,#pvadd .ut{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}@media print{.cfr{display:none!important}}.ct{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;font-size:15px;line-height:21px}.rh{text-align:center;text-transform:uppercase;letter-spacing:.6px;font-size:15px;line-height:21px;margin-bottom:10px}#trashc>b,#lockc>b{display:block;text-align:center;letter-spacing:.6px}b.ct,b.ut,.rh,#trashc>b,#lockc>b,#fltitle{font-size:15px!important;line-height:21px!important;font-weight:700!important;letter-spacing:.6px!important;text-transform:uppercase!important}
 
 /* history filter tabs: ALL..STAFF in one straight line */
 #hch{display:grid!important;grid-template-columns:.75fr .85fr .75fr .95fr 1.15fr .9fr!important;gap:3px!important}
@@ -382,7 +382,7 @@ button{transition:background .15s,color .15s,transform .12s}
 /* Salary sub-tabs: 3 buttons on the first row, 2 wider ones below */
 #sn[data-k="p"]{grid-template-columns:repeat(6,minmax(0,1fr))!important}
 #sn[data-k="p"] button:nth-child(-n+3){grid-column:span 2}
-#sn[data-k="p"] button:nth-child(n+4){grid-column:span 3}
+#sn[data-k="p"] button:nth-child(n+4){grid-column:span 2}
 </style>
 
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -450,7 +450,7 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <header class="hd"><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Sales</button></div>
-<div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button></div>
+<div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button><button data-t="pdt" style="display:none">PAID</button></div>
 <div class="tabs hide" id="barrates" data-g="rates" style="grid-template-columns:minmax(0,1fr)"><button data-t="set" class="on">Update Rates</button></div>
 <div class="tabs hide" id="barfuel" data-g="fuel" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-t="fen">ADD FUEL</button><button data-t="flg" class="on">ALL FUEL LOGS</button></div>
 <div class="tabs hide" id="barov" data-g="ov"><button data-t="ov" class="on">DOWNLOAD REPORT</button><button data-t="sum">Trips</button><button data-t="nts">All Notes</button><button data-t="pguide">DOWNLOAD GUIDE</button><button data-t="fsm">Fuel</button><button data-t="dhs">ACTIVITY LOG</button></div>
@@ -504,6 +504,11 @@ collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Ob
 <div class="card"><b class="ut">UNPAID LOADER BALANCES</b><div class="mut">Only entries with a loader deposit. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="ul"></tbody></table></div></div>
 <div class="card"><b class="ut">UNPAID PRIV STAFF BALANCES</b><div class="mut" id="usn">Unpaid salary carries over month to month. Tap Pay to record a payment (full or part).</div><div class="wrap"><table><thead><tr><th>Staff</th><th>Owed</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="us"></tbody></table></div></div>
 <div class="card"><b class="ut">PAID SALARY HISTORY</b><div class="wrap"><table><tbody id="ph"></tbody></table></div></div>
+</section>
+<section id="pdt" class="hide"><div class="card"><b class="ut">TOTAL PAID</b><div class="ufr"><div class="ucol"><div class="ul">MONTH</div><div class="umw em"><input type="month" id="pmon" required><span class="uph">Select month</span></div></div><div class="ucol"><div class="ul" id="ptl">TOTAL PAID</div><div class="utb" style="border-color:var(--ok)"><b id="ptot">0</b></div></div></div><div class="cfr cfl noprt hide" id="cfpdt"><button type="button" class="ed" id="pclr">Clear filters</button></div></div>
+<div class="card"><b class="ut">PAID DRIVER AMOUNTS</b><div class="wrap"><table><thead><tr><th>Driver</th><th>Deposit</th><th>Balance</th><th>Paid</th></tr></thead><tbody id="pdd"></tbody></table></div></div>
+<div class="card"><b class="ut">PAID LOADER AMOUNTS</b><div class="mut">Loader pay is the loader rate multiplied by the tonnes.</div><div class="wrap"><table><thead><tr><th>Driver</th><th>Tonnes</th><th>Paid</th></tr></thead><tbody id="pdl"></tbody></table></div></div>
+<div class="card"><b class="ut">PAID PRIV STAFF AMOUNTS</b><div class="wrap"><table><thead><tr><th>Staff</th><th>Paid</th></tr></thead><tbody id="pds"></tbody></table></div></div>
 </section>
 <section id="set" class="hide"><div class="card" id="rfuel"><div class="rh">Fuel rates</div><div class="mut" id="frn"></div>
 <label>Selling price per litre</label><input type="number" inputmode="decimal" id="frs" placeholder="0">
@@ -690,11 +695,11 @@ function prev(){chk();var c=cur();$("prev").textContent=fmt(pay(c));var nm=$("dr
 var G={pay:"log",fuel:"flg",ov:"ov",rates:"set"};
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){if(GATED[b.dataset.t]&&needRates()){gatePop();return}var bar=b.parentNode;G[bar.dataset.g]=b.dataset.t;
  bar.querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b)});
- ["enter","log","advt","sum","unp","pvt","pvadd","psl","set","fen","fsm","flg","nts","ov","sales","stg","pguide","dhs"].forEach(function(s){$(s).classList.toggle("hide",s!==b.dataset.t)});if(b.dataset.t==="ov")try{capAll()}catch(x){}}});
+ ["enter","log","advt","sum","unp","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","stg","pguide","dhs"].forEach(function(s){$(s).classList.toggle("hide",s!==b.dataset.t)});if(b.dataset.t==="ov")try{capAll()}catch(x){}}});
 document.querySelectorAll(".main button").forEach(function(b){b.onclick=function(){var g=b.dataset.g;
  document.querySelectorAll(".main button").forEach(function(x){x.classList.toggle("on",x===b)});
  ["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.toggle("hide",x!==g)});
- if(g==="nts"||g==="sales"||g==="stg"){["enter","log","advt","sum","unp","pvt","pvadd","psl","set","fen","fsm","flg","ov","nts","sales","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$(g).classList.remove("hide");if(g==="nts")render();return}
+ if(g==="nts"||g==="sales"||g==="stg"){["enter","log","advt","sum","unp","pvt","pvadd","psl","pdt","set","fen","fsm","flg","ov","nts","sales","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$(g).classList.remove("hide");if(g==="nts")render();return}
  document.querySelector("#bar"+g+' [data-t="'+G[g]+'"]').click();if(g==="rates")scrollTo(0,0)}});
 function payM(kind,who,u){if(needRates()){gatePop();return}$("mbody").innerHTML='<b style="font-size:18px">Mark paid</b><div class="mut">'+esc(who)+' · '+kind+' balance</div><label>Amount paid</label><input type="number" inputmode="decimal" id="pamt" value="'+(Math.round(u*100)/100)+'"><div class="mut" style="margin-top:6px">Unpaid now: '+fmt(u)+'. Lower the amount for a part payment.</div><label>Date paid</label><input type="date" id="pdate" value="'+today()+'"><div id="pwarn" class="neg" style="margin-top:8px;font-size:14px"></div><div class="b2"><button class="pr" id="pOK">Confirm paid</button><button id="pNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("pNo").onclick=closeM;
@@ -878,7 +883,20 @@ function ualHome(){var el=$("ualhome");if(!el)return;var c=0;try{var al=+appCfg.
  Object.keys(D).forEach(function(k){c+=ualN(D[k].h-D[k].a-D[k].p)});Object.keys(L).forEach(function(k){c+=ualN(L[k].o-L[k].p)});staffUnpaid(today().slice(0,7)).rows.forEach(function(x){c+=ualN(x.u)})}}catch(x){c=0}
  var h=c?'<div class="note" id="ualgo" role="button" tabindex="0" style="border:2px solid var(--bad);color:var(--tx);cursor:pointer"><b>'+c+' unpaid balance'+(c>1?'s':'')+' above '+fmt(appCfg.alertAt)+'</b> \u00b7 tap to view \u203a</div>':"";if(el.__h!==h){el.innerHTML=h;el.__h=h}}
 $("ualhome").addEventListener("click",function(ev){if(!ev.target.closest("#ualgo"))return;var g=document.querySelector('.main [data-g="pay"]');if(g)g.click();var t=document.querySelector('#barpay [data-t="unp"]');if(t)t.click();try{scrollTo(0,0)}catch(x){}});
-function hookRender(){try{ualHome()}catch(x){}try{homeSum()}catch(x){}try{rsnOrphUi()}catch(x){}}
+function renderPaid(){if(!$("pdt"))return;var pm=$("pmon").value;$("pmon").parentNode.classList.toggle("em",!pm);$("cfpdt").classList.toggle("hide",!pm);
+ var inm=function(d){d=String(d||"");return!pm||d.slice(0,7)===pm},D={},L={},S={},tD=0,tL=0,tS=0,ok='<b style="color:var(--ok)">',nm=function(e){return e.driver||"(No driver name)"};
+ entries.forEach(function(e){if(!inm(e.date))return;var k=nm(e),d=D[k]||(D[k]={d:0,b:0});d.d+=dpaid(e);
+  if(e.tonnes>0){var l=L[k]||(L[k]={t:0,p:0});l.t+=e.tonnes;l.p+=(e.deposit||0)>0?e.deposit:e.tonnes*rt(e)}});
+ livePays().forEach(function(p){if(!inm(p.date))return;var k=p.who||"(No driver name)";if(p.kind==="loader"){var l=L[k]||(L[k]={t:0,p:0});l.p+=+p.amount||0}else{var d=D[k]||(D[k]={d:0,b:0});d.b+=+p.amount||0}});
+ (typeof pvp!=="undefined"&&pvp||[]).forEach(function(x){if(!inm(x.date||x.month))return;S[x.who]=(S[x.who]||0)+(+x.amount||0)});
+ var dk=Object.keys(D).filter(function(k){return D[k].d>0||D[k].b>0}),lk=Object.keys(L).filter(function(k){return L[k].t>0||L[k].p>0}),sk=Object.keys(S).filter(function(k){return S[k]>0}),tt=0;
+ $("pdd").innerHTML=dk.length?dk.map(function(k){var x=D[k],t=x.d+x.b;tD+=t;return"<tr><td>"+esc(k)+"</td><td>"+fmt(x.d)+"</td><td>"+fmt(x.b)+"</td><td>"+ok+fmt(t)+"</b></td></tr>"}).join("")+'<tr style="font-weight:700"><td colspan="3">Total driver paid</td><td>'+fmt(tD)+"</td></tr>":'<tr><td class="mut" colspan="4">No driver payments</td></tr>';
+ $("pdl").innerHTML=lk.length?lk.map(function(k){var x=L[k];tL+=x.p;tt+=x.t;return"<tr><td>"+esc(k)+"</td><td>"+x.t.toFixed(2)+"</td><td>"+ok+fmt(x.p)+"</b></td></tr>"}).join("")+'<tr style="font-weight:700"><td>Total loader paid</td><td>'+tt.toFixed(2)+"</td><td>"+fmt(tL)+"</td></tr>":'<tr><td class="mut" colspan="3">No loader payments</td></tr>';
+ $("pds").innerHTML=sk.length?sk.map(function(k){tS+=S[k];return"<tr><td>"+esc(k)+"</td><td>"+ok+fmt(S[k])+"</b></td></tr>"}).join("")+'<tr style="font-weight:700"><td>Total priv staff paid</td><td>'+fmt(tS)+"</td></tr>":'<tr><td class="mut" colspan="2">No staff payments</td></tr>';
+ $("ptot").textContent=fmt(tD+tL+tS);$("ptl").textContent=pm?"MONTHLY PAID":"TOTAL PAID"}
+$("pmon").onchange=renderPaid;$("pmon").addEventListener("input",renderPaid);$("pclr").onclick=function(){$("pmon").value="";renderPaid()};
+document.querySelector('#barpay [data-t="pdt"]').addEventListener("click",function(){try{renderPaid()}catch(x){}});
+function hookRender(){try{renderPaid()}catch(x){}try{ualHome()}catch(x){}try{homeSum()}catch(x){}try{rsnOrphUi()}catch(x){}}
 /* Money boxes: thousand separators + 2 decimals, plain number for the rest of the code */
 var _nbD=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value");
 function nbFmt(v){var t=String(v==null?"":v).replace(/,/g,"").trim();return t!==""&&isFinite(Number(t))?fmt(Number(t)):String(v==null?"":v)}
@@ -1601,7 +1619,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
  [].forEach.call(document.querySelectorAll(".main button"),function(b){b.insertAdjacentHTML("afterbegin",ic(b.dataset.g))});
  var nm={t:"nts",h:"hist",f:"fuel",p:"wal",s:"sales",r:"ov"};[].forEach.call(document.querySelectorAll(".bn button"),function(b){b.querySelector("i").innerHTML=ic(nm[b.dataset.k])});
  function th(){$("hth").innerHTML=ic(document.documentElement.getAttribute("data-theme")==="light"?"moon":"sun")}th();
- $("hst").innerHTML=ic("stg");$("hst").onclick=function(){if(!$("stg").classList.contains("hide"))return;[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.add("hide")});["enter","log","advt","sum","unp","pvt","pvadd","psl","set","fen","fsm","flg","nts","ov","sales","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$("stg").classList.remove("hide");act();scrollTo({top:0,behavior:"smooth"})};
+ $("hst").innerHTML=ic("stg");$("hst").onclick=function(){if(!$("stg").classList.contains("hide"))return;[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.add("hide")});["enter","log","advt","sum","unp","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$("stg").classList.remove("hide");act();scrollTo({top:0,behavior:"smooth"})};
  function go(v){if(v==="bk"){window.pgBk();return}if(v==="hist"){showHist();return}var a=v.split(":");document.querySelector('.main [data-g="'+a[0]+'"]').click();var t=document.querySelector('.tabs [data-t="'+a[1]+'"]');if(t)t.click();var up=function(){document.documentElement.scrollTop=0;document.body.scrollTop=0;scrollTo(0,0)};up();setTimeout(up,60);setTimeout(up,300)}
  [].forEach.call(document.querySelectorAll(".bn button"),function(b){b.onclick=function(){go(b.dataset.go)}});
  $("hrp").onclick=function(){go("rates:set")};
@@ -1614,8 +1632,8 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    $("modal").classList.remove("hide");$("qmC").onclick=closeM;
    [].forEach.call(document.querySelectorAll(".qm button"),function(b){b.onclick=function(){closeM();go(L[b.dataset.i][0])}})}
   h.onclick=openQ;h.onkeydown=function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();openQ()}}})();
- var MP={hist:"h",enter:"t",advt:"p",log:"t",fen:"f",flg:"f",unp:"p",pvt:"p",pvadd:"p",psl:"p",sum:"r",fsm:"r",ov:"r",pguide:"r",dhs:"r",nts:"r",sales:"s",set:"m"};
-  var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","PRIV STAFF","pvt"],["pay:pvadd","ADD PRIV STAFF","pvadd"],["pay:psl","PAYSLIP","psl"]],r:[["ov:ov","DOWNLOAD REPORT","ov"],["ov:sum","TRIPS","sum"],["ov:nts","ALL NOTES","nts"],["ov:pguide","DOWNLOAD GUIDE","pguide"],["ov:fsm","FUEL","fsm"],["ov:dhs","ACTIVITY LOG","dhs"]],m:[["rates:set","Update Rates","set"]]};
+ var MP={hist:"h",enter:"t",advt:"p",log:"t",fen:"f",flg:"f",unp:"p",pvt:"p",pvadd:"p",psl:"p",pdt:"p",sum:"r",fsm:"r",ov:"r",pguide:"r",dhs:"r",nts:"r",sales:"s",set:"m"};
+  var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","PRIV STAFF","pvt"],["pay:pdt","PAID","pdt"],["pay:pvadd","ADD PRIV STAFF","pvadd"],["pay:psl","PAYSLIP","psl"]],r:[["ov:ov","DOWNLOAD REPORT","ov"],["ov:sum","TRIPS","sum"],["ov:nts","ALL NOTES","nts"],["ov:pguide","DOWNLOAD GUIDE","pguide"],["ov:fsm","FUEL","fsm"],["ov:dhs","ACTIVITY LOG","dhs"]],m:[["rates:set","Update Rates","set"]]};
   var lastK=null;
   function sub(k,cur){var bar=$("sn"),L=CATS[k]||[];
    if(L.length<2){bar.classList.add("hide");bar.innerHTML="";lastK=null;return}
@@ -1623,7 +1641,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    bar.classList.remove("hide");[].forEach.call(bar.querySelectorAll("button"),function(b){b.classList.toggle("on",b.dataset.s===cur)})}
   function act(){$("hst").classList.toggle("on",!$("stg").classList.contains("hide"));var k="",cur="";[].forEach.call(document.querySelectorAll("section:not(.hide)"),function(x){if(MP[x.id]){k=MP[x.id];cur=x.id}});[].forEach.call(document.querySelectorAll(".bn button"),function(b){b.classList.toggle("on",b.dataset.k===k)});$("hrp").classList.toggle("on",k==="m");sub(k,cur);var cw=typeof canWrite==="undefined"||canWrite;$("fabT").classList.toggle("hide",cur!=="log"||!cw);$("fabF").classList.toggle("hide",cur!=="flg"||!cw);$("st1").classList.toggle("hide",k!=="t");$("st2").classList.toggle("hide",k!=="f");document.body.classList.toggle("nohd",!(k==="m"||k==="s"||!$("stg").classList.contains("hide")))}
   var HT="all";
-  function showHist(){["enter","log","advt","sum","unp","pvt","pvadd","psl","set","fen","fsm","flg","nts","ov","sales","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});$("hist").classList.remove("hide");document.body.classList.add("nohd");renderHist();scrollTo({top:0,behavior:"smooth"})}
+  function showHist(){["enter","log","advt","sum","unp","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});$("hist").classList.remove("hide");document.body.classList.add("nohd");renderHist();scrollTo({top:0,behavior:"smooth"})}
   function renderHist(){if($("hist").classList.contains("hide"))return;
    var sv=$("hveh"),cv=sv.value;sv.innerHTML='<option value="">All vehicles</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)sv.value=cv;
    try{PM=alloc()}catch(x){}
@@ -1722,8 +1740,8 @@ function sync(){h.classList.toggle("mlock",!m.classList.contains("hide"))}
 new MutationObserver(sync).observe(m,{attributes:true,attributeFilter:["class"]});sync();
 m.addEventListener("touchmove",function(e){var c=e.target.closest&&e.target.closest(".card");if(!c||c.scrollHeight<=c.clientHeight+1)e.preventDefault()},{passive:false});
 m.addEventListener("wheel",function(e){var c=e.target.closest&&e.target.closest(".card");if(!c||c.scrollHeight<=c.clientHeight+1)e.preventDefault()},{passive:false})})();</script>
-<script>(function(){var IDS=["enter","log","advt","unp","pvt","pvadd","psl","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","stg","hist"],
-G={enter:"pay",log:"pay",advt:"pay",unp:"pay",pvt:"pay",pvadd:"pay",psl:"pay",fen:"fuel",flg:"fuel",sum:"ov",fsm:"ov",ov:"ov",pguide:"ov",dhs:"ov",nts:"ov",set:"rates"},
+<script>(function(){var IDS=["enter","log","advt","unp","pvt","pvadd","psl","pdt","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","stg","hist"],
+G={enter:"pay",log:"pay",advt:"pay",unp:"pay",pvt:"pay",pvadd:"pay",psl:"pay",pdt:"pay",fen:"fuel",flg:"fuel",sum:"ov",fsm:"ov",ov:"ov",pguide:"ov",dhs:"ov",nts:"ov",set:"rates"},
 cur=null,depth=0,popping=false,ready=false,raf=0,mflag=false,pback=false,pbt=0;
 function q(x){return document.querySelector(x)}
 function vis(){for(var i=0;i<IDS.length;i++){var e=document.getElementById(IDS[i]);if(e&&!e.classList.contains("hide"))return IDS[i]}return null}
