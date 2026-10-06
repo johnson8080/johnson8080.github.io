@@ -144,7 +144,7 @@ body.nohd .hd{display:none}body.nohd{padding-top:8px}
 .hd .ib svg{width:20px;height:20px}
 .hd .nb{width:auto;height:31px;min-width:0;display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:700;line-height:1;cursor:pointer;background:transparent;border:1px solid #16a34a;color:#16a34a}
 .hd .nb.onl{background:transparent;border-color:#16a34a;color:#16a34a}
-.hd .nb.off{background:transparent;border-color:#dc2626;color:#dc2626}@keyframes rblk{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0);outline-color:transparent}50%{box-shadow:0 0 22px 5px rgba(34,197,94,.85);outline-color:#22c55e}}.rblink{outline:3px solid transparent;outline-offset:3px;animation:rblk .8s ease-in-out 0s 5}.hd .ht{display:flex;align-items:center;gap:8px}.hd .ht h1{flex:0 1 auto}#netpop{display:none;flex:0 0 auto;font-size:13px;font-weight:800;letter-spacing:.3px;white-space:nowrap;animation:npin .25s ease-out}#netpop.on{display:inline;color:#16a34a}#netpop.off{display:inline;color:#dc2626}@keyframes npin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
+.hd .nb.off{background:transparent;border-color:#dc2626;color:#dc2626}@keyframes rblk{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0);outline-color:transparent}50%{box-shadow:0 0 22px 5px rgba(34,197,94,.85);outline-color:#22c55e}}.rblink{outline:3px solid transparent;outline-offset:3px;animation:rblk .8s ease-in-out 0s 5}.hd .ht{display:flex;align-items:center;gap:8px}.hd .ht h1{flex:0 1 auto}#netpop{display:none;flex:0 0 auto;font-family:inherit;font-size:13px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;animation:npin .25s ease-out}#netpop.on{display:inline;color:#16a34a}#netpop.off{display:inline;color:#dc2626}@keyframes npin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
 body.nohd .hd{display:flex}
 body,body.nohd{padding-top:0}
 html{scroll-padding-top:52px}
@@ -775,7 +775,16 @@ function render(){
 var ovDirty=false;function ovLazy(){var o=$("ov");if(o&&o.classList.contains("hide")){ovDirty=true;return}ovDirty=false;renderOv()}
 (function(){var o=$("ov");if(!o||!window.MutationObserver)return;new MutationObserver(function(){if(ovDirty&&!o.classList.contains("hide")){ovDirty=false;try{renderOv()}catch(e){}}}).observe(o,{attributes:true,attributeFilter:["class"]})})();
 var offCopy=false;window.NETREAL=navigator.onLine!==false;var netFirst=true,netTmr=null;
-function netPop(off){var e=document.getElementById("netpop");if(!e)return;clearTimeout(netTmr);e.className=off?"off":"on";e.textContent=off?"OFFLINE!":"ONLINE!";netTmr=setTimeout(function(){e.className="";e.textContent=""},5000)}
+var netQ=[],netCur=null,netStart=0;
+function netShow(){clearTimeout(netTmr);var e=document.getElementById("netpop");if(!e)return;if(!netQ.length){netCur=null;e.className="";e.textContent="";return}netCur=netQ.shift();netStart=Date.now();e.className=netCur.bad?"off":"on";e.textContent=netCur.t;netTmr=setTimeout(netShow,netCur.ms)}
+window.netMsg=function(t,bad,ms){var opp={"ONLINE!":"OFFLINE!","OFFLINE!":"ONLINE!","Refreshed!":"Not refreshed!","Not refreshed!":"Refreshed!"}[t];
+ netQ=netQ.filter(function(x){return x.t!==t&&x.t!==opp});
+ if(netCur&&netCur.t===t){netCur.ms=ms||5000;netStart=Date.now();clearTimeout(netTmr);netTmr=setTimeout(netShow,netCur.ms);return}
+ netQ.push({t:t,bad:!!bad,ms:ms||5000});
+ if(!netCur){netShow();return}
+ if(netCur.t===opp)netQ[netQ.length-1].ms=netQ[netQ.length-1].ms;
+ clearTimeout(netTmr);netTmr=setTimeout(netShow,Math.max(0,1800-(Date.now()-netStart)))};
+function netPop(off){window.netMsg(off?"OFFLINE!":"ONLINE!",off,5000)}
 function netUpdate(){var off=offCopy||window.NETREAL===false,b=document.getElementById("who"),h=document.querySelector(".hd h1");if(h){h.classList.toggle("off",off);h.classList.toggle("onl",!off)}if(!b)return;b.classList.toggle("off",off);b.classList.toggle("onl",!off);document.getElementById("wt").textContent=off?"Offline":"Online"}
 function netOne(u){return new Promise(function(res){var done=false,c=window.AbortController?new AbortController():null;function fin(v){if(done)return;done=true;clearTimeout(t);res(v)}var t=setTimeout(function(){try{if(c)c.abort()}catch(e){}fin(false)},4000);try{fetch(u+"?_="+Date.now(),{mode:"no-cors",cache:"no-store",signal:c?c.signal:undefined}).then(function(){fin(true)},function(){fin(false)})}catch(e){fin(false)}})}
 var netBusy=null;
@@ -1987,10 +1996,10 @@ function done(){busy=false;el.classList.remove("spin");settle(0)}
 function run(){busy=true;el.classList.remove("rdy");lb.textContent="Refreshing…";el.classList.add("spin");settle(HOLD);
  var safety=setTimeout(done,9000);
  Promise.all([online(),new Promise(function(r){setTimeout(r,1800)})]).then(function(a){
-  if(a[0]){var fl=0;try{sessionStorage.setItem("fleetPtr","1");fl=sessionStorage.getItem("fleetPtr")==="1"}catch(e){}if(!fl){try{window.name="fleetPtr1";fl=1}catch(e){}}if(!fl)try{toast("Refreshed!",false)}catch(e){}
+  if(a[0]){var fl=0;try{sessionStorage.setItem("fleetPtr","1");fl=sessionStorage.getItem("fleetPtr")==="1"}catch(e){}if(!fl){try{window.name="fleetPtr1";fl=1}catch(e){}}if(!fl)try{window.netMsg("Refreshed!",false,3000)}catch(e){}
    try{if(navigator.serviceWorker)navigator.serviceWorker.getRegistration().then(function(r){if(r)r.update()}).catch(function(){})}catch(e){}
    setTimeout(function(){location.reload()},fl?150:700)}
-  else{clearTimeout(safety);done();try{toast("Not refreshed!",true)}catch(e){}}})}
+  else{clearTimeout(safety);done();try{window.netMsg("Not refreshed!",true,3000)}catch(e){}}})}
 document.addEventListener("touchstart",function(e){if(e.touches.length!==1||blocked(e.target)){armed=false;return}armed=true;on=false;sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
 document.addEventListener("touchmove",function(e){if(!armed)return;var t=e.touches[0],dx=t.clientX-sx,dy=t.clientY-sy;
  if(!on){if(dy>8&&dy>Math.abs(dx)*1.2&&(window.pageYOffset||document.documentElement.scrollTop||0)<=0){on=true}
@@ -1998,7 +2007,7 @@ document.addEventListener("touchmove",function(e){if(!armed)return;var t=e.touch
  if(e.cancelable)e.preventDefault();pull=Math.max(0,Math.min(MAXP,dy*0.5));paint(pull,false)},{passive:false});
 function end(){if(!on){armed=false;return}on=false;armed=false;if(pull>=TH)run();else settle(0);pull=0}
 document.addEventListener("touchend",end,{passive:true});document.addEventListener("touchcancel",end,{passive:true});
-try{var rf=0;try{if(sessionStorage.getItem("fleetPtr")==="1"){sessionStorage.removeItem("fleetPtr");rf=1}}catch(e){}try{if(window.name==="fleetPtr1"){window.name="";rf=1}}catch(e){}if(rf)setTimeout(function(){try{toast("Refreshed!",false)}catch(e){}},900)}catch(e){}
+try{var rf=0;try{if(sessionStorage.getItem("fleetPtr")==="1"){sessionStorage.removeItem("fleetPtr");rf=1}}catch(e){}try{if(window.name==="fleetPtr1"){window.name="";rf=1}}catch(e){}if(rf)setTimeout(function(){try{window.netMsg("Refreshed!",false,3000)}catch(e){}},900)}catch(e){}
 })();</script>
 <script>(function(){
 /* stop the phone's autofill / password manager from filling saved emails into app boxes (login boxes are left alone) */
