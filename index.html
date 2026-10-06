@@ -402,8 +402,9 @@ var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
 setTimeout(function(){var s=document.getElementById("stg");if(!s)return;var b=document.createElement("button");b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};s.appendChild(b)},800);
 var lastOk=0,gOpen=null,hold=false;
+var PW_CONFIRM=false; /* true = ask for the password again before edits and deletes (turned off for now) */
 function gate(){
-if(ro||hold)return Promise.resolve();
+if(!PW_CONFIRM||ro||hold)return Promise.resolve();
 if(gOpen)return gOpen;
 gOpen=new Promise(function(res,rej){
 var o=document.createElement("div");
