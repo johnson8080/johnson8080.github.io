@@ -144,7 +144,7 @@ body.nohd .hd{display:none}body.nohd{padding-top:8px}
 .hd .ib svg{width:20px;height:20px}
 .hd .nb{width:auto;height:31px;min-width:0;display:flex;align-items:center;padding:0 8px;font-size:12px;font-weight:700;line-height:1;cursor:pointer;background:transparent;border:1px solid #16a34a;color:#16a34a}
 .hd .nb.onl{background:transparent;border-color:#16a34a;color:#16a34a}
-.hd .nb.off{background:transparent;border-color:#dc2626;color:#dc2626}
+.hd .nb.off{background:transparent;border-color:#dc2626;color:#dc2626}.hd .ht{display:flex;align-items:center;gap:8px}.hd .ht h1{flex:0 1 auto}#netpop{display:none;flex:0 0 auto;font-size:13px;font-weight:800;letter-spacing:.3px;white-space:nowrap;animation:npin .25s ease-out}#netpop.on{display:inline;color:#16a34a}#netpop.off{display:inline;color:#dc2626}@keyframes npin{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
 body.nohd .hd{display:flex}
 body,body.nohd{padding-top:0}
 html{scroll-padding-top:52px}
@@ -422,7 +422,7 @@ return gOpen}
 window.askPw=function(){return gate()};window.gateHold=async function(on){if(on){await gate();hold=true}else hold=false};
 var root=fs.collection("fuelTrips").doc("app");
 var OWN="ondeyojohnson@gmail.com",isOwn=(u.email||"").toLowerCase()===OWN;window.fbIsOwn=isOwn;var pdoc=fs.collection("presence").doc(u.uid),FV=firebase.firestore.FieldValue;
-var PERR="",RERR="";var beat=function(){if(document.visibilityState==="hidden")return;try{pdoc.set({name:who,t:FV.serverTimestamp(),off:false}).then(function(){PERR=""}).catch(function(e){PERR=(e&&e.code)||"error"})}catch(e){}};
+var PERR="",RERR="";var beat=function(){if(document.visibilityState==="hidden")return;(window.netProbe?window.netProbe():Promise.resolve(true)).then(function(ok){if(!ok)return;try{pdoc.set({name:who,t:FV.serverTimestamp(),off:false}).then(function(){PERR=""}).catch(function(e){PERR=(e&&e.code)||"error"})}catch(e){}})};
 beat();setInterval(beat,60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")beat()});
 window.fbPresenceOff=function(){try{return pdoc.set({name:who,t:FV.serverTimestamp(),off:true}).catch(function(){})}catch(e){return Promise.resolve()}};
 if(isOwn){var pb=document.getElementById("onl"),pp=null,PL=[];
@@ -445,7 +445,7 @@ delete:function(){return gate().then(function(){return r.delete()})},onSnapshot:
 collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return bg(cr.add(o))},onSnapshot:function(a,b){return cr.onSnapshot(a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
 </head><body>
-<header class="hd"><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
+<header class="hd"><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Sales</button></div>
 <div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button></div>
@@ -774,7 +774,16 @@ function render(){
 /* The Summary tab is only rebuilt while it is open; it rebuilds the moment it is opened. */
 var ovDirty=false;function ovLazy(){var o=$("ov");if(o&&o.classList.contains("hide")){ovDirty=true;return}ovDirty=false;renderOv()}
 (function(){var o=$("ov");if(!o||!window.MutationObserver)return;new MutationObserver(function(){if(ovDirty&&!o.classList.contains("hide")){ovDirty=false;try{renderOv()}catch(e){}}}).observe(o,{attributes:true,attributeFilter:["class"]})})();
-var offCopy=false;function netUpdate(){var off=offCopy||navigator.onLine===false,b=document.getElementById("who"),h=document.querySelector(".hd h1");if(h){h.classList.toggle("off",off);h.classList.toggle("onl",!off)}if(!b)return;b.classList.toggle("off",off);b.classList.toggle("onl",!off);document.getElementById("wt").textContent=off?"Offline":"Online"}window.addEventListener("online",netUpdate);window.addEventListener("offline",netUpdate);
+var offCopy=false;window.NETREAL=navigator.onLine!==false;var netFirst=true,netTmr=null;
+function netPop(off){var e=document.getElementById("netpop");if(!e)return;clearTimeout(netTmr);e.className=off?"off":"on";e.textContent=off?"OFFLINE!":"ONLINE!";netTmr=setTimeout(function(){e.className="";e.textContent=""},5000)}
+function netUpdate(){var off=offCopy||window.NETREAL===false,b=document.getElementById("who"),h=document.querySelector(".hd h1");if(h){h.classList.toggle("off",off);h.classList.toggle("onl",!off)}if(!b)return;b.classList.toggle("off",off);b.classList.toggle("onl",!off);document.getElementById("wt").textContent=off?"Offline":"Online"}
+function netOne(u){return new Promise(function(res){var done=false,c=window.AbortController?new AbortController():null;function fin(v){if(done)return;done=true;clearTimeout(t);res(v)}var t=setTimeout(function(){try{if(c)c.abort()}catch(e){}fin(false)},4000);try{fetch(u+"?_="+Date.now(),{mode:"no-cors",cache:"no-store",signal:c?c.signal:undefined}).then(function(){fin(true)},function(){fin(false)})}catch(e){fin(false)}})}
+var netBusy=null;
+window.netProbe=function(){if(navigator.onLine===false)return netSet(false);if(netBusy)return netBusy;netBusy=netOne("https://www.gstatic.com/generate_204").then(function(ok){return ok||netOne("https://www.cloudflare.com/cdn-cgi/trace")}).then(function(ok){netBusy=null;return netSet(ok)});return netBusy};
+function netSet(ok){var ch=window.NETREAL!==ok;window.NETREAL=ok;netUpdate();if(ch||netFirst){netPop(!ok)}netFirst=false;return Promise.resolve(ok)}
+window.addEventListener("online",function(){window.netProbe()});window.addEventListener("offline",function(){netSet(false)});
+document.addEventListener("visibilitychange",function(){if(!document.hidden)window.netProbe()});
+setInterval(function(){window.netProbe()},8000);window.netProbe();
 function banner(t){if(t&&t.indexOf("Offline copy")===0){offCopy=true;window.offMsg=t;netUpdate();$("who").onclick=function(){toast(t)};$("banner").innerHTML="";return}$("banner").innerHTML=t?'<div class="note">'+t+'</div>':""}
 $("save").onclick=async function(){if(needRates()){gatePop();return}
  var d=$("date").value;if(!d||!$("veh").value||!$("drv").value.trim()||$("ton").value===""){alert("Fill date, vehicle, driver and tonnes");return}
@@ -1408,7 +1417,7 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
   if(loadMsg)sw(loadMsg,false);
   banner("Offline copy: entries are saved on this phone only. Use the published page to keep them online.");gateCheck();return}
  if(!canWrite){banner("View-only access: ask the owner to make you a Contributor to add entries.");$("save").disabled=true}
- netUpdate();$("who").onclick=function(){toast(navigator.onLine===false?"You are offline":"You are online")};
+ netUpdate();$("who").onclick=function(){window.netProbe().then(function(ok){toast(ok?"You are online":"You are offline")})};
  db.doc("config/main").onSnapshot(function(s){paySaved=!!s.exists;cfgLoaded=true;if(s.exists){cfg=Object.assign(cfg,s.data());fillVeh();showCfg();if(!editing&&!(+$("ddp").value>0))setDdp();rq()}gateCheck()});
  db.collection("entries").onSnapshot(async function(s){
   var _a=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});entries=_a.filter(function(e){return!e.deleted});trashE=_a.filter(function(e){return e.deleted});var ids=[];_a.forEach(function(e){[e.by,e.editedBy,e.deletedBy].forEach(function(i){if(i&&i!=="local"&&ids.indexOf(i)<0)ids.push(i)})});
@@ -1549,7 +1558,7 @@ document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.
   holdPw(false);render();try{renderFuel()}catch(x){}
   toast(stop?"Cancelled. "+ok+" cleared":ok+" cleared"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""));return}
  if(t.id==="clrTrash"){var S=[["entries",trashE],["fuel",trashF],["advances",trashA],["payments",trashP],["pvpays",trashV]],n=0;S.forEach(function(x){n+=x[1].length});if(!n)return;
-  if(db&&navigator.onLine===false){toast("Connect to the internet to erase deleted history");return}
+  if(db&&window.NETREAL===false){toast("Connect to the internet to erase deleted history");return}
   if(!(await confirmX("Clear deleted history?",n+" deleted item(s) will be erased permanently. This cannot be undone.","Erase permanently")))return;
   try{await holdPw(true)}catch(e){toast("Cancelled");return}
   t.disabled=true;var ok=0,sk=0,fl=0,stop=0;
@@ -1583,7 +1592,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
   function openQ(){var cw=typeof canWrite==="undefined"||canWrite,L=[["pay:log","home","Go to Home"]];
    if(cw){L.push(["pay:enter","truck","Add trip log"]);L.push(["fuel:fen","fuel","Add fuel log"])}
    L.push(["ov:ov","ov","View Reports"]);L.push(["ov:nts","nts","View All Notes"]);L.push(["rates:set","rates","Update Rates"]);L.push(["ov:pguide","nts","Download Report"]);L.push(["bk","bk","Full Backup now"]);
-   var off=(typeof offCopy!=="undefined"&&offCopy)||navigator.onLine===false;
+   var off=(typeof offCopy!=="undefined"&&offCopy)||window.NETREAL===false;
    $("mbody").innerHTML='<div class="qh"><b style="font-size:18px">Quick menu</b><span class="qt'+(off?' off':'')+'"><i>'+(off?"&#10005;":"&#10003;")+'</i>'+(off?"You are offline":"You are online")+'</span></div>'+'<div class="qm">'+L.map(function(x,i){return'<button type="button" data-i="'+i+'">'+ic(x[1])+x[2]+'</button>'}).join("")+'</div><div class="b2"><button type="button" id="qmC">Close</button></div>';
    $("modal").classList.remove("hide");$("qmC").onclick=closeM;
    [].forEach.call(document.querySelectorAll(".qm button"),function(b){b.onclick=function(){closeM();go(L[b.dataset.i][0])}})}
@@ -1941,7 +1950,7 @@ function show(v){if(bn)return;bn=document.createElement("div");bn.className="not
  document.getElementById("updNow").onclick=async function(){this.disabled=true;this.textContent="Updating\u2026";
   try{if(navigator.serviceWorker){var rg=await navigator.serviceWorker.getRegistrations();for(var i=0;i<rg.length;i++)await rg[i].unregister()}if(window.caches){var ks=await caches.keys();for(var j=0;j<ks.length;j++)await caches.delete(ks[j])}}catch(e){}
   location.reload()}}
-function check(){if(!cur||navigator.onLine===false||Date.now()<last)return;last=Date.now()+6e5;
+function check(){if(!cur||window.NETREAL===false||Date.now()<last)return;last=Date.now()+6e5;
  fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){var m=/name="app-version"\s+content="([^"]+)"/.exec(t);if(m&&m[1]!==cur)show(m[1])}).catch(function(){})}
 setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibilitychange",function(){if(!document.hidden)check()});window.addEventListener("online",function(){setTimeout(check,2000)})})();
 </script>
@@ -1966,7 +1975,7 @@ function blocked(t){if(busy)return true;if((window.pageYOffset||document.documen
  if(document.getElementById("gP")||document.getElementById("fbE"))return true;
  if(t&&t.closest&&t.closest("input,textarea,select"))return true;
  for(var n=t;n&&n!==document.body&&n.nodeType===1;n=n.parentElement){if(n.scrollTop>0)return true}return false}
-function online(){return Promise.resolve(navigator.onLine!==false)}
+function online(){return window.netProbe?window.netProbe():Promise.resolve(navigator.onLine!==false)}
 function done(){busy=false;el.classList.remove("spin");settle(0)}
 function run(){busy=true;sv.style.transform="";ci.style.strokeDashoffset="";el.classList.add("spin");settle(HOLD);
  var safety=setTimeout(done,9000);
