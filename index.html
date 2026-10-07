@@ -52,7 +52,7 @@ body{padding-bottom:calc(80px + var(--kb,0px))}.modal{padding-bottom:calc(12px +
 @media print{#stg{display:none!important}}
 label{font-size:13px;font-weight:600}.mut,.sub{font-size:14px}.btn:disabled{opacity:.7}input[readonly]{opacity:.85}
 #wm{display:none}@media print{#wm{display:block;position:fixed;left:0;right:0;bottom:0;padding:6px 12px;text-align:center;font:11px/1.3 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:#333;background:#fff;border-top:1px solid #bbb}}
-.cap5{max-height:238px;overflow-y:auto;-webkit-overflow-scrolling:touch}.cap5 thead th{position:sticky;top:0;background:var(--card);z-index:2;box-shadow:0 1px 0 var(--ln)}.cap5 tbody tr:last-child td{position:sticky;bottom:0;background:var(--card);z-index:1;box-shadow:0 -1px 0 var(--ln);font-weight:700}
+.cap10{max-height:420px;overflow-y:auto;-webkit-overflow-scrolling:touch}.cap10 thead th{position:sticky;top:0;background:var(--card);z-index:2;box-shadow:0 1px 0 var(--ln)}.cap10 tbody tr:last-child td{position:sticky;bottom:0;background:var(--card);z-index:1;box-shadow:0 -1px 0 var(--ln);font-weight:700}.cap5{max-height:238px;overflow-y:auto;-webkit-overflow-scrolling:touch}.cap5 thead th{position:sticky;top:0;background:var(--card);z-index:2;box-shadow:0 1px 0 var(--ln)}.cap5 tbody tr:last-child td{position:sticky;bottom:0;background:var(--card);z-index:1;box-shadow:0 -1px 0 var(--ln);font-weight:700}
 
 /* ===== FleetFlow look ===== */
 :root{--bg:#f3f5f9;--card:#fff;--fld:#f1f4f9;--seg:#e6ebf4;--ac:#2563eb;--ln:#dde3ee;--mut:#64708a;--tx:#0d1424;--ok:#0f9d6b;--rad:20px}
@@ -531,7 +531,7 @@ return{get:function(i){return S[i]||null},set:function(i,a,b){S[i]={a:a,b:b}},cl
 <label>Loader rate per tonne</label><input type="number" id="rate">
 <label>Default driver deposit (paid each working day)</label><input type="number" id="dday">
 <label>Driver balance held per working day</label><input type="number" id="dbal"><label>Held reduction for a repeat trip on the same day</label><input type="number" id="drep"><div class="mut" style="margin-top:4px">Own figure, not tied to the driver deposit. For a driver's second trip the same day the deposit is paid again and the balance held is reduced by this amount.</div>
-<label>Vehicles and drivers</label><div class="mut">Each plate is tied to one driver. Picking the plate on the Enter tab fills the driver automatically.</div><div class="mut" id="vnote" style="margin-top:6px"></div><div id="vrows"></div><button type="button" class="btn" id="vadd" style="background:var(--mut);margin-top:10px">+ Add vehicle</button><button class="btn" id="sset" disabled>Update/Save Rates &amp; Data</button></div><div class="card" id="rwinch"><div class="rh">Winch</div><div class="mut">Choose the one vehicle used as the winch. The Winch tab shows a detailed report for it.</div>
+<label>Vehicles and drivers</label><div class="mut">Each plate is tied to one driver. Picking the plate on the Enter tab fills the driver automatically.</div><div class="mut" id="vnote" style="margin-top:6px"></div><div id="vrows"></div><button type="button" class="btn" id="vadd" style="background:var(--mut);margin-top:10px">+ Add vehicle</button><button class="btn" id="sset" disabled>Update/Save Rates &amp; Data</button></div><div class="card" id="rwinch"><div class="rh">Winch</div><div class="mut">Choose the one vehicle used as the winch. The Winch tab shows its fuel report.</div>
 <label>Plate</label><select id="wplate"></select><label>Driver</label><input id="wdrv" readonly placeholder="Fills in from the plate"><div class="mut" id="wnote" style="margin-top:6px"></div>
 <button class="btn" id="wsave" disabled>Save winch vehicle</button></div><div class="card" id="lockc"></div><div class="card" id="rrsn"><div class="rh">Expense reasons</div><div class="mut">Reasons you can pick for Other expense when filling a trip entry. Changes save straight away.</div><div id="rsnrows"></div><div id="rsnorph"></div><div class="vrow" style="grid-template-columns:1fr auto"><input id="rsnin" maxlength="40" placeholder="New reason, e.g. Food"><button type="button" class="btn" id="rsnadd" style="margin:0;width:auto;padding:0 16px">Add</button></div><div class="mut" style="margin-top:8px">Tap ✎ to rename a reason. Reports and entries then show the new name, and past entries are not edited. Removing a reason does not change past entries either.</div></div></section>
 
@@ -2345,19 +2345,13 @@ function wModel(){var pl=cfg.winch;if(!pl||(cfg.veh||[]).indexOf(pl)<0)return nu
  m.lo=S(tr.filter(function(e){return e.deposit>0}),function(e){return e.tonnes*rt(e)-e.deposit});
  m.bal=m.held-m.advE-m.advS-m.paidD;m.now=null;if(dr){try{m.now=dbalOf(dr).b}catch(x){}}
  m.lit=S(fu,function(f){return f.litres});m.fsell=S(fu,function(f){return f.litres*f.sell});m.fcost=S(fu,function(f){return f.litres*f.cost});m.fprof=m.fsell-m.fcost;
- m.byMon=wByMonth(tr,fu);
+ m.byMon=wByMonth([],fu);
  return m}
 function wByMonth(tr,fu){var o={};tr.forEach(function(e){var k=(e.date||"").slice(0,7);if(!k)return;var r=o[k]||(o[k]={t:0,n:0,l:0,fp:0,ex:0});if(e.tonnes>0)r.n++;r.t+=e.tonnes||0;r.ex+=pay(e)});
  fu.forEach(function(f){var k=(f.date||"").slice(0,7);if(!k)return;var r=o[k]||(o[k]={t:0,n:0,l:0,fp:0,ex:0});r.l+=f.litres;r.fp+=f.litres*(f.sell-f.cost)});
  return Object.keys(o).sort().map(function(k){return{k:k,r:o[k]}})}
 var W1=function(v){return(+v||0).toFixed(1)};
-function wSummaryGroups(m){var g=[];
- g.push(["Trips and tonnes",[["Trips",String(m.trips)],["Working days",String(m.days)],["Tonnes carried",fmt(m.ton)],["Average tonnes per trip",fmt(m.trips?m.ton/m.trips:0)]]]);
- g.push(["Loader",[["Loader amount (tonnes x rate)",fmt(m.load)],["Loader deposit",fmt(m.ldep)],["Loader owed (trips with deposit)",fmt(m.lo)],["Loader paid",fmt(m.paidL)],["Loader unpaid",fmt(m.lo-m.paidL)]]]);
- var d=[["Driver deposit paid",fmt(m.ddep)],["Driver balance held",fmt(m.held)],["Advances (on trips)",fmt(m.advE)],["Advances (given separately)",fmt(m.advS)],["Salary paid",fmt(m.paidD)],["Driver balance for period",fmt(m.bal)]];
- if(m.now!=null)d.push(["Driver balance now (all dates)",fmt(m.now)]);g.push(["Driver account",d]);
- g.push(["Trip expenses",[["Other trip expenses",fmt(m.exp)],["Trip expense (all items)",fmt(m.tripExp)]]]);
- g.push(["Fuel",[["Fuel taken (litres)",W1(m.lit)],["Fuel sold",fmt(m.fsell)],["Fuel cost",fmt(m.fcost)],["Fuel profit",fmt(m.fprof)]]]);return g}
+function wSummaryGroups(m){return[["Fuel",[["Fuel entries",String(m.fu.length)],["Fuel taken (litres)",W1(m.lit)],["Fuel sold",fmt(m.fsell)],["Fuel cost",fmt(m.fcost)],["Fuel profit",fmt(m.fprof)]]]]}
 function wSummaryRows(m){var r=[];wSummaryGroups(m).forEach(function(g){r=r.concat(g[1])});return r}
 function wTripRows(m,full){return m.tr.map(function(e){var base=[e.date,e.driver||"",fmt(e.tonnes||0),fmt(rt(e)),fmt((e.tonnes||0)*rt(e)),fmt(e.deposit||0),fmt(dpaid(e)),fmt(dheld(e)),fmt(e.advance||0),fmt(e.expense||0),e.reason?rsnName(e.reason):"",fmt(pay(e))];if(full)base.push(e.note||"");return base})}
 function wTripTot(m,full){var r=["Total","",fmt(m.ton),"",fmt(m.load),fmt(m.ldep),fmt(m.ddep),fmt(m.held),fmt(m.advE),fmt(m.exp),"",fmt(m.tripExp)];if(full)r.push("");return r}
@@ -2365,13 +2359,13 @@ var W_TH=["Date","Driver","Tonnes","Rate","Loader amt","Loader dep.","Driver dep
 function wFuelRows(m){return m.fu.map(function(f){return[f.date,f.driver||"",W1(f.litres),fmt(f.sell),fmt(f.cost),fmt(f.litres*f.sell),fmt(f.litres*f.cost),fmt(f.litres*(f.sell-f.cost)),f.collected||"",f.issued||"",f.note||""]})}
 function wFuelTot(m){return["Total","",W1(m.lit),"","",fmt(m.fsell),fmt(m.fcost),fmt(m.fprof),"","",""]}
 var WF_TH=["Date","Driver","Litres","Sell/ltr","Cost/ltr","Amount","Cost","Profit","Collected by","Issued by","Notes"];
-function wMonRows(m){return m.byMon.map(function(x){return[x.k,String(x.r.n),fmt(x.r.t),fmt(x.r.ex),W1(x.r.l),fmt(x.r.fp)]})}
-function wMonTot(m){return["Total",String(m.trips),fmt(m.ton),fmt(m.tripExp),W1(m.lit),fmt(m.fprof)]}
-var WM_TH=["Month","Trips","Tonnes","Trip expense","Litres","Fuel profit"];
+function wMonRows(m){return m.byMon.map(function(x){return[x.k,W1(x.r.l),fmt(x.r.fp)]})}
+function wMonTot(m){return["Total",W1(m.lit),fmt(m.fprof)]}
+var WM_TH=["Month","Litres","Fuel profit"];
 
 /* ---- on-screen tables, same look as the other report tables ---- */
-function wTbl(h,rows,tot,left,wide){var L=function(j){return left.indexOf(j)>=0};
- return'<div class="wrap sx"><table'+(wide?' style="width:max-content;min-width:100%;white-space:nowrap"':'')+'><thead><tr>'+h.map(function(x,j){return'<th'+(L(j)?' class="l"':'')+'>'+esc(x)+'</th>'}).join("")+'</tr></thead><tbody>'
+function wTbl(h,rows,tot,left,wide,cap){var L=function(j){return left.indexOf(j)>=0};
+ return'<div class="wrap sx'+(cap?' '+cap:'')+'"><table'+(wide?' style="width:max-content;min-width:100%;white-space:nowrap"':'')+'><thead><tr>'+h.map(function(x,j){return'<th'+(L(j)?' class="l"':'')+'>'+esc(x)+'</th>'}).join("")+'</tr></thead><tbody>'
  +rows.map(function(r){return'<tr>'+r.map(function(c,j){return'<td'+(L(j)?' class="l"':'')+'>'+esc(c)+'</td>'}).join("")+'</tr>'}).join("")
  +(tot?'<tr style="font-weight:800;border-top:2px solid var(--ln)">'+tot.map(function(c,j){return'<td'+(L(j)?' class="l"':'')+'>'+esc(c)+'</td>'}).join("")+'</tr>':'')+'</tbody></table></div>'}
 function wCard(title,note,body){return'<div class="card"><b class="ct">'+esc(title)+'</b>'+(note?'<div class="mut" style="margin:4px 0 8px">'+note+'</div>':'')+body+'</div>'}
@@ -2381,17 +2375,13 @@ function winchRender(){var h=$("wh"),M=$("wmain"),R=$("wrep");if(!h||!M||!R)retu
  if(!m){M.classList.add("hide");h.innerHTML='<div style="text-align:center;padding:22px 6px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Winch</b><div class="mut">No winch vehicle chosen yet. Go to Update Rates → Winch and pick a plate.</div></div>';R.innerHTML="";return}
  M.classList.remove("hide");
  h.innerHTML='<div style="display:flex;align-items:center;gap:12px"><div style="font-size:34px">🚚</div><div style="min-width:0"><b style="font-size:20px;display:block">'+esc(m.pl)+'</b><div class="mut">Driver: <b>'+esc(m.dr||"—")+'</b></div></div></div>'
-  +'<div class="mut" style="margin-top:8px">Full report for this one vehicle. Change the winch vehicle in Update Rates → Winch.</div>';
+  +'<div class="mut" style="margin-top:8px">Fuel report for this one vehicle (fuel only, no trips). Change the winch vehicle in Update Rates → Winch.</div>';
  var st=function(a,b,c){return'<div><div class="mut">'+a+'</div><div class="pay" style="font-size:20px">'+b+'</div>'+(c?'<div class="mut" style="font-size:12px">'+c+'</div>':'')+'</div>'};
  var out='<div class="card"><b class="ct">'+esc(m.pl)+' · '+esc(m.P.lab)+'</b>'
-  +'<div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))">'+st("Trips",m.trips,m.days+" days")+st("Tonnes",fmt(m.ton),"")+st("Trip expense",fmt(m.tripExp),"")+'</div>'
-  +'<div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))">'+st("Litres",W1(m.lit),"")+st("Fuel profit",mn(m.fprof),"")+st("Driver balance",mn(m.bal),"for period")+'</div></div>';
- out+=wCard("Summary","",wTbl(["Item","Amount"],wSummaryRows(m),null,[0],false));
+  +'<div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))">'+st("Litres",W1(m.lit),m.fu.length+" entries")+st("Fuel sold",fmt(m.fsell),"")+st("Fuel profit",mn(m.fprof),"")+'</div></div>';
+  out+=wCard("Summary","",wTbl(["Item","Amount"],wSummaryRows(m),null,[0],false));
  if(m.byMon.length>1)out+=wCard("By month","",wTbl(WM_TH,wMonRows(m),wMonTot(m),[0],false));
- out+=wCard("Trips","All "+m.tr.length+" trip entries for this vehicle. Swipe sideways for every column.",m.tr.length?wTbl(W_TH.concat(["Notes"]),wTripRows(m,true),wTripTot(m,true),[0,1,10,12],true):'<div class="mut">No trip entries in this period.</div>');
- out+=wCard("Fuel taken","All "+m.fu.length+" fuel entries for this vehicle.",m.fu.length?wTbl(WF_TH,wFuelRows(m),wFuelTot(m),[0,1,8,9,10],true):'<div class="mut">No fuel entries in this period.</div>');
- out+=wCard("Advances given","Separate advances for "+(m.drivers.length?esc(m.drivers.join(", ")):"the driver")+" (advances on trips are in the trip table).",m.av.length?wTbl(["Date","Driver","Amount"],m.av.map(function(x){return[x.date,x.driver||"",fmt(x.amount)]}),["Total","",fmt(m.advS)],[0,1],false):'<div class="mut">No separate advances in this period.</div>');
- out+=wCard("Salary and loader payments","",m.pd.length?wTbl(["Date","Paid to","Type","Amount"],m.pd.map(function(x){return[x.date,x.who||"",x.kind==="loader"?"Loader":"Salary",fmt(x.amount)]}),["Total","","",fmt(m.paidD+m.paidL)],[0,1,2],false):'<div class="mut">No payments in this period.</div>');
+ out+=wCard("Fuel taken",m.fu.length>10?"All "+m.fu.length+" fuel entries. Scroll the table to see more.":"All "+m.fu.length+" fuel entries for this vehicle.",m.fu.length?wTbl(WF_TH,wFuelRows(m),wFuelTot(m),[0,1,8,9,10],true,"cap10"):'<div class="mut">No fuel entries in this period.</div>');
  R.innerHTML=out}
 
 /* ---- exports ---- */
@@ -2400,35 +2390,23 @@ function wName(m,ext){return"winch-"+wSafe(m.pl)+"-"+wSafe(m.P.lab)+"."+ext}
 function wNoteLines(a,who){var o=[];a.forEach(function(x){var n=String(x.note||"").replace(/\s+/g," ").trim();if(n)o.push(x.date+(who&&x.driver?" ("+x.driver+")":"")+": "+n)});return o}
 function wPdf(m){var it=[],tbl=function(h,rows){it.push({t:"tbl",h:h,rows:rows})},none=function(t){it.push({t:"p",s:t})};
  it.push({t:"stat",s:"Vehicle: "+m.pl+"      Driver: "+(m.dr||"-")+"      Period: "+m.P.lab});
- it.push({t:"p",s:"Trips: "+m.trips+" ("+m.days+" days)   Tonnes: "+fmt(m.ton)+"   Trip expense: "+fmt(m.tripExp)+"   Fuel: "+W1(m.lit)+" L   Fuel profit: "+fmt(m.fprof)+"   Driver balance for period: "+fmt(m.bal)});
+ it.push({t:"p",s:"Fuel: "+W1(m.lit)+" L   Fuel sold: "+fmt(m.fsell)+"   Fuel profit: "+fmt(m.fprof)});
  it.push({t:"h",s:"Summary"});
  wSummaryGroups(m).forEach(function(g){it.push({t:"stat",s:g[0]});tbl(["Item","Amount"],g[1])});
  if(m.byMon.length>1){it.push({t:"h",s:"By month"});tbl(WM_TH,wMonRows(m).concat([wMonTot(m)]))}
- it.push({t:"h",s:"Trips ("+m.tr.length+")"});
- if(m.tr.length){var cut=function(r){return r.slice(0,12)};tbl(W_TH,wTripRows(m,false).map(cut).concat([cut(wTripTot(m,false))]));
-  var tn=wNoteLines(m.tr,true);if(tn.length){it.push({t:"stat",s:"Trip notes"});tn.forEach(function(x){it.push({t:"p",s:x})})}}
- else none("No trip entries in this period.");
  it.push({t:"h",s:"Fuel taken ("+m.fu.length+")"});
  if(m.fu.length){tbl(WF_TH.slice(0,10),wFuelRows(m).map(function(r){return r.slice(0,10)}).concat([wFuelTot(m).slice(0,10)]));
   var fn=wNoteLines(m.fu,true);if(fn.length){it.push({t:"stat",s:"Fuel notes"});fn.forEach(function(x){it.push({t:"p",s:x})})}}
  else none("No fuel entries in this period.");
- it.push({t:"h",s:"Advances given"});
- if(m.av.length)tbl(["Date","Driver","Amount"],m.av.map(function(x){return[x.date,x.driver||"",fmt(x.amount)]}).concat([["Total","",fmt(m.advS)]]));else none("No separate advances in this period. Advances taken on trips are in the trip table.");
- it.push({t:"h",s:"Salary and loader payments"});
- if(m.pd.length)tbl(["Date","Paid to","Type","Amount"],m.pd.map(function(x){return[x.date,x.who||"",x.kind==="loader"?"Loader":"Salary",fmt(x.amount)]}).concat([["Total","","",fmt(m.paidD+m.paidL)]]));else none("No payments in this period.");
  return pdfBlob("Winch report - "+m.pl,"Driver: "+(m.dr||"-")+"  |  Period: "+m.P.lab,it)}
 function wCsv(m){var L=[],A=function(a){L.push(csvl(a))},B=function(){L.push("")};
  A(["Winch report"]);A(["Vehicle",m.pl]);A(["Driver",m.dr]);A(["Period",m.P.lab]);A(["Generated",today()]);B();
  A(["SUMMARY"]);A(["Item","Amount"]);wSummaryRows(m).forEach(A);B();
  A(["BY MONTH"]);A(WM_TH);wMonRows(m).forEach(A);A(wMonTot(m));B();
- A(["TRIPS"]);A(W_TH.concat(["Notes"]));wTripRows(m,true).forEach(A);A(wTripTot(m,true));B();
- A(["FUEL TAKEN"]);A(WF_TH);wFuelRows(m).forEach(A);A(wFuelTot(m));B();
- A(["ADVANCES GIVEN"]);A(["Date","Driver","Amount"]);m.av.forEach(function(x){A([x.date,x.driver||"",(+x.amount||0).toFixed(2)])});A(["Total","",m.advS.toFixed(2)]);B();
- A(["SALARY AND LOADER PAYMENTS"]);A(["Date","Paid to","Type","Amount"]);m.pd.forEach(function(x){A([x.date,x.who||"",x.kind==="loader"?"Loader":"Salary",(+x.amount||0).toFixed(2)])});A(["Total","","",(m.paidD+m.paidL).toFixed(2)]);
+ A(["FUEL TAKEN"]);A(WF_TH);wFuelRows(m).forEach(A);A(wFuelTot(m));
  return new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"})}
-function wText(m){var L=["*Winch report*","Vehicle: "+m.pl,"Driver: "+(m.dr||"-"),"Period: "+m.P.lab,"","Trips: "+m.trips+" ("+m.days+" days)","Tonnes: "+fmt(m.ton),"Loader amount: "+fmt(m.load),"Loader paid: "+fmt(m.paidL)+", unpaid: "+fmt(m.lo-m.paidL),"Trip expense: "+fmt(m.tripExp),"",
- "Fuel: "+W1(m.lit)+" L, sold "+fmt(m.fsell)+", profit "+fmt(m.fprof),"","Balance held: "+fmt(m.held),"Advances: "+fmt(m.advE+m.advS),"Salary paid: "+fmt(m.paidD),"*Driver balance for period: "+fmt(m.bal)+"*"];
- if(m.now!=null)L.push("Driver balance now: "+fmt(m.now));if(appCfg.footer)L.push("",appCfg.footer);return L.join("\n")}
+function wText(m){var L=["*Winch report*","Vehicle: "+m.pl,"Driver: "+(m.dr||"-"),"Period: "+m.P.lab,"","Fuel entries: "+m.fu.length,"Fuel taken: "+W1(m.lit)+" L","Fuel sold: "+fmt(m.fsell),"Fuel cost: "+fmt(m.fcost),"*Fuel profit: "+fmt(m.fprof)+"*"];
+ if(appCfg.footer)L.push("",appCfg.footer);return L.join("\n")}
 function wGo(f){try{var m=wModel();if(!m){toast("Choose a winch vehicle in Update Rates first",true);return}f(m)}catch(x){alert("Could not create the report"+(x&&x.message?": "+x.message:""))}}
 $("wdl").onclick=function(){wGo(function(m){dlf(wName(m,"pdf"),wPdf(m));toast("Report downloaded")})};
 $("wsh").onclick=function(){wGo(function(m){sharePdf(wPdf(m),wName(m,"pdf"),"Winch report - "+m.pl)})};
