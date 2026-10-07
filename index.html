@@ -572,6 +572,7 @@ return{get:function(i){return S[i]||null},set:function(i,a,b){S[i]={a:a,b:b}},cl
 <div class="setrow col"><div class="st"><b>Restore</b><small>You will see a summary and confirm before anything changes.</small></div></div>
 <div class="sacts"><label class="btn alt" id="rbtn" style="position:relative;overflow:hidden;cursor:pointer;display:inline-block;text-align:center"><span>Full restore (JSON)</span><input type="file" id="rfile" accept=".json,application/json,text/plain" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0"></label><button class="btn alt" id="rpaste">Full text restore (JSON)</button></div>
 <div class="sacts"><button class="btn alt" id="snapnow">Save cloud snapshot now</button><button class="btn alt" id="snaprestore">Restore from cloud snapshot</button></div>
+<div class="sacts"><button class="btn alt" id="lsnnow">Save device snapshot now</button><button class="btn alt" id="lsnrestore">Restore from device snapshot</button></div><div class="mut sh" id="lsnst" style="padding-bottom:6px"></div>
 <div class="mut sh" style="padding-bottom:12px">If the file picker does not open, use Paste backup text.</div></div></section><section id="dhs" class="hide"><div class="card hide" id="actc"></div><div class="card" id="trashc"></div></section>  <section id="sales" class="hide"><div class="card" style="text-align:center;padding:36px 18px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Sales</b><div style="font-size:16px;line-height:1.5">A project of selling 30T cane fleet carrier</div></div></section>
 <section id="nts" class="hide"><div class="card"><b class="ct">Notes</b><div class="mut" id="ntc"></div><div id="ntl"></div></div></section>
 
@@ -1788,7 +1789,7 @@ else if(G[pg]){q('.main [data-g="'+G[pg]+'"]').click();var t=q('#bar'+G[pg]+' [d
 else{q('.main [data-g="'+pg+'"]').click()}}catch(x){}}
 function check(){if(!ready||pback)return;var v=vis();if(!v||v===cur)return;if(popping){cur=v;return}
 cur=v;if(v==="log"){if(depth>0){var d=depth;depth=0;popping=true;history.go(-d);setTimeout(function(){popping=false},500)}return}
-depth++;history.pushState({pg:v,d:depth},"")}
+var pd=depth-(mflag?1:0);if(pd>=1){try{history.replaceState({pg:v,d:depth,m:mflag?1:0},"")}catch(x){}}else{depth++;history.pushState({pg:v,d:depth},"")}}
 function sched(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;check()})}
 window.addEventListener("popstate",function(e){var st=e.state&&e.state.pg?e.state:{pg:"log",d:0};depth=st.d||0;
 if(pback){pback=false;clearTimeout(pbt);sched();return}
@@ -1994,10 +1995,10 @@ clearTimeout(window.pgt2);window.pgt2=setTimeout(function(){b.classList.remove("
 <script>(function(){document.addEventListener("click",function(ev){var t=ev.target;if(!t||t.tagName!=="INPUT")return;if(t.type!=="month"&&t.type!=="date")return;if(t.readOnly||t.disabled)return;if(typeof t.showPicker!=="function")return;try{t.showPicker()}catch(e){}},true)})();</script>
 <script>(function(){
 var $=function(i){return document.getElementById(i)},meta={snaps:{}},busy=false,tried=false,SC=400000,DAY=864e5;
-function slotNow(){return Math.floor(Date.now()/(7*DAY))%4}
+function slotNow(){return Math.floor(Date.now()/(3*DAY))%5}
 function once(p){return new Promise(function(res,rej){var un=null,done=false;try{un=db.doc(p).onSnapshot(function(s){if(done)return;done=true;setTimeout(function(){try{un&&un()}catch(e){}},0);res(s)},function(e){if(!done){done=true;rej(e)}})}catch(e){rej(e)}})}
 function paint(){var el=$("snapst");if(!el)return;var L=Object.keys(meta.snaps||{}).map(function(k){return meta.snaps[k]});
- el.innerHTML=meta.last?"Cloud snapshots: last saved <b>"+esc(new Date(meta.last).toLocaleString())+"</b>. "+L.length+" kept (rotating, about 4 weeks). A new one is saved automatically every 7 days when the app is opened.":"No cloud snapshot yet. One is saved automatically every 7 days when the app is opened."}
+ el.innerHTML=meta.last?"Cloud snapshots: last saved <b>"+esc(new Date(meta.last).toLocaleString())+"</b>. "+L.length+" kept (the latest 5, rotating). A new one is saved automatically every 3 days when the app is open and online.":"No cloud snapshot yet. One is saved automatically every 3 days when the app is open and online."}
 async function snap(manual){if(!db||busy||window.readOnly)return false;if(window.NETREAL===false){if(manual)toast("No internet connection",true);return false}busy=true;
  try{var txt=JSON.stringify(bkObj()),parts=[],i;for(i=0;i<txt.length;i+=SC)parts.push(txt.slice(i,i+SC));var sl=slotNow();
   for(i=0;i<parts.length;i++)await db.doc("backups/s"+sl+"_"+i).set({t:parts[i],i:i});
@@ -2005,7 +2006,7 @@ async function snap(manual){if(!db||busy||window.readOnly)return false;if(window
   await db.doc("config/backupmeta").set({last:Date.now(),snaps:sn});if(manual)toast("Cloud snapshot saved");return true}
  catch(x){if(manual)toast("Could not save snapshot: "+(x&&x.message||x),true);return false}finally{busy=false}}
 function start(){try{db.doc("config/backupmeta").onSnapshot(function(s){meta=s.exists?(s.data()||{snaps:{}}):{snaps:{}};if(!meta.snaps)meta.snaps={};paint();
-  if(!tried){tried=true;setTimeout(function(){if(!window.readOnly&&canWrite&&Date.now()-(meta.last||0)>7*DAY&&(entries.length+fuels.length)>0)snap(false)},12000)}},function(){})}catch(e){}}
+  if(!tried){tried=true;var due=function(){var ls=Date.now()-3*DAY;if(!window.readOnly&&canWrite&&(meta.last||0)<ls&&(entries.length+fuels.length)>0)snap(false)};setTimeout(due,12000);window.addEventListener("online",function(){setTimeout(due,4000)});document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(due,3000)});setInterval(due,30*60*1000)}},function(){})}catch(e){}}
 var n=0,t=setInterval(function(){if(db){clearInterval(t);start()}else if(++n>150)clearInterval(t)},800);paint();
 $("snapnow").onclick=async function(){if(!db){toast("Connect to the internet and sign in first",true);return}if(window.readOnly){toast("Read-only account",true);return}var b=this;b.disabled=true;await snap(true);b.disabled=false};
 $("snaprestore").onclick=function(){if(!db){toast("Connect to the internet and sign in first",true);return}if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
@@ -2015,6 +2016,35 @@ $("snaprestore").onclick=function(){if(!db){toast("Connect to the internet and s
  [].forEach.call($("mbody").querySelectorAll("button[data-s]"),function(b){b.onclick=async function(){var o=meta.snaps[b.dataset.s];b.disabled=true;b.textContent="Loading\u2026";
   try{var txt="";for(var i=0;i<o.parts;i++){var sn=await once("backups/"+b.dataset.s+"_"+i);if(!sn.exists)throw new Error("Snapshot part "+(i+1)+" is missing");txt+=sn.data().t}rAsk(rParse(txt))}
   catch(x){closeM();toast("Could not load snapshot: "+(x&&x.message||x),true)}}})}})();
+/* device snapshot: every 3 days, works offline */
+(function(){var $=function(i){return document.getElementById(i)},DBN="fleetSnapsDB",STN="snaps",KEEP=5,LSK="fleetSnapsLS",busy=false,tm=0;
+var D3=3*864e5;
+function open(){return new Promise(function(res,rej){try{var r=indexedDB.open(DBN,1);r.onupgradeneeded=function(){r.result.createObjectStore(STN,{keyPath:"id"})};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}}catch(e){rej(e)}})}
+function lsGet(){try{return JSON.parse(localStorage.getItem(LSK)||"[]")}catch(e){return[]}}
+async function list(){try{var d=await open();return await new Promise(function(res,rej){var q=d.transaction(STN,"readonly").objectStore(STN).getAll();q.onsuccess=function(){res(q.result||[])};q.onerror=function(){rej(q.error)}})}catch(e){return lsGet()}}
+async function put(rec){try{var d=await open();await new Promise(function(res,rej){var tx=d.transaction(STN,"readwrite"),st=tx.objectStore(STN);st.put(rec);tx.oncomplete=res;tx.onerror=function(){rej(tx.error)}});
+ var all=await list();all.sort(function(a,b){return b.at-a.at});var old=all.slice(KEEP);if(old.length){var tx2=d.transaction(STN,"readwrite"),s2=tx2.objectStore(STN);old.forEach(function(o){s2.delete(o.id)})}return true}
+ catch(e){try{var l=lsGet();l.unshift(rec);l=l.slice(0,2);localStorage.setItem(LSK,JSON.stringify(l));return true}catch(x){return false}}}
+function loaded(){try{return(entries.length+fuels.length)>0}catch(e){return false}}
+async function paint(){var el=$("lsnst");if(!el)return;var L=await list();L.sort(function(a,b){return b.at-a.at});
+ el.innerHTML=L.length?"Device snapshots: last saved <b>"+esc(new Date(L[0].at).toLocaleString())+"</b>. "+L.length+" kept. A new one is saved every 3 days, with or without internet, whenever the app is open.":"No device snapshot yet. One is saved every 3 days, with or without internet, whenever the app is open."}
+async function take(manual){if(busy)return false;if(!loaded()){if(manual)toast("Nothing to back up yet",true);return false}busy=true;
+ try{var now=Date.now(),o=bkObj(),slot=now;o.snapshotType=manual?"manual":"auto";
+  var ok=await put({id:(manual?"m":"a")+now,slot:slot,at:now,e:entries.length,f:fuels.length,json:JSON.stringify(o)});
+  if(manual)toast(ok?"Device snapshot saved":"Could not save snapshot on this phone",!ok);paint();return ok}
+ catch(x){if(manual)toast("Could not save snapshot",true);return false}finally{busy=false}}
+async function check(){if(!loaded())return;var L=await list(),ls=Date.now()-D3;if(!L.some(function(r){return r.at>=ls}))take(false)}
+setTimeout(function(){check();paint()},15000);
+setInterval(check,20*60*1000);
+document.addEventListener("visibilitychange",function(){if(!document.hidden){setTimeout(check,2500)}});
+window.addEventListener("online",function(){setTimeout(check,3000)});
+var nb=$("lsnnow");if(nb)nb.onclick=async function(){var b=this;b.disabled=true;await take(true);b.disabled=false};
+var rb=$("lsnrestore");if(rb)rb.onclick=async function(){if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
+ var L=await list();L.sort(function(a,b){return b.at-a.at});
+ $("mbody").innerHTML='<b style="font-size:18px">Restore from device snapshot</b><div class="mut" style="margin-top:6px">Pick a snapshot. You will see a summary and confirm before anything changes.</div>'+(L.length?L.map(function(o,i){return'<button class="btn alt" data-i="'+i+'" style="margin-top:8px">'+esc(new Date(o.at).toLocaleString())+" \u00b7 "+o.e+" trips, "+o.f+" fuel</button>"}).join(""):'<div class="mut" style="margin-top:10px">No snapshots yet.</div>')+'<div class="b2"><button id="lsC">Cancel</button></div>';
+ $("modal").classList.remove("hide");$("lsC").onclick=closeM;
+ [].forEach.call($("mbody").querySelectorAll("button[data-i]"),function(b){b.onclick=function(){try{var o=L[+b.dataset.i];rAsk(rParse(o.json))}catch(x){closeM();toast("Could not load snapshot: "+(x&&x.message||x),true)}}})};
+})();
 /* new-version check: compares app-version in the live page with this copy */
 (function(){var cur=(document.querySelector('meta[name="app-version"]')||{}).content||"",bn=null,last=0;
 function show(v){if(bn)return;bn=document.createElement("div");bn.className="note";bn.style.cssText="border:2px solid var(--ac);color:var(--tx);text-align:center";
