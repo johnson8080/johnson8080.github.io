@@ -448,7 +448,7 @@ draw();setInterval(draw,20000)}
 fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({name:x.name||"user",t:x.t&&x.t.toMillis?x.t.toMillis():0,off:!!x.off})});RERR="";draw()},function(e){RERR=(e&&e.code)||"error";draw()})}
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
-set:function(d){if(!COLS[c])return c==="backups"?r.set(d):soft(r.set(d));return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
+set:function(d,mo){if(!COLS[c])return c==="backups"?r.set(d,mo):soft(r.set(d,mo));return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
 delete:function(){return gate().then(function(){return soft(r.delete())})},onSnapshot:function(a,b){return r.onSnapshot(a,b)}}},
 collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return bg(cr.add(o))},onSnapshot:function(a,b){return cr.onSnapshot(a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
@@ -1137,7 +1137,7 @@ function pvPay(w,mon){if(needRates()){gatePop();return}var P=pvP(),m0=mon||(P.k=
   if(a>u+0.001&&$("pvOK").dataset.c!=="1"){$("pvOK").dataset.c="1";$("pvOK").textContent="Amount is more than unpaid. Tap again";return}
   var q={who:w.k,month:m,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pvOK").disabled=true;
   try{if(db)await db.collection("pvpays").add(q);else{q.id="v"+q.ts;pvp.push(q);pvSave();pvRender();try{rq()}catch(e){}}closeM();toast("Salary marked paid")}catch(x){$("pvOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
-function showCfg(){stBind();stBuild();var s=paySaved;$("rate").value=s?cfg.rate:"";$("dday").value=s?cfg.dday:"";$("dbal").value=s?cfg.dbal:"";$("drep").value=s?repCfg():"";buildRows()}
+var cfgKey=null;function cfgSig(){return paySaved+"~"+csnap()}function showCfg(){stBind();stBuild();var s=paySaved;$("rate").value=s?cfg.rate:"";$("dday").value=s?cfg.dday:"";$("dbal").value=s?cfg.dbal:"";$("drep").value=s?repCfg():"";buildRows();cfgKey=cfgSig()}
 var fuels=[];
 function fdset(){if(fedit)return;if(!$("fveh").value){$("fdrv").value="";$("fdh").textContent="Pick a plate first. The driver fills in from the plate.";return}var d=(cfg.vd||{})[$("fveh").value]||"";$("fdrv").value=d;$("fdh").textContent=d?"Driver comes from the vehicle. Change it in Update Rates → Pay rates.":"No driver set for this plate. Set it in Update Rates → Pay rates."}
 function fdrop(sel,inp,k){var o={},cv=inp.value.trim(),shown=!inp.classList.contains("hide");fuels.forEach(function(f){if(f[k])o[f[k]]=1});var nm=Object.keys(o).sort();
@@ -1497,7 +1497,7 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
   banner("Offline copy: entries are saved on this phone only. Use the published page to keep them online.");gateCheck();return}
  if(!canWrite){banner("View-only access: ask the owner to make you a Contributor to add entries.");$("save").disabled=true}
  netUpdate();$("who").onclick=function(){window.netProbe().then(function(ok){toast(ok?"You are online":"You are offline")})};
- db.doc("config/main").onSnapshot(function(s){paySaved=!!s.exists;cfgLoaded=true;if(s.exists){cfg=Object.assign(cfg,s.data());fillVeh();showCfg();if(!editing&&!(+$("ddp").value>0))setDdp();rq()}gateCheck()});
+ db.doc("config/main").onSnapshot(function(s){paySaved=!!s.exists;cfgLoaded=true;if(s.exists){cfg=Object.assign(cfg,s.data());fillVeh();if(cfgKey!==cfgSig())showCfg();if(!editing&&!(+$("ddp").value>0))setDdp();rq()}gateCheck()});
  db.collection("entries").onSnapshot(async function(s){
   var _a=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});entries=_a.filter(function(e){return!e.deleted});trashE=_a.filter(function(e){return e.deleted});var ids=[];_a.forEach(function(e){[e.by,e.editedBy,e.deletedBy].forEach(function(i){if(i&&i!=="local"&&ids.indexOf(i)<0)ids.push(i)})});
   if(user&&user.profiles&&ids.length){try{var p=await user.profiles(ids);ids.forEach(function(i){names[i]=(p[i]&&p[i].name)||""})}catch(x){}}
@@ -2315,7 +2315,7 @@ function winchDrv(){var v=$("wplate").value,d=v?(cfg.vd||{})[v]||"":"";$("wdrv")
 $("wplate").onchange=winchDrv;
 $("wsave").onclick=async function(){var v=$("wplate").value;if(!v||(cfg.veh||[]).indexOf(v)<0){alert("Pick a plate");return}
  var was=!needRates();$("wsave").disabled=true;
- try{if(db){if(was)await pwOk();await db.doc("config/main").set({winch:v},{merge:true})}cfg.winch=v;toast("Winch vehicle saved");winchDrv();winchRender();if(window.schedPersist)schedPersist()}
+ try{if(db){if(was)await pwOk();await db.doc("config/main").set(Object.assign({},cfg,{winch:v}),{merge:true})}cfg.winch=v;toast("Winch vehicle saved");winchDrv();winchRender();if(window.schedPersist)schedPersist()}
  catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}winchDrv()};
 
 /* ---- report model: one place that feeds the screen, PDF, CSV and text ---- */
