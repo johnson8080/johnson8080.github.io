@@ -2477,7 +2477,7 @@ html.dlock,html.dlock body{overflow:hidden!important;overscroll-behavior:none}
 #drw .dit .dic{width:24px;height:24px;display:grid;place-items:center;flex:0 0 auto}
 #drw .dit .dic svg{width:22px;height:22px}
 #drw .dsp{height:1px;background:var(--ln);margin:8px 0}
-.hd #hst,.hd #hrp{display:none!important}
+.hd #hst{display:none!important}
 .hd .onb{margin-left:auto!important}
 @media print{#drw,#mnu{display:none!important}}
 </style>
@@ -2487,9 +2487,7 @@ function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML
 function item(label,icon,src,on){var b=d.createElement("button");b.type="button";b.className="dit"+(on?" on":"");b.innerHTML='<span class="dic">'+icon+'</span><span></span>';b.lastChild.textContent=label;
  b.onclick=function(){close();setTimeout(function(){try{src.click()}catch(x){}},60)};return b}
 function fill(){var L=g("dli");L.innerHTML="";
-var RS='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>',rt=g("hrp");
- if(rt)L.appendChild(item("Rates",RS,rt,rt.classList.contains("on")));
- var st=g("hst");
+var st=g("hst");
  if(st)L.appendChild(item("Settings",st.innerHTML,st,st.classList.contains("on")))}
 function open(){build();fill();btn.setAttribute("aria-expanded","true");d.documentElement.classList.add("dlock");requestAnimationFrame(function(){dr.classList.add("on")})}
 function close(){if(!dr)return;dr.classList.remove("on");d.documentElement.classList.remove("dlock");btn.setAttribute("aria-expanded","false")}
