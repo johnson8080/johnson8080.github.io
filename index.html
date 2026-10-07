@@ -1220,7 +1220,21 @@ function domItems(root){var out=[],cl=function(x){return String(x||"").replace(/
   if(c.contains("row")){var s=[].slice.call(el.children).map(function(d){return[].slice.call(d.children).filter(function(x){return!x.classList.contains("hide")}).map(function(x){return cl(x.textContent)}).filter(Boolean).join(": ")}).filter(Boolean).join("      ");if(s)out.push({t:"stat",s:s});return}
   if(!el.children.length){var tx=cl(el.textContent);if(tx)out.push({t:tg==="B"?"h":"p",s:tx});return}
   [].forEach.call(el.children,v)})(root);return out}
+/* every PDF lists dated entries newest first (totals stay at the bottom) */
+function newestFirst(items){var DR=/^\d{4}-\d{2}(-\d{2})?/,TR=/^(Total|All drivers)/;
+ function srt(arr,key){return arr.map(function(x,i){return{x:x,i:i,k:key(x)}}).sort(function(a,b){return a.k<b.k?1:a.k>b.k?-1:a.i-b.i}).map(function(o){return o.x})}
+ var out=items.map(function(it){if(it.t!=="tbl"||!it.rows||it.rows.length<2)return it;
+  var idx=[],body=[];it.rows.forEach(function(r,i){if(!TR.test(r[0]||"")){idx.push(i);body.push(r)}});
+  if(body.length<2)return it;var col=-1;
+  for(var j=0;j<it.h.length;j++){if(body.every(function(r){return DR.test(String(r[j]||"").trim())})){col=j;break}}
+  if(col<0)return it;
+  var sorted=srt(body,function(r){return String(r[col]).trim()}),rows=it.rows.slice();idx.forEach(function(p,n){rows[p]=sorted[n]});
+  return Object.assign({},it,{rows:rows})});
+ var res=[],i=0;while(i<out.length){if(out[i].t==="p"&&DR.test(String(out[i].s||""))){var g=[];while(i<out.length&&out[i].t==="p"&&DR.test(String(out[i].s||""))){g.push(out[i]);i++}
+   srt(g,function(p){return String(p.s).slice(0,10)}).forEach(function(p){res.push(p)})}else{res.push(out[i]);i++}}
+ return res}
 function pdfBlob(title,sub,items){var mono=.6,fs=8,lh=12,mg=36;
+ items=newestFirst(items);
  function san(s){return String(s==null?"":s).replace(/[\u2014\u2013]/g,"-").replace(/\u00b7/g,"|").replace(/\u00d7/g,"x").replace(/[\u00a0\u2009]/g," ").replace(/[^\x20-\x7e]/g,"?")}
  function pe(s){return s.replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)")}
  var isNum=function(c){return/^(-?[\d,]+(\.\d+)?%?( [tL])?|-)?$/.test(san(c))},maxW=0;
