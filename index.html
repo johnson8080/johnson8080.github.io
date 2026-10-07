@@ -1929,6 +1929,7 @@ $("dsdl").onclick=function(){try{var b=make();if(!b)return;dlf(b.name,b.blob);to
 function sharePdf(blob,name,title){var f=null;try{f=new File([blob],name,{type:"application/pdf"})}catch(x){}
  if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:title}).catch(function(){})}
  else{dlf(name,blob);toast("Sharing is not available here. PDF downloaded instead.")}}
+window.sharePdf=sharePdf;
 $("dssh").onclick=function(){try{var b=make();if(b)sharePdf(b.blob,b.name,b.title)}catch(x){alert("Could not create the PDF")}};
 $("dstx").onclick=function(){try{var d=make(true);if(!d)return;var adT=d.advE+d.advS,m=function(v){return(+v>0?"-":"")+fmt(v)},sg=function(v){return(Math.round(v)<0?"-":"")+fmt(Math.abs(v))};
  var L=["*Driver statement*","Driver: "+d.nm,"Period: "+d.P.lab,"","Trips: "+d.tr.length+" ("+d.tn.toFixed(2)+" t)","Trip expenses: "+fmt(d.trTot),"Fuel taken: "+(+d.fuL.toFixed(1))+" L ("+fmt(d.fuAmt)+", not deducted)","","Balance held: "+fmt(d.held),"Advances: "+m(adT),"Salary paid: "+m(d.paidD),"*Unpaid balance: "+sg(d.bal)+"*"];
@@ -2308,16 +2309,16 @@ sync();["change","input"].forEach(function(e){document.addEventListener(e,functi
 
 <script>
 /* WINCH: one selected vehicle (Update Rates -> Winch) and its full detailed report */
-function winchFill(){var sel=$("wplate");if(!sel)return;var vs=cfg.veh||[],key=vs.join("\u0001"),cur=sel.value||cfg.winch||"";
+function winchFill(){var sel=$("wplate");if(!sel)return;var vs=cfg.veh||[],key=vs.join("\u0001"),cur=sel.__d?sel.value:(cfg.winch||"");
  if(sel.__k!==key){sel.innerHTML='<option value="">Select plate\u2026</option>'+vs.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");sel.__k=key}
  sel.value=vs.indexOf(cur)>=0?cur:"";winchDrv()}
 function winchDrv(){var v=$("wplate").value,d=v?(cfg.vd||{})[v]||"":"";$("wdrv").value=d;
  var same=v&&v===cfg.winch;$("wnote").textContent=!(cfg.veh||[]).length?"Add plates and drivers in Pay rates first.":(cfg.winch&&(cfg.veh||[]).indexOf(cfg.winch)>=0?"Current winch: "+cfg.winch+(((cfg.vd||{})[cfg.winch])?" · "+cfg.vd[cfg.winch]:""):"No winch vehicle chosen yet.");
- $("wsave").disabled=!(v&&!same&&isAdmin&&canWrite)}
-$("wplate").onchange=winchDrv;
-$("wsave").onclick=async function(){var v=$("wplate").value;if(!v||(cfg.veh||[]).indexOf(v)<0){alert("Pick a plate");return}
+ $("wsave").disabled=!((v?!same:!!cfg.winch)&&isAdmin&&canWrite);$("wsave").textContent=v||!cfg.winch?"Save winch vehicle":"Clear winch vehicle"}
+$("wplate").onchange=function(){this.__d=1;winchDrv()};
+$("wsave").onclick=async function(){var v=$("wplate").value;if(v&&(cfg.veh||[]).indexOf(v)<0){alert("Pick a plate");return}
  var was=!needRates();$("wsave").disabled=true;
- try{if(db){if(was)await pwOk();await db.doc("config/main").set(Object.assign({},cfg,{winch:v}),{merge:true})}cfg.winch=v;toast("Winch vehicle saved");winchDrv();winchRender();if(window.schedPersist)schedPersist()}
+ try{if(db){if(was)await pwOk();await db.doc("config/main").set(Object.assign({},cfg,{winch:v?v:firebase.firestore.FieldValue.delete()}),{merge:true})}if(v)cfg.winch=v;else delete cfg.winch;$("wplate").__d=0;toast(v?"Winch vehicle saved":"Winch vehicle cleared");winchDrv();winchRender();if(window.schedPersist)schedPersist()}
  catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}winchDrv()};
 
 /* ---- report model: one place that feeds the screen, PDF, CSV and text ---- */
@@ -2418,7 +2419,7 @@ function wText(m){var L=["*Winch fuel report*","Vehicle: "+m.pl,"Driver: "+(m.dr
 function wGo(f){try{var m=wModel();if(!m){toast("Choose a winch vehicle in Update Rates first",true);return}f(m)}catch(x){alert("Could not create the report"+(x&&x.message?": "+x.message:""))}}
 $("wrep").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("#wdl,#wsh");if(!b)return;
  if(b.id==="wdl")wGo(function(m){dlf(wName(m,"pdf"),wPdf(m));toast("Report downloaded")});
- else wGo(function(m){sharePdf(wPdf(m),wName(m,"pdf"),"Winch fuel report - "+m.pl)})});
+ else wGo(function(m){window.sharePdf(wPdf(m),wName(m,"pdf"),"Winch fuel report - "+m.pl)})});
 /* period controls */
 function wShowPer(){var k=$("wper").value;$("wdw").classList.toggle("hide",k!=="day");$("wmw").classList.toggle("hide",k!=="month");$("wyw").classList.toggle("hide",k!=="year");$("wrw").classList.toggle("hide",k!=="range");$("wtw").classList.toggle("hide",k!=="range");
  if(k==="day"&&!$("wday").value)$("wday").value=today();if(k==="month"&&!$("wmon").value)$("wmon").value=today().slice(0,7);if(k==="year"&&!$("wyr").value)$("wyr").value=today().slice(0,4)}
