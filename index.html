@@ -457,7 +457,7 @@ return{get:function(i){return S[i]||null},set:function(i,a,b){S[i]={a:a,b:b}},cl
  t:function(i){var r=S[i];if(!ok(r))return function(){return true};return function(d){d=String(d||"").slice(0,10);return d>=r.a&&d<=r.b}},
  tm:function(i){var r=S[i];if(!ok(r))return function(){return true};return function(m){m=String(m||"").slice(0,7);return m>=r.a.slice(0,7)&&m<=r.b.slice(0,7)}},
  lab:function(i){var r=S[i];return ok(r)?"Period "+r.a+" to "+r.b:"All dates"}}})();</script>
-</head><body>
+<style>.wcapped tbody tr:last-child td{position:sticky;bottom:0;background:var(--card);z-index:2;box-shadow:0 -1px 0 var(--ln)}</style></head><body>
 <header class="hd"><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Winch</button></div>
@@ -577,9 +577,8 @@ return{get:function(i){return S[i]||null},set:function(i,a,b){S[i]={a:a,b:b}},cl
 <div class="sacts"><button class="btn alt" id="lsnnow">Save device snapshot now</button><button class="btn alt" id="lsnrestore">Restore from device snapshot</button></div><div class="mut sh" id="lsnst" style="padding-bottom:6px"></div>
 <div class="mut sh" style="padding-bottom:12px">If the file picker does not open, use Paste backup text.</div></div></section><section id="dhs" class="hide"><div class="card hide" id="actc"></div><div class="card" id="trashc"></div></section>  <section id="sales" class="hide"><div class="card" id="wh"></div>
 <div id="wmain" class="hide">
-<div class="card"><div id="wid"></div><div class="fgrid"><div><label>Period</label><select id="wper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="wdw" class="hide"><label>Date</label><input type="date" id="wday"></div><div id="wmw" class="hide"><label>Month</label><input type="month" id="wmon"></div><div id="wyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="wyr" min="2000" max="2100"></div><div id="wrw" class="hide"><label>From</label><input type="date" id="wfrom"></div><div id="wtw" class="hide"><label>To</label><input type="date" id="wto"></div></div></div>
+<div class="card"><div id="wid"></div><div class="fgrid"><div><label>Period</label><select id="wper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="wdw" class="hide"><label>Date</label><input type="date" id="wday"></div><div id="wmw" class="hide"><label>Month</label><input type="month" id="wmon"></div><div id="wyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="wyr" min="2000" max="2100"></div><div id="wrw" class="hide"><label>From</label><input type="date" id="wfrom"></div><div id="wtw" class="hide"><label>To</label><input type="date" id="wto"></div></div><div class="cfr noprt hide" id="cfwin"><button type="button" class="ed" data-cf="win">Clear filters</button></div></div>
 <div id="wrep"></div>
-<div class="card noprt"><b class="ct">Export &amp; share</b><div class="mut" style="margin:4px 0 0">The report covers the period above: fuel summary, month totals and every fuel entry.</div><div class="acts" style="margin:10px 0 0"><button type="button" class="btn sm" id="wdl">Download report</button><button type="button" class="btn sm alt" id="wsh">Share report</button><button type="button" class="btn sm" id="wcsv">Export CSV</button><button type="button" class="btn sm alt" id="wtx">Share as text</button></div></div>
 </div></section>
 <section id="nts" class="hide"><div class="card"><b class="ct">Notes</b><div class="mut" id="ntc"></div><div id="ntl"></div></div></section>
 
@@ -2125,6 +2124,9 @@ function fire(e){if(e)e.dispatchEvent(new Event("change",{bubbles:true}))}
 function clr(ids){ids.forEach(function(i){if($(i))$(i).value=""})}
 /* each entry: dirty() = a filter is applied, reset() = back to default (re-runs the page's own render code) */
 var F={
+ win:{dirty:function(){return $("wper").value!=="all"},
+  reset:function(){clr(["wday","wmon","wyr","wfrom","wto"]);$("wper").value="all";fire($("wper"))},
+  btn:$("cfwin"),show:function(){return $("wper").value!=="all"}},
  sum:{dirty:function(){return $("pper").value!=="all"},
   reset:function(){clr(["pday","mon","pyr"]);$("pper").value="all";fire($("pper"))},
   btn:$("cfsum"),show:function(){return $("pper").value!=="all"}},
@@ -2152,17 +2154,17 @@ var F={
  hist:{dirty:function(){var b=$("hch").querySelector("button.on");return $("hq").value!==""||$("hper").value!=="all"||$("hveh").value!==""||!!(b&&b.dataset.v!=="all")},
   reset:function(){$("hclr").click()},btn:$("hclr"),show:function(){return F.hist.dirty()}}
 };
-function sync(){["sum","fsm","dsc","ovf","allc","unp","pvt","hist"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
+function sync(){["win","sum","fsm","dsc","ovf","allc","unp","pvt","hist"].forEach(function(k){var f=F[k];if(f.btn)f.btn.classList.toggle("hide",!f.show())})}
 var later=0;function sched(){clearTimeout(later);later=setTimeout(sync,0)}
 /* Clear filters buttons */
 document.addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("[data-cf]");if(!b)return;var f=F[b.dataset.cf];if(!f)return;f.reset();sync()});
 /* keep the buttons in step with the filters */
-["pper","fper","dsd","dsp","oper","ocat","odf","uper","dper","pvper"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
+["pper","fper","dsd","dsp","oper","ocat","odf","uper","dper","pvper","wper"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
 ["hq","hper","hmo","hday","hyr","hveh"].forEach(function(i){var e=$(i);if(e){e.addEventListener("change",sched);e.addEventListener("input",sched)}});
 ["hch","hclr"].forEach(function(i){var e=$(i);if(e)e.addEventListener("click",sched)});
 try{new MutationObserver(sched).observe($("dsd"),{childList:true})}catch(x){}
 /* leaving a tab (any way: sub-tab, top tab, bottom bar, History, Settings) puts its filters back to default */
-var AREA={sum:["sum"],fsm:["fsm"],ov:["dsc","ovf","allc"],unp:["unp"],pdt:["pdt"],pvt:["pvt"],hist:["hist"]},seen={};
+var AREA={sum:["sum"],fsm:["fsm"],ov:["dsc","ovf","allc"],unp:["unp"],pdt:["pdt"],pvt:["pvt"],hist:["hist"],sales:["win"]},seen={};
 Object.keys(AREA).forEach(function(id){var sec=$(id);if(!sec)return;seen[id]=!sec.classList.contains("hide");
  new MutationObserver(function(){var vis=!sec.classList.contains("hide");
   if(seen[id]&&!vis||(id==="unp"&&!seen[id]&&vis)){AREA[id].forEach(function(k){try{if(F[k].dirty())F[k].reset()}catch(x){}});sync()}
@@ -2371,21 +2373,23 @@ function wTbl(h,rows,tot,left,wide){var L=function(j){return left.indexOf(j)>=0}
  +rows.map(function(r){return'<tr>'+r.map(function(c,j){return'<td'+(L(j)?' class="l"':'')+'>'+esc(c)+'</td>'}).join("")+'</tr>'}).join("")
  +(tot?'<tr style="font-weight:800;border-top:2px solid var(--ln)">'+tot.map(function(c,j){return'<td'+(L(j)?' class="l"':'')+'>'+esc(c)+'</td>'}).join("")+'</tr>':'')+'</tbody></table></div>'}
 function wCard(title,note,body){return'<div class="card"><b class="ct">'+esc(title)+'</b>'+(note?'<div class="mut" style="margin:4px 0 8px">'+note+'</div>':'')+body+'</div>'}
+function wCap(){var w=$("wrep").querySelector(".wcap");if(!w)return;var t=w.querySelector("table"),r=t&&t.tBodies[0]?t.tBodies[0].rows:[];if(r.length<=11)return;
+ var h=t.tHead.offsetHeight,i;for(i=0;i<10;i++)h+=r[i].offsetHeight;h+=r[r.length-1].offsetHeight;w.style.maxHeight=h+"px";w.style.overflowY="auto";w.classList.add("wcapped")}
 function winchRender(){var h=$("wh"),M=$("wmain"),R=$("wrep");if(!h||!M||!R)return;
  if($("sales").classList.contains("hide"))return;
  var m=wModel();
  if(!m){M.classList.add("hide");h.classList.remove("hide");h.innerHTML='<div style="text-align:center;padding:22px 6px"><div style="font-size:40px">🚚</div><b style="font-size:19px;display:block;margin:10px 0 6px">Winch</b><div class="mut">No winch vehicle chosen yet. Go to Update Rates → Winch and pick a plate.</div></div>';R.innerHTML="";return}
  M.classList.remove("hide");
  h.classList.add("hide");h.innerHTML="";
- $("wid").innerHTML='<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><div style="font-size:34px">🚚</div><div style="min-width:0"><b style="font-size:20px;display:block">'+esc(m.pl)+'</b><div class="mut">Driver: <b>'+esc(m.dr||"—")+'</b></div></div></div>';
+ $("wid").innerHTML='<b class="ct">'+esc(m.pl)+(m.dr?" \u00b7 "+esc(m.dr):"")+'</b>';
  var st=function(a,b,c){return'<div><div class="mut">'+a+'</div><div class="pay" style="font-size:20px">'+b+'</div>'+(c?'<div class="mut" style="font-size:12px">'+c+'</div>':'')+'</div>'};
  var nf=m.fu.length;
- var out='<div class="card"><b class="ct">'+esc(m.pl)+' · '+esc(m.P.lab)+'</b>'
+ var out='<div class="card"><b class="ct">'+esc(m.P.lab)+'</b>'
   +'<div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))">'+st("Litres",W1(m.lit),nf+(nf===1?" entry":" entries"))+st("Fuel sold",fmt(m.fsell),"")+st("Fuel cost",fmt(m.fcost),"")+'</div>'
   +'<div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))">'+st("Fuel profit",mn(m.fprof),"")+'</div></div>';
  if(wMonRows(m).length>1)out+=wCard("By month","",wTbl(WM_TH,wMonRows(m),wMonTot(m),[0],false));
- out+=wCard("Fuel taken","All "+nf+" fuel entries for this vehicle. Swipe sideways for every column.",nf?wTbl(WF_TH,wFuelRows(m),wFuelTot(m),[0,1,8,9,10],true):'<div class="mut">No fuel entries in this period.</div>');
- R.innerHTML=out}
+ out+=wCard("Fuel taken","All "+nf+" fuel entries for this vehicle."+(nf>10?" Scroll to see the rest.":""),(nf?wTbl(WF_TH,wFuelRows(m),wFuelTot(m),[0,1,8,9,10],true).replace('class="wrap sx"','class="wrap sx wcap"'):'<div class="mut">No fuel entries in this period.</div>')+'<div class="acts noprt" style="margin:10px 0 0"><button type="button" class="btn sm alt" id="wdl">Download report</button><button type="button" class="btn sm" id="wsh">Share report</button></div>');
+ R.innerHTML=out;wCap()}
 
 /* ---- exports ---- */
 function wSafe(v){return String(v).replace(/[^\w-]+/g,"-")}
@@ -2412,10 +2416,9 @@ function wText(m){var L=["*Winch fuel report*","Vehicle: "+m.pl,"Driver: "+(m.dr
  "Fuel entries: "+m.fu.length,"Litres: "+W1(m.lit),"Fuel sold: "+fmt(m.fsell),"Fuel cost: "+fmt(m.fcost),"*Fuel profit: "+fmt(m.fprof)+"*"];
  if(appCfg.footer)L.push("",appCfg.footer);return L.join("\n")}
 function wGo(f){try{var m=wModel();if(!m){toast("Choose a winch vehicle in Update Rates first",true);return}f(m)}catch(x){alert("Could not create the report"+(x&&x.message?": "+x.message:""))}}
-$("wdl").onclick=function(){wGo(function(m){dlf(wName(m,"pdf"),wPdf(m));toast("Report downloaded")})};
-$("wsh").onclick=function(){wGo(function(m){sharePdf(wPdf(m),wName(m,"pdf"),"Winch fuel report - "+m.pl)})};
-$("wcsv").onclick=function(){wGo(function(m){dlf(wName(m,"csv"),wCsv(m));toast("CSV downloaded")})};
-$("wtx").onclick=function(){wGo(function(m){var t=wText(m);if(navigator.share){navigator.share({title:"Winch fuel report - "+m.pl,text:t}).catch(function(){})}else{window.open("https://wa.me/?text="+encodeURIComponent(t),"_blank")}})};
+$("wrep").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("#wdl,#wsh");if(!b)return;
+ if(b.id==="wdl")wGo(function(m){dlf(wName(m,"pdf"),wPdf(m));toast("Report downloaded")});
+ else wGo(function(m){sharePdf(wPdf(m),wName(m,"pdf"),"Winch fuel report - "+m.pl)})});
 /* period controls */
 function wShowPer(){var k=$("wper").value;$("wdw").classList.toggle("hide",k!=="day");$("wmw").classList.toggle("hide",k!=="month");$("wyw").classList.toggle("hide",k!=="year");$("wrw").classList.toggle("hide",k!=="range");$("wtw").classList.toggle("hide",k!=="range");
  if(k==="day"&&!$("wday").value)$("wday").value=today();if(k==="month"&&!$("wmon").value)$("wmon").value=today().slice(0,7);if(k==="year"&&!$("wyr").value)$("wyr").value=today().slice(0,4)}
