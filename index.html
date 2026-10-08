@@ -592,7 +592,7 @@ return{get:function(i){return S[i]||null},set:function(i,a,b){S[i]={a:a,b:b}},cl
 <div><label>Loader deposit</label><input type="number" inputmode="decimal" id="sdep" placeholder="0"></div></div>
 <div class="row"><div><label>Driver</label><input id="sdrv" placeholder="Driver name"></div>
 <div><label>Driver deposit</label><input type="number" inputmode="decimal" id="sddp" placeholder="0"></div></div>
-<div class="mut" id="sdhint" style="margin:-4px 0 8px">Pick a plate first. The driver fills in from the plate.</div>
+<div class="mut" id="sdhint" style="margin:10px 0 14px;line-height:1.35">Pick a plate first. The driver fills in from the plate.</div>
 <div class="row"><div><label>Tonnes</label><input type="number" inputmode="decimal" id="ston" placeholder="0"></div>
 <div><label>Milage</label><input type="number" inputmode="decimal" id="smil" placeholder="0"></div></div>
 <div class="pvb"><div class="mut">Total trip expense</div><div class="pay" id="stot">0.00</div></div>
@@ -2567,5 +2567,29 @@ $("sveh").addEventListener("change",ad);
 $("fabS").addEventListener("click",ad);
 var o=$("ssave").onclick;$("ssave").onclick=function(){o();ad()};
 ad();
+})();</script>
+<script>(function(){
+function load(){try{return JSON.parse(localStorage.getItem("seedEntries")||"[]")}catch(x){return[]}}
+function dd(){var i=$("sddp"),d=($("sdrv").value||"").trim().toLowerCase(),dt=$("sdate").value||today(),rep=false;
+ if(d)rep=load().some(function(e){return e.date===dt&&(e.driver||"").trim().toLowerCase()===d});
+ var sc=(typeof scfg!=="undefined"&&scfg)||{};
+ if(!d){i.value="";i.readOnly=false;i.style.opacity="";}
+ else if(rep){i.value="0";i.readOnly=true;i.style.opacity=".5"}
+ else{i.value=sc.d?sc.d:"";i.readOnly=false;i.style.opacity=""}
+ i.dispatchEvent(new Event("input"))}
+["sveh","sdate"].forEach(function(x){$(x).addEventListener("change",dd)});
+$("sdrv").addEventListener("input",dd);
+$("sdate").addEventListener("input",dd);
+$("fabS").addEventListener("click",dd);
+var o=$("ssave").onclick;$("ssave").onclick=function(){o();dd()};
+dd();
+})();</script>
+<script>(function(){
+function chk(){var okk=!!$("sveh").value&&(parseFloat($("ston").value)||0)>0&&(parseFloat($("smil").value)||0)>0;$("ssave").disabled=!okk}
+["sveh"].forEach(function(i){$(i).addEventListener("change",chk)});
+["ston","smil"].forEach(function(i){$(i).addEventListener("input",chk)});
+$("fabS").addEventListener("click",chk);
+var o=$("ssave").onclick;$("ssave").onclick=function(){if($("ssave").disabled)return;o();chk()};
+chk();
 })();</script>
 </body></html>
