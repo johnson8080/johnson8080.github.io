@@ -1279,6 +1279,7 @@ function pdfBlob(title,sub,items){var mono=.6,fs=8,lh=12,mg=36;
  var isNum=function(c){return/^(-?[\d,]+(\.\d+)?%?( [tL])?|-)?$/.test(san(c))},maxW=0;
  items.forEach(function(it){if(it.t!=="tbl")return;var n=it.h.length,w=[];for(var j=0;j<n;j++){var m=san(it.h[j]).length;it.rows.forEach(function(r){m=Math.max(m,san(r[j]).length)});w.push(Math.min(m,34))}it.w=w;it.tot=w.reduce(function(a,b){return a+b},0)+2*(n-1);maxW=Math.max(maxW,it.tot)});
  var land=maxW>108,W=land?842:595,H=land?595:842,cap=Math.floor((W-2*mg)/(fs*mono));
+ if(maxW>cap){fs=Math.max(5.5,Math.floor((W-2*mg)/(maxW*mono)*10)/10);cap=Math.floor((W-2*mg)/(fs*mono))}
  items.forEach(function(it){if(it.t!=="tbl")return;while(it.tot>cap){var k=it.w.indexOf(Math.max.apply(null,it.w));it.w[k]--;it.tot--}
   var body=it.rows.filter(function(r){return!/^(Total|All drivers)/.test(r[0]||"")});it.al=it.h.map(function(h,j){return j>0&&body.length&&body.every(function(r){return isNum(r[j])})&&body.some(function(r){return/\d/.test(r[j]||"")})})});
  var pages=[],pg,y,first=true;
