@@ -82,7 +82,7 @@ input,select,textarea{background:var(--fld);border:1px solid var(--ln);border-ra
 .pvb{margin-top:16px;padding:16px;border-radius:16px;border:1px solid color-mix(in srgb,var(--ac) 35%,transparent);background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 14%,transparent),color-mix(in srgb,var(--ac) 4%,transparent))}
 .pvb .mut{font-weight:600}.pay{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;color:var(--ac);letter-spacing:-.5px}:root[data-theme="dark"] .pay{color:var(--payc,#5b8dfa)}
 .btn{border-radius:16px;padding:15px;font-weight:700;box-shadow:0 8px 20px color-mix(in srgb,var(--ac) 35%,transparent)}.btn:active{transform:scale(.98)}.btn.alt,.acts .btn{box-shadow:none}.btn:disabled{box-shadow:none}
-th{font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700}tbody tr{transition:background .15s}tr.tp>td,.hi.tp,.item.tp,#tunp.tp{background:color-mix(in srgb,var(--ac) 14%,var(--card))!important}@media(hover:hover) and (pointer:fine){tr[data-id]:hover>td,.hi:hover,.item[data-id]:hover{background:color-mix(in srgb,var(--ac) 14%,var(--card))}}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--mut);font-weight:700}tbody tr{transition:background .15s}tr.tp>td,.hi.tp,.item.tp,#tunp.tp{background:color-mix(in srgb,var(--ac) 14%,var(--card))!important}@media(hover:hover) and (pointer:fine){tr[data-id]:hover>td,.hi:hover,.item[data-id]:hover{background:color-mix(in srgb,var(--ac) 14%,var(--card))}#seedl tr[data-t]:hover>td{background:color-mix(in srgb,var(--ac) 14%,var(--card))!important}}
 .item{padding:12px 0}
 .bn{position:fixed;left:0;right:0;bottom:0;z-index:8;display:flex;justify-content:space-around;max-width:640px;margin:0 auto;padding:8px 6px calc(8px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--card) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--ln)}
 .bn button{flex:1;background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11.5px;font-weight:700;padding:6px 0}.bn button.on{color:var(--ac)}.bn button:active{transform:scale(.92)}.bn i{display:grid;place-items:center;height:24px}.bn svg.i{width:22px;height:22px}
@@ -460,7 +460,35 @@ return{get:function(i){return S[i]||null},set:function(i,a,b){S[i]={a:a,b:b}},cl
  t:function(i){var r=S[i];if(!ok(r))return function(){return true};return function(d){d=String(d||"").slice(0,10);return d>=r.a&&d<=r.b}},
  tm:function(i){var r=S[i];if(!ok(r))return function(){return true};return function(m){m=String(m||"").slice(0,7);return m>=r.a.slice(0,7)&&m<=r.b.slice(0,7)}},
  lab:function(i){var r=S[i];return ok(r)?"Period "+r.a+" to "+r.b:"All dates"}}})();</script>
-<style>.wcapped tbody tr:last-child td{position:sticky;bottom:0;background:var(--card);z-index:2;box-shadow:0 -1px 0 var(--ln)}</style></head><body>
+<style>.wcapped tbody tr:last-child td{position:sticky;bottom:0;background:var(--card);z-index:2;box-shadow:0 -1px 0 var(--ln)}</style><script>window.SEEDBK=(function(){
+function rd(k){try{var v=JSON.parse(localStorage.getItem(k)||"[]");return Array.isArray(v)?v:[]}catch(x){return[]}}
+function wr(k,a){try{localStorage.setItem(k,JSON.stringify(a));return localStorage.getItem(k)!==null}catch(x){return false}}
+function pk(p){return[p.id,p.k||"veh",p.ts,p.amt,p.date].join("|")}
+var RK=["c","t","k","d","h","r","l","l1","l2","la"];
+return{
+ ents:function(){return rd("seedEntries")},pays:function(){return rd("seedVpPaid")},
+ count:function(){return rd("seedEntries").length+rd("seedVpPaid").length},
+ obj:function(){var r={};try{RK.forEach(function(k){r[k]=+(scfg&&scfg[k])||0})}catch(e){}return{rates:r,entries:rd("seedEntries"),payments:rd("seedVpPaid")}},
+ parse:function(j){var S={present:false,entries:[],payments:[],rates:null,skipped:0},sc=j&&j.seedcane;if(!rObj(sc))return S;S.present=true;var seen={};
+  (Array.isArray(sc.entries)?sc.entries:[]).forEach(function(e,i){
+   if(rObj(e)&&rOk(e.date)&&typeof e.vehicle==="string"&&e.vehicle&&rNum(e.tonnes)){var c=Object.assign({},e);if(!rNum(c.ts)||seen[c.ts])c.ts=Date.now()*1000+i;seen[c.ts]=1;S.entries.push(c)}else S.skipped++});
+  (Array.isArray(sc.payments)?sc.payments:[]).forEach(function(p){
+   if(rObj(p)&&p.id!=null&&rNum(p.amt)&&(p.k==null||p.k==="veh"||p.k==="drv"||p.k==="ldr")&&(p.date==null||rOk(p.date)))S.payments.push(Object.assign({},p));else S.skipped++});
+  var r=sc.rates;if(rObj(r)){var o={},any=false;RK.forEach(function(k){if(rNum(r[k])&&r[k]>=0){o[k]=r[k];any=true}else o[k]=0});if(any)S.rates=o}
+  return S},
+ ask:function(R){var S=R.seed;if(!S||!S.present)return'<span class="mut">Seedcane: not in this file, so your current Seedcane data stays as it is.</span><br>';
+  return"Seedcane entries: <b>"+S.entries.length+"</b><br>Seedcane payments: <b>"+S.payments.length+"</b><br>Seedcane rates: <b>"+(S.rates?"yes":"no")+"</b><br>"},
+ apply:function(S,replace){var f=0;if(!S||!S.present)return 0;
+  var E=replace?[]:rd("seedEntries"),m={};E.forEach(function(x,i){m[String(x.ts)]=i});
+  S.entries.forEach(function(e){var k=String(e.ts),c=Object.assign({},e);if(m[k]!=null)E[m[k]]=c;else{m[k]=E.length;E.push(c)}});
+  if(!wr("seedEntries",E))f++;
+  var P=replace?[]:rd("seedVpPaid"),q={};P.forEach(function(x,i){q[pk(x)]=i});
+  S.payments.forEach(function(p){var k=pk(p),c=Object.assign({},p);if(q[k]!=null)P[q[k]]=c;else{q[k]=P.length;P.push(c)}});
+  if(!wr("seedVpPaid",P))f++;return f},
+ refresh:function(){try{if(window.seedList)window.seedList()}catch(e){}try{if(window.drawVP)window.drawVP()}catch(e){}
+  try{["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}catch(e){}try{if(window.seedCap)window.seedCap()}catch(e){}}
+}})();</script>
+</head><body>
 <header class="hd"><button class="ib" id="mnu" type="button" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h7"/></svg></button><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Winch</button><button data-g="seed">Seedcane</button></div>
@@ -1385,8 +1413,14 @@ $("bcsv").onclick=function(){PM=alloc();var y=String($("byr").value||today().sli
  fuels.filter(iy).sort(bd).forEach(function(f){var a=f.litres*f.sell,c=f.litres*f.cost;L.push(csvl(["Fuel",f.date,f.vehicle,f.driver||(cfg.vd||{})[f.vehicle]||"",f.litres,f.sell,f.cost,a,c,a-c,f.collected,f.issued]))});
  L.push("",csvl(["ADVANCES "+y]),csvl(["Date","Driver","Amount"]));advs.filter(iy).sort(bd).forEach(function(a){L.push(csvl([a.date,a.driver,a.amount]))});
  L.push("",csvl(["SALARY PAID "+y]),csvl(["Date","Type","Who","Amount"]));pays.filter(iy).sort(bd).forEach(function(a){L.push(csvl([a.date,a.kind,a.who,a.amount]))});
+ var SE=SEEDBK.ents(),SP=SEEDBK.pays(),SB={};SE.forEach(function(e){SB[String(e.ts)]=e});
+ L.push("",csvl(["SEEDCANE ENTRIES "+y]),csvl(["Date","Vehicle","Driver","Tonnes","Milage","Driver deposit","Loader deposit","Trip expense","Loader flat rate","Loader minimum tonne","Entry ID"]));
+ SE.filter(iy).sort(bd).forEach(function(e){L.push(csvl([e.date,e.vehicle,e.driver,e.tonnes,e.mil,e.dep,e.ldep,e.exp,e.lf,e.lm,e.ts]))});
+ L.push("",csvl(["SEEDCANE PAYMENTS "+y]),csvl(["Date paid","Vehicle","Driver","Type","Amount","Entry date","Entry ID"]));
+ SP.filter(iy).sort(bd).forEach(function(p){var e=SB[String(p.id)]||{};L.push(csvl([p.date,e.vehicle,e.driver,({veh:"Vehicle",drv:"Driver",ldr:"Loader"})[p.k||"veh"]||p.k,p.amt,e.date,p.id]))});
+ var SO=SEEDBK.obj().rates;L.push("",csvl(["SEEDCANE RATES (current)"]),csvl(["Vehicle constant","Driver deposit","Driver held amount","Held reduction repeat trip","Loader flat rate","Loader minimum tonne"]),csvl([SO.c,SO.d,SO.h,SO.r,SO.l,SO.l2]));
  dlf("fuel-trips-"+y+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
-function bkObj(){return {app:"FUEL & TRIPS",exported:new Date().toISOString(),rates:cfg,fuelRates:fcfg,entries:entries,fuel:fuels,advances:advs,payments:pays,staff:staff,expenseReasons:reasons,reasonRenames:renToArr(ren),privateStaffPayments:pvp,deleted:{entries:trashE,fuel:trashF,advances:trashA,payments:trashP}}}
+function bkObj(){return {app:"FUEL & TRIPS",exported:new Date().toISOString(),rates:cfg,fuelRates:fcfg,entries:entries,fuel:fuels,advances:advs,payments:pays,staff:staff,expenseReasons:reasons,reasonRenames:renToArr(ren),privateStaffPayments:pvp,seedcane:SEEDBK.obj(),deleted:{entries:trashE,fuel:trashF,advances:trashA,payments:trashP}}}
 $("bjson").onclick=function(){dlf("fuel-trips-backup-"+today()+".json",new Blob([JSON.stringify(bkObj(),null,1)],{type:"application/json"}))};
 function rOk(d){return typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d)}
 function rNum(v){return typeof v==="number"&&isFinite(v)}
@@ -1403,13 +1437,14 @@ function rParse(txt){var j=JSON.parse(txt);if(!rObj(j))throw new Error("This is 
  if(Array.isArray(j.staff||j.employees)){var jst=j.staff||j.employees,em=jst.filter(function(e){return rObj(e)&&typeof e.n==="string"&&e.n&&rNum(e.s)});sk+=jst.length-em.length;if(em.length)R.emps=em}
  if(Array.isArray(j.expenseReasons)){var rr=rsnClean(j.expenseReasons);if(rr.length){R.rsn=rr;R.ren=renClean(renFromArr(j.reasonRenames))}}
  var fr=j.fuelRates;if(rObj(fr)&&rNum(fr.sell)&&rNum(fr.cost))R.fuelRates={sell:fr.sell,cost:fr.cost};
- if(!(R.entries.length||R.fuel.length||R.advances.length||R.payments.length||R.pvp.length||R.emps||R.rsn||R.rates||R.fuelRates))throw new Error("No payment or fuel data found in this file");
- R.skipped=sk;return R}
+ R.seed=SEEDBK.parse(j);
+ if(!(R.entries.length||R.fuel.length||R.advances.length||R.payments.length||R.pvp.length||R.emps||R.rsn||R.rates||R.fuelRates||R.seed.entries.length||R.seed.payments.length||R.seed.rates))throw new Error("No payment or fuel data found in this file");
+ R.skipped=sk+R.seed.skipped;return R}
 function rRes(h,b,bad){closeM();toast(h+": "+b,!!bad)}
 function rMsg(h,b){$("mbody").innerHTML='<b style="font-size:18px">'+h+'</b><div class="mut" style="margin-top:8px;line-height:1.5">'+b+'</div>';$("modal").classList.remove("hide")}
-function rAsk(R){var rate=(R.rates||R.fuelRates)?(isAdmin?"Rates and vehicles in the file will also be restored (they replace the current ones).":"Rates are in the file but only editors and the owner can restore them, so they will be skipped."):"No rates in this file.";
- rMsg("Restore from backup",(R.exported?"Backup made: "+esc(String(R.exported).slice(0,10))+"<br>":"")+"Trip entries: <b>"+R.entries.length+"</b><br>Fuel entries: <b>"+R.fuel.length+"</b><br>Advances: <b>"+R.advances.length+"</b><br>Salary paid: <b>"+R.payments.length+"</b><br>Private staff payments: <b>"+R.pvp.length+"</b><br>Staff: <b>"+(R.emps?R.emps.length:0)+"</b><br>"+rate+(R.skipped?'<br><span class="neg">'+R.skipped+' invalid record'+(R.skipped>1?"s":"")+' will be skipped.</span>':"")
-  +'<br><br><b>Restore</b> adds everything in the file and overwrites entries that have the same ID. Nothing else is deleted.<br><b>Replace all</b> makes the app match the file exactly and deletes anything not in it.');
+function rAsk(R){var rate=(R.rates||R.fuelRates||(R.seed&&R.seed.rates))?(isAdmin?"Rates and vehicles in the file will also be restored (they replace the current ones).":"Rates are in the file but only editors and the owner can restore them, so they will be skipped."):"No rates in this file.";
+ rMsg("Restore from backup",(R.exported?"Backup made: "+esc(String(R.exported).slice(0,10))+"<br>":"")+"Trip entries: <b>"+R.entries.length+"</b><br>Fuel entries: <b>"+R.fuel.length+"</b><br>Advances: <b>"+R.advances.length+"</b><br>Salary paid: <b>"+R.payments.length+"</b><br>Private staff payments: <b>"+R.pvp.length+"</b><br>Staff: <b>"+(R.emps?R.emps.length:0)+"</b><br>"+SEEDBK.ask(R)+rate+(R.skipped?'<br><span class="neg">'+R.skipped+' invalid record'+(R.skipped>1?"s":"")+' will be skipped.</span>':"")
+  +'<br><br><b>Restore</b> adds everything in the file and overwrites entries that have the same ID. Nothing else is deleted.<br><b>Replace all</b> makes the app match the file exactly and deletes anything not in it. Seedcane data is replaced only when the file contains a Seedcane section.');
  var b=document.createElement("div");b.style.cssText="display:flex;flex-direction:column;gap:8px;margin-top:14px";
  b.innerHTML='<button class="btn" id="rM" style="margin:0">Restore (keep existing data)</button><button class="btn alt" id="rR" style="margin:0">Replace all data</button><button class="btn alt" id="rC" style="margin:0;background:var(--card);color:var(--tx);border:1px solid var(--ln)">Cancel</button>';
  $("mbody").appendChild(b);$("rC").onclick=closeM;$("rM").onclick=function(){rRun(R,false)};
@@ -1421,7 +1456,7 @@ async function rRun0(R,replace){
   if(hit(R.entries)||hit(R.fuel)||hit(R.advances)||hit(R.payments)||(replace&&(hit(entries)||hit(fuels)||hit(advs)||hit(pays)))){rRes("Cannot restore","This restore would change a locked month ("+lkm.sort().join(", ")+"). Unlock the month first, then restore.",1);return}}
  var cols=[["entries",R.entries],["fuel",R.fuel],["advances",R.advances],["payments",R.payments],["pvpays",R.pvp]],fails=0,done=0,total=0,ids={};
  cols.forEach(function(c){total+=c[1].length;ids[c[0]]={}});
- var rt=isAdmin&&(R.rates||R.fuelRates);if(R.rates&&isAdmin)total++;if(R.fuelRates&&isAdmin)total++;if(R.emps&&isAdmin)total++;if(R.rsn)total++;
+ var rt=isAdmin&&(R.rates||R.fuelRates);if(R.rates&&isAdmin)total++;if(R.fuelRates&&isAdmin)total++;if(R.emps&&isAdmin)total++;if(R.rsn)total++;if(R.seed&&R.seed.present){total+=R.seed.entries.length+R.seed.payments.length;if(R.seed.rates&&isAdmin)total++}
  var prog=function(){rMsg("Restoring…",done+" of "+total+" done. Please keep this screen open.")};prog();
  try{
    var old={entries:entries.map(function(x){return x.id}),fuel:fuels.map(function(x){return x.id}),advances:advs.map(function(x){return x.id}),payments:pays.map(function(x){return x.id}),pvpays:pvp.map(function(x){return x.id})};
@@ -1440,9 +1475,12 @@ async function rRun0(R,replace){
    if(R.rates&&isAdmin){cfg=Object.assign({},cfg,R.rates);paySaved=true}if(R.fuelRates&&isAdmin){fcfg=R.fuelRates}
    fillVeh();showCfg();$("frs").value=fcfg.sell||"";$("frc").value=fcfg.cost||"";fautofill();frchk();chkR();setDdp();render();renderFuel();prev()}
  }catch(x){fails++}
+ try{var sd=R.seed;if(sd&&sd.present){fails+=SEEDBK.apply(sd,replace);done+=sd.entries.length+sd.payments.length;
+  if(sd.rates&&isAdmin){if(db)await db.doc("config/seed").set(sd.rates);scfg=Object.assign({},scfg,sd.rates);try{srfill();srchk()}catch(x){}done++;if(window.schedPersist)schedPersist()}
+  SEEDBK.refresh()}}catch(x){fails++}
  var msg="Restored "+(total-fails)+" of "+total+" items."+(replace&&!fails?" Anything not in the file was removed.":"");
  if(R.skipped)msg+="<br>"+R.skipped+" invalid record"+(R.skipped>1?"s were":" was")+" skipped.";
- if((R.rates||R.fuelRates)&&!isAdmin)msg+="<br>Rates were not restored because only editors and the owner can change them.";
+ if((R.rates||R.fuelRates||(R.seed&&R.seed.rates))&&!isAdmin)msg+="<br>Rates were not restored because only editors and the owner can change them.";
  if(fails)msg+='<br><span class="neg">'+fails+' item'+(fails>1?"s":"")+' could not be saved. Your data may only be partly restored'+(replace?", so nothing was deleted":"")+'. You can run the restore again.</span>';
  rRes(fails?"Restore finished with problems":"Restore complete",msg,!!fails)}
 function rErr(m){rRes("Cannot restore this file",esc(m||"The file is not a valid backup")+'. Choose a "Full backup (JSON)" file made by this app.',1)}
@@ -1666,7 +1704,7 @@ var BK={l:"fleetLastBackup",i:"fleetBackupDays",z:"fleetBkSnooze"};
 function bkGet(k,d){try{var v=localStorage.getItem(k);return v==null?d:v}catch(x){return d}}
 function bkSet(k,v){try{localStorage.setItem(k,String(v))}catch(x){}}
 function bkSnooze(){bkSet(BK.z,Date.now()+864e5);bkCheck()}
-function bkCheck(){var last=+bkGet(BK.l,0),days=+bkGet(BK.i,7)||7,all=[].concat(entries,fuels,advs,pays,pvp),age=last?(Date.now()-last)/864e5:Infinity,
+function bkCheck(){var last=+bkGet(BK.l,0),days=+bkGet(BK.i,7)||7,all=[].concat(entries,fuels,advs,pays,pvp,SEEDBK.ents(),SEEDBK.pays()),age=last?(Date.now()-last)/864e5:Infinity,
  since=all.filter(function(x){return(x.ts||0)>last}).length,st=$("bkst"),bb=$("bkbanner"),due=all.length>0&&age>=days;
  if(st)st.innerHTML=last?'Last full backup on this device: <b>'+esc(new Date(last).toLocaleString())+'</b> ('+Math.floor(age)+' day(s) ago). New records since: <b>'+since+'</b>.':'<span class="neg">No full backup made from this device yet.</span>';
  if(bb)bb.innerHTML=(due&&isAdmin&&Date.now()>+bkGet(BK.z,0))?'<div class="note" style="border-color:var(--bad)"><b>Backup due.</b> '+(last?'Last backup was '+Math.floor(age)+' days ago':'No backup made yet')+' · '+since+' new record(s). <button class="x" onclick="$(\'bjson\').click()">Back up now</button><button class="x" onclick="bkSnooze()" style="color:var(--mut)">Later</button></div>':""}
@@ -1810,7 +1848,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
   $("s1a").textContent=tT.toFixed(2)+" ton";$("s1b").textContent="All time: "+aT.toFixed(2)+" ton";$("s1c").textContent=nf2(tX);$("s1d").textContent="All time: "+nf2(aX);
   $("s2a").textContent=nf(tL)+" ltrs";$("s2b").textContent="All time: "+nf(aL)+" ltrs";$("s2c").textContent=nf2(tP);$("s2c").style.color=+tP<0?"var(--bad)":"";$("s2d").textContent="All time: "+nf2(aP)}catch(q){}};
  var r0=render;render=function(){var o=r0.apply(this,arguments);flowStats();return o};var f0=renderFuel;renderFuel=function(){var o=f0.apply(this,arguments);flowStats();return o};flowStats()})();
-</script><script>(function(){var SEL='tr[data-id],.hi,.item[data-id],#tunp',cur=null,tm=0;function clr(){clearTimeout(tm);if(cur){cur.classList.remove("tp");cur=null}}
+</script><script>(function(){var SEL='tr[data-id],#seedl tr[data-t],.hi,.item[data-id],#tunp',cur=null,tm=0;function clr(){clearTimeout(tm);if(cur){cur.classList.remove("tp");cur=null}}
 document.addEventListener("pointerdown",function(ev){if(ev.pointerType==="mouse")return;var t=ev.target;if(!t||!t.closest||t.closest("button"))return;var r=t.closest(SEL);if(!r)return;clr();cur=r;r.classList.add("tp")},true);
 document.addEventListener("pointerup",function(){if(!cur)return;var c=cur;clearTimeout(tm);tm=setTimeout(function(){c.classList.remove("tp");if(cur===c)cur=null},220)},true);
 ["pointercancel","touchmove","scroll","contextmenu"].forEach(function(t){document.addEventListener(t,clr,true)})})();</script><script>(function(){var q=function(s){return document.querySelector(s)},$=function(i){return document.getElementById(i)};
@@ -2064,16 +2102,16 @@ function paint(){var el=$("snapst");if(!el)return;var L=Object.keys(meta.snaps||
 async function snap(manual){if(!db||busy||window.readOnly)return false;if(window.NETREAL===false){if(manual)toast("No internet connection",true);return false}busy=true;
  try{var txt=JSON.stringify(bkObj()),parts=[],i;for(i=0;i<txt.length;i+=SC)parts.push(txt.slice(i,i+SC));var sl=slotNow();
   for(i=0;i<parts.length;i++)await db.doc("backups/s"+sl+"_"+i).set({t:parts[i],i:i});
-  var sn=Object.assign({},meta.snaps||{});sn["s"+sl]={at:Date.now(),parts:parts.length,e:entries.length,f:fuels.length};
+  var sn=Object.assign({},meta.snaps||{});sn["s"+sl]={at:Date.now(),parts:parts.length,e:entries.length,f:fuels.length,sd:SEEDBK.count()};
   await db.doc("config/backupmeta").set({last:Date.now(),snaps:sn});if(manual)toast("Cloud snapshot saved");return true}
  catch(x){if(manual)toast("Could not save snapshot: "+(x&&x.message||x),true);return false}finally{busy=false}}
 function start(){try{db.doc("config/backupmeta").onSnapshot(function(s){meta=s.exists?(s.data()||{snaps:{}}):{snaps:{}};if(!meta.snaps)meta.snaps={};paint();
-  if(!tried){tried=true;var due=function(){var ls=Date.now()-3*DAY;if(!window.readOnly&&canWrite&&(meta.last||0)<ls&&(entries.length+fuels.length)>0)snap(false)};setTimeout(due,12000);window.addEventListener("online",function(){setTimeout(due,4000)});document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(due,3000)});setInterval(due,30*60*1000)}},function(){})}catch(e){}}
+  if(!tried){tried=true;var due=function(){var ls=Date.now()-3*DAY;if(!window.readOnly&&canWrite&&(meta.last||0)<ls&&(entries.length+fuels.length+SEEDBK.count())>0)snap(false)};setTimeout(due,12000);window.addEventListener("online",function(){setTimeout(due,4000)});document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(due,3000)});setInterval(due,30*60*1000)}},function(){})}catch(e){}}
 var n=0,t=setInterval(function(){if(db){clearInterval(t);start()}else if(++n>150)clearInterval(t)},800);paint();
 $("snapnow").onclick=async function(){if(!db){toast("Connect to the internet and sign in first",true);return}if(window.readOnly){toast("Read-only account",true);return}var b=this;b.disabled=true;await snap(true);b.disabled=false};
 $("snaprestore").onclick=function(){if(!db){toast("Connect to the internet and sign in first",true);return}if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
  var L=Object.keys(meta.snaps||{}).map(function(k){var o=meta.snaps[k];o.k=k;return o}).sort(function(a,b){return b.at-a.at});
- $("mbody").innerHTML='<b style="font-size:18px">Restore from cloud snapshot</b><div class="mut" style="margin-top:6px">Pick a snapshot. You will see a summary and confirm before anything changes.</div>'+(L.length?L.map(function(o){return'<button class="btn alt" data-s="'+esc(o.k)+'" style="margin-top:8px">'+esc(new Date(o.at).toLocaleString())+" \u00b7 "+o.e+" trips, "+o.f+" fuel</button>"}).join(""):'<div class="mut" style="margin-top:10px">No snapshots yet.</div>')+'<div class="b2"><button id="snC">Cancel</button></div>';
+ $("mbody").innerHTML='<b style="font-size:18px">Restore from cloud snapshot</b><div class="mut" style="margin-top:6px">Pick a snapshot. You will see a summary and confirm before anything changes.</div>'+(L.length?L.map(function(o){return'<button class="btn alt" data-s="'+esc(o.k)+'" style="margin-top:8px">'+esc(new Date(o.at).toLocaleString())+" \u00b7 "+o.e+" trips, "+o.f+" fuel"+(o.sd?", "+o.sd+" seedcane":"")+"</button>"}).join(""):'<div class="mut" style="margin-top:10px">No snapshots yet.</div>')+'<div class="b2"><button id="snC">Cancel</button></div>';
  $("modal").classList.remove("hide");$("snC").onclick=closeM;
  [].forEach.call($("mbody").querySelectorAll("button[data-s]"),function(b){b.onclick=async function(){var o=meta.snaps[b.dataset.s];b.disabled=true;b.textContent="Loading\u2026";
   try{var txt="";for(var i=0;i<o.parts;i++){var sn=await once("backups/"+b.dataset.s+"_"+i);if(!sn.exists)throw new Error("Snapshot part "+(i+1)+" is missing");txt+=sn.data().t}rAsk(rParse(txt))}
@@ -2087,12 +2125,12 @@ async function list(){try{var d=await open();return await new Promise(function(r
 async function put(rec){try{var d=await open();await new Promise(function(res,rej){var tx=d.transaction(STN,"readwrite"),st=tx.objectStore(STN);st.put(rec);tx.oncomplete=res;tx.onerror=function(){rej(tx.error)}});
  var all=await list();all.sort(function(a,b){return b.at-a.at});var old=all.slice(KEEP);if(old.length){var tx2=d.transaction(STN,"readwrite"),s2=tx2.objectStore(STN);old.forEach(function(o){s2.delete(o.id)})}return true}
  catch(e){try{var l=lsGet();l.unshift(rec);l=l.slice(0,2);localStorage.setItem(LSK,JSON.stringify(l));return true}catch(x){return false}}}
-function loaded(){try{return(entries.length+fuels.length)>0}catch(e){return false}}
+function loaded(){try{return(entries.length+fuels.length+SEEDBK.count())>0}catch(e){return false}}
 async function paint(){var el=$("lsnst");if(!el)return;var L=await list();L.sort(function(a,b){return b.at-a.at});
  el.innerHTML=L.length?"Device snapshots: last saved <b>"+esc(new Date(L[0].at).toLocaleString())+"</b>. "+L.length+" kept. A new one is saved every 3 days, with or without internet, whenever the app is open.":"No device snapshot yet. One is saved every 3 days, with or without internet, whenever the app is open."}
 async function take(manual){if(busy)return false;if(!loaded()){if(manual)toast("Nothing to back up yet",true);return false}busy=true;
  try{var now=Date.now(),o=bkObj(),slot=now;o.snapshotType=manual?"manual":"auto";
-  var ok=await put({id:(manual?"m":"a")+now,slot:slot,at:now,e:entries.length,f:fuels.length,json:JSON.stringify(o)});
+  var ok=await put({id:(manual?"m":"a")+now,slot:slot,at:now,e:entries.length,f:fuels.length,sd:SEEDBK.count(),json:JSON.stringify(o)});
   if(manual)toast(ok?"Device snapshot saved":"Could not save snapshot on this phone",!ok);paint();return ok}
  catch(x){if(manual)toast("Could not save snapshot",true);return false}finally{busy=false}}
 async function check(){if(!loaded())return;var L=await list(),ls=Date.now()-D3;if(!L.some(function(r){return r.at>=ls}))take(false)}
@@ -2103,7 +2141,7 @@ window.addEventListener("online",function(){setTimeout(check,3000)});
 var nb=$("lsnnow");if(nb)nb.onclick=async function(){var b=this;b.disabled=true;await take(true);b.disabled=false};
 var rb=$("lsnrestore");if(rb)rb.onclick=async function(){if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
  var L=await list();L.sort(function(a,b){return b.at-a.at});
- $("mbody").innerHTML='<b style="font-size:18px">Restore from device snapshot</b><div class="mut" style="margin-top:6px">Pick a snapshot. You will see a summary and confirm before anything changes.</div>'+(L.length?L.map(function(o,i){return'<button class="btn alt" data-i="'+i+'" style="margin-top:8px">'+esc(new Date(o.at).toLocaleString())+" \u00b7 "+o.e+" trips, "+o.f+" fuel</button>"}).join(""):'<div class="mut" style="margin-top:10px">No snapshots yet.</div>')+'<div class="b2"><button id="lsC">Cancel</button></div>';
+ $("mbody").innerHTML='<b style="font-size:18px">Restore from device snapshot</b><div class="mut" style="margin-top:6px">Pick a snapshot. You will see a summary and confirm before anything changes.</div>'+(L.length?L.map(function(o,i){return'<button class="btn alt" data-i="'+i+'" style="margin-top:8px">'+esc(new Date(o.at).toLocaleString())+" \u00b7 "+o.e+" trips, "+o.f+" fuel"+(o.sd?", "+o.sd+" seedcane":"")+"</button>"}).join(""):'<div class="mut" style="margin-top:10px">No snapshots yet.</div>')+'<div class="b2"><button id="lsC">Cancel</button></div>';
  $("modal").classList.remove("hide");$("lsC").onclick=closeM;
  [].forEach.call($("mbody").querySelectorAll("button[data-i]"),function(b){b.onclick=function(){try{var o=L[+b.dataset.i];rAsk(rParse(o.json))}catch(x){closeM();toast("Could not load snapshot: "+(x&&x.message||x),true)}}})};
 })();
