@@ -144,6 +144,7 @@ body.nohd .hd{display:none}body.nohd{padding-top:8px}
 .btn.pgh:not(:disabled),.btn.alt.pgh:not(:disabled){background:#22c55e!important;color:#fff!important;border-color:#22c55e!important;opacity:1!important;filter:none!important}
 .cap10{overflow:auto;-webkit-overflow-scrolling:touch}.cap10 thead th{position:sticky;top:0;background:var(--card);z-index:2;box-shadow:0 1px 0 var(--ln)}.cap10 tbody tr:last-child td{position:sticky;bottom:0;background:var(--card);z-index:1;box-shadow:0 -1px 0 var(--ln);font-weight:700}
 #seed .cap10 td:first-child,#seed .cap10 th:first-child{position:sticky;left:0;background:var(--card);z-index:1}#seed .cap10 thead th:first-child{z-index:4}#seed .cap10 tbody tr:last-child td:first-child{z-index:3}#seed .cap10{max-width:100%}
+#seed table{width:max-content!important;min-width:100%;table-layout:auto!important}#seed th,#seed td{white-space:nowrap!important;padding:8px 12px}#seed td.mut[colspan]{white-space:normal!important}
 </style>
 <style>
 .hd{position:sticky;top:0;z-index:9;display:flex;align-items:center;gap:6px;margin:0 -12px 8px;padding:7px 12px 5px;background:var(--bg);border-bottom:1px solid var(--ln)}
@@ -2696,5 +2697,55 @@ var tm=null;function all(){[].forEach.call(document.querySelectorAll("#seed .cap
 function later(){clearTimeout(tm);tm=setTimeout(all,30)}
 var root=document.getElementById("seed");if(root&&window.MutationObserver)new MutationObserver(later).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
 window.addEventListener("resize",later);window.seedCap=all;later();
+})();</script>
+<script>(function(){
+var P=$("sdp-prep");if(!P)return;
+P.innerHTML='<div class="card"><input type="search" id="rpq" placeholder="Search date, vehicle, driver…" autocomplete="off" style="margin:0 0 10px"><div class="fgrid"><div><label>Period</label><select id="rpper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="rpdw" class="hide"><label>Date</label><input type="date" id="rpday"></div><div id="rpmw" class="hide"><label>Month</label><input type="month" id="rpmon"></div><div id="rpyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="rpyr" min="2000" max="2100"></div><div id="rprw" class="hide"><label>From</label><input type="date" id="rpfrom"></div><div id="rptw" class="hide"><label>To</label><input type="date" id="rpto"></div></div><div class="cfr noprt hide" id="rpcf"><button type="button" class="ed" id="rpclr">Clear filters</button></div></div>'+
+'<div class="card"><b class="ut">SEEDCANE REPORT</b><div class="mut ehint" style="margin:8px 0"><span class="ecn" id="rpc">0 entries</span><span></span><span></span></div><div class="wrap cap10"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Loader pay</th><th>Loader paid</th><th>Loader unpaid</th><th>Driver paid</th><th>Driver unpaid</th><th>Vehicle pay</th><th>Vehicle paid</th><th>Vehicle unpaid</th></tr></thead><tbody id="rpb"><tr><td class="mut" colspan="14">No entries yet</td></tr></tbody></table></div><div class="acts" style="margin:10px 0 0"><button class="btn sm alt" id="rpdl">Download PDF</button><button class="btn sm" id="rpsh">Share PDF</button></div></div>'+
+'<div class="card"><b class="ut">PAYMENTS AND DEPOSITS</b><div class="mut ehint" style="margin:8px 0"><span class="ecn" id="rpc2">0 entries</span><span></span><span></span></div><div class="wrap cap10"><table><thead><tr><th>Date paid</th><th>Vehicle</th><th>Driver</th><th>Category</th><th>Type</th><th>Amount</th></tr></thead><tbody id="rpb2"><tr><td class="mut" colspan="6">No payments yet</td></tr></tbody></table></div><div class="acts" style="margin:10px 0 0"><button class="btn sm alt" id="rpdl2">Download PDF</button><button class="btn sm" id="rpsh2">Share PDF</button></div></div>';
+var cur={ent:[],pay:[],te:null,tp:null,lab:"All dates"};
+function ld(){try{return JSON.parse(localStorage.getItem("seedEntries")||"[]")}catch(x){return[]}}
+function lp(){try{return JSON.parse(localStorage.getItem("seedVpPaid")||"[]")}catch(x){return[]}}
+function r2(v){return Math.round(v*100)/100}
+function v(i){return $("rp"+i).value}
+function inP(d){var k=v("per");if(k==="day")return!v("day")||d===v("day");if(k==="month")return!v("mon")||d.slice(0,7)===v("mon");if(k==="year")return!v("yr")||d.slice(0,4)===String(v("yr"));if(k==="range")return(!v("from")||d>=v("from"))&&(!v("to")||d<=v("to"));return true}
+function upd(){var k=v("per");$("rpdw").classList.toggle("hide",k!=="day");$("rpmw").classList.toggle("hide",k!=="month");$("rpyw").classList.toggle("hide",k!=="year");$("rprw").classList.toggle("hide",k!=="range");$("rptw").classList.toggle("hide",k!=="range");$("rpcf").classList.toggle("hide",k==="all"&&!v("q"))}
+function draw(){upd();var all=ld(),pd=lp(),q=v("q").trim().toLowerCase(),sc=(typeof scfg!=="undefined"&&scfg)||{},dp=+sc.d||0,hd=+sc.h||0,rd=+sc.r||0,seen={},cnt={};
+ all.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}).forEach(function(e){var k=e.date+"|"+(e.driver||"").trim().toLowerCase(),f=!seen[k];seen[k]=1;e._p=f?dp:0;e._u=f?hd:Math.max(0,hd-rd)});
+ all.forEach(function(e){var k=e.date+"|"+(e.driver||"").trim().toLowerCase();cnt[k]=(cnt[k]||0)+1});
+ var L=all.filter(function(e){return inP(e.date)&&(!q||[e.date,e.vehicle,e.driver].join(" ").toLowerCase().indexOf(q)>=0)}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0)});
+ var ent=[],T=0,M=0,X=0,LO=0,LP=0,LU=0,DP=0,DU=0,VV=0,VP=0,VU=0,rows=L.map(function(e){
+  var paidAll=0;pd.forEach(function(p){if(String(p.id)===String(e.ts))paidAll+=+p.amt||0});var te=r2((+e.exp||0)+paidAll),li=window.lInfo(e),di=window.dInfo(e),vi=window.vpInfo(e),hm=+e.mil>0;
+  T+=e.tonnes;M+=+e.mil||0;X+=te;LO+=li.o;LP+=li.p;LU+=li.u;DP+=di.p;DU+=di.u;VP+=vi.p;if(hm){VV+=vi.v;VU+=vi.u}
+  ent.push([e.date,e.vehicle,e.driver||"-",e.tonnes.toFixed(2),hm?String(e.mil):"-",fmt(te),fmt(li.o),fmt(li.p),fmt(li.u),fmt(di.p),fmt(di.u),hm?fmt(vi.v):"-",fmt(vi.p),hm?fmt(vi.u):"-"]);var dash="<td>—</td>",tr=window.seedTr?window.seedTr(e,cnt):"<tr>";
+  return tr+"<td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"—")+"</td><td>"+e.tonnes.toFixed(2)+"</td><td>"+(hm?e.mil:"—")+"</td><td>"+fmt(te)+"</td><td>"+fmt(li.o)+"</td><td>"+fmt(li.p)+'</td><td class="'+(li.u!==0?"neg":"")+'">'+fmt(li.u)+"</td><td>"+fmt(di.p)+'</td><td class="'+(di.u>0?"neg":"")+'">'+fmt(di.u)+"</td>"+(hm?"<td>"+fmt(vi.v)+"</td>":dash)+"<td>"+fmt(vi.p)+"</td>"+(hm?'<td class="'+(vi.u>0?"neg":"")+'">'+fmt(vi.u)+"</td>":dash)+"</tr>"}).join("");
+ $("rpb").innerHTML=(L.length?rows:'<tr><td class="mut" colspan="14">No entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+"</td><td>"+M+"</td><td>"+fmt(r2(X))+"</td><td>"+fmt(r2(LO))+"</td><td>"+fmt(r2(LP))+'</td><td class="neg">'+fmt(r2(LU))+"</td><td>"+fmt(r2(DP))+'</td><td class="neg">'+fmt(r2(DU))+"</td><td>"+fmt(r2(VV))+"</td><td>"+fmt(r2(VP))+'</td><td class="neg">'+fmt(r2(VU))+"</td></tr>";
+ $("rpc").textContent=L.length+(L.length===1?" entry":" entries");
+ var byId={},R=[],okE=function(e,d){return inP(d)&&(!q||[d,e.vehicle,e.driver].join(" ").toLowerCase().indexOf(q)>=0)};
+ all.forEach(function(e){byId[String(e.ts)]=e});
+ all.forEach(function(e){if(e._p>0&&okE(e,e.date))R.push({d:e.date,t:e.ts||0,e:e,c:"Driver",ty:"Deposit",a:e._p});if((+e.ldep||0)>0&&okE(e,e.date))R.push({d:e.date,t:e.ts||0,e:e,c:"Loader",ty:"Deposit",a:+e.ldep})});
+ pd.forEach(function(p){var e=byId[String(p.id)],d=p.date||(e&&e.date);if(e&&okE(e,d))R.push({d:d,t:p.ts||0,e:e,c:{veh:"Vehicle",drv:"Driver",ldr:"Loader"}[p.k||"veh"]||"Vehicle",ty:"Payment",a:+p.amt||0})});
+ R.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:b.t-a.t});
+ var pt=0,pr=R.map(function(r){pt+=r.a;return[r.d,r.e.vehicle,r.e.driver||"-",r.c,r.ty,fmt(r.a)]});
+ $("rpb2").innerHTML=(R.length?R.map(function(r){return"<tr><td>"+esc(r.d.slice(5))+"</td><td>"+esc(r.e.vehicle)+"</td><td>"+esc(r.e.driver||"—")+"</td><td>"+r.c+"</td><td>"+r.ty+"</td><td>"+fmt(r.a)+"</td></tr>"}).join(""):'<tr><td class="mut" colspan="6">No payments yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td></td><td></td><td>'+fmt(r2(pt))+"</td></tr>";
+ $("rpc2").textContent=R.length+(R.length===1?" payment":" payments");
+ cur.ent=ent;cur.pay=pr;cur.te=["Total","","",T.toFixed(2),String(M),fmt(r2(X)),fmt(r2(LO)),fmt(r2(LP)),fmt(r2(LU)),fmt(r2(DP)),fmt(r2(DU)),fmt(r2(VV)),fmt(r2(VP)),fmt(r2(VU))];cur.tp=["Total","","","","",fmt(r2(pt))];
+ var k=v("per");cur.lab=k==="day"&&v("day")?v("day"):k==="month"&&v("mon")?v("mon"):k==="year"&&v("yr")?String(v("yr")):k==="range"&&(v("from")||v("to"))?(v("from")||"start")+" to "+(v("to")||"now"):"All dates";cur.q=q}
+function mkPdf(w){draw();var items=[],safe=function(x){return String(x).replace(/[^\w-]+/g,"-")},ttl,nm;
+ if(w==="pay"){ttl="Seedcane payments and deposits";nm="seedcane-payments";items.push({t:"h",s:"Payments and deposits ("+cur.pay.length+")"});
+  if(cur.pay.length)items.push({t:"tbl",h:["Date paid","Vehicle","Driver","Category","Type","Amount"],rows:cur.pay.concat([cur.tp])});else items.push({t:"p",s:"No payments"})}
+ else{ttl="Seedcane report";nm="seedcane-report";items.push({t:"h",s:"Entries ("+cur.ent.length+")"});
+  if(cur.ent.length)items.push({t:"tbl",h:["Date","Vehicle","Driver","Tonnes","Milage","Trip expense","Loader pay","Loader paid","Loader unpaid","Driver paid","Driver unpaid","Vehicle pay","Vehicle paid","Vehicle unpaid"],rows:cur.ent.concat([cur.te])});else items.push({t:"p",s:"No entries"})}
+ return{blob:pdfBlob(ttl,"Period: "+cur.lab+(cur.q?" | Search: "+cur.q:""),items),name:nm+"-"+(cur.lab==="All dates"?"all-dates-"+today():safe(cur.lab))+".pdf",title:ttl+" - "+cur.lab}}
+function dl(w){try{var b=mkPdf(w);dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}}
+function sh(w){try{var b=mkPdf(w);if(typeof pvSharePdf==="function")pvSharePdf(b.blob,b.name,b.title);else sharePdf(b.blob,b.name,b.title)}catch(x){alert("Could not create the PDF")}}
+$("rpdl").onclick=function(){dl("ent")};$("rpsh").onclick=function(){sh("ent")};$("rpdl2").onclick=function(){dl("pay")};$("rpsh2").onclick=function(){sh("pay")};
+function _unused(){}
+function rst(){$("rpq").value="";$("rpper").value="all";["day","mon","yr","from","to"].forEach(function(i){$("rp"+i).value=""});upd()}
+$("rpq").addEventListener("input",draw);
+["per","day","mon","yr","from","to"].forEach(function(i){$("rp"+i).addEventListener("change",draw);$("rp"+i).addEventListener("input",draw)});
+$("rpper").addEventListener("change",function(){var k=this.value,t=today();if(k==="day"&&!v("day"))$("rpday").value=t;if(k==="month"&&!v("mon"))$("rpmon").value=t.slice(0,7);if(k==="year"&&!v("yr"))$("rpyr").value=t.slice(0,4);if(k==="range"){if(!v("from"))$("rpfrom").value=t;if(!v("to"))$("rpto").value=t}draw()});
+$("rpclr").onclick=function(){rst();draw()};
+var o=window.seedPage;window.seedPage=function(n){o(n);if(n==="prep"){draw()}else rst()};
 })();</script>
 </body></html>
