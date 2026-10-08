@@ -2544,36 +2544,33 @@ function loadP(){try{return JSON.parse(localStorage.getItem(KP)||"[]")}catch(x){
 function putP(a){try{localStorage.setItem(KP,JSON.stringify(a));return true}catch(x){return false}}
 function r2(v){return Math.round(v*100)/100}
 function paidOf(id,P){var t=0;(P||loadP()).forEach(function(q){if(String(q.id)===String(id))t+=+q.amt||0});return r2(t)}
-function drawVP(){var tb=$("sdtb-pveh");if(!tb)return;var P=loadP(),L=load().filter(function(e){return vpIn(e.date)}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0)}),T=0,M=0,V=0,PD=0,UN=0;
- var rows=L.map(function(e){var v=r2(vpay(e)),pd=Math.min(paidOf(e.ts,P),v>0?Math.max(v,paidOf(e.ts,P)):0),u=r2(Math.max(0,v-pd));T+=e.tonnes||0;M+=+e.mil||0;V+=v;PD+=pd;UN+=u;
-  return"<tr><td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"\u2014")+"</td><td>"+(+e.tonnes||0).toFixed(2)+"</td><td>"+(+e.mil||0)+"</td><td>"+fmt(v)+"</td><td>"+fmt(pd)+'</td><td class="'+(u>0?"neg":"")+'">'+fmt(u)+"</td><td>"+(u>0&&window.canWrite?'<button class="mp" data-vp="'+e.ts+'">Pay</button>':"")+"</td></tr>"}).join("");
- tb.innerHTML=(L.length?rows:'<tr><td class="mut" colspan="9">No entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+'</td><td>'+M+'</td><td>'+fmt(V)+'</td><td>'+fmt(PD)+'</td><td class="neg">'+fmt(r2(UN))+'</td><td></td></tr>';
- if($("fpveh"+"tp"))$("fpvehtp").textContent=fmt(PD);if($("fpvehtu"))$("fpvehtu").textContent=fmt(r2(UN))}
+function vInfo(e){var v=r2(vpay(e)),p=paidOf(e.ts);return{v:v,p:p,u:r2(Math.max(0,v-p))}}
+window.vpInfo=vInfo;
+function drvCalc(all){var seen={},sc=(typeof scfg!=="undefined"&&scfg)||{},dp=+sc.d||0,hd=+sc.h||0,rd=+sc.r||0;all.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}).forEach(function(e){var k=e.date+"|"+(e.driver||"").trim().toLowerCase(),f=!seen[k];seen[k]=1;e._p=f?dp:0;e._u=f?hd:Math.max(0,hd-rd)})}
+function tripExp(e){return(+e.exp||0)+paidOf(e.ts)}
+function drawVP(){if(window.seedDraw)window.seedDraw("pveh")}
 function vpPay(id){var e=load().filter(function(x){return String(x.ts)===String(id)})[0];if(!e)return;var v=r2(vpay(e)),u=function(){return r2(Math.max(0,v-paidOf(e.ts)))};
  $("mbody").innerHTML='<b style="font-size:18px">Pay vehicle</b><div class="mut">'+esc(e.vehicle)+" \u00b7 "+esc(e.date)+'</div><label>Amount paid</label><input type="number" inputmode="decimal" id="vpamt"><div class="mut" id="vpun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="vpdate" value="'+today()+'"><div class="b2"><button class="pr" id="vpOK">Confirm paid</button><button id="vpNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("vpNo").onclick=closeM;var un=u();$("vpamt").value=un>0?un:"";$("vpun").textContent="Unpaid for this entry: "+fmt(un)+". Lower the amount for a part payment.";
  $("vpOK").onclick=function(){var a=n($("vpamt").value);if(!(a>0)){alert("Enter an amount");return}var pd=$("vpdate").value||today();
   if(window.isLocked&&isLocked(pd)){alert("That month is locked. Unlock it in Update Rates first.");return}
   if(a>u()+0.001&&$("vpOK").dataset.c!=="1"){$("vpOK").dataset.c="1";$("vpOK").textContent="Amount is more than unpaid. Tap again";return}
-  var A=loadP();A.push({id:e.ts,amt:a,date:pd,ts:Date.now()});if(!putP(A)){toast("Could not save on this device",true);return}closeM();drawVP();toast("Vehicle pay marked paid")}}
+  var A=loadP();A.push({id:e.ts,amt:a,date:pd,ts:Date.now()});if(!putP(A)){toast("Could not save on this device",true);return}closeM();drawVP();draw();toast("Vehicle pay marked paid")}}
 if($("sdtb-pveh"))$("sdtb-pveh").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-vp]");if(b)vpPay(b.dataset.vp)});
-["per","day","mon","yr","from","to"].forEach(function(i){var e=$("fpveh"+i);if(e){e.addEventListener("change",drawVP);e.addEventListener("input",drawVP)}});
-if($("fpvehclr"))$("fpvehclr").addEventListener("click",function(){setTimeout(drawVP,0)});
-var _sp=window.seedPage;window.seedPage=function(n){_sp(n);if(n==="pveh")drawVP()};
 window.drawVP=drawVP;
 function tot(){$("stot").textContent=fmt(nv("sdep")+nv("sddp"))}
 ["sdep","sddp"].forEach(function(i){$(i).addEventListener("input",tot)});
-function draw(){var q=($("sq").value||"").trim().toLowerCase(),A=load().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0)}),CNT=seedCnt(A),L=q?A.filter(function(e){return[e.date,e.vehicle,e.driver].join(" ").toLowerCase().indexOf(q)>=0}):A,T=0,X=0;
- var rows=L.map(function(e){T+=e.tonnes;X+=e.exp;return seedTr(e,CNT,' data-t="'+e.ts+'"',"cursor:pointer")+"<td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"—")+"</td><td>"+e.tonnes.toFixed(2)+"</td><td>"+(e.mil||0)+"</td><td>"+fmt(e.exp)+"</td><td>—</td></tr>"}).join("");
- $("seedl").innerHTML='<div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody>'+(L.length?rows:'<tr><td class="mut" colspan="7">No seedcane entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+'</td><td></td><td>'+fmt(X)+'</td><td></td></tr></tbody></table></div>';
+function draw(){var q=($("sq").value||"").trim().toLowerCase(),A=load().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0)}),CNT=seedCnt(A),L=q?A.filter(function(e){return[e.date,e.vehicle,e.driver].join(" ").toLowerCase().indexOf(q)>=0}):A,T=0,X=0,UU=0;drvCalc(A);
+ var rows=L.map(function(e){var te=tripExp(e),un=r2((e._u||0)+vInfo(e).u);T+=e.tonnes;X+=te;UU+=un;return seedTr(e,CNT,' data-t="'+e.ts+'"',"cursor:pointer")+"<td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"—")+"</td><td>"+e.tonnes.toFixed(2)+"</td><td>"+(e.mil||0)+"</td><td>"+fmt(te)+'</td><td class="'+(un>0?"neg":"")+'">'+(un>0?fmt(un):"—")+"</td></tr>"}).join("");
+ $("seedl").innerHTML='<div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody>'+(L.length?rows:'<tr><td class="mut" colspan="7">No seedcane entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+'</td><td></td><td>'+fmt(X)+'</td><td>'+(UU>0?fmt(r2(UU)):'')+'</td></tr></tbody></table></div>';
  $("scnt").textContent=L.length+(L.length===1?" entry":" entries")}
 $("sq").addEventListener("input",draw);
 $("ssave").onclick=function(){var v=$("sveh").value;if(!v){toast("Select a plate first",true);return}var t=nv("ston");if(!(t>0)){toast("Enter the tonnes",true);return}
  var A=load();A.push({date:$("sdate").value||today(),vehicle:v,driver:$("sdrv").value.trim(),tonnes:t,mil:nv("smil"),dep:nv("sddp"),ldep:nv("sdep"),exp:nv("sdep")+nv("sddp"),ts:Date.now()});
  if(!put(A)){toast("Could not save on this device",true);return}
  ["sdrv","sddp","ston","smil","sdep"].forEach(function(i){$(i).value=""});$("sveh").value="";tot();draw();drawVP();window.seedPage("");toast("Entry saved")};
-$("seedl").addEventListener("click",function(ev){var r=ev.target.closest&&ev.target.closest("tr[data-t]");if(!r)return;var id=r.dataset.t,e=load().filter(function(x){return String(x.ts)===id})[0];if(!e)return;
- var h='<b style="font-size:18px">'+esc(e.vehicle)+'</b><div class="mut" style="margin-bottom:8px">'+esc(e.date)+'</div>'+kv("Driver",esc(e.driver||"—"))+kv("Tonnes",e.tonnes.toFixed(2))+kv("Milage",e.mil||0)+kv("Loader deposit",fmt(e.ldep||0))+kv("Driver deposit",fmt(e.dep||0))+kv("Trip expense",fmt(e.exp))+kv("Vehicle pay",fmt(vpay(e)))+'<div class="b2"><button class="dg" id="mD">Delete</button><button id="mC">Close</button></div>';
+$("seedl").addEventListener("click",function(ev){var r=ev.target.closest&&ev.target.closest("tr[data-t]");if(!r)return;var id=r.dataset.t,e=load().filter(function(x){return String(x.ts)===id})[0];if(!e)return;var AA=load();drvCalc(AA);var e2=AA.filter(function(x){return String(x.ts)===id})[0]||e,du=e2._u||0,vi=vInfo(e);
+ var h='<b style="font-size:18px">'+esc(e.vehicle)+'</b><div class="mut" style="margin-bottom:8px">'+esc(e.date)+'</div>'+kv("Driver",esc(e.driver||"—"))+kv("Tonnes",e.tonnes.toFixed(2))+kv("Milage",e.mil||0)+kv("Loader deposit",fmt(e.ldep||0))+kv("Driver deposit",fmt(e.dep||0))+kv("Trip expense",fmt(tripExp(e)))+kv("Vehicle pay",fmt(vi.v))+kv("Vehicle paid",fmt(vi.p))+kv("Unpaid driver",fmt(du))+kv("Unpaid vehicle",fmt(vi.u))+'<div class="b2"><button class="dg" id="mD">Delete</button><button id="mC">Close</button></div>';
  $("mbody").innerHTML=h;$("modal").classList.remove("hide");$("mC").onclick=closeM;
  $("mD").onclick=function(){var b=$("mD");if(!b.dataset.s){b.dataset.s=1;b.textContent="Tap again to confirm";return}
   if(!put(load().filter(function(x){return String(x.ts)!==id}))){closeM();toast("Could not remove",true);return}putP(loadP().filter(function(q){return String(q.id)!==id}));draw();drawVP();closeM();toast("Seed entry deleted")}});
@@ -2587,12 +2584,12 @@ function fillD(x,all){var s=$(x+"drv"),c=s.value,N={};all.forEach(function(e){va
 function draw(n){var x="f"+n,veh=n==="pveh",drv=n==="pdrv",all=load(),CNT=seedCnt(all),T=0,P=0,U=0,tb=$("sdp-"+n).querySelector("table tbody");fillD(x,all);
  if(drv){var seen={},sc=(typeof scfg!=="undefined"&&scfg)||{},dp=+sc.d||0,hd=+sc.h||0,rd=+sc.r||0;all.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}).forEach(function(e){var k=e.date+"|"+(e.driver||"").trim().toLowerCase(),f=!seen[k];seen[k]=1;e._p=f?dp:0;e._u=f?hd:Math.max(0,hd-rd)})}
  var dv=$(x+"drv").value,L=all.filter(function(e){return ok(x,e.date)&&(!dv||(e.driver||"").trim()===dv)}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0)});
- var rows=L.map(function(e){T+=e.tonnes;if(drv){P+=e._p;U+=e._u}return seedTr(e,CNT)+"<td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"—")+"</td><td>"+e.tonnes.toFixed(2)+"</td>"+(veh?"<td>"+(e.mil||0)+"</td><td>—</td>":drv?"<td>"+fmt(e._p)+"</td><td>"+fmt(e._u)+"</td>":"<td>—</td><td>—</td>")+"</tr>"}).join("");
- tb.innerHTML=(L.length?rows:'<tr><td class="mut" colspan="6">No entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+'</td>'+(veh?'<td></td><td>0.00</td>':drv?'<td>'+fmt(P)+'</td><td>'+fmt(U)+'</td>':'<td>0.00</td><td>0.00</td>')+'</tr>';
- if(drv){$(x+"tp").textContent=fmt(P);$(x+"tu").textContent=fmt(U)}$(x+"cf").classList.toggle("hide",$(x+"per").value==="all"&&!dv)}
+ var VV=0,VP=0,VU=0,MM=0;var rows=L.map(function(e){T+=e.tonnes;if(drv){P+=e._p;U+=e._u}var vi=veh&&window.vpInfo?window.vpInfo(e):{v:0,p:0,u:0};if(veh){VV+=vi.v;VP+=vi.p;VU+=vi.u;MM+=+e.mil||0}return seedTr(e,CNT)+"<td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"—")+"</td><td>"+e.tonnes.toFixed(2)+"</td>"+(veh?"<td>"+(e.mil||0)+"</td><td>"+fmt(vi.v)+"</td><td>"+fmt(vi.p)+'</td><td class="'+(vi.u>0?"neg":"")+'">'+fmt(vi.u)+"</td><td>"+(vi.u>0&&window.canWrite?'<button class="mp" data-vp="'+e.ts+'">Pay</button>':"")+"</td>":drv?"<td>"+fmt(e._p)+"</td><td>"+fmt(e._u)+"</td>":"<td>—</td><td>—</td>")+"</tr>"}).join("");
+ tb.innerHTML=(L.length?rows:'<tr><td class="mut" colspan="'+(veh?9:6)+'">No entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+'</td>'+(veh?'<td>'+MM+'</td><td>'+fmt(VV)+'</td><td>'+fmt(VP)+'</td><td class="neg">'+fmt(Math.round(VU*100)/100)+'</td><td></td>':drv?'<td>'+fmt(P)+'</td><td>'+fmt(U)+'</td>':'<td>0.00</td><td>0.00</td>')+'</tr>';
+ if(drv){$(x+"tp").textContent=fmt(P);$(x+"tu").textContent=fmt(U)}if(veh){$(x+"tp").textContent=fmt(VP);$(x+"tu").textContent=fmt(Math.round(VU*100)/100)}$(x+"cf").classList.toggle("hide",$(x+"per").value==="all"&&!dv)}
 PG.forEach(function(n){var x="f"+n,g=$("sdp-"+n).querySelector(".fgrid"),d=document.createElement("div");d.innerHTML='<label>Driver</label><select id="'+x+'drv"></select>';g.insertBefore(d,g.children[1]||null)});
 PG.forEach(function(n){var x="f"+n;["per","day","mon","yr","from","to","drv"].forEach(function(i){$(x+i).addEventListener("change",function(){draw(n)});$(x+i).addEventListener("input",function(){draw(n)})});$(x+"clr").addEventListener("click",function(){$(x+"drv").value="";draw(n)});draw(n)});
-var o=window.seedPage;window.seedPage=function(n){o(n);if(n)draw(n)};
+window.seedDraw=draw;var o=window.seedPage;window.seedPage=function(n){o(n);if(n)draw(n)};
 })();</script>
 <script>(function(){
 function ad(){var v=$("sveh").value,d=(cfg.vd||{})[v],i=$("sdrv"),h=$("sdhint");
