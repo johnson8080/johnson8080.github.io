@@ -2540,19 +2540,37 @@ html.dlock,html.dlock body{overflow:hidden!important;overscroll-behavior:none}
 .hd #hst{display:none!important}
 .hd .onb{margin-left:auto!important}
 @media print{#drw,#mnu{display:none!important}}
+#abt{position:fixed;inset:0;z-index:1100;background:var(--bg);color:var(--tx);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+#abt.on{display:flex}
+#abt .abh{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--ln)}
+#abt .abx{flex:0 0 auto;width:38px;height:38px;display:grid;place-items:center;background:var(--card);border:1px solid #16a34a;border-radius:6px;color:var(--tx);cursor:pointer;padding:0}
+#abt .abx svg{width:20px;height:20px}
+#abt .abn{font-size:15px;font-weight:800;letter-spacing:.3px;text-transform:uppercase}
+#abt .abb{flex:1;overflow-y:auto;padding:12px 12px calc(20px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+#abt .card{border:1px solid #16a34a}
+#abt p{margin:0 0 12px;font-size:14.5px;line-height:1.55}
+#abt p b.k{color:var(--ac)}
+#abt .abc{margin-top:4px;padding:12px;border:1px solid var(--ln);border-radius:8px;background:color-mix(in srgb,#16a34a 10%,var(--card))}
+#abt .abc p:last-child,#abt .card>p:last-child{margin-bottom:0}
+@media print{#abt{display:none!important}}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt">FUEL &amp; TRIPS</div><div id="dli"></div></nav>';d.body.appendChild(dr);
  dr.querySelector(".dsh").addEventListener("click",close);dr.querySelector(".dsh").addEventListener("touchmove",function(e){e.preventDefault()},{passive:false});dr.addEventListener("touchmove",function(e){if(!e.target.closest(".dpn"))e.preventDefault()},{passive:false})}
+var ab=null,ABT='<div class="abh"><button type="button" class="abx" id="abx" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="abn">About FUEL &amp; TRIPS</div></div><div class="abb"><div class="card"><p><b>FUEL &amp; TRIPS</b> is a mobile-first fleet management app for sugarcane, fuel and seedcane haulage operations. It replaces paper records with one place to log, pay and report on daily work.</p><p><b class="k">TRIPS:</b> records each load by vehicle, driver and tonnes, with deposits and expenses, and calculates loader and driver pay.</p><p><b class="k">FUEL:</b> tracks litres issued, selling and cost prices, and net profit per vehicle.</p><p><b class="k">SALARY and advances:</b> keeps driver balances, advances and part-payments, and shows what is still unpaid, including private staff salaries.</p><p><b class="k">SEED.CN (seedcane):</b> has its own entries, rates, and driver, loader and vehicle pay pages.<br><b class="k">Winch:</b> a dedicated report for the winch vehicle.</p><p><b class="k">REPORTS and history:</b> period filters (date, month, year or custom range), search by vehicle, and PDF and CSV export.</p><p><b class="k">Safeguards:</b> month locking, deleted-record history, password confirmation for changes, and warnings for unusual entries.</p><p><b class="k">Data protection:</b> full JSON backup, scheduled cloud and device snapshots, and restore.<br>It works both online and offline, installs on a phone like a normal app, and supports light and dark themes.</p><div class="abc"><p>If you would like a similar project or in need of a specific software/mobile application tailored to your needs, I have left my contacts at the bottom of the settings page. Do not hesitate to contact me.</p></div></div></div>';
+function aboutOpen(){if(!ab){ab=d.createElement("div");ab.id="abt";ab.setAttribute("role","dialog");ab.setAttribute("aria-label","About FUEL & TRIPS");ab.innerHTML=ABT;d.body.appendChild(ab);g("abx").onclick=aboutClose}
+ ab.classList.add("on");d.documentElement.classList.add("dlock");ab.querySelector(".abb").scrollTop=0}
+function aboutClose(){if(!ab)return;ab.classList.remove("on");d.documentElement.classList.remove("dlock")}
 function item(label,icon,src,on){var b=d.createElement("button");b.type="button";b.className="dit"+(on?" on":"");b.innerHTML='<span class="dic">'+icon+'</span><span></span>';b.lastChild.textContent=label;
  b.onclick=function(){close();setTimeout(function(){try{src.click()}catch(x){}},60)};return b}
 function fill(){var L=g("dli");L.innerHTML="";
 var st=g("hst");
- if(st)L.appendChild(item("Settings",st.innerHTML,st,st.classList.contains("on")))}
+ if(st)L.appendChild(item("Settings",st.innerHTML,st,st.classList.contains("on")));
+ L.appendChild(item("About FuelTrips",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',{click:aboutOpen},false))}
 function open(){build();fill();btn.setAttribute("aria-expanded","true");d.documentElement.classList.add("dlock");requestAnimationFrame(function(){dr.classList.add("on")})}
 function close(){if(!dr)return;dr.classList.remove("on");d.documentElement.classList.remove("dlock");btn.setAttribute("aria-expanded","false")}
 btn.addEventListener("click",function(){dr&&dr.classList.contains("on")?close():open()});
-d.addEventListener("keydown",function(e){if(e.key==="Escape")close()});
+d.addEventListener("keydown",function(e){if(e.key==="Escape"){if(ab&&ab.classList.contains("on"))aboutClose();else close()}});
 })();</script>
 <script>(function(){
 var st=document.createElement("style");st.textContent="tr.smt>td{background-color:color-mix(in srgb,var(--mc) 24%,var(--card))!important;border-radius:0!important}tr.smt>td:first-child{border-top-left-radius:6px!important;border-bottom-left-radius:6px!important}tr.smt>td:last-child{border-top-right-radius:6px!important;border-bottom-right-radius:6px!important}";st.textContent+=".hi.smt,#dsc .dse.smt{background-color:color-mix(in srgb,var(--mc) 24%,var(--card))}";document.head.appendChild(st);
