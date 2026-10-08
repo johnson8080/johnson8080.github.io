@@ -2572,7 +2572,8 @@ function draw(){var q=($("sq").value||"").trim().toLowerCase(),A=load().sort(fun
  var rows=L.map(function(e){var te=tripExp(e),un=r2(dInfo(e).u+vInfo(e).u);T+=e.tonnes;X+=te;UU+=un;return seedTr(e,CNT,' data-t="'+e.ts+'"',"cursor:pointer")+"<td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"—")+"</td><td>"+e.tonnes.toFixed(2)+"</td><td>"+(e.mil||0)+"</td><td>"+fmt(te)+'</td><td class="'+(un>0?"neg":"")+'">'+(un>0?fmt(un):"—")+"</td></tr>"}).join("");
  $("seedl").innerHTML='<div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody>'+(L.length?rows:'<tr><td class="mut" colspan="7">No seedcane entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+'</td><td></td><td>'+fmt(X)+'</td><td>'+(UU>0?fmt(r2(UU)):'')+'</td></tr></tbody></table></div>';
  $("scnt").textContent=L.length+(L.length===1?" entry":" entries")}
-$("sq").addEventListener("input",draw);
+$("sq").addEventListener("input",draw);window.seedList=draw;
+if(typeof srfill==="function"){var _sf=srfill;window.srfill=function(){var r=_sf.apply(this,arguments);try{draw();refreshPay()}catch(e){}return r}}
 $("ssave").onclick=function(){var v=$("sveh").value;if(!v){toast("Select a plate first",true);return}var t=nv("ston");if(!(t>0)){toast("Enter the tonnes",true);return}
  var A=load();A.push({date:$("sdate").value||today(),vehicle:v,driver:$("sdrv").value.trim(),tonnes:t,mil:nv("smil"),dep:nv("sddp"),ldep:nv("sdep"),exp:nv("sdep")+nv("sddp"),ts:Date.now()});
  if(!put(A)){toast("Could not save on this device",true);return}
@@ -2597,7 +2598,7 @@ function draw(n){var x="f"+n,veh=n==="pveh",drv=n==="pdrv",all=load(),CNT=seedCn
  if(drv){$(x+"tp").textContent=fmt(P);$(x+"tu").textContent=fmt(U)}if(ldr){$(x+"tp").textContent=fmt(LP);$(x+"tu").textContent=fmt(0)}if(veh){$(x+"tp").textContent=fmt(VP);$(x+"tu").textContent=fmt(Math.round(VU*100)/100)}$(x+"cf").classList.toggle("hide",$(x+"per").value==="all"&&!dv)}
 PG.forEach(function(n){var x="f"+n,g=$("sdp-"+n).querySelector(".fgrid"),d=document.createElement("div");d.innerHTML='<label>Driver</label><select id="'+x+'drv"></select>';g.insertBefore(d,g.children[1]||null)});
 PG.forEach(function(n){var x="f"+n;["per","day","mon","yr","from","to","drv"].forEach(function(i){$(x+i).addEventListener("change",function(){draw(n)});$(x+i).addEventListener("input",function(){draw(n)})});$(x+"clr").addEventListener("click",function(){$(x+"drv").value="";draw(n)});draw(n)});
-window.seedDraw=draw;var o=window.seedPage;window.seedPage=function(n){o(n);if(n)draw(n)};
+window.seedDraw=draw;var o=window.seedPage;window.seedPage=function(n){o(n);if(n)draw(n);else if(window.seedList)window.seedList()};
 })();</script>
 <script>(function(){
 function ad(){var v=$("sveh").value,d=(cfg.vd||{})[v],i=$("sdrv"),h=$("sdhint");
