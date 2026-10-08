@@ -528,17 +528,17 @@ return{get:function(i){return S[i]||null},set:function(i,a,b){S[i]={a:a,b:b}},cl
 <button class="btn" id="frsave" disabled>Save fuel rates</button>
 <div class="mut" style="margin-top:8px">New fuel entries fill these in automatically and you can change them per entry. Past entries keep the prices they were saved with.</div></div>
 <div class="card" id="rseed"><div class="rh">SEEDCANE RATES</div><div class="mut" id="srn"></div>
-<div style="margin:10px 0 2px;font-weight:800;font-size:14px;letter-spacing:.3px;text-transform:uppercase">Vehicle owner payment</div>
+<div style="border:1px solid var(--ln);border-radius:12px;padding:12px;margin:12px 0 0"><div style="margin:0 0 2px;font-weight:800;font-size:14px;letter-spacing:.3px;text-transform:uppercase">Vehicle payment</div>
 <label>Constant [amount]</label><input type="number" inputmode="decimal" id="src" placeholder="0">
-<input type="hidden" id="srt"><input type="hidden" id="srk">
-<div style="margin:14px 0 2px;padding-top:12px;border-top:1px solid var(--ln);font-weight:800;font-size:14px;letter-spacing:.3px;text-transform:uppercase">Driver payment</div>
+<input type="hidden" id="srt"><input type="hidden" id="srk"></div>
+<div style="border:1px solid var(--ln);border-radius:12px;padding:12px;margin:12px 0 0"><div style="margin:0 0 2px;font-weight:800;font-size:14px;letter-spacing:.3px;text-transform:uppercase">Driver payment</div>
 <label>Deposit</label><input type="number" inputmode="decimal" id="srd" placeholder="0">
 <label>Held amount</label><input type="number" inputmode="decimal" id="srh" placeholder="0">
-<label>Held reduction for a repeat trip on the same day</label><input type="number" inputmode="decimal" id="srr" placeholder="0">
-<div style="margin:14px 0 2px;padding-top:12px;border-top:1px solid var(--ln);font-weight:800;font-size:14px;letter-spacing:.3px;text-transform:uppercase">Loader payment</div>
+<label>Held reduction for a repeat trip on the same day</label><input type="number" inputmode="decimal" id="srr" placeholder="0"></div>
+<div style="border:1px solid var(--ln);border-radius:12px;padding:12px;margin:12px 0 0"><div style="margin:0 0 2px;font-weight:800;font-size:14px;letter-spacing:.3px;text-transform:uppercase">Loader payment</div>
 <label>Rate below 8tonnes</label><input type="number" inputmode="decimal" id="srl" placeholder="0">
 <label>Rate above 8tonnes</label>
-<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><div><label style="margin-top:0">rate1</label><input type="number" inputmode="decimal" id="sl1" placeholder="0"></div><div><label style="margin-top:0">rate2</label><input type="number" inputmode="decimal" id="sl2" placeholder="0"></div><div><label style="margin-top:0">rate3</label><input type="number" inputmode="decimal" id="sl3" placeholder="0"></div></div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px"><div><label style="margin-top:0">rate1</label><input type="number" inputmode="decimal" id="sl1" placeholder="0"></div><div><label style="margin-top:0">rate2</label><input type="number" inputmode="decimal" id="sl2" placeholder="0"></div><div><label style="margin-top:0">rate3</label><input type="number" inputmode="decimal" id="sl3" placeholder="0"></div></div></div>
 <button class="btn" id="srsave" disabled>Save SEEDCANE rates</button></div>
 <div class="card" id="rpay"><div class="rh">SUGARCANE RATES</div><div class="mut" id="rolenote"></div>
 <label>Loader rate per tonne</label><input type="number" id="rate">
@@ -1234,7 +1234,7 @@ $("frsave").onclick=async function(){var c={sell:n($("frs").value),cost:n($("frc
 frchk();
 var scfg={c:0,t:0,k:0,d:0,h:0,r:0,l:0,l1:0,l2:0,l3:0,la:0};
 function srfill(){$("src").value=scfg.c||"";$("srt").value=scfg.t||"";$("srk").value=scfg.k||"";$("srd").value=scfg.d||"";$("srh").value=scfg.h||"";$("srr").value=scfg.r||"";$("sl1").value=scfg.l1||"";$("sl2").value=scfg.l2||"";$("sl3").value=scfg.l3||"";$("srl").value=scfg.l||""}
-function srchk(){var c=n($("src").value),t=n($("srt").value),k=n($("srk").value),d=n($("srd").value),h=n($("srh").value),r=n($("srr").value),l=n($("srl").value),l1=n($("sl1").value),l2=n($("sl2").value),l3=n($("sl3").value);$("srn").textContent=isAdmin?"Set the vehicle owner, driver and loader payment values used for SEED.CN.":"Only editors and the owner can change rates.";$("srsave").disabled=!(canWrite&&isAdmin&&(c!==(scfg.c||0)||t!==(scfg.t||0)||k!==(scfg.k||0)||d!==(scfg.d||0)||h!==(scfg.h||0)||r!==(scfg.r||0)||l!==(scfg.l||0)||l1!==(scfg.l1||0)||l2!==(scfg.l2||0)||l3!==(scfg.l3||0)))}
+function srchk(){var c=n($("src").value),t=n($("srt").value),k=n($("srk").value),d=n($("srd").value),h=n($("srh").value),r=n($("srr").value),l=n($("srl").value),l1=n($("sl1").value),l2=n($("sl2").value),l3=n($("sl3").value);$("srn").textContent=isAdmin?"Set the vehicle, driver and loader payment values used for SEED.CN.":"Only editors and the owner can change rates.";$("srsave").disabled=!(canWrite&&isAdmin&&(c!==(scfg.c||0)||t!==(scfg.t||0)||k!==(scfg.k||0)||d!==(scfg.d||0)||h!==(scfg.h||0)||r!==(scfg.r||0)||l!==(scfg.l||0)||l1!==(scfg.l1||0)||l2!==(scfg.l2||0)||l3!==(scfg.l3||0)))}
 ["src","srt","srk","srd","srh","srr","srl","sl1","sl2","sl3"].forEach(function(i){$(i).addEventListener("input",srchk)});
 $("srsave").onclick=async function(){var c={c:n($("src").value),t:n($("srt").value),k:n($("srk").value),d:n($("srd").value),h:n($("srh").value),r:n($("srr").value),l:n($("srl").value),l1:n($("sl1").value),l2:n($("sl2").value),l3:n($("sl3").value),la:scfg.la||0};if(c.c<0||c.t<0||c.k<0||c.d<0||c.h<0||c.r<0||c.l<0||c.l1<0||c.l2<0||c.l3<0){alert("Values cannot be negative");return}var was=!!(scfg.c||scfg.t||scfg.k||scfg.d||scfg.h||scfg.r||scfg.l||scfg.l1||scfg.l2||scfg.l3||scfg.la);$("srsave").disabled=true;
  try{if(db){if(was)await pwOk();await db.doc("config/seed").set(c)}scfg=c;srfill();toast("SEED.C rates saved");if(window.schedPersist)schedPersist()}catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}srchk()};
