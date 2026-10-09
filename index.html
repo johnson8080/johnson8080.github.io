@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.2.0">
+<meta name="app-version" content="1.3.0">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -9,6 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Fuel & Trips"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
+<script>window.uiAlert=function(m){try{if(window.toast)return window.toast(String(m),true)}catch(e){}try{window.alert(m)}catch(e){}};</script>
 <script>(function(){var t=null;try{t=localStorage.getItem("fleetTheme2")}catch(e){}document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");var p=null;try{p=localStorage.getItem("fleetPalette")}catch(e){}if(p&&p!=="navy")document.documentElement.setAttribute("data-palette",p)})();</script>
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--tx:#0b1220;--mut:#3f4756;--ac:#1a5fd0;--ln:#c9d0d9;--ok:#15803d;--bad:#b91c1c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -404,15 +405,15 @@ var COLS={entries:1,fuel:1,advances:1,payments:1,pvpays:1};function bg(p){p.catc
 function login(auth){return new Promise(function(res){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;z-index:99999;background:#0a0e16;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px 24px calc(24px + var(--kb,0px));overflow-y:auto;transition:padding-bottom .2s ease";
 o.innerHTML='<div style="width:100%;max-width:340px"><h2 style="margin:0 0 6px">FUEL &amp; TRIPS</h2><p style="margin:0 0 16px;opacity:.7">Sign in to continue</p><input id="fbE" type="email" placeholder="Email" autocomplete="username" style="'+IS+'"><input id="fbP" type="password" placeholder="Password" autocomplete="current-password" style="'+IS+'"><div id="fbM" style="color:#f87171;min-height:20px;margin:6px 0"></div><button id="fbB" style="width:100%;padding:13px;border:0;border-radius:10px;background:#3b82f6;color:#fff;font-size:16px;font-weight:700">Sign in</button></div>';
 document.body.appendChild(o);var b=o.querySelector("#fbB"),m=o.querySelector("#fbM");o.addEventListener("focusin",function(e){var t=e.target;setTimeout(function(){try{t.scrollIntoView({block:"center",behavior:"smooth"})}catch(x){}},250)});
-function go(){b.disabled=true;m.textContent="";auth.signInWithEmailAndPassword(o.querySelector("#fbE").value.trim(),o.querySelector("#fbP").value).then(function(c){o.remove();res(c.user)}).catch(function(e){b.disabled=false;m.textContent=e.code==="auth/network-request-failed"?"No internet connection":"Wrong email or password"})}
+function go(){b.disabled=true;m.textContent="";auth.signInWithEmailAndPassword(o.querySelector("#fbE").value.trim(),o.querySelector("#fbP").value).then(function(c){o.remove();res(c.user)}).catch(function(e){b.disabled=false;m.textContent=({"auth/network-request-failed":"No internet connection","auth/too-many-requests":"Too many attempts. Wait a few minutes and try again.","auth/user-disabled":"This account is disabled. Ask the owner.","auth/invalid-email":"Enter a valid email address","auth/user-not-found":"Wrong email or password","auth/wrong-password":"Wrong email or password","auth/invalid-credential":"Wrong email or password","auth/invalid-login-credentials":"Wrong email or password"})[e&&e.code]||"Could not sign in"+(e&&e.code?" ("+e.code+")":"")})}
 b.onclick=go;o.querySelector("#fbP").onkeydown=function(e){if(e.key==="Enter")go()}})}
 window.fbConnect=async function(){
 if(typeof firebase==="undefined")throw new Error("Firebase not loaded");
-firebase.initializeApp(CFG);var auth=firebase.auth(),fs=firebase.firestore();fs.settings({ignoreUndefinedProperties:true});try{await fs.enablePersistence({synchronizeTabs:true})}catch(e){}
+firebase.initializeApp(CFG);var auth=firebase.auth(),fs=firebase.firestore();fs.settings({ignoreUndefinedProperties:true});try{await fs.enablePersistence({synchronizeTabs:true})}catch(e){window.offlineSaveOff=(e&&e.code)||"error";setTimeout(function(){try{if(document.getElementById("offwarn"))return;var w=document.createElement("div");w.id="offwarn";w.style.cssText="position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99999;background:#b3261e;color:#fff;padding:10px 38px 10px 12px;border-radius:10px;font:600 13px/1.35 system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.35)";w.textContent="Offline saving is not available in this browser. Changes made without internet may be lost if you close the app. Stay online until saves finish.";var x=document.createElement("button");x.textContent="\u00d7";x.setAttribute("aria-label","Close");x.style.cssText="position:absolute;right:6px;top:4px;background:none;border:0;color:#fff;font-size:22px;line-height:1;padding:2px 8px";x.onclick=function(){w.remove()};w.appendChild(x);document.body.appendChild(w)}catch(z){}},1500)}
 var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){off();r(x)})});if(!u)u=await login(auth);
 var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#fabS,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs)}
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
-setTimeout(function(){var s=document.getElementById("stg");if(!s)return;var b=document.createElement("button");b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};s.appendChild(b)},800);
+(function addSO(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){addSO(n+1)},300);return}if(document.getElementById("sgnout"))return;var b=document.createElement("button");b.id="sgnout";b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};s.appendChild(b)})(0);
 var lastOk=0,gOpen=null,hold=false;
 var PW_CONFIRM=(function(){try{return localStorage.getItem("pwconfirm_v1")==="1"}catch(e){return false}})(); /* ON = ask for the password again before edits and deletes. Default OFF. */
 window.getPwConfirm=function(){return PW_CONFIRM};window.setPwConfirm=function(v){PW_CONFIRM=!!v;try{localStorage.setItem("pwconfirm_v1",v?"1":"0")}catch(e){}};
@@ -453,9 +454,10 @@ document.addEventListener("click",function(ev){if(pp.style.display!=="none"&&!pp
 draw();setInterval(draw,20000)}
 fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({name:x.name||"user",t:x.t&&x.t.toMillis?x.t.toMillis():0,off:!!x.off})});RERR="";draw()},function(e){RERR=(e&&e.code)||"error";draw()})}
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
+var SEEN={},GUARD={"config/main":1,"config/fuel":1,"config/seed":1,"config/staff":1,"config/reasons":1,"config/app":1};
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
-set:function(d,mo){if(!COLS[c])return c==="backups"?r.set(d,mo):soft(r.set(d,mo));return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
-delete:function(){return gate().then(function(){return soft(r.delete())})},onSnapshot:function(a,b){return r.onSnapshot(a,b)}}},
+set:function(d,mo){if(GUARD[p]&&SEEN[p]!==undefined&&navigator.onLine!==false){return r.get({source:"server"}).then(function(sv){var cur=JSON.stringify(sv.exists?sv.data():null);if(cur!==SEEN[p])return Promise.reject(new Error("Changed on another device. The latest version is now showing, please redo your change."));return soft(r.set(d,mo))},function(er){if(er&&er.code==="permission-denied")throw er;return soft(r.set(d,mo))})}if(!COLS[c])return c==="backups"?r.set(d,mo):soft(r.set(d,mo));return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
+delete:function(){return gate().then(function(){return soft(r.delete())})},onSnapshot:function(a,b){return r.onSnapshot(typeof a==="function"?function(sn){try{if(GUARD[p])SEEN[p]=JSON.stringify(sn.exists?sn.data():null)}catch(e){}a(sn)}:a,b)}}},
 collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return bg(cr.add(o))},onSnapshot:function(a,b){return cr.onSnapshot(typeof a==="function"?function(s){try{if(window.syncMark)syncMark(n,s)}catch(e){}a(s)}:a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
 <script>window.RNG=(function(){var S={},D=/^\d{4}-\d{2}-\d{2}$/;function ok(r){return!!(r&&D.test(r.a)&&D.test(r.b)&&r.a<=r.b)}
@@ -723,7 +725,6 @@ function csvText(){PM=alloc();var m=$("mon").value,q=function(v){return'"'+Strin
  var h=["Date","Vehicle","Driver","Tonnes","Loader deposit","Driver deposit","Driver advance","Other expense","Expense reason","Pay"];
  var rows=entries.filter(function(e){return e.date.slice(0,7)===m}).sort(function(a,b){return a.date<b.date?-1:1}).map(function(e){return[e.date,e.vehicle,e.driver,e.tonnes,e.deposit,dpaid(e),e.advance,e.expense,rsnName(e.reason),pay(e)].map(q).join(",")});
  return"\ufeff"+[h.map(q).join(",")].concat(rows).join("\r\n")}
-($("prt")||{}).onclick=function(){var P=pper();exportPdf($("sum"),"Trips summary","Period: "+P.lab,"payment-summary-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf")};
 function liveAdvs(){return advs}
 function noEnt(k){return k!=="(No driver name)"&&!entries.some(function(e){return e.driver===k})}
 function orph(k){return noEnt(k)?' <span class="mut">(no entries)</span>':""}
@@ -782,11 +783,11 @@ document.querySelectorAll(".main button").forEach(function(b){b.onclick=function
  document.querySelector("#bar"+g+' [data-t="'+G[g]+'"]').click();if(g==="rates")scrollTo(0,0)}});
 function payM(kind,who,u){if(needRates()){gatePop();return}$("mbody").innerHTML='<b style="font-size:18px">Mark paid</b><div class="mut">'+esc(who)+' · '+kind+' balance</div><label>Amount paid</label><input type="number" inputmode="decimal" id="pamt" value="'+(Math.round(u*100)/100)+'"><div class="mut" style="margin-top:6px">Unpaid now: '+fmt(u)+'. Lower the amount for a part payment.</div><label>Date paid</label><input type="date" id="pdate" value="'+today()+'"><div id="pwarn" class="neg" style="margin-top:8px;font-size:14px"></div><div class="b2"><button class="pr" id="pOK">Confirm paid</button><button id="pNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("pNo").onclick=closeM;
- $("pOK").onclick=async function(){var a=n($("pamt").value);if(a<=0){alert("Enter an amount");return}
-  var pd=$("pdate").value||today(),wm=[];if(isLocked(pd)){alert("That month is locked. Unlock it in Settings → Month lock first.");return}if(a>Math.round(u*100)/100)wm.push("Amount "+fmt(a)+" is more than the unpaid "+fmt(u)+".");if(pd>today())wm.push("Date "+esc(pd)+" is in the future.");
+ $("pOK").onclick=async function(){var a=n($("pamt").value);if(a<=0){uiAlert("Enter an amount");return}
+  var pd=$("pdate").value||today(),wm=[];if(isLocked(pd)){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}if(a>Math.round(u*100)/100)wm.push("Amount "+fmt(a)+" is more than the unpaid "+fmt(u)+".");if(pd>today())wm.push("Date "+esc(pd)+" is in the future.");
   if(wm.length&&$("pOK").dataset.c!==wm.join("|")){$("pOK").dataset.c=wm.join("|");$("pwarn").innerHTML=wm.join("<br>")+"<br>Tap again to confirm.";$("pOK").textContent="Confirm anyway";return}
   var p={kind:kind,who:who,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pOK").disabled=true;
-  try{if(db)await db.collection("payments").add(p);else{p.id="p"+p.ts;pays.push(p);render()}closeM();toast("Marked paid")}catch(x){$("pOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
+  try{if(db)await db.collection("payments").add(p);else{p.id="p"+p.ts;pays.push(p);render()}closeM();toast("Marked paid")}catch(x){$("pOK").disabled=false;uiAlert("Could not save: "+(x&&x.message||x))}}}
 $("us").onclick=function(ev){var b=ev.target.closest("button[data-i]");if(!b)return;var w=payKeys.staff[b.dataset.i];if(w)pvPay(w,w.fm||$("umon").value||today().slice(0,7))};
 ["driver","loader"].forEach(function(kd){$(kd==="driver"?"ud":"ul").onclick=function(ev){var b=ev.target.closest("button[data-i]");if(!b)return;var w=payKeys[kd][b.dataset.i];if(w)payM(kd,w.k,w.u)}});
 $("ph").onclick=async function(ev){var b=ev.target.closest("button[data-p]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
@@ -801,9 +802,9 @@ function renderAdv(){var sel=$("adrv"),cv=sel.value,nm=drvNames();
  $("abal").innerHTML=nm.length?nm.map(function(k){var b=dbalOf(k);return"<tr><td>"+esc(k)+orph(k)+"</td><td>"+fmt(b.h)+"</td><td>"+fmt(b.a)+"</td><td>"+fmt(b.p)+"</td><td><b>"+mn(b.b)+"</b></td></tr>"}).join(""):'<tr><td class="mut" colspan="5">No drivers yet</td></tr>';
  var LA=liveAdvs();$("ahist").innerHTML=LA.length?LA.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:b.ts-a.ts}).map(function(a){return"<tr><td>"+esc(a.date.slice(5))+"</td><td>"+esc(a.driver)+"</td><td>"+fmt(a.amount)+"</td><td>"+(own(a)?'<button class="undo" data-a="'+esc(a.id)+'">Delete</button>':"")+"</td></tr>"}).join(""):'<tr><td class="mut">No advances yet</td></tr>'}
 ["aamt","adate"].forEach(function(i){$(i).addEventListener("input",renderAdv)});$("adrv").addEventListener("change",renderAdv);
-$("asave").onclick=async function(){if(needRates()){gatePop();return}var x=n($("aamt").value),d=$("adrv").value;if(!d||x<=0||!$("adate").value){alert("Pick driver, date and amount");return}
- if(isLocked($("adate").value)){alert("That month is locked. Unlock it in Settings → Month lock first.");return}var AW=advWarns(d,x,$("adate").value);if(AW.length&&!(await ask("Please check this advance",AW.join("<br>"))))return;  var a={driver:d,amount:x,date:$("adate").value,by:me||"local",ts:Date.now()};$("asave").disabled=true;
- try{if(db)await db.collection("advances").add(a);else{a.id="a"+a.ts;advs.push(a)}$("aamt").value="";$("adate").value=today();render();toast("Advance recorded");toTop()}catch(er){alert("Could not save: "+(er&&er.message||er))}renderAdv()};
+$("asave").onclick=async function(){if(needRates()){gatePop();return}var x=n($("aamt").value),d=$("adrv").value;if(!d||x<=0||!$("adate").value){uiAlert("Pick driver, date and amount");return}
+ if(isLocked($("adate").value)){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}var AW=advWarns(d,x,$("adate").value);if(AW.length&&!(await ask("Please check this advance",AW.join("<br>"))))return;  var a={driver:d,amount:x,date:$("adate").value,by:me||"local",ts:Date.now()};$("asave").disabled=true;
+ try{if(db)await db.collection("advances").add(a);else{a.id="a"+a.ts;advs.push(a)}$("aamt").value="";$("adate").value=today();render();toast("Advance recorded");toTop()}catch(er){uiAlert("Could not save: "+(er&&er.message||er))}renderAdv()};
 $("ahist").onclick=async function(ev){var b=ev.target.closest("button[data-a]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
  var id=b.dataset.a;try{await softDel("advances",id,advs,trashA);render();prev();toast("Advance moved to Deleted")}catch(er){toast("Could not remove")}};
 function render(){
@@ -889,34 +890,34 @@ document.addEventListener("visibilitychange",function(){if(!document.hidden)wind
 setInterval(function(){window.netProbe()},8000);window.netProbe();
 function banner(t){if(t&&t.indexOf("Offline copy")===0){offCopy=true;window.offMsg=t;netUpdate();$("who").onclick=function(){toast(t)};$("banner").innerHTML="";return}$("banner").innerHTML=t?'<div class="note">'+t+'</div>':""}
 $("save").onclick=async function(){if(needRates()){gatePop();return}
- var d=$("date").value;if(!d||!$("veh").value||!$("drv").value.trim()||$("ton").value===""){alert("Fill date, vehicle, driver and tonnes");return}
- if(n($("exp").value)>0&&!$("rsn").value){alert(reasons.length?"Choose a reason for the expense":"No expense reasons set yet. Add them in Update Rates, at the bottom (Expense reasons).");return}
+ var d=$("date").value;if(!d||!$("veh").value||!$("drv").value.trim()||$("ton").value===""){uiAlert("Fill date, vehicle, driver and tonnes");return}
+ if(n($("exp").value)>0&&!$("rsn").value){uiAlert(reasons.length?"Choose a reason for the expense":"No expense reasons set yet. Add them in Update Rates, at the bottom (Expense reasons).");return}
  var e={date:d,vehicle:$("veh").value,driver:$("drv").value.trim(),tonnes:n($("ton").value),deposit:n($("dep").value),ddep:$("ddp").value===""?cfg.dday:n($("ddp").value),advance:n($("adv").value),expense:n($("exp").value),reason:n($("exp").value)>0?$("rsn").value:"",note:$("nte").value.trim(),rate:cfg.rate,hold:cfg.dday+cfg.dbal,rep:repCfg(),by:me||"local",ts:Date.now()};
  if(editing){var o=entries.find(function(x){return x.id===editing});if(o){e.by=o.by;e.ts=o.ts;if(o.rate!=null){e.rate=o.rate;e.hold=o.hold;if(o.rep!=null)e.rep=o.rep;else delete e.rep}}}
  if(editing){e.editedBy=me||"local";e.editedAt=Date.now();var o2=entries.find(function(x){return x.id===editing});if(o2)e.hist=histAdd(o2)}
- if(e.tonnes<0||e.deposit<0||e.ddep<0||e.advance<0||e.expense<0){alert("Amounts can't be negative");return}  var oe0=editing&&entries.find(function(x){return x.id===editing});if(isLocked(e.date)||(oe0&&isLocked(oe0.date))){alert("That month is locked. Unlock it in Settings → Month lock first.");return}var W=entryWarns(e);if(W.length&&!(await ask("Please check this entry",W.join("<br>"))))return;
+ if(e.tonnes<0||e.deposit<0||e.ddep<0||e.advance<0||e.expense<0){uiAlert("Amounts can't be negative");return}  var oe0=editing&&entries.find(function(x){return x.id===editing});if(isLocked(e.date)||(oe0&&isLocked(oe0.date))){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}var W=entryWarns(e);if(W.length&&!(await ask("Please check this entry",W.join("<br>"))))return;
  if(entries.some(function(x){return x.vehicle===e.vehicle&&x.date===e.date&&x.id!==editing})&&!(await ask("Duplicate entry",esc(e.vehicle)+" already has an entry on "+esc(e.date)+". A second trip the same day pays the driver deposit again, but its balance held is reduced by the repeat-trip figure in Update Rates.")))return;
  $("save").disabled=true;
  try{if(editing){if(db)await db.doc("entries/"+editing).set(e);else{e.id=editing;entries=entries.map(function(x){return x.id===editing?e:x})}}
   else if(db){await db.collection("entries").add(e)}else{e.id="l"+e.ts;entries.push(e)}
   var was=!!editing;render();endEdit();toast(was?"Trip entry updated":"Trip saved");document.querySelector('#barpay [data-t="log"]').click();toTop();
   $("save").textContent="Saved ✓";setTimeout(function(){$("save").textContent="Save entry"},1200)}
- catch(x){alert("Could not save: "+(x&&x.message||x))}
+ catch(x){uiAlert("Could not save: "+(x&&x.message||x))}
  chk()};
 async function del(id){var oe=entries.find(function(e){return e.id===id});try{await softDel("entries",id,entries,trashE);render();closeM();toast("Entry moved to Deleted (admin can restore it)")}catch(x){closeM();toast("Could not delete: "+(x&&x.message||"no permission"))}}
 $("sset2").onclick=function(){$("sset").click()};
 $("sset").onclick=async function(){
  var vv=[],vd={};document.querySelectorAll("#vrows .vrow").forEach(function(r){var pl=r.querySelector(".vp").value.trim().toUpperCase(),dr=r.querySelector(".vd").value.trim();if(!pl||vv.indexOf(pl)>=0)return;vv.push(pl);if(dr)vd[pl]=dr});
- if(!paySaved&&vv.length<MINV){alert("Add at least "+MINV+" different plates, each with a driver");return}
- var miss=vv.filter(function(v){return!vd[v]});if(miss.length){alert("Add a driver for "+miss[0]+" first, then tap Save again");return}
+ if(!paySaved&&vv.length<MINV){uiAlert("Add at least "+MINV+" different plates, each with a driver");return}
+ var miss=vv.filter(function(v){return!vd[v]});if(miss.length){uiAlert("Add a driver for "+miss[0]+" first, then tap Save again");return}
  var rv=$("rate").value.trim(),dv=$("dday").value.trim(),bv=$("dbal").value.trim(),nv=[rv,dv,bv].map(Number),rpv=$("drep").value.trim();
- if(rv===""||!isFinite(nv[0])||nv[0]<=0){alert("Enter a loader rate above zero");return}
- if(dv===""||!isFinite(nv[1])||nv[1]<0){alert("Enter the default driver deposit (0 or more)");return}
- if(bv===""||!isFinite(nv[2])||nv[2]<0){alert("Enter the driver balance held per day (0 or more)");return}
- if(rpv===""||!isFinite(Number(rpv))||Number(rpv)<0){alert("Enter the held reduction for a repeat trip (0 or more)");return}
+ if(rv===""||!isFinite(nv[0])||nv[0]<=0){uiAlert("Enter a loader rate above zero");return}
+ if(dv===""||!isFinite(nv[1])||nv[1]<0){uiAlert("Enter the default driver deposit (0 or more)");return}
+ if(bv===""||!isFinite(nv[2])||nv[2]<0){uiAlert("Enter the driver balance held per day (0 or more)");return}
+ if(rpv===""||!isFinite(Number(rpv))||Number(rpv)<0){uiAlert("Enter the held reduction for a repeat trip (0 or more)");return}
  var c={rate:nv[0],dday:nv[1],dbal:nv[2],rep:Number(rpv),veh:vv,vd:vd};if(cfg.winch&&vv.indexOf(cfg.winch)>=0)c.winch=cfg.winch;
  var was=!needRates();try{if(db){if(was)await pwOk();await db.doc("config/main").set(c)}else{cfg=c}
-  cfg=c;paySaved=true;if(!editing)setDdp();fillVeh();render();chkR();afterSave("pay",was)}catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}};
+  cfg=c;paySaved=true;if(!editing)setDdp();fillVeh();render();chkR();afterSave("pay",was)}catch(x){if(!pwCancel(x))uiAlert("Could not save (need contributor access)")}};
 function vrow(pl,dr){var r=document.createElement("div");r.className="vrow";r.innerHTML='<input class="vp" placeholder="Plate number"><input class="vd" placeholder="Driver name"><button type="button" class="x vx">✕</button>';r.querySelector(".vp").value=pl||"";r.querySelector(".vd").value=dr||"";return r}
 var MINV=5;function padRows(){if(paySaved)return;var c=$("vrows");while(c.querySelectorAll(".vrow").length<MINV)c.appendChild(vrow("",""))}
 function buildRows(){var c=$("vrows");c.innerHTML="";cfg.veh.forEach(function(v){c.appendChild(vrow(v,(cfg.vd||{})[v]))});padRows();chkR()}
@@ -1105,8 +1106,8 @@ function upPdf(kind){var u=kind==="unpaid",root=$(u?"unp":"pdt"),lab=upLabel(u?"
   safe=function(v){return String(v).replace(/[^\w-]+/g,"-")},
   name=(u?"unpaid":"paid")+"-balances-"+(lab==="All dates"?"all-dates-"+today():safe(lab))+".pdf";
  return{blob:pdfBlob(title,sub,it),name:name,title:title+" - "+lab}}
-function upDl(kind){try{var b=upPdf(kind);dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}}
-function upSh(kind){try{var b=upPdf(kind);pvSharePdf(b.blob,b.name,b.title)}catch(x){alert("Could not create the PDF")}}
+function upDl(kind){try{var b=upPdf(kind);dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){uiAlert("Could not create the PDF")}}
+function upSh(kind){try{var b=upPdf(kind);pvSharePdf(b.blob,b.name,b.title)}catch(x){uiAlert("Could not create the PDF")}}
 $("upDl").onclick=function(){upDl("unpaid")};$("upSh").onclick=function(){upSh("unpaid")};$("pdDl").onclick=function(){upDl("paid")};$("pdSh").onclick=function(){upSh("paid")};
 /* ---- Payslips: a driver, a private staff member, or all private staff ---- */
 var psInit=false;
@@ -1184,22 +1185,22 @@ function psFill(){var sl=$("psSt");if(!sl)return;var sn=staff.map(function(x){re
  if(!psInit){psInit=true;$("psMo").value=today().slice(0,7)}
  var ok=!!sl.value&&(!!$("psMo").value||sl.value==="a");["psDl","psSh","psTx"].forEach(function(i){$(i).disabled=!ok})}
 $("psMo").addEventListener("input",psFill);$("psMo").addEventListener("change",psFill);$("psSt").addEventListener("change",psFill);
-$("psDl").onclick=function(){try{var q=psDoc();if(!q)return;dlf(q.name,pdfBlob(q.title,q.sub,q.it));toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}};
-$("psSh").onclick=function(){try{var q=psDoc();if(q)pvSharePdf(pdfBlob(q.title,q.sub,q.it),q.name,q.title)}catch(x){alert("Could not create the PDF")}};
+$("psDl").onclick=function(){try{var q=psDoc();if(!q)return;dlf(q.name,pdfBlob(q.title,q.sub,q.it));toast("PDF downloaded")}catch(x){uiAlert("Could not create the PDF")}};
+$("psSh").onclick=function(){try{var q=psDoc();if(q)pvSharePdf(pdfBlob(q.title,q.sub,q.it),q.name,q.title)}catch(x){uiAlert("Could not create the PDF")}};
 $("psTx").onclick=function(){try{var q=psDoc();if(!q)return;var L=q.lines.slice();
  if(typeof appCfg==="object"&&appCfg.footer)L.push("",appCfg.footer);var txt=L.join("\n");
- if(navigator.share){navigator.share({title:q.title,text:txt}).catch(function(){})}else{window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}}catch(x){alert("Could not create the text")}};
+ if(navigator.share){navigator.share({title:q.title,text:txt}).catch(function(){})}else{window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}}catch(x){uiAlert("Could not create the text")}};
 var _pvR2=pvRender;pvRender=function(){var v=_pvR2.apply(this,arguments);try{psFill()}catch(x){}return v};
 var _rnP=render;render=function(){var v=_rnP.apply(this,arguments);try{psFill()}catch(x){}return v};
 function pvPay(w,mon){if(needRates()){gatePop();return}var P=pvP(),m0=mon||(P.k==="m"?P.mm:today().slice(0,7));
  $("mbody").innerHTML='<b style="font-size:18px">Pay salary</b><div class="mut">'+esc(w.k)+'</div><label>Salary month</label><input type="month" id="pvsm" value="'+m0+'"><label>Amount paid</label><input type="number" inputmode="decimal" id="pvamt"><div class="mut" id="pvun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="pvdate" value="'+today()+'"><div class="b2"><button class="pr" id="pvOK">Confirm paid</button><button id="pvNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("pvNo").onclick=closeM;
  var up=function(){var u=pvUn(w.k,w.s,$("pvsm").value);$("pvamt").value=u>0?u:"";$("pvun").textContent="Unpaid for this month: "+fmt(u)+". Lower the amount for a part payment."};up();$("pvsm").onchange=up;
- $("pvOK").onclick=async function(){var a=n($("pvamt").value),m=$("pvsm").value;if(!m){alert("Pick the salary month");return}if(a<=0){alert("Enter an amount");return}var pd=$("pvdate").value||today(),u=pvUn(w.k,w.s,m);
-  if(isLocked(pd)){alert("That month is locked. Unlock it in Settings → Month lock first.");return}
+ $("pvOK").onclick=async function(){var a=n($("pvamt").value),m=$("pvsm").value;if(!m){uiAlert("Pick the salary month");return}if(a<=0){uiAlert("Enter an amount");return}var pd=$("pvdate").value||today(),u=pvUn(w.k,w.s,m);
+  if(isLocked(pd)){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}
   if(a>u+0.001&&$("pvOK").dataset.c!=="1"){$("pvOK").dataset.c="1";$("pvOK").textContent="Amount is more than unpaid. Tap again";return}
   var q={who:w.k,month:m,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pvOK").disabled=true;
-  try{if(db)await db.collection("pvpays").add(q);else{q.id="v"+q.ts;pvp.push(q);pvSave();pvRender();try{rq()}catch(e){}}closeM();toast("Salary marked paid")}catch(x){$("pvOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
+  try{if(db)await db.collection("pvpays").add(q);else{q.id="v"+q.ts;pvp.push(q);pvSave();pvRender();try{rq()}catch(e){}}closeM();toast("Salary marked paid")}catch(x){$("pvOK").disabled=false;uiAlert("Could not save: "+(x&&x.message||x))}}}
 var cfgKey=null;function cfgSig(){return paySaved+"~"+csnap()}function showCfg(){stBind();stBuild();var s=paySaved;$("rate").value=s?cfg.rate:"";$("dday").value=s?cfg.dday:"";$("dbal").value=s?cfg.dbal:"";$("drep").value=s?repCfg():"";buildRows();cfgKey=cfgSig()}
 var fuels=[];
 function fdset(){if(fedit)return;if(!$("fveh").value){$("fdrv").value="";$("fdh").textContent="Pick a plate first. The driver fills in from the plate.";return}var d=(cfg.vd||{})[$("fveh").value]||"";$("fdrv").value=d;$("fdh").textContent=d?"Driver comes from the vehicle. Change it in Update Rates → Vehicle & Driver.":"No driver set for this plate. Set it in Update Rates → Vehicle & Driver."}
@@ -1247,15 +1248,15 @@ function fed(id){var f=fuels.find(function(x){return x.id===id});if(!f)return;if
 $("fcan").onclick=function(){fend();document.querySelector('#barfuel [data-t="flg"]').click()};
 $("fsave").onclick=async function(){if(needRates()){gatePop();return}var nm=function(v,k){v=v.replace(/\s+/g," ").trim();var m=fuels.filter(function(x){return x[k]&&x[k].toLowerCase()===v.toLowerCase()})[0];return m?m[k]:v};
  var f={date:$("fdate").value,vehicle:$("fveh").value,driver:$("fdrv").value,litres:n($("flt").value),sell:n($("fsp").value),cost:n($("fap").value),collected:nm($("fcb").value,"collected"),issued:nm($("fib").value,"issued"),note:$("fnt").value.trim(),by:me||"local",ts:Date.now()};
- if(!f.date||!f.vehicle||f.litres<=0||!f.collected||!f.issued){alert("Fill date, vehicle, litres, collected by and issued by");return}
- if(f.sell<=0||f.cost<=0){alert("Prices must be above zero. Set them in Update Rates → Fuel rates.");return}  var of0=fedit&&fuels.find(function(x){return x.id===fedit});if(isLocked(f.date)||(of0&&isLocked(of0.date))){alert("That month is locked. Unlock it in Settings → Month lock first.");return}var FW=fuelWarns(f);if(FW.length&&!(await ask("Please check this fuel entry",FW.join("<br>"))))return;
+ if(!f.date||!f.vehicle||f.litres<=0||!f.collected||!f.issued){uiAlert("Fill date, vehicle, litres, collected by and issued by");return}
+ if(f.sell<=0||f.cost<=0){uiAlert("Prices must be above zero. Set them in Update Rates → Fuel rates.");return}  var of0=fedit&&fuels.find(function(x){return x.id===fedit});if(isLocked(f.date)||(of0&&isLocked(of0.date))){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}var FW=fuelWarns(f);if(FW.length&&!(await ask("Please check this fuel entry",FW.join("<br>"))))return;
  var o=fedit&&fuels.find(function(x){return x.id===fedit});if(o){f.by=o.by;f.ts=o.ts;f.editedBy=me||"local";f.editedAt=Date.now();f.hist=histAdd(o)}
  if(fuels.some(function(x){return x.vehicle===f.vehicle&&x.date===f.date&&x.id!==fedit})&&!(await ask("Duplicate entry",esc(f.vehicle)+" already has a fuel entry on "+esc(f.date)+".")))return;
  if(f.sell<f.cost&&!(await ask("Selling below cost","Selling price ("+f.sell+") is lower than the actual price ("+f.cost+"), so this entry is a loss.")))return;
  $("fsave").disabled=true;
  try{if(fedit){if(db)await db.doc("fuel/"+fedit).set(f);else{f.id=fedit;fuels=fuels.map(function(x){return x.id===fedit?f:x})}toast("Fuel entry updated")}
   else{if(db)await db.collection("fuel").add(f);else{f.id="f"+f.ts;fuels.push(f)}toast("Fuel saved")}
-  fend();document.querySelector('#barfuel [data-t="flg"]').click();toTop()}catch(x){alert("Could not save: "+(x&&x.message||x))}fprev()};
+  fend();document.querySelector('#barfuel [data-t="flg"]').click();toTop()}catch(x){uiAlert("Could not save: "+(x&&x.message||x))}fprev()};
 $("flist").onclick=async function(ev){var eb=ev.target.closest("button[data-e]");if(eb){fed(eb.dataset.e);return}var b=ev.target.closest("button[data-f]");if(!b){var r=ev.target.closest("tr[data-id]");if(r)fdetail(r.dataset.id);return}if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
  var id=b.dataset.f;try{await softDel("fuel",id,fuels,trashF);renderFuel();toast("Fuel entry moved to Deleted")}catch(x){toast("Could not remove")}};
 function fcsvText(){var m=$("fmon").value,q=function(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'},L=0,S=0,C=0;
@@ -1263,21 +1264,20 @@ function fcsvText(){var m=$("fmon").value,q=function(v){return'"'+String(v==null
  var rows=fuels.filter(fper().t).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}).map(function(f){var s=f.litres*f.sell,c=f.litres*f.cost;L+=f.litres;S+=s;C+=c;return[f.date,f.vehicle,f.driver||(cfg.vd||{})[f.vehicle]||"",f.litres,f.sell,f.cost,s,c,s-c,f.collected,f.issued].map(q).join(",")});
  rows.push(["TOTAL","","",L,"","",S,C,S-C,"",""].map(q).join(","));
  return"\ufeff"+[h.map(q).join(",")].concat(rows).join("\r\n")}
-($("fprt")||{}).onclick=function(){var P=fper();exportPdf($("fsm"),"Fuel summary","Period: "+P.lab,"fuel-summary-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf")};
 var fcfg={sell:0,cost:0},fdirty=false,fedit=null;
 function fautofill(force){if(force||!fdirty){$("fsp").value=fcfg.sell||"";$("fap").value=fcfg.cost||""}fprev()}
 function frchk(){var a=n($("frs").value),c=n($("frc").value);$("frn").textContent=isAdmin?"Set today's prices. Every new fuel entry uses them automatically.":"Only editors and the owner can change rates.";
  $("frm").innerHTML="Profit per litre: <b>"+mn(a-c)+"</b>";$("frsave").disabled=!(canWrite&&isAdmin&&(a!==fcfg.sell||c!==fcfg.cost))}
 ["frs","frc"].forEach(function(i){$(i).addEventListener("input",frchk)});["fsp","fap"].forEach(function(i){$(i).addEventListener("input",function(){fdirty=true})});
-$("frsave").onclick=async function(){var c={sell:n($("frs").value),cost:n($("frc").value)};if(c.sell<=0||c.cost<=0){alert("Enter both fuel prices above zero");return}var was=!needRates();$("frsave").disabled=true;
- try{if(db){if(was)await pwOk();await db.doc("config/fuel").set(c)}fcfg=c;fautofill();afterSave("fuel",was);if(window.schedPersist)schedPersist()}catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}frchk()};
+$("frsave").onclick=async function(){var c={sell:n($("frs").value),cost:n($("frc").value)};if(c.sell<=0||c.cost<=0){uiAlert("Enter both fuel prices above zero");return}var was=!needRates();$("frsave").disabled=true;
+ try{if(db){if(was)await pwOk();await db.doc("config/fuel").set(c)}fcfg=c;fautofill();afterSave("fuel",was);if(window.schedPersist)schedPersist()}catch(x){if(!pwCancel(x))uiAlert("Could not save (need contributor access)")}frchk()};
 frchk();
 var scfg={c:0,t:0,k:0,d:0,h:0,r:0,l:0,l1:0,l2:0,la:0};
 function srfill(){$("src").value=scfg.c||"";$("srt").value=scfg.t||"";$("srk").value=scfg.k||"";$("srd").value=scfg.d||"";$("srh").value=scfg.h||"";$("srr").value=scfg.r||"";$("sl2").value=scfg.l2||"";$("srl").value=scfg.l||"";$("sl1").value=$("srl").value}
 function srchk(){var c=n($("src").value),t=n($("srt").value),k=n($("srk").value),d=n($("srd").value),h=n($("srh").value),r=n($("srr").value),l=n($("srl").value),l1=n($("srl").value),l2=n($("sl2").value);$("sl1").value=$("srl").value;$("srn").textContent=isAdmin?"Set the vehicle, driver and loader payment values used for SEED.CN.":"Only editors and the owner can change rates.";$("srsave").disabled=!(canWrite&&isAdmin&&(c!==(scfg.c||0)||t!==(scfg.t||0)||k!==(scfg.k||0)||d!==(scfg.d||0)||h!==(scfg.h||0)||r!==(scfg.r||0)||l!==(scfg.l||0)||l1!==(scfg.l1||0)||l2!==(scfg.l2||0)))}
 ["src","srt","srk","srd","srh","srr","srl","sl2"].forEach(function(i){$(i).addEventListener("input",srchk)});
-$("srsave").onclick=async function(){var c={c:n($("src").value),t:n($("srt").value),k:n($("srk").value),d:n($("srd").value),h:n($("srh").value),r:n($("srr").value),l:n($("srl").value),l1:n($("srl").value),l2:n($("sl2").value),la:scfg.la||0};if(c.c<0||c.t<0||c.k<0||c.d<0||c.h<0||c.r<0||c.l<0||c.l1<0||c.l2<0){alert("Values cannot be negative");return}var was=!!(scfg.c||scfg.t||scfg.k||scfg.d||scfg.h||scfg.r||scfg.l||scfg.l1||scfg.l2||scfg.la);$("srsave").disabled=true;
- try{if(db){if(was)await pwOk();await db.doc("config/seed").set(c)}scfg=c;srfill();toast("SEED.C rates saved");if(window.schedPersist)schedPersist()}catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}srchk()};
+$("srsave").onclick=async function(){var c={c:n($("src").value),t:n($("srt").value),k:n($("srk").value),d:n($("srd").value),h:n($("srh").value),r:n($("srr").value),l:n($("srl").value),l1:n($("srl").value),l2:n($("sl2").value),la:scfg.la||0};if(c.c<0||c.t<0||c.k<0||c.d<0||c.h<0||c.r<0||c.l<0||c.l1<0||c.l2<0){uiAlert("Values cannot be negative");return}var was=!!(scfg.c||scfg.t||scfg.k||scfg.d||scfg.h||scfg.r||scfg.l||scfg.l1||scfg.l2||scfg.la);$("srsave").disabled=true;
+ try{if(db){if(was)await pwOk();await db.doc("config/seed").set(c)}scfg=c;srfill();toast("SEED.C rates saved");if(window.schedPersist)schedPersist()}catch(x){if(!pwCancel(x))uiAlert("Could not save (need contributor access)")}srchk()};
 srchk();
 function csvq(v){return'"'+String(v==null?"":v).replace(/"/g,'""')+'"'}
 function csvl(a){return a.map(csvq).join(",")}
@@ -1340,12 +1340,12 @@ function pdfBlob(title,sub,items){var mono=.6,fs=8,lh=12,mg=36;
  var out="%PDF-1.4\n",offs=[],last=objs.length-1;for(var id=1;id<=last;id++){offs[id]=out.length;out+=id+" 0 obj\n"+objs[id]+"\nendobj\n"}
  var xs=out.length;out+="xref\n0 "+(last+1)+"\n0000000000 65535 f \n";for(id=1;id<=last;id++)out+=String(offs[id]).padStart(10,"0")+" 00000 n \n";
  out+="trailer\n<< /Size "+(last+1)+" /Root 1 0 R >>\nstartxref\n"+xs+"\n%%EOF";return new Blob([out],{type:"application/pdf"})}
-function exportPdf(root,title,sub,file){try{dlf(file,pdfBlob(title,sub,domItems(root)));toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}}
+function exportPdf(root,title,sub,file){try{dlf(file,pdfBlob(title,sub,domItems(root)));toast("PDF downloaded")}catch(x){uiAlert("Could not create the PDF")}}
 async function dlsvc(){var d=null;try{d=await claude.use("downloads")}catch(x){}
  return{save:async function(o){if(d){try{await d.save(o);return}catch(x){}}
-  try{var u=URL.createObjectURL(o.data),a=document.createElement("a");a.href=u;a.download=o.filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)}catch(x){alert("Downloads not available here")}}}}
+  try{var u=URL.createObjectURL(o.data),a=document.createElement("a");a.href=u;a.download=o.filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},4000)}catch(x){uiAlert("Downloads not available here")}}}}
 async function dlf(name,blob){try{try{if(/\.csv$/i.test(name)){var ct=(await blob.text()).replace(/^\ufeff/,"");blob=new Blob(["\ufeff"+ct+"\r\n\r\n"+(appCfg.footer?csvq(appCfg.footer)+"\r\n":"")+csvq(WM)],{type:"text/csv"})}else if(/\.json$/i.test(name)){var jt=await blob.text(),jo=JSON.parse(jt);if(jo&&typeof jo==="object"&&!Array.isArray(jo)){var jn={};Object.keys(jo).forEach(function(k){jn[k]=jo[k]});if(appCfg.footer)jn.footer=appCfg.footer;jn.developer=WM;blob=new Blob([JSON.stringify(jn,null,/^\{\n/.test(jt)?2:0)],{type:"application/json"})}}}catch(x){}
- var d=await dlsvc();if(!d){alert("Downloads not available here");return}await d.save({filename:name,data:blob})}catch(x){}}
+ var d=await dlsvc();if(!d){uiAlert("Downloads not available here");return}await d.save({filename:name,data:blob})}catch(x){}}
 function bd(a,b){return a.date<b.date?-1:a.date>b.date?1:0}
 function oper(){var k=$("oper").value||"all",td=today();
  if(k==="day"){var dd=$("ovday").value||td;return{k:k,lab:"Date "+dd,t:function(x){return x===dd}}}
@@ -1488,15 +1488,15 @@ async function rRun0(R,replace){
  if(fails)msg+='<br><span class="neg">'+fails+' item'+(fails>1?"s":"")+' could not be saved. Your data may only be partly restored'+(replace?", so nothing was deleted":"")+'. You can run the restore again.</span>';
  rRes(fails?"Restore finished with problems":"Restore complete",msg,!!fails)}
 function rErr(m){rRes("Cannot restore this file",esc(m||"The file is not a valid backup")+'. Choose a "Full backup (JSON)" file made by this app.',1)}
-$("rfile").addEventListener("click",function(ev){if(!canWrite){ev.preventDefault();alert("You have view-only access, so you can't restore data.")}});
-$("rpaste").onclick=function(){if(!canWrite){alert("You have view-only access, so you can't restore data.");return}
+$("rfile").addEventListener("click",function(ev){if(!canWrite){ev.preventDefault();uiAlert("You have view-only access, so you can't restore data.")}});
+$("rpaste").onclick=function(){if(!canWrite){uiAlert("You have view-only access, so you can't restore data.");return}
  rMsg("Paste backup text","Open your backup .json file, copy all of its text, and paste it below.");
  var t=document.createElement("textarea");t.id="rtx";t.rows=6;t.placeholder="Paste backup text here";t.style.cssText="margin-top:10px;width:100%;font-size:13px";
  var b=document.createElement("div");b.className="b2";b.innerHTML='<button class="pr" id="rGo">Continue</button><button id="rNo">Cancel</button>';
  $("mbody").appendChild(t);$("mbody").appendChild(b);$("rNo").onclick=closeM;
- $("rGo").onclick=function(){var v=t.value.trim();if(!v){alert("Paste the backup text first");return}try{rAsk(rParse(v))}catch(x){rErr(x&&x.message)}}};
+ $("rGo").onclick=function(){var v=t.value.trim();if(!v){uiAlert("Paste the backup text first");return}try{rAsk(rParse(v))}catch(x){rErr(x&&x.message)}}};
 $("rfile").onchange=async function(){var f=this.files&&this.files[0];if(!f)return;var inp=this;
- if(f.size>8*1024*1024){alert("That file is too large to be a backup");return}
+ if(f.size>8*1024*1024){uiAlert("That file is too large to be a backup");return}
  try{var txt=await new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(fr.result)};fr.onerror=function(){rej(new Error("Could not read the file"))};fr.readAsText(f)});rAsk(rParse(txt))}
  catch(x){rErr(x&&x.message)}finally{try{inp.value=""}catch(x){}}};
 function pwOk(){return window.askPw?window.askPw():Promise.resolve()}function holdPw(on){return window.gateHold?window.gateHold(on):Promise.resolve()}function pwCancel(x){return!!(x&&/cancel|password/i.test(String(x.message||x)))}
@@ -1622,12 +1622,13 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
 })();
 </script><script>
 var LIM={maxT:35,maxDays:45,maxLit:300,maxExp:2000,dev:0.2};
-async function setLock(m,on){if(!(isAdmin&&canWrite))return;if(on&&m>today().slice(0,7)){toast("A future month can't be locked yet");return}
- var nl=Object.assign({},locks);if(on)nl[m]={at:Date.now(),by:me||"local"};else delete nl[m];
- try{if(db){await pwOk();await db.doc("config/locks").set({months:nl})}locks=nl;render();toast(on?"Month locked":"Month unlocked")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}}
-function renderLocks(){var el=$("lockc");if(!el)return;var adm=!!(isAdmin&&canWrite);
+function ownerOK(){return !db||!!window.fbIsOwn}
+async function setLock(m,on){if(!(isAdmin&&canWrite&&ownerOK()))return;if(on&&m>today().slice(0,7)){toast("A future month can't be locked yet");return}
+ var nl=Object.assign({},locks);if(on)nl[m]={at:Date.now(),by:me||"local"};else delete nl[m];var lp={months:{}};lp.months[m]=on?nl[m]:firebase.firestore.FieldValue.delete();
+ try{if(db){await pwOk();await db.doc("config/locks").set(lp,{merge:true})}locks=nl;render();toast(on?"Month locked":"Month unlocked")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}}
+function renderLocks(){var el=$("lockc");if(!el)return;var adm=!!(isAdmin&&canWrite&&ownerOK());
  if(el.dataset.a!==String(adm)){el.dataset.a=String(adm);
-  el.innerHTML='<b class="ct">Month lock</b><div class="mut">A locked month cannot get new, edited or deleted payments, fuel entries, advances or salary paid, and cannot be restored into. The lock is enforced by this app.'+(adm?"":" Only editors and the owner can lock or unlock.")+'</div>'+(adm?'<label>Month</label><div class="lkw empty" id="lkwrap"><input type="month" id="lkm"><span class="lkph">Select a month to lock editing</span></div><button class="btn" id="lkb" disabled>Lock this month</button>':"")+'<div id="lkl" style="margin-top:12px"></div>';
+  el.innerHTML='<b class="ct">Month lock</b><div class="mut">A locked month cannot get new, edited or deleted payments, fuel entries, advances or salary paid, and cannot be restored into. The lock is enforced by this app and by the server.'+(adm?"":" Only the owner can lock or unlock.")+'</div>'+(adm?'<label>Month</label><div class="lkw empty" id="lkwrap"><input type="month" id="lkm"><span class="lkph">Select a month to lock editing</span></div><button class="btn" id="lkb" disabled>Lock this month</button>':"")+'<div id="lkl" style="margin-top:12px"></div>';
   if(adm){$("lkm").value="";$("lkm").oninput=renderLocks;
    $("lkb").onclick=function(){var m=$("lkm").value;if(!m){toast("Pick a month");return}if(!this.dataset.s){this.dataset.s="1";this.textContent="Sure?";return}this.dataset.s="";setLock(m,!locks[m])}}
   $("lkl").onclick=function(ev){var b=ev.target.closest("button[data-m]");if(!b)return;if(!b.dataset.s){b.dataset.s="1";b.textContent="Sure?";return}setLock(b.dataset.m,false)}}
@@ -2034,12 +2035,12 @@ $("dsd").onchange=btns;try{dsPrev()}catch(e){}
 $("dsp").onchange=function(){var k=this.value;$("dsmw").classList.toggle("hide",k!=="month");$("dsyw").classList.toggle("hide",k!=="year");if(k==="month"&&!$("dsm").value)$("dsm").value=today().slice(0,7);if(k==="year"&&!$("dsy").value)$("dsy").value=today().slice(0,4)};
 ["dsm","dsy"].forEach(function(i){var e=$(i);if(e){e.addEventListener("input",btns);e.addEventListener("change",btns)}});
 $("dsp").addEventListener("change",btns);
-$("dsdl").onclick=function(){try{var b=make();if(!b)return;dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}};
+$("dsdl").onclick=function(){try{var b=make();if(!b)return;dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){uiAlert("Could not create the PDF")}};
 function sharePdf(blob,name,title){var f=null;try{f=new File([blob],name,{type:"application/pdf"})}catch(x){}
  if(f&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:title}).catch(function(){})}
  else{dlf(name,blob);toast("Sharing is not available here. PDF downloaded instead.")}}
 window.sharePdf=sharePdf;
-$("dssh").onclick=function(){try{var b=make();if(b)sharePdf(b.blob,b.name,b.title)}catch(x){alert("Could not create the PDF")}};
+$("dssh").onclick=function(){try{var b=make();if(b)sharePdf(b.blob,b.name,b.title)}catch(x){uiAlert("Could not create the PDF")}};
 $("dstx").onclick=function(){try{var d=make(true);if(!d)return;var adT=d.advE+d.advS,m=function(v){return(+v>0?"-":"")+fmt(v)},sg=function(v){return(Math.round(v)<0?"-":"")+fmt(Math.abs(v))};
  var L=["*Driver statement*","Driver: "+d.nm,"Period: "+d.P.lab,"","Trips: "+d.tr.length+" ("+d.tn.toFixed(2)+" t)","Trip expenses: "+fmt(d.trTot),"Fuel taken: "+(+d.fuL.toFixed(1))+" L ("+fmt(d.fuAmt)+", not deducted)","","Balance held: "+fmt(d.held),"Advances: "+m(adT),"Salary paid: "+m(d.paidD),"*Unpaid balance: "+sg(d.bal)+"*"];
  if(d.lo>0||d.lp>0)L.push("","Loader paid / unpaid: "+fmt(d.lp)+" / "+fmt(d.lo-d.lp));
@@ -2048,9 +2049,9 @@ $("dstx").onclick=function(){try{var d=make(true);if(!d)return;var adT=d.advE+d.
  var txt=L.join("\n");
  if(navigator.share){navigator.share({title:"Driver statement - "+d.nm,text:txt}).catch(function(){})}
  else{window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}
-}catch(x){alert("Could not create the text")}};
-$("oshare").onclick=function(){try{PM=alloc();renderOv();var P=oper();sharePdf(pdfBlob("Vehicle overview: trips and fuel","Period: "+P.lab,domItems($("ovc"))),"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf","Vehicle overview")}catch(x){alert("Could not create the PDF")}};
-$("oashare").onclick=function(){oabFull(1);try{renderOb();sharePdf(pdfBlob("Trips and fuel entries",allLabel(),domItems($("allc"))),entName(),"Trips and fuel entries")}catch(x){alert("Could not create the PDF")}finally{oabFull(0);renderOb()}};
+}catch(x){uiAlert("Could not create the text")}};
+$("oshare").onclick=function(){try{PM=alloc();renderOv();var P=oper();sharePdf(pdfBlob("Vehicle overview: trips and fuel","Period: "+P.lab,domItems($("ovc"))),"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf","Vehicle overview")}catch(x){uiAlert("Could not create the PDF")}};
+$("oashare").onclick=function(){oabFull(1);try{renderOb();sharePdf(pdfBlob("Trips and fuel entries",allLabel(),domItems($("allc"))),entName(),"Trips and fuel entries")}catch(x){uiAlert("Could not create the PDF")}finally{oabFull(0);renderOb()}};
 var _r=render;render=function(){var v=_r.apply(this,arguments);try{fillD();gate()}catch(x){}return v};
 ["oper","ovday","omon","ovyr","ocat","odf","oday","ofm","oyr","dsd","dsp","dsm","dsy"].forEach(function(i){var e=$(i);if(!e)return;e.addEventListener("change",gate);e.addEventListener("input",gate)});
 fillD();gate()})();</script>
@@ -2425,10 +2426,10 @@ function winchDrv(){var v=$("wplate").value,d=v?(cfg.vd||{})[v]||"":"";$("wdrv")
  var same=v&&v===cfg.winch;$("wnote").textContent=!(cfg.veh||[]).length?"Add plates and drivers in Vehicle & Driver first.":(cfg.winch&&(cfg.veh||[]).indexOf(cfg.winch)>=0?"Current winch: "+cfg.winch+(((cfg.vd||{})[cfg.winch])?" · "+cfg.vd[cfg.winch]:""):"No winch vehicle chosen yet.");
  $("wsave").disabled=!((v?!same:!!cfg.winch)&&isAdmin&&canWrite);$("wsave").textContent=v||!cfg.winch?"Save winch vehicle":"Clear winch vehicle"}
 $("wplate").onchange=function(){this.__d=1;winchDrv()};
-$("wsave").onclick=async function(){var v=$("wplate").value;if(v&&(cfg.veh||[]).indexOf(v)<0){alert("Pick a plate");return}
+$("wsave").onclick=async function(){var v=$("wplate").value;if(v&&(cfg.veh||[]).indexOf(v)<0){uiAlert("Pick a plate");return}
  var was=!needRates();$("wsave").disabled=true;
  try{if(db){if(was)await pwOk();await db.doc("config/main").set(Object.assign({},cfg,{winch:v?v:firebase.firestore.FieldValue.delete()}),{merge:true})}if(v)cfg.winch=v;else delete cfg.winch;$("wplate").__d=0;toast(v?"Winch vehicle saved":"Winch vehicle cleared");winchDrv();winchRender();if(window.schedPersist)schedPersist()}
- catch(x){if(!pwCancel(x))alert("Could not save (need contributor access)")}winchDrv()};
+ catch(x){if(!pwCancel(x))uiAlert("Could not save (need contributor access)")}winchDrv()};
 
 /* ---- report model: one place that feeds the screen, PDF, CSV and text ---- */
 function wPeriod(){var k=$("wper").value||"all",td=today();
@@ -2525,7 +2526,7 @@ function wCsv(m){var L=[],A=function(a){L.push(csvl(a))},B=function(){L.push("")
 function wText(m){var L=["*Winch fuel report*","Vehicle: "+m.pl,"Driver: "+(m.dr||"-"),"Period: "+m.P.lab,"",
  "Fuel entries: "+m.fu.length,"Litres: "+W1(m.lit),"Fuel sold: "+fmt(m.fsell),"Fuel cost: "+fmt(m.fcost),"*Fuel profit: "+fmt(m.fprof)+"*"];
  if(appCfg.footer)L.push("",appCfg.footer);return L.join("\n")}
-function wGo(f){try{var m=wModel();if(!m){toast("Choose a winch vehicle in Update Rates first",true);return}f(m)}catch(x){alert("Could not create the report"+(x&&x.message?": "+x.message:""))}}
+function wGo(f){try{var m=wModel();if(!m){toast("Choose a winch vehicle in Update Rates first",true);return}f(m)}catch(x){uiAlert("Could not create the report"+(x&&x.message?": "+x.message:""))}}
 $("wrep").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("#wdl,#wsh");if(!b)return;
  if(b.id==="wdl")wGo(function(m){dlf(wName(m,"pdf"),wPdf(m));toast("Report downloaded")});
  else wGo(function(m){window.sharePdf(wPdf(m),wName(m,"pdf"),"Winch fuel report - "+m.pl)})});
@@ -2744,8 +2745,8 @@ function seedPay(id,k){var AA=load();drvCalc(AA);var e=AA.filter(function(x){ret
  $("mbody").innerHTML='<b style="font-size:18px">'+T+'</b><div class="mut">'+esc(k==="drv"?(e.driver||e.vehicle):e.vehicle)+" \u00b7 "+esc(e.date)+'</div><label>Amount paid</label><input type="number" inputmode="decimal" id="vpamt"><div class="mut" id="vpun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="vpdate" value="'+today()+'"><div class="b2"><button class="pr" id="vpOK">Confirm paid</button><button id="vpNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("vpNo").onclick=closeM;var u0=un();$("vpamt").value=u0>0?u0:"";
  $("vpun").textContent=u0==null?"Type the amount you are paying the loader.":"Unpaid for this entry: "+fmt(u0)+". Lower the amount for a part payment.";
- $("vpOK").onclick=function(){var a=n($("vpamt").value);if(!(a>0)){alert("Enter an amount");return}var pd=$("vpdate").value||today();
-  if(window.isLocked&&isLocked(pd)){alert("That month is locked. Unlock it in Settings → Month lock first.");return}
+ $("vpOK").onclick=function(){var a=n($("vpamt").value);if(!(a>0)){uiAlert("Enter an amount");return}var pd=$("vpdate").value||today();
+  if(window.isLocked&&isLocked(pd)){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}
   var u1=un();if(u1!=null&&a>u1+0.001&&$("vpOK").dataset.c!=="1"){$("vpOK").dataset.c="1";$("vpOK").textContent="Amount is more than unpaid. Tap again";return}
   var A=loadP();A.push({id:e.ts,k:k,amt:a,date:pd,ts:Date.now()});if(!putP(A)){toast("Could not save on this device",true);return}try{seedAct.pay(e,k,a)}catch(x){}closeM();refreshPay();draw();toast(({veh:"Vehicle",drv:"Driver",ldr:"Loader"}[k]||"")+" pay marked paid")}}
 function refreshPay(){["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}
@@ -2785,7 +2786,7 @@ $("seedl").addEventListener("click",function(ev){var r=ev.target.closest&&ev.tar
   $("eVeh").onchange=function(){var d=(cfg.vd||{})[this.value];if(d)$("eDrv").value=d};
   $("eOK").onclick=function(){var dt=$("eDt").value||e.date,tn=parseFloat($("eTn").value)||0,v=$("eVeh").value;
    if(!v){toast("Select a plate first",true);return}if(!(tn>0)){toast("Enter the tonnes",true);return}
-   if(window.isLocked&&(isLocked(dt)||isLocked(e.date))){alert("That month is locked. Unlock it in Settings → Month lock first.");return}
+   if(window.isLocked&&(isLocked(dt)||isLocked(e.date))){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}
    var A=load(),i,ld=parseFloat($("eLd").value)||0,dd=parseFloat($("eDd").value)||0;
    for(i=0;i<A.length;i++)if(String(A[i].ts)===id){A[i].date=dt;A[i].vehicle=v;A[i].driver=$("eDrv").value.trim();A[i].tonnes=tn;A[i].mil=parseFloat($("eMl").value)||0;A[i].ldep=ld;A[i].dep=dd;A[i].exp=ld+dd}
    if(!put(A)){toast("Could not save on this device",true);return}try{seedAct.log("Edited",A.filter(function(x){return String(x.ts)===id})[0]||e)}catch(x){}draw();drawVP();closeM();toast("Entry updated")}};
@@ -2927,8 +2928,8 @@ function mkPdf(w){draw();var items=[],safe=function(x){return String(x).replace(
  else{ttl="Seedcane report";nm="seedcane-report";items.push({t:"h",s:"Entries ("+cur.ent.length+")"});
   if(cur.ent.length)items.push({t:"tbl",h:["Date","Vehicle","Driver","Tonnes","Milage","Trip expense","Loader pay","Loader paid","Loader unpaid","Driver paid","Driver unpaid","Vehicle pay","Vehicle paid","Vehicle unpaid"],rows:cur.ent.concat([cur.te])});else items.push({t:"p",s:"No entries"})}
  return{blob:pdfBlob(ttl,"Period: "+cur.lab+(cur.q?" | Search: "+cur.q:""),items),name:nm+"-"+(cur.lab==="All dates"?"all-dates-"+today():safe(cur.lab))+".pdf",title:ttl+" - "+cur.lab}}
-function dl(w){try{var b=mkPdf(w);dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){alert("Could not create the PDF")}}
-function sh(w){try{var b=mkPdf(w);if(typeof pvSharePdf==="function")pvSharePdf(b.blob,b.name,b.title);else sharePdf(b.blob,b.name,b.title)}catch(x){alert("Could not create the PDF")}}
+function dl(w){try{var b=mkPdf(w);dlf(b.name,b.blob);toast("PDF downloaded")}catch(x){uiAlert("Could not create the PDF")}}
+function sh(w){try{var b=mkPdf(w);if(typeof pvSharePdf==="function")pvSharePdf(b.blob,b.name,b.title);else sharePdf(b.blob,b.name,b.title)}catch(x){uiAlert("Could not create the PDF")}}
 $("rpdl").onclick=function(){dl("ent")};$("rpsh").onclick=function(){sh("ent")};$("rpdl2").onclick=function(){dl("pay")};$("rpsh2").onclick=function(){sh("pay")};
 function _unused(){}
 function rst(){$("rpq").value="";$("rpper").value="all";["day","mon","yr","from","to"].forEach(function(i){$("rp"+i).value=""});upd()}
