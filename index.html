@@ -2634,7 +2634,8 @@ function push(kind,arr,addOnly){if(!window.db)return;if(!ready()){pend=true;retu
    else if(!same(old,x)&&!addOnly){var h=(old.hist||[]).slice(-19);h.push({at:now,by:by,prev:core(old)});var d2=Object.assign({},x);d2.seed=1;d2.by=old.by||by;d2.hist=h;d2.editedBy=by;d2.editedAt=now;delete d2.id;C.E[k]=d2;put(ePath(k),d2)}});
   if(!addOnly)Object.keys(C.E).forEach(function(k){if(!seen[k]){var o=C.E[k],d=Object.assign({},o,{deleted:true,deletedBy:by,deletedAt:now,seed:1,editedBy:o.editedBy||o.by||by});delete C.E[k];C.ET[k]=d;put(ePath(k),d)}})}
  else{var sp={};arr.forEach(function(p){var k=pkey(p);sp[k]=1;if(!C.P[k]){if(C.PT[k]&&addOnly)return;var d=pDoc(p);if(!d.by)d.by=by;C.P[k]=d;put(pPath(p),d)}});
-  if(!addOnly)Object.keys(C.P).forEach(function(k){if(!sp[k]){var o=C.P[k],d=Object.assign({},o,{deleted:true,deletedBy:by,deletedAt:now,seed:1,editedBy:o.editedBy||o.by||by});delete C.P[k];C.PT[k]=d;put(pPath(toP(o)),d)}})}}
+  if(!addOnly)Object.keys(C.P).forEach(function(k){if(!sp[k]){var o=C.P[k],d=Object.assign({},o,{deleted:true,deletedBy:by,deletedAt:now,seed:1,editedBy:o.editedBy||o.by||by});delete C.P[k];C.PT[k]=d;put(pPath(toP(o)),d)}})}
+ try{renderTrash()}catch(x){}}
 function mirror(){var E=Object.keys(C.E).map(function(k){return toE(C.E[k])}),P=Object.keys(C.P).map(function(k){return toP(C.P[k])}),ch=false;
  var le=localStorage.getItem("seedEntries")||"[]",lp=localStorage.getItem("seedVpPaid")||"[]";
  if(!E.length&&le!=="[]"&&!got.srv)return;
@@ -2693,8 +2694,10 @@ function mk(){if(el&&el.isConnected)return el;if(!el){el=document.createElement(
  el.onclick=function(){var off=window.NETREAL===false||navigator.onLine===false;try{toast(off?"No connection. Your changes are saved on this phone and will upload when you are back online.":"Uploading your latest changes. This clears once the server confirms.")}catch(x){}}}
  var b=document.getElementById("banner");if(b&&b.parentNode)b.parentNode.insertBefore(el,b);else document.body.appendChild(el);return el}
 function total(){var n=0;Object.keys(P).forEach(function(k){n+=P[k]});return n}
+var slow=false,tm=null;
 function paint(){var n=total(),b=mk(),off=window.NETREAL===false||navigator.onLine===false;
- if(!n){b.classList.remove("on");return}
+ if(!n){slow=false;clearTimeout(tm);tm=null;b.classList.remove("on");return}
+ if(!off&&!slow){if(!tm)tm=setTimeout(function(){tm=null;slow=true;paint()},5000);b.classList.remove("on");return}
  b.classList.add("on");b.classList.toggle("off",off);document.getElementById("synct").textContent=(off?"Offline \u00b7 ":"Waiting to sync \u00b7 ")+n+(n===1?" change":" changes")}
 window.syncMark=function(name,s){var c=0;try{s.docs.forEach(function(d){if(d.metadata&&d.metadata.hasPendingWrites)c++})}catch(x){}P[name]=c;paint()};
 window.addEventListener("online",paint);window.addEventListener("offline",paint);
