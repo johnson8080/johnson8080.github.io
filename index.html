@@ -144,6 +144,7 @@ body.nohd .hd{display:none}body.nohd{padding-top:8px}
 .btn.pgh:not(:disabled),.btn.alt.pgh:not(:disabled){background:#22c55e!important;color:#fff!important;border-color:#22c55e!important;opacity:1!important;filter:none!important}
 .cap10{overflow:auto;-webkit-overflow-scrolling:touch}.cap10 thead th{position:sticky;top:0;background:var(--card);z-index:2;box-shadow:0 1px 0 var(--ln)}.cap10 tbody tr:last-child td{position:sticky;bottom:0;background:var(--card);z-index:1;box-shadow:0 -1px 0 var(--ln);font-weight:700}
 #seed .cap10 td:first-child,#seed .cap10 th:first-child{position:sticky;left:0;background:var(--card);z-index:1}#seed .cap10 thead th:first-child{z-index:4}#seed .cap10 tbody tr:last-child td:first-child{z-index:3}#seed .cap10{max-width:100%}
+#seed .sdmain{overflow-x:auto;max-width:100%;-webkit-overflow-scrolling:touch}#seed .sdmain table{width:max-content;min-width:100%}#seed .sdmain th,#seed .sdmain td{white-space:nowrap}#seed .sdmain td:first-child,#seed .sdmain th:first-child{position:sticky;left:0;background:var(--card);z-index:1}#seed .sdmain thead th:first-child{z-index:2}
 #seed table{width:max-content!important;min-width:100%;table-layout:auto!important}#seed th,#seed td{white-space:nowrap!important;padding:8px 12px}#seed td.mut[colspan]{white-space:normal!important}
 </style>
 <style>
@@ -453,7 +454,7 @@ function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
 set:function(d,mo){if(!COLS[c])return c==="backups"?r.set(d,mo):soft(r.set(d,mo));return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
 delete:function(){return gate().then(function(){return soft(r.delete())})},onSnapshot:function(a,b){return r.onSnapshot(a,b)}}},
-collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return bg(cr.add(o))},onSnapshot:function(a,b){return cr.onSnapshot(a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
+collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return bg(cr.add(o))},onSnapshot:function(a,b){return cr.onSnapshot(typeof a==="function"?function(s){try{if(window.syncMark)syncMark(n,s)}catch(e){}a(s)}:a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
 <script>window.RNG=(function(){var S={},D=/^\d{4}-\d{2}-\d{2}$/;function ok(r){return!!(r&&D.test(r.a)&&D.test(r.b)&&r.a<=r.b)}
 return{get:function(i){return S[i]||null},set:function(i,a,b){S[i]={a:a,b:b}},clear:function(i){delete S[i]},ok:ok,
@@ -484,7 +485,7 @@ return{
   if(!wr("seedEntries",E))f++;
   var P=replace?[]:rd("seedVpPaid"),q={};P.forEach(function(x,i){q[pk(x)]=i});
   S.payments.forEach(function(p){var k=pk(p),c=Object.assign({},p);if(q[k]!=null)P[q[k]]=c;else{q[k]=P.length;P.push(c)}});
-  if(!wr("seedVpPaid",P))f++;return f},
+  if(!wr("seedVpPaid",P))f++;try{if(window.db&&window.seedCloud){seedCloud.push("E",rd("seedEntries"));seedCloud.push("P",rd("seedVpPaid"))}}catch(e){}return f},
  refresh:function(){try{if(window.seedList)window.seedList()}catch(e){}try{if(window.drawVP)window.drawVP()}catch(e){}
   try{["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}catch(e){}try{if(window.seedCap)window.seedCap()}catch(e){}}
 }})();</script>
@@ -1590,10 +1591,10 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
  netUpdate();$("who").onclick=function(){window.netProbe().then(function(ok){toast(ok?"You are online":"You are offline")})};
  db.doc("config/main").onSnapshot(function(s){paySaved=!!s.exists;cfgLoaded=true;if(s.exists){cfg=Object.assign(cfg,s.data());fillVeh();if(cfgKey!==cfgSig())showCfg();if(!editing&&!(+$("ddp").value>0))setDdp();rq()}gateCheck()});
  db.collection("entries").onSnapshot(async function(s){
-  var _a=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});entries=_a.filter(function(e){return!e.deleted});trashE=_a.filter(function(e){return e.deleted});var ids=[];_a.forEach(function(e){[e.by,e.editedBy,e.deletedBy].forEach(function(i){if(i&&i!=="local"&&ids.indexOf(i)<0)ids.push(i)})});
+  var _a=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});entries=_a.filter(function(e){return!e.deleted&&!e.seed});trashE=_a.filter(function(e){return e.deleted&&!e.seed});try{if(window.seedCloud)seedCloud.docs("E",_a.filter(function(e){return e.seed}),!!(s.metadata&&s.metadata.fromCache))}catch(x){}var ids=[];_a.forEach(function(e){[e.by,e.editedBy,e.deletedBy].forEach(function(i){if(i&&i!=="local"&&ids.indexOf(i)<0)ids.push(i)})});
   if(user&&user.profiles&&ids.length){try{var p=await user.profiles(ids);ids.forEach(function(i){names[i]=(p[i]&&p[i].name)||""})}catch(x){}}
   rq()},function(){banner("Live updates unavailable right now.")});
- db.collection("payments").onSnapshot(function(s){var _a=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});pays=_a.filter(function(x){return!x.deleted});trashP=_a.filter(function(x){return x.deleted});rq();prev()},function(){});
+ db.collection("payments").onSnapshot(function(s){var _a=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});pays=_a.filter(function(x){return!x.deleted&&!x.seed});trashP=_a.filter(function(x){return x.deleted&&!x.seed});try{if(window.seedCloud)seedCloud.docs("P",_a.filter(function(x){return x.seed}),!!(s.metadata&&s.metadata.fromCache))}catch(x){}rq();prev()},function(){});
  db.doc("config/seed").onSnapshot(function(s){if(s.exists){scfg=Object.assign(scfg,s.data());srfill();srchk()}});
  db.doc("config/fuel").onSnapshot(function(s){fcfgLoaded=true;if(s.exists){fcfg=Object.assign(fcfg,s.data());$("frs").value=fcfg.sell||"";$("frc").value=fcfg.cost||"";fautofill();frchk()}gateCheck()});
  db.doc("config/locks").onSnapshot(function(s){locks=(s.exists&&s.data().months)||{};rq()},function(){});
@@ -1675,6 +1676,7 @@ function renderAct(){var el=$("actc");if(!el)return;if(!window.fbIsOwn){el.class
   if(x.hist&&x.hist.length)x.hist.forEach(function(h){add(h.at,h.by,"Edited")});else if(x.editedAt)add(x.editedAt,x.editedBy,"Edited");
   if(x.restoredAt)add(x.restoredAt,x.restoredBy,"Restored");
   if(x.deleted&&x.deletedAt)add(x.deletedAt,x.deletedBy,"Deleted")})});
+ try{ev=ev.concat(window.seedAct?seedAct.events():[])}catch(x){}
  ev.sort(function(a,b){return b.at-a.at});
  var clrAt=0;try{clrAt=+localStorage.getItem("fleetActClear")||0}catch(x){}ev=ev.filter(function(e){return e.at>clrAt});
  var who_=function(b){return!b||b==="local"||b===window.me?"You":b},
@@ -1694,9 +1696,10 @@ function renderTrash(){try{renderAct()}catch(x){}var el=$("trashc");if(!el)retur
  trashA.forEach(function(x){L.push({k:"A",o:x,t:"Advance · "+x.driver,s:x.date+" · "+fmt(x.amount)})});
  trashV.forEach(function(x){L.push({k:"V",o:x,t:"Private staff payment \u00b7 "+x.who,s:x.date+" \u00b7 "+fmt(x.amount)+" \u00b7 "+(x.month||"")})});
  trashP.forEach(function(x){L.push({k:"P",o:x,t:(x.kind==="loader"?"Loader":"Driver")+" payment · "+x.who,s:x.date+" · "+fmt(x.amount)})});
+ try{(window.seedAct?seedAct.trash():[]).forEach(function(t){L.push({k:t.k,o:{id:t.id,deletedAt:t.at},t:t.t,s:t.s})})}catch(x){}
  L.sort(function(a,b){return(b.o.deletedAt||0)-(a.o.deletedAt||0)});
  var can=canWrite&&isAdmin;
- el.innerHTML='<b class="ct">Deleted items</b><div class="mut">Deleted records are kept with who deleted them and when. They no longer count in any total until restored.</div>'+(L.length?L.slice(0,50).map(function(x){return'<div class="item" style="align-items:flex-start"><div style="min-width:0;flex:1"><b>'+esc(x.t)+'</b><div class="mut">'+esc(x.s)+'</div><div class="mut">Deleted '+esc(x.o.deletedAt?new Date(x.o.deletedAt).toLocaleString():"")+'</div></div>'+(can?'<button class="mp" data-rk="'+x.k+'" data-rid="'+esc(x.o.id)+'">Restore</button>':"")+'</div>'}).join(""):'<div class="mut" style="margin-top:8px">Nothing deleted.</div>')+(can&&L.length?'<button class="btn alt" id="clrTrash" style="margin-top:12px;width:100%">Clear deleted history ('+L.length+')</button>':"")}
+ el.innerHTML='<b class="ct">Deleted items</b><div class="mut">Deleted records are kept with who deleted them and when. They no longer count in any total until restored.</div>'+(L.length?L.slice(0,50).map(function(x){return'<div class="item" style="align-items:flex-start"><div style="min-width:0;flex:1"><b>'+esc(x.t)+'</b><div class="mut">'+esc(x.s)+'</div><div class="mut">Deleted '+esc(x.o.deletedAt?new Date(x.o.deletedAt).toLocaleString():"")+'</div></div>'+(can?(x.k==="S"||x.k==="SP"?'<button class="mp" data-sk="'+esc(x.o.id)+'" data-sy="'+x.k+'">Restore</button>':'<button class="mp" data-rk="'+x.k+'" data-rid="'+esc(x.o.id)+'">Restore</button>'):"")+'</div>'}).join(""):'<div class="mut" style="margin-top:8px">Nothing deleted.</div>')+(can&&L.length?'<button class="btn alt" id="clrTrash" style="margin-top:12px;width:100%">Clear deleted history ('+L.length+')</button>':"")}
 $("trashc").onclick=async function(ev){var b=ev.target.closest("button[data-rk]");if(!b)return;var m=trashSet(b.dataset.rk),id=b.dataset.rid,o=m[1].find(function(x){return x.id===id});if(!o)return;if(isLocked(o.date)){toast("That month is locked. Unlock it first.");return}b.disabled=true;
  var c=stripId(o);delete c.deleted;delete c.deletedBy;delete c.deletedAt;c.restoredBy=me||"local";c.restoredAt=Date.now();
  try{if(db)await db.doc(m[0]+"/"+id).set(c);m[1].splice(m[1].indexOf(o),1);m[2].push(Object.assign({id:id},c));pvSave();render();try{renderFuel()}catch(x){}try{pvRender()}catch(x){}renderTrash();toast("Restored")}catch(x){b.disabled=false;toast("Could not restore: "+(x&&x.message||"no permission"))}};
@@ -1721,6 +1724,7 @@ function orphLists(){return{A:advs.filter(function(x){return noEnt(x.driver)}),P
 function renderOrph(){var el=document.getElementById("orphc");if(!el)return;var o=orphLists();
  if(!(o.A.length||o.P.length)||!(canWrite&&isAdmin)){el.innerHTML="";return}
  el.innerHTML='<div class="card"><b class="ct">Leftover balances</b><div class="mut" style="margin-top:4px">'+o.A.length+' advance(s) and '+o.P.length+' payment(s) belong to drivers or loaders that have no trips. They still show as unpaid balances.</div><button class="btn alt" id="orphb" style="margin-top:10px;width:100%">Clear leftover balances</button></div>'}
+document.addEventListener("click",function(ev){var b=ev.target&&ev.target.closest?ev.target.closest("button[data-sk]"):null;if(!b)return;if(window.seedAct&&seedAct.restore(b.dataset.sk,b.dataset.sy||"S")){toast(b.dataset.sy==="SP"?"Payment restored":"Seedcane entry restored");try{renderTrash()}catch(x){}}},true);
 document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.closest?ev.target.closest("#orphb,#clrTrash"):null;if(!t)return;
  if(t.id==="orphb"){var o=orphLists();if(!o.A.length&&!o.P.length)return;
   if(!(await confirmX("Clear leftover balances?",o.A.length+" advance(s) and "+o.P.length+" payment(s) for drivers with no trips will be moved to Deleted items. You can restore them from there, or erase them with Clear deleted history.","Clear balances")))return;
@@ -1730,7 +1734,7 @@ document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.
   for(var i=0;i<jobs.length&&!stop;i++){var j=jobs[i];try{await softDel(j[0],j[1],j[2],j[3]);ok++}catch(e){var m=String(e&&e.message||e);if(/locked/i.test(m))sk++;else if(/cancel|password/i.test(m))stop=1;else fl++}}
   holdPw(false);render();try{renderFuel()}catch(x){}
   toast(stop?"Cancelled. "+ok+" cleared":ok+" cleared"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""));return}
- if(t.id==="clrTrash"){var S=[["entries",trashE],["fuel",trashF],["advances",trashA],["payments",trashP],["pvpays",trashV]],n=0;S.forEach(function(x){n+=x[1].length});if(!n)return;
+ if(t.id==="clrTrash"){var S=[["entries",trashE],["fuel",trashF],["advances",trashA],["payments",trashP],["pvpays",trashV]],n=0,sn=window.seedAct?seedAct.trash().length:0;S.forEach(function(x){n+=x[1].length});n+=sn;if(!n)return;
   if(db&&window.NETREAL===false){toast("Connect to the internet to erase deleted history");return}
   if(!(await confirmX("Clear deleted history?",n+" deleted item(s) will be erased permanently. This cannot be undone.","Erase permanently")))return;
   try{await holdPw(true)}catch(e){toast("Cancelled");return}
@@ -1738,6 +1742,7 @@ document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.
   for(var a=0;a<S.length&&!stop;a++){var arr=S[a][1],items=arr.slice();
    for(var b=0;b<items.length&&!stop;b++){var it=items[b];if(isLocked(it.date)){sk++;continue}
     try{if(db)await db.doc(S[a][0]+"/"+it.id).delete();var k=arr.indexOf(it);if(k>=0)arr.splice(k,1);ok++}catch(e){var m2=String(e&&e.message||e);if(/cancel|password/i.test(m2))stop=1;else fl++}}}
+  if(!stop&&window.seedAct){seedAct.clearTrash();ok+=sn}
   holdPw(false);pvSave();renderTrash();toast(stop?"Cancelled. "+ok+" erased":ok+" erased"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""))}
 });
 var _inR=0,_r=render;render=function(){var v;_inR++;try{v=_r.apply(this,arguments)}finally{_inR--}try{bkCheck();renderTrash();renderLocks();renderOrph()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v};
@@ -2589,7 +2594,7 @@ $("ssave").onclick=function(){sw(false)};
 var PG=["pdrv","pldr","pveh"];
 function tbl(n){var H=n==="pveh"?["Date","Vehicle","Driver","Tonnage","Milage","Vehicle pay","Paid","Unpaid",""]:["Date","Vehicle","Driver","Tonnage","Paid","Unpaid",""],c=H.length,z=function(i){return"<td>"+(i===3||n==="pveh"&&i>=5&&i<=7||n!=="pveh"&&i>=4&&i<=5?"0.00":"")+"</td>"},t="";for(var i=1;i<c;i++)t+=z(i);
  return'<div class="card"><div class="mut ehint" style="margin:0 0 8px"><span class="ecn" id="spc-'+n+'">0 entries</span><span></span><span></span></div><div class="wrap cap10"><table><thead><tr>'+H.map(function(h){return"<th>"+h+"</th>"}).join("")+'</tr></thead><tbody id="sdtb-'+n+'"><tr><td class="mut" colspan="'+c+'">No entries yet</td></tr><tr style="font-weight:700"><td>Total</td>'+t+'</tr></tbody></table></div></div>'}
-function hcard(n){return'<div class="card"><b class="ut">PAYMENT HISTORY</b><div class="wrap cap10" style="margin-top:8px"><table><thead><tr><th>Date paid</th><th>Vehicle</th><th>Driver</th><th>Type</th><th>Amount</th></tr></thead><tbody id="sdhb-'+n+'"><tr><td class="mut" colspan="5">No payments yet</td></tr></tbody></table></div></div>'}
+function hcard(n){return'<div class="card"><b class="ut">PAYMENT HISTORY</b><div class="wrap cap10" style="margin-top:8px"><table><thead><tr><th>Date paid</th><th>Vehicle</th><th>Driver</th><th>Type</th><th>Amount</th><th></th></tr></thead><tbody id="sdhb-'+n+'"><tr><td class="mut" colspan="6">No payments yet</td></tr></tbody></table></div></div>'}
 function flt(x){return'<div class="card"><div class="fgrid"><div><label>Period</label><select id="'+x+'per"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="'+x+'dw" class="hide"><label>Date</label><input type="date" id="'+x+'day"></div><div id="'+x+'mw" class="hide"><label>Month</label><input type="month" id="'+x+'mon"></div><div id="'+x+'yw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="'+x+'yr" min="2000" max="2100"></div><div id="'+x+'rw" class="hide"><label>From</label><input type="date" id="'+x+'from"></div><div id="'+x+'tw" class="hide"><label>To</label><input type="date" id="'+x+'to"></div></div><div class="cfr noprt hide" id="'+x+'cf"><button type="button" class="ed" id="'+x+'clr">Clear filters</button></div><div class="ufr" style="margin:10px 0 0!important"><div class="ucol"><div class="ul">TOTAL PAID</div><div class="utb" style="border-color:var(--ok)"><b id="'+x+'tp" style="color:var(--ok)">0.00</b></div></div><div class="ucol"><div class="ul">TOTAL UNPAID</div><div class="utb"><b id="'+x+'tu" style="color:var(--bad)">0.00</b></div></div></div></div>'}
 PG.forEach(function(n){var x="f"+n,d=document.createElement("div");d.id="sdp-"+n;d.className="hide";d.innerHTML=flt(x)+tbl(n)+hcard(n);$("sdpg").appendChild(d);
  function upd(){var k=$(x+"per").value;$(x+"dw").classList.toggle("hide",k!=="day");$(x+"mw").classList.toggle("hide",k!=="month");$(x+"yw").classList.toggle("hide",k!=="year");$(x+"rw").classList.toggle("hide",k!=="range");$(x+"tw").classList.toggle("hide",k!=="range");$(x+"cf").classList.toggle("hide",k==="all")}
@@ -2599,15 +2604,111 @@ window.seedPage=function(n){window.sdPg=n||"";$("sdlist").classList.toggle("hide
 document.querySelector('.main [data-g="seed"]').addEventListener("click",function(){window.seedPage("")});
 })();</script>
 <script>(function(){
+var LK="seedActLog",TK="seedTrash";
+function rd(k){try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(x){return[]}}
+function wr(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(x){return false}}
+function desc(e){return(e.vehicle||"")+" \u00b7 "+(e.driver||"\u2014")+" \u00b7 "+(+e.tonnes||0)+" t"}
+function by(){return window.me||"local"}
+function refresh(){try{renderTrash()}catch(x){}}
+window.seedCloud=(function(){
+var C={E:{},ET:{},P:{},PT:{}},got={E:0,P:0},pend=false,MIG="seedCloudMig";
+function rd(k){try{var v=JSON.parse(localStorage.getItem(k)||"[]");return Array.isArray(v)?v:[]}catch(x){return[]}}
+function wr(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(x){return false}}
+function nm(){return window.me||"local"}
+var META=["by","editedBy","editedAt","hist","deleted","deletedBy","deletedAt","restoredBy","restoredAt","seed","id"];
+function core(o){var c={};Object.keys(o||{}).forEach(function(k){if(META.indexOf(k)<0&&k.charAt(0)!=="_")c[k]=o[k]});return c}
+function same(a,b){return JSON.stringify(core(a))===JSON.stringify(core(b))}
+function toE(d){var o=Object.assign({},d);delete o.id;delete o.seed;return o}
+function toP(d){var o=Object.assign({},d);o.id=d.eid;delete o.eid;delete o.seed;return o}
+function pkey(p){return p.ts+"_"+p.id}
+function ePath(ts){return"entries/s"+ts}
+function pPath(p){return"payments/sp"+pkey(p)}
+function put(path,doc){try{var pr=db.doc(path).set(doc);if(pr&&pr.catch)pr.catch(function(){})}catch(x){}}
+function pDoc(p){var o=Object.assign({},p);o.eid=p.id;delete o.id;o.seed=1;return o}
+function ready(){return got.E&&got.P}
+function dropMeta(o){var c=Object.assign({},o);["deleted","deletedBy","deletedAt"].forEach(function(k){delete c[k]});return c}
+function push(kind,arr,addOnly){if(!window.db)return;if(!ready()){pend=true;return}
+ var by=nm(),now=Date.now();
+ if(kind==="E"){var seen={};arr.forEach(function(x){var k=String(x.ts);seen[k]=1;var old=C.E[k];
+   if(!old){if(C.ET[k]&&addOnly)return;var d=Object.assign({},x);d.seed=1;if(!d.by)d.by=by;delete d.id;C.E[k]=d;put(ePath(k),d)}
+   else if(!same(old,x)&&!addOnly){var h=(old.hist||[]).slice(-19);h.push({at:now,by:by,prev:core(old)});var d2=Object.assign({},x);d2.seed=1;d2.by=old.by||by;d2.hist=h;d2.editedBy=by;d2.editedAt=now;delete d2.id;C.E[k]=d2;put(ePath(k),d2)}});
+  if(!addOnly)Object.keys(C.E).forEach(function(k){if(!seen[k]){var o=C.E[k],d=Object.assign({},o,{deleted:true,deletedBy:by,deletedAt:now,seed:1,editedBy:o.editedBy||o.by||by});delete C.E[k];C.ET[k]=d;put(ePath(k),d)}})}
+ else{var sp={};arr.forEach(function(p){var k=pkey(p);sp[k]=1;if(!C.P[k]){if(C.PT[k]&&addOnly)return;var d=pDoc(p);if(!d.by)d.by=by;C.P[k]=d;put(pPath(p),d)}});
+  if(!addOnly)Object.keys(C.P).forEach(function(k){if(!sp[k]){var o=C.P[k],d=Object.assign({},o,{deleted:true,deletedBy:by,deletedAt:now,seed:1,editedBy:o.editedBy||o.by||by});delete C.P[k];C.PT[k]=d;put(pPath(toP(o)),d)}})}}
+function mirror(){var E=Object.keys(C.E).map(function(k){return toE(C.E[k])}),P=Object.keys(C.P).map(function(k){return toP(C.P[k])}),ch=false;
+ var le=localStorage.getItem("seedEntries")||"[]",lp=localStorage.getItem("seedVpPaid")||"[]";
+ if(!E.length&&le!=="[]"&&!got.srv)return;
+ var se=JSON.stringify(E),sp=JSON.stringify(P);
+ if(se!==le){wr("seedEntries",E);ch=true}if(sp!==lp){wr("seedVpPaid",P);ch=true}
+ if(ch){try{if(window.SEEDBK)SEEDBK.refresh()}catch(x){}try{var q=document.getElementById("rpq");if(q)q.dispatchEvent(new Event("input",{bubbles:true}))}catch(x){}try{renderTrash()}catch(x){}}}
+function step(){if(!ready())return;
+ var did=false;
+ try{if(!localStorage.getItem(MIG)){if(!got.srv)return;try{if(!localStorage.getItem("seedEntriesPreCloud"))localStorage.setItem("seedEntriesPreCloud",JSON.stringify({e:rd("seedEntries"),p:rd("seedVpPaid")}))}catch(x){}
+   push("E",rd("seedEntries"),true);push("P",rd("seedVpPaid"),true);localStorage.setItem(MIG,"1");pend=false;did=true}}catch(x){}
+ if(!did&&pend){pend=false;push("E",rd("seedEntries"));push("P",rd("seedVpPaid"));did=true}
+ mirror()}
+return{
+ docs:function(kind,arr,fromCache){var A={},T={};arr.forEach(function(d){if(kind==="E"){var o=Object.assign({},d);(d.deleted?T:A)[String(d.ts)]=o}else{var p=toP(d),k=pkey(p);(d.deleted?T:A)[k]=Object.assign({},d)}});
+  if(kind==="E"){C.E=A;C.ET=T}else{C.P=A;C.PT=T}got[kind]=1;if(!fromCache)got.srv=1;step()},
+ push:push,
+ events:function(){var ev=[],add=function(at,by,a,k,d,dt){if(at)ev.push({at:+at,by:by||"",a:a,k:k,d:d,dt:dt||""})};
+  var lab={veh:"Vehicle",drv:"Driver",ldr:"Loader"},byTs={};
+  [C.E,C.ET].forEach(function(M){Object.keys(M).forEach(function(k){byTs[k]=M[k]})});
+  function all(x,k,d){add(x.ts,x.by,"Added",k,d,x.date);if(x.hist&&x.hist.length)x.hist.forEach(function(h){add(h.at,h.by,"Edited",k,d,x.date)});else if(x.editedAt&&!x.deleted)add(x.editedAt,x.editedBy,"Edited",k,d,x.date);if(x.restoredAt)add(x.restoredAt,x.restoredBy,"Restored",k,d,x.date);if(x.deleted&&x.deletedAt)add(x.deletedAt,x.deletedBy,"Deleted",k,d,x.date)}
+  [C.E,C.ET].forEach(function(M){Object.keys(M).forEach(function(k){var x=M[k];all(x,"Seedcane",(x.vehicle||"")+" · "+(x.driver||"—")+" · "+(+x.tonnes||0)+" t")})});
+  [C.P,C.PT].forEach(function(M){Object.keys(M).forEach(function(k){var x=M[k],e=byTs[String(x.eid)]||{};all(x,"Seedcane payment",(lab[x.k||"veh"]||"")+" · "+(e.vehicle||"")+" · "+(window.fmt?fmt(x.amt):x.amt))})});
+  return ev},
+ trash:function(){var L=[];Object.keys(C.ET).forEach(function(k){var x=C.ET[k];L.push({k:"S",id:k,at:x.deletedAt||0,t:"Seedcane trip · "+(x.vehicle||""),s:(x.date||"")+" · "+(x.driver||"—")+" · "+(+x.tonnes||0)+" t"})});
+  var byTs={};[C.E,C.ET].forEach(function(M){Object.keys(M).forEach(function(k){byTs[k]=M[k]})});var lab={veh:"Vehicle",drv:"Driver",ldr:"Loader"};
+  Object.keys(C.PT).forEach(function(k){var x=C.PT[k],e=byTs[String(x.eid)]||{};L.push({k:"SP",id:k,at:x.deletedAt||0,t:"Seedcane "+(lab[x.k||"veh"]||"").toLowerCase()+" payment · "+(e.vehicle||""),s:(x.date||"")+" · "+(window.fmt?fmt(x.amt):x.amt)})});return L},
+ restore:function(kind,id){var by=nm(),now=Date.now();
+  if(kind==="S"){var o=C.ET[id];if(!o)return false;var d=dropMeta(o);d.seed=1;d.restoredAt=now;d.restoredBy=by;d.editedBy=d.editedBy||d.by||by;delete C.ET[id];C.E[id]=d;put(ePath(id),d);
+   Object.keys(C.PT).forEach(function(k){var p=C.PT[k];if(String(p.eid)===String(id)&&Math.abs((p.deletedAt||0)-(o.deletedAt||0))<5000){var pd=dropMeta(p);pd.seed=1;pd.restoredAt=now;pd.restoredBy=by;pd.editedBy=pd.editedBy||pd.by||by;delete C.PT[k];C.P[k]=pd;put(pPath(toP(p)),pd)}})}
+  else{var p=C.PT[id];if(!p)return false;if(!C.E[String(p.eid)]){try{toast("Restore the Seedcane trip first",true)}catch(x){}return false}var q=dropMeta(p);q.seed=1;q.restoredAt=now;q.restoredBy=by;q.editedBy=q.editedBy||q.by||by;delete C.PT[id];C.P[id]=q;put(pPath(toP(p)),q)}
+  mirror();return true},
+ clearTrash:function(){Object.keys(C.ET).forEach(function(k){try{var pr=db.doc(ePath(k)).delete();if(pr&&pr.catch)pr.catch(function(){})}catch(x){}});
+  Object.keys(C.PT).forEach(function(k){try{var pr=db.doc(pPath(toP(C.PT[k]))).delete();if(pr&&pr.catch)pr.catch(function(){})}catch(x){}});C.ET={};C.PT={}},
+ count:function(){return Object.keys(C.ET).length+Object.keys(C.PT).length},
+ on:function(){return !!(window.db&&ready())},
+ payBy:function(key){var p=C.P[key];return p?p.by:""}
+}})();
+window.seedAct={
+ log:function(a,e,k){if(window.seedCloud&&seedCloud.on())return;var L=rd(LK);L.push({at:Date.now(),by:by(),a:a,k:k||"Seedcane",d:desc(e),dt:e.date||""});wr(LK,L);refresh()},
+ pay:function(e,kind,amt){if(window.seedCloud&&seedCloud.on())return;var L=rd(LK);L.push({at:Date.now(),by:by(),a:"Added",k:"Seedcane payment",d:({veh:"Vehicle",drv:"Driver",ldr:"Loader"}[kind]||"")+" \u00b7 "+(e.vehicle||"")+" \u00b7 "+(window.fmt?fmt(amt):amt),dt:e.date||""});wr(LK,L);refresh()},
+ del:function(e,pays){if(window.seedCloud&&seedCloud.on())return;var T=rd(TK);T.push({e:e,p:pays||[],at:Date.now(),by:by()});wr(TK,T);window.seedAct.log("Deleted",e)},
+ trash:function(){if(window.seedCloud&&seedCloud.on())return seedCloud.trash();return rd(TK).map(function(t){return{k:"S",id:t.e.ts,at:t.at,t:"Seedcane trip \u00b7 "+(t.e.vehicle||""),s:(t.e.date||"")+" \u00b7 "+(t.e.driver||"\u2014")+" \u00b7 "+(+t.e.tonnes||0)+" t"}})},
+ events:function(){if(window.seedCloud&&seedCloud.on())return seedCloud.events();var ev=rd(LK).slice(),ents=rd("seedEntries").concat(rd(TK).map(function(t){return t.e}));ents.forEach(function(e){if(e&&e.ts)ev.push({at:+e.ts,by:"",a:"Added",k:"Seedcane",d:desc(e),dt:e.date||""})});return ev},
+ restore:function(ts,kind){if(window.seedCloud&&seedCloud.on())return seedCloud.restore(kind||"S",ts);var T=rd(TK),i,it=null;for(i=0;i<T.length;i++)if(String(T[i].e.ts)===String(ts)){it=T[i];T.splice(i,1);break}if(!it)return false;
+  var A=rd("seedEntries");if(!A.some(function(x){return String(x.ts)===String(ts)}))A.push(it.e);wr("seedEntries",A);
+  if(it.p&&it.p.length){var P=rd("seedVpPaid");it.p.forEach(function(q){P.push(q)});wr("seedVpPaid",P)}
+  wr(TK,T);window.seedAct.log("Restored",it.e);
+  try{window.seedList()}catch(x){}try{window.drawVP()}catch(x){}try{["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}catch(x){}return true},
+ clearTrash:function(){if(window.seedCloud&&seedCloud.on())seedCloud.clearTrash();wr(TK,[]);refresh()}
+};
+})();</script>
+<style>#syncp{display:none;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;border:2px solid #f5a524;color:var(--tx);text-align:center;font-weight:700;cursor:pointer;font-family:inherit}#syncp.on{display:flex}#syncp .sd{flex:0 0 auto;width:10px;height:10px;border-radius:50%;border:2px solid #f5a524;border-top-color:transparent;animation:syncspin 1s linear infinite}#syncp.off .sd{animation:none;border-top-color:#f5a524;background:#f5a524}@keyframes syncspin{to{transform:rotate(360deg)}}@media print{#syncp{display:none!important}}</style>
+<script>(function(){
+var P={},el=null;
+function mk(){if(el&&el.isConnected)return el;if(!el){el=document.createElement("button");el.type="button";el.id="syncp";el.className="note";el.innerHTML='<span class="sd"></span><span id="synct"></span>';
+ el.onclick=function(){var off=window.NETREAL===false||navigator.onLine===false;try{toast(off?"No connection. Your changes are saved on this phone and will upload when you are back online.":"Uploading your latest changes. This clears once the server confirms.")}catch(x){}}}
+ var b=document.getElementById("banner");if(b&&b.parentNode)b.parentNode.insertBefore(el,b);else document.body.appendChild(el);return el}
+function total(){var n=0;Object.keys(P).forEach(function(k){n+=P[k]});return n}
+function paint(){var n=total(),b=mk(),off=window.NETREAL===false||navigator.onLine===false;
+ if(!n){b.classList.remove("on");return}
+ b.classList.add("on");b.classList.toggle("off",off);document.getElementById("synct").textContent=(off?"Offline \u00b7 ":"Waiting to sync \u00b7 ")+n+(n===1?" change":" changes")}
+window.syncMark=function(name,s){var c=0;try{s.docs.forEach(function(d){if(d.metadata&&d.metadata.hasPendingWrites)c++})}catch(x){}P[name]=c;paint()};
+window.addEventListener("online",paint);window.addEventListener("offline",paint);
+})();</script>
+<script>(function(){
 var K="seedEntries";
 function load(){try{return JSON.parse(localStorage.getItem(K)||"[]")}catch(x){return[]}}
-function put(a){try{localStorage.setItem(K,JSON.stringify(a));return true}catch(x){return false}}
+function put(a){try{localStorage.setItem(K,JSON.stringify(a));try{if(window.db&&window.seedCloud)seedCloud.push("E",a)}catch(e){}return true}catch(x){return false}}
 function nv(i){return parseFloat($(i).value)||0}
 function vpay(e){return(+(window.scfg&&scfg.c)||0)*(+e.tonnes||0)*(+e.mil||0)}
 function vpIn(d){var x="fpveh",k=$(x+"per").value,v=function(i){return $(x+i).value};if(k==="day")return!v("day")||d===v("day");if(k==="month")return!v("mon")||d.slice(0,7)===v("mon");if(k==="year")return!v("yr")||d.slice(0,4)===String(v("yr"));if(k==="range")return(!v("from")||d>=v("from"))&&(!v("to")||d<=v("to"));return true}
 var KP="seedVpPaid";
 function loadP(){try{return JSON.parse(localStorage.getItem(KP)||"[]")}catch(x){return[]}}
-function putP(a){try{localStorage.setItem(KP,JSON.stringify(a));return true}catch(x){return false}}
+function putP(a){try{localStorage.setItem(KP,JSON.stringify(a));try{if(window.db&&window.seedCloud)seedCloud.push("P",a)}catch(e){}return true}catch(x){return false}}
 function r2(v){return Math.round(v*100)/100}
 function paidOf(id,P,k){var t=0;k=k||"veh";(P||loadP()).forEach(function(q){if(String(q.id)===String(id)&&String(q.k||"veh")===k)t+=+q.amt||0});return r2(t)}
 function paidAll(id){var t=0;loadP().forEach(function(q){if(String(q.id)===String(id))t+=+q.amt||0});return r2(t)}
@@ -2631,28 +2732,29 @@ function seedPay(id,k){var AA=load();drvCalc(AA);var e=AA.filter(function(x){ret
  $("vpOK").onclick=function(){var a=n($("vpamt").value);if(!(a>0)){alert("Enter an amount");return}var pd=$("vpdate").value||today();
   if(window.isLocked&&isLocked(pd)){alert("That month is locked. Unlock it in Update Rates first.");return}
   var u1=un();if(u1!=null&&a>u1+0.001&&$("vpOK").dataset.c!=="1"){$("vpOK").dataset.c="1";$("vpOK").textContent="Amount is more than unpaid. Tap again";return}
-  var A=loadP();A.push({id:e.ts,k:k,amt:a,date:pd,ts:Date.now()});if(!putP(A)){toast("Could not save on this device",true);return}closeM();refreshPay();draw();toast(({veh:"Vehicle",drv:"Driver",ldr:"Loader"}[k]||"")+" pay marked paid")}}
+  var A=loadP();A.push({id:e.ts,k:k,amt:a,date:pd,ts:Date.now()});if(!putP(A)){toast("Could not save on this device",true);return}try{seedAct.pay(e,k,a)}catch(x){}closeM();refreshPay();draw();toast(({veh:"Vehicle",drv:"Driver",ldr:"Loader"}[k]||"")+" pay marked paid")}}
 function refreshPay(){["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}
 if($("sdpg"))$("sdpg").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-vp]");if(b)seedPay(b.dataset.vp,b.dataset.k||"veh")});
 window.drawVP=drawVP;
+function sdCan(e){return window.canWrite!==false&&(window.isAdmin!==false||!window.db||e.by===window.me)&&!(window.isLocked&&isLocked(e.date))}
 function tot(){$("stot").textContent=fmt(nv("sdep")+nv("sddp"))}
 ["sdep","sddp"].forEach(function(i){$(i).addEventListener("input",tot)});
 function draw(){var q=($("sq").value||"").trim().toLowerCase(),A=load().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0)}),CNT=seedCnt(A),L=q?A.filter(function(e){return[e.date,e.vehicle,e.driver].join(" ").toLowerCase().indexOf(q)>=0}):A,T=0,X=0,UU=0;drvCalc(A);
- var rows=L.map(function(e){var te=tripExp(e),un=r2(dInfo(e).u+vInfo(e).u);T+=e.tonnes;X+=te;UU+=un;return seedTr(e,CNT,' data-t="'+e.ts+'"',"cursor:pointer")+"<td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"—")+"</td><td>"+e.tonnes.toFixed(2)+"</td><td>"+(e.mil>0?e.mil:"—")+"</td><td>"+fmt(te)+'</td><td class="'+(un>0?"neg":"")+'">'+(un>0?fmt(un):"—")+"</td></tr>"}).join("");
- $("seedl").innerHTML='<div class="wrap cap10"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody>'+(L.length?rows:'<tr><td class="mut" colspan="7">No seedcane entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+'</td><td></td><td>'+fmt(X)+'</td><td>'+(UU>0?fmt(r2(UU)):'')+'</td></tr></tbody></table></div>';
+ var SL=window.sdLim||100,rows=L.slice(0,SL).map(function(e){var te=tripExp(e),un=r2(dInfo(e).u+vInfo(e).u);T+=e.tonnes;X+=te;UU+=un;return seedTr(e,CNT,' data-t="'+e.ts+'"',"cursor:pointer")+"<td>"+esc(e.date.slice(5))+"</td><td>"+esc(e.vehicle)+"</td><td>"+esc(e.driver||"—")+"</td><td>"+e.tonnes.toFixed(2)+"</td><td>"+(e.mil>0?e.mil:"—")+"</td><td>"+fmt(te)+'</td><td class="'+(un>0?"neg":"")+'">'+(un>0?fmt(un):"—")+"</td></tr>"}).join("");
+ $("seedl").innerHTML='<div class="wrap sdmain"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody>'+(L.length?rows:'<tr><td class="mut" colspan="7">No seedcane entries yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td>'+T.toFixed(2)+'</td><td></td><td>'+fmt(X)+'</td><td>'+(UU>0?fmt(r2(UU)):'')+'</td></tr></tbody></table></div>'+(L.length>SL?'<button type="button" class="btn alt" id="sdmore" style="margin-top:10px;width:100%">Show more ('+Math.min(100,L.length-SL)+' of '+(L.length-SL)+' remaining)</button>':'');
  $("scnt").textContent=L.length+(L.length===1?" entry":" entries")}
-$("sq").addEventListener("input",draw);window.seedList=draw;
+$("sq").addEventListener("input",function(){window.sdLim=100;draw()});$("seedl").addEventListener("click",function(ev){if(ev.target.id==="sdmore"){window.sdLim=(window.sdLim||100)+100;draw()}});window.seedList=draw;
 if(typeof srfill==="function"){var _sf=srfill;window.srfill=function(){var r=_sf.apply(this,arguments);try{draw();refreshPay()}catch(e){}return r}}
 $("ssave").onclick=function(){var v=$("sveh").value;if(!v){toast("Select a plate first",true);return}var t=nv("ston");if(!(t>0)){toast("Enter the tonnes",true);return}
  var A=load();A.push({date:$("sdate").value||today(),vehicle:v,driver:$("sdrv").value.trim(),tonnes:t,mil:nv("smil"),dep:nv("sddp"),ldep:nv("sdep"),lf:+((window.scfg&&scfg.l)||0),lm:+((window.scfg&&scfg.l2)||0),exp:nv("sdep")+nv("sddp"),ts:Date.now()});
- if(!put(A)){toast("Could not save on this device",true);return}
+ var ne=A[A.length-1];if(!put(A)){toast("Could not save on this device",true);return}
  ["sdrv","sddp","ston","smil","sdep"].forEach(function(i){$(i).value=""});$("sveh").value="";tot();draw();drawVP();window.seedPage("");toast("Entry saved")};
 $("seedl").addEventListener("click",function(ev){var r=ev.target.closest&&ev.target.closest("tr[data-t]");if(!r)return;var id=r.dataset.t,e=load().filter(function(x){return String(x.ts)===id})[0];if(!e)return;var AA=load();drvCalc(AA);var e2=AA.filter(function(x){return String(x.ts)===id})[0]||e,du=dInfo(e2).u,vi=vInfo(e);
- var h='<b style="font-size:18px">'+esc(e.vehicle)+'</b><div class="mut" style="margin-bottom:8px">'+esc(e.date)+'</div>'+kv("Driver",esc(e.driver||"—"))+kv("Tonnes",e.tonnes.toFixed(2))+'<label>Milage</label><div style="display:flex;gap:8px;margin-bottom:8px"><input type="number" inputmode="decimal" id="mMil" placeholder="Enter milage" value="'+(e.mil>0?e.mil:"")+'"><button class="pr" id="mMS" style="white-space:nowrap">Save milage</button></div>'+kv("Loader pay",fmt(lInfo(e).o))+kv("Loader deposit",fmt(e.ldep||0))+kv("Unpaid loader",fmt(lInfo(e).u))+kv("Driver deposit",fmt(e.dep||0))+kv("Trip expense",fmt(tripExp(e)))+kv("Vehicle pay",e.mil>0?fmt(vi.v):"—")+kv("Vehicle paid",fmt(vi.p))+kv("Unpaid driver",fmt(du))+kv("Unpaid vehicle",e.mil>0?fmt(vi.u):"—")+'<div class="b2"><button class="pr" id="mE">Edit</button><button class="dg" id="mD">Delete</button><button id="mC">Close</button></div>';
+ var h='<b style="font-size:18px">'+esc(e.vehicle)+'</b><div class="mut" style="margin-bottom:8px">'+esc(e.date)+'</div>'+kv("Driver",esc(e.driver||"—"))+kv("Tonnes",e.tonnes.toFixed(2))+'<label>Milage</label><div style="display:flex;gap:8px;margin-bottom:8px"><input type="number" inputmode="decimal" id="mMil" placeholder="Enter milage" value="'+(e.mil>0?e.mil:"")+'"><button class="pr" id="mMS" style="white-space:nowrap">Save milage</button></div>'+kv("Loader pay",fmt(lInfo(e).o))+kv("Loader deposit",fmt(e.ldep||0))+kv("Unpaid loader",fmt(lInfo(e).u))+kv("Driver deposit",fmt(e.dep||0))+kv("Trip expense",fmt(tripExp(e)))+kv("Vehicle pay",e.mil>0?fmt(vi.v):"—")+kv("Vehicle paid",fmt(vi.p))+kv("Unpaid driver",fmt(du))+kv("Unpaid vehicle",e.mil>0?fmt(vi.u):"—")+'<div class="b2">'+(sdCan(e)?'<button class="pr" id="mE">Edit</button><button class="dg" id="mD">Delete</button>':"")+'<button id="mC">Close</button></div>';
  $("mbody").innerHTML=h;$("modal").classList.remove("hide");$("mC").onclick=closeM;
- $("mMS").onclick=function(){var m=parseFloat($("mMil").value);if(!(m>0)){toast("Enter the milage",true);return}var A=load(),i;for(i=0;i<A.length;i++)if(String(A[i].ts)===id)A[i].mil=m;if(!put(A)){toast("Could not save on this device",true);return}draw();drawVP();closeM();toast("Milage updated")};
+ $("mMS").onclick=function(){if(!sdCan(e)){toast("You cannot change this entry",true);return}var m=parseFloat($("mMil").value);if(!(m>0)){toast("Enter the milage",true);return}var A=load(),i;for(i=0;i<A.length;i++)if(String(A[i].ts)===id)A[i].mil=m;if(!put(A)){toast("Could not save on this device",true);return}try{seedAct.log("Edited",A.filter(function(x){return String(x.ts)===id})[0]||e)}catch(x){}draw();drawVP();closeM();toast("Milage updated")};
 
- $("mE").onclick=function(){var vs=(cfg.veh||[]).slice();if(vs.indexOf(e.vehicle)<0)vs.unshift(e.vehicle);
+ if($("mE"))$("mE").onclick=function(){var vs=(cfg.veh||[]).slice();if(vs.indexOf(e.vehicle)<0)vs.unshift(e.vehicle);
   var inp=function(i,l,v,t){return"<label>"+l+'</label><input '+(t||'type="number" inputmode="decimal"')+' id="'+i+'" value="'+esc(v==null?"":v)+'">'};
   $("mbody").innerHTML='<b style="font-size:18px">Edit entry</b>'+inp("eDt","Date",e.date,'type="date"')+'<label>Vehicle</label><select id="eVeh">'+vs.map(function(v){return"<option"+(v===e.vehicle?" selected":"")+">"+esc(v)+"</option>"}).join("")+"</select>"+inp("eDrv","Driver",e.driver||"",'type="text"')+inp("eLd","Loader deposit",e.ldep||0)+inp("eDd","Driver deposit",e.dep||0)+inp("eTn","Tonnes",e.tonnes)+inp("eMl","Milage (optional)",e.mil>0?e.mil:"")+'<div class="b2"><button class="pr" id="eOK">Save changes</button><button id="eNo">Cancel</button></div>';
   $("eNo").onclick=closeM;
@@ -2662,9 +2764,9 @@ $("seedl").addEventListener("click",function(ev){var r=ev.target.closest&&ev.tar
    if(window.isLocked&&(isLocked(dt)||isLocked(e.date))){alert("That month is locked. Unlock it in Update Rates first.");return}
    var A=load(),i,ld=parseFloat($("eLd").value)||0,dd=parseFloat($("eDd").value)||0;
    for(i=0;i<A.length;i++)if(String(A[i].ts)===id){A[i].date=dt;A[i].vehicle=v;A[i].driver=$("eDrv").value.trim();A[i].tonnes=tn;A[i].mil=parseFloat($("eMl").value)||0;A[i].ldep=ld;A[i].dep=dd;A[i].exp=ld+dd}
-   if(!put(A)){toast("Could not save on this device",true);return}draw();drawVP();closeM();toast("Entry updated")}};
- $("mD").onclick=function(){var b=$("mD");if(!b.dataset.s){b.dataset.s=1;b.textContent="Tap again to confirm";return}
-  if(!put(load().filter(function(x){return String(x.ts)!==id}))){closeM();toast("Could not remove",true);return}putP(loadP().filter(function(q){return String(q.id)!==id}));draw();drawVP();closeM();toast("Seed entry deleted")}});
+   if(!put(A)){toast("Could not save on this device",true);return}try{seedAct.log("Edited",A.filter(function(x){return String(x.ts)===id})[0]||e)}catch(x){}draw();drawVP();closeM();toast("Entry updated")}};
+ if($("mD"))$("mD").onclick=function(){if(!sdCan(e)){toast("You cannot delete this entry",true);return}var b=$("mD");if(!b.dataset.s){b.dataset.s=1;b.textContent="Tap again to confirm";return}
+  var dp_=loadP().filter(function(q){return String(q.id)===id});if(!put(load().filter(function(x){return String(x.ts)!==id}))){closeM();toast("Could not remove",true);return}try{seedAct.del(e,dp_)}catch(x){}putP(loadP().filter(function(q){return String(q.id)!==id}));draw();drawVP();closeM();toast("Seed entry deleted")}});
 draw();
 })();</script>
 <script>(function(){
@@ -2682,16 +2784,23 @@ PG.forEach(function(n){var x="f"+n,g=$("sdp-"+n).querySelector(".fgrid"),d=docum
 PG.forEach(function(n){var x="f"+n;["per","day","mon","yr","from","to","drv"].forEach(function(i){$(x+i).addEventListener("change",function(){draw(n)});$(x+i).addEventListener("input",function(){draw(n)})});$(x+"clr").addEventListener("click",function(){$(x+"drv").value="";draw(n)});draw(n)});
 function capH(w){if(!w)return;w.style.maxHeight="";var tb=w.querySelector("tbody"),rs=[].slice.call(tb.rows),th=w.querySelector("thead");if(rs.length<=11)return;var h=th.offsetHeight+rs[rs.length-1].offsetHeight+2,i;for(i=0;i<10;i++)h+=rs[i].offsetHeight;if(h>th.offsetHeight+20)w.style.maxHeight=h+"px"}
 function readPaid(){try{return JSON.parse(localStorage.getItem("seedVpPaid")||"[]")}catch(x){return[]}}
+function payOwn(q){return window.canWrite!==false&&(window.isAdmin!==false||!window.db||q.by===window.me)&&!(window.isLocked&&isLocked(q.date))}
+$("sdpg").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-sd]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
+ var kk=b.dataset.sd.split("|"),P=readPaid(),hit=null,N=P.filter(function(p){if(!hit&&String(p.ts)===kk[0]&&String(p.id)===kk[1]){hit=p;return false}return true});
+ if(!hit)return;if(window.isLocked&&isLocked(hit.date)){toast("That month is locked",true);return}
+ try{localStorage.setItem("seedVpPaid",JSON.stringify(N))}catch(x){toast("Could not remove",true);return}
+ try{if(window.db&&window.seedCloud)seedCloud.push("P",N);else if(window.seedAct){var en=load().filter(function(e){return String(e.ts)===String(hit.id)})[0];if(en)seedAct.log("Deleted",en,"Seedcane payment")}}catch(x){}
+ try{SEEDBK.refresh()}catch(x){}toast("Payment moved to Deleted")});
 function hist(n){var K={pveh:"veh",pdrv:"drv",pldr:"ldr"}[n],x="f"+n,all=load(),byId={},dv=$(x+"drv").value,tot=0,tb=$("sdhb-"+n),R=[];if(!tb)return;
  var sc=(typeof scfg!=="undefined"&&scfg)||{},dp=+sc.d||0,seen={};
  all.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}).forEach(function(e){var k=e.date+"|"+(e.driver||"").trim().toLowerCase(),f=!seen[k];seen[k]=1;e._p=f?dp:0});
  all.forEach(function(e){byId[String(e.ts)]=e});
  var okE=function(e,d){return ok(x,d)&&(!dv||(e.driver||"").trim()===dv)};
  all.forEach(function(e){var a=K==="drv"?e._p:K==="ldr"?(+e.ldep||0):0;if(a>0&&okE(e,e.date))R.push({d:e.date,t:e.ts||0,e:e,ty:"Deposit",a:a})});
- readPaid().forEach(function(q){var e=byId[String(q.id)];if(e&&String(q.k||"veh")===K&&okE(e,q.date||e.date))R.push({d:q.date||e.date,t:q.ts||0,e:e,ty:"Payment",a:+q.amt||0})});
+ readPaid().forEach(function(q){var e=byId[String(q.id)];if(e&&String(q.k||"veh")===K&&okE(e,q.date||e.date))R.push({d:q.date||e.date,t:q.ts||0,e:e,ty:"Payment",a:+q.amt||0,q:q})});
  R.sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:b.t-a.t});
- var rows=R.map(function(r){tot+=r.a;return"<tr><td>"+esc(r.d.slice(5))+"</td><td>"+esc(r.e.vehicle)+"</td><td>"+esc(r.e.driver||"—")+"</td><td>"+r.ty+"</td><td>"+fmt(r.a)+"</td></tr>"}).join("");
- tb.innerHTML=(R.length?rows:'<tr><td class="mut" colspan="5">No payments yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td></td><td>'+fmt(Math.round(tot*100)/100)+"</td></tr>";
+ var rows=R.map(function(r){tot+=r.a;return"<tr><td>"+esc(r.d.slice(5))+"</td><td>"+esc(r.e.vehicle)+"</td><td>"+esc(r.e.driver||"—")+"</td><td>"+r.ty+"</td><td>"+fmt(r.a)+"</td><td>"+(r.ty==="Payment"&&r.q&&payOwn(r.q)?'<button class="undo" data-sd="'+esc(r.q.ts+"|"+r.q.id)+'">Delete</button>':"")+"</td></tr>"}).join("");
+ tb.innerHTML=(R.length?rows:'<tr><td class="mut" colspan="6">No payments yet</td></tr>')+'<tr style="font-weight:700"><td>Total</td><td></td><td></td><td></td><td>'+fmt(Math.round(tot*100)/100)+"</td><td></td></tr>";
  capH(tb.closest(".wrap"));capH($("sdtb-"+n).closest(".wrap"))}
 var _draw=draw;draw=function(n){_draw(n);try{hist(n)}catch(e){console.error("payment history",e)}};
 window.seedDraw=draw;var o=window.seedPage;window.seedPage=function(n){o(n);var rp=$("sdp-prep");if(rp)rp.classList.toggle("hide",n!=="prep");if(n&&n!=="prep")draw(n);else if(!n&&window.seedList)window.seedList()};
@@ -2749,7 +2858,7 @@ document.addEventListener("click",function(e){var t=e.target;if(!t.closest||$("s
  if(t.closest("[data-go],[data-g],#hst,#hrp")&&!t.closest("#sdform"))resetSeedForm()},true);
 })();</script>
 <script>(function(){
-function cap(w){var tb=w.querySelector("tbody"),th=w.querySelector("thead");if(!tb||!th)return;var rs=[].slice.call(tb.rows);w.style.maxHeight="";if(rs.length<=11||!th.offsetHeight)return;var h=th.offsetHeight+rs[rs.length-1].offsetHeight+2,i;for(i=0;i<10;i++)h+=rs[i].offsetHeight;w.style.maxHeight=h+"px"}
+function cap(w){var tb=w.querySelector("tbody"),th=w.querySelector("thead");if(!tb||!th)return;var rs=[].slice.call(tb.rows);w.style.maxHeight="";if(rs.length<=6||!th.offsetHeight)return;var h=th.offsetHeight+rs[rs.length-1].offsetHeight+2,i;for(i=0;i<5;i++)h+=rs[i].offsetHeight;w.style.maxHeight=h+"px"}
 var tm=null;function all(){[].forEach.call(document.querySelectorAll("#seed .cap10"),cap)}
 function later(){clearTimeout(tm);tm=setTimeout(all,30)}
 var root=document.getElementById("seed");if(root&&window.MutationObserver)new MutationObserver(later).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
