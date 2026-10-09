@@ -2699,8 +2699,7 @@ function paint(){var n=total(),b=mk(),off=window.NETREAL===false||navigator.onLi
  if(!n){slow=false;clearTimeout(tm);tm=null;b.classList.remove("on");return}
  if(!off&&!slow){if(!tm)tm=setTimeout(function(){tm=null;slow=true;paint()},5000);b.classList.remove("on");return}
  b.classList.add("on");b.classList.toggle("off",off);document.getElementById("synct").textContent=(off?"Offline \u00b7 ":"Waiting to sync \u00b7 ")+n+(n===1?" change":" changes")}
-window.syncMark=function(name,s){var c=0;try{s.docs.forEach(function(d){if(d.metadata&&d.metadata.hasPendingWrites)c++})}catch(x){}P[name]=c;paint()};
-window.addEventListener("online",paint);window.addEventListener("offline",paint);
+window.syncMark=function(){};/* sync banner removed: Firestore offline persistence queues changes on the phone and uploads them automatically */
 })();</script>
 <script>(function(){
 var K="seedEntries";
