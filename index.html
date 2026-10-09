@@ -616,18 +616,20 @@ return{
 <div id="dsv" class="noprt" style="margin-top:12px"><div class="mut">Select a driver to preview the statement.</div></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm alt" id="dsdl" disabled>Download PDF</button><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dstx" disabled>Share text</button></div></div>
 <div class="card bkc"><div id="bkst" class="bkst"></div>
-<div class="bkh">1 · Back up<small>Save a copy of your data outside the app</small></div>
-<div class="bko"><div class="bkt"><b>JSON file</b><small>Everything: all records, rates, staff and settings. Best for a full restore.</small></div><button class="btn alt" id="bjson">Download JSON</button></div>
-<div class="bko"><div class="bkt"><b>CSV file (one year)</b><small>Records for the year you type. Opens in Excel. Rates and settings are not included.</small></div><div class="bky"><label class="sf"><input type="number" inputmode="numeric" id="byr" placeholder="Year, e.g. 2026" aria-label="Year for CSV"></label><button class="btn alt" id="bcsv" disabled>Download CSV</button></div></div>
-<div class="bko"><div class="bkt"><b>Share</b><small>Send the JSON backup by WhatsApp or save it to Drive.</small></div><button class="btn alt" id="bshare">Share backup</button></div>
+<div class="bkh">Back up</div>
+<div class="bkg"><button class="btn" id="bjson"><b>JSON</b><small>Everything</small></button><button class="btn alt" id="bcsv" disabled><b>CSV</b><small>One year</small></button></div>
+<div class="bkyr"><label for="byr">CSV year</label><input type="number" inputmode="numeric" id="byr" placeholder="e.g. 2026"></div>
+<div class="bkline"></div>
+<div class="bkh">Restore</div>
+<div class="bkg"><label class="btn alt bkf" id="rbtn"><b>JSON</b><small>Choose file</small><input type="file" id="rfile" accept=".json,application/json,text/plain"></label><label class="btn alt bkf" id="rbtnc"><b>CSV</b><small>Choose file</small><input type="file" id="rfilec" accept=".csv,text/csv,text/plain"></label></div>
+<div class="bkhint">You see a summary and confirm before anything changes. CSV only adds records, it never deletes.</div>
+<details class="bkm"><summary>More options</summary>
+<div class="bkmr"><button class="btn alt" id="bshare">Share backup</button><button class="btn alt" id="rpaste">Paste backup text</button></div>
+<div class="bkmr"><button class="btn alt" id="snapnow">Save to cloud</button><button class="btn alt" id="snaprestore">Restore from cloud</button></div>
+<div class="bkmr"><button class="btn alt" id="lsnnow">Save on this phone</button><button class="btn alt" id="lsnrestore">Restore from this phone</button></div>
+<div class="bkhint" id="snapst"></div><div class="bkhint" id="lsnst"></div>
 <div class="setrow"><div class="st"><b>Remind me every</b><small>A banner shows when a backup is due</small></div><select id="bkint" class="ssel"><option value="3">3 days</option><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option></select></div>
-<div class="bkh">2 · Restore<small>You see a summary and confirm before anything changes</small></div>
-<div class="bko"><div class="bkt"><b>From a JSON file</b><small>Restores everything in the file. You choose to keep existing data or replace it.</small></div><label class="btn alt bkf" id="rbtn"><span>Choose JSON file</span><input type="file" id="rfile" accept=".json,application/json,text/plain"></label></div>
-<div class="bko"><div class="bkt"><b>From a CSV file</b><small>Adds the records and overwrites ones with the same ID. Nothing is deleted. Use a CSV made by this app and keep dates as YYYY-MM-DD.</small></div><label class="btn alt bkf" id="rbtnc"><span>Choose CSV file</span><input type="file" id="rfilec" accept=".csv,text/csv,text/plain"></label></div>
-<div class="bko"><div class="bkt"><b>Paste text</b><small>If the file picker does not open, paste the JSON or CSV text instead.</small></div><button class="btn alt" id="rpaste">Paste backup text</button></div>
-<div class="bkh">3 · Safety copies<small>Automatic copies you can go back to</small></div>
-<div class="bko"><div class="bkt"><b>Cloud snapshot</b><small class="mut" id="snapst"></small></div><div class="sacts"><button class="btn alt" id="snapnow">Save now</button><button class="btn alt" id="snaprestore">Restore</button></div></div>
-<div class="bko"><div class="bkt"><b>Device snapshot</b><small class="mut" id="lsnst"></small></div><div class="sacts"><button class="btn alt" id="lsnnow">Save now</button><button class="btn alt" id="lsnrestore">Restore</button></div></div></div></section><section id="dhs" class="hide"><div class="card hide" id="actc"></div><div class="card" id="trashc"></div></section>  <section id="seed" class="hide"><div id="sdlist"><div class="card"><b class="ct">Seedcane entries</b><div class="mut ehint"><span class="ecn" id="scnt">0 entries</span><span>Swipe right | Tap for details</span><span></span></div><input type="search" id="sq" placeholder="Search date, vehicle, driver, note…" autocomplete="off" style="margin:0 0 8px"><div class="fgrid" style="margin:0 0 8px"><div><label>Period</label><select id="fmnper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div><label>Driver</label><select id="fmndrv"></select></div><div id="fmndw" class="hide"><label>Date</label><input type="date" id="fmnday"></div><div id="fmnmw" class="hide"><label>Month</label><input type="month" id="fmnmon"></div><div id="fmnyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="fmnyr" min="2000" max="2100"></div><div id="fmnrw" class="hide"><label>From</label><input type="date" id="fmnfrom"></div><div id="fmntw" class="hide"><label>To</label><input type="date" id="fmnto"></div></div><div class="cfr noprt hide" id="fmncf" style="margin:0 0 8px"><button type="button" class="ed" id="fmnclr">Clear filters</button></div><div id="seedl"><div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody><tr><td class="mut" colspan="7">No seedcane entries yet</td></tr><tr style="font-weight:700"><td>Total</td><td></td><td></td><td>0.00</td><td></td><td>0.00</td><td></td></tr></tbody></table></div></div></div></div><div id="sdform" class="hide"><div class="acts"><button type="button" class="btn alt sm" id="sdBack">← ALL SEEDCANE LOGS</button></div><div class="card">
+</details></div></section><section id="dhs" class="hide"><div class="card hide" id="actc"></div><div class="card" id="trashc"></div></section>  <section id="seed" class="hide"><div id="sdlist"><div class="card"><b class="ct">Seedcane entries</b><div class="mut ehint"><span class="ecn" id="scnt">0 entries</span><span>Swipe right | Tap for details</span><span></span></div><input type="search" id="sq" placeholder="Search date, vehicle, driver, note…" autocomplete="off" style="margin:0 0 8px"><div class="fgrid" style="margin:0 0 8px"><div><label>Period</label><select id="fmnper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div><label>Driver</label><select id="fmndrv"></select></div><div id="fmndw" class="hide"><label>Date</label><input type="date" id="fmnday"></div><div id="fmnmw" class="hide"><label>Month</label><input type="month" id="fmnmon"></div><div id="fmnyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="fmnyr" min="2000" max="2100"></div><div id="fmnrw" class="hide"><label>From</label><input type="date" id="fmnfrom"></div><div id="fmntw" class="hide"><label>To</label><input type="date" id="fmnto"></div></div><div class="cfr noprt hide" id="fmncf" style="margin:0 0 8px"><button type="button" class="ed" id="fmnclr">Clear filters</button></div><div id="seedl"><div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody><tr><td class="mut" colspan="7">No seedcane entries yet</td></tr><tr style="font-weight:700"><td>Total</td><td></td><td></td><td>0.00</td><td></td><td>0.00</td><td></td></tr></tbody></table></div></div></div></div><div id="sdform" class="hide"><div class="acts"><button type="button" class="btn alt sm" id="sdBack">← ALL SEEDCANE LOGS</button></div><div class="card">
 <label>Date</label><input type="date" id="sdate">
 <div class="row"><div><label>Vehicle</label><select id="sveh"></select></div>
 <div><label>Loader deposit</label><input type="number" inputmode="decimal" id="sdep" placeholder="0"></div></div>
@@ -2579,16 +2581,22 @@ function wShowPer(){var k=$("wper").value;$("wdw").classList.toggle("hide",k!=="
 wShowPer();winchFill();winchRender();
 </script>
 <style id="drwcss">
-.bkc .bkh{margin:18px 0 4px;font-weight:800;font-size:13px;letter-spacing:.4px;text-transform:uppercase}
-.bkc .bkh small{display:block;text-transform:none;font-weight:500;letter-spacing:0;font-size:12.5px;margin-top:2px;color:var(--mut)}
-.bkc .bko{border:1px solid var(--ln);border-radius:12px;padding:12px;margin:8px 0;display:flex;flex-direction:column;gap:10px}
-.bkc .bkt b{display:block;font-size:14.5px}.bkc .bkt small{display:block;color:var(--mut);font-size:12.5px;line-height:1.35;margin-top:3px}
-.bkc .bko>.btn,.bkc .bko>.bkf,.bkc .bky .btn{margin:0;width:100%;box-sizing:border-box;text-align:center}
-.bkc .bky{display:flex;flex-direction:column;gap:8px}
-#stg .bkc .bky .sf,#stg .bkc .bky .sf input{width:100%!important;max-width:100%!important;min-width:0!important;flex:none!important}
-.bkc .bkf{position:relative;overflow:hidden;cursor:pointer;display:block}
-.bkc .bkf input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
-.bkc .bko .sacts{margin:0}
+#stg .bkc{padding:14px!important}
+.bkc .bkh{font-weight:800;font-size:16px;margin:2px 0 10px}
+.bkc .bkg,.bkc .bkmr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 8px}
+.bkc .bkg>.btn{margin:0!important;width:100%;box-sizing:border-box;min-height:70px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;text-align:center;line-height:1.2;padding:10px 6px;position:relative;overflow:hidden}
+.bkc .bkg .btn b{font-size:17px}.bkc .bkg .btn small{font-size:12px;font-weight:500;opacity:.8}
+.bkc .bkf{cursor:pointer}.bkc .bkf input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
+.bkc .bkyr{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 4px;font-size:13.5px;color:var(--mut)}
+#stg .bkc .bkyr input{width:130px!important;min-width:0!important;max-width:130px!important;flex:none!important;margin:0;text-align:center}
+.bkc .bkline{height:1px;background:var(--ln);margin:16px 0 14px}
+.bkc .bkhint{font-size:12.5px;color:var(--mut);line-height:1.4;margin:2px 0 8px}.bkc .bkhint:empty{display:none}
+.bkc .bkm{margin-top:10px;border-top:1px solid var(--ln);padding-top:10px}
+.bkc .bkm summary{cursor:pointer;font-weight:700;font-size:14px;padding:6px 0;list-style:none}
+.bkc .bkm summary::-webkit-details-marker{display:none}
+.bkc .bkm summary::after{content:" \25BE";color:var(--mut)}.bkc .bkm[open] summary::after{content:" \25B4"}
+.bkc .bkmr .btn{margin:0!important;width:100%;box-sizing:border-box;font-size:13px;padding:11px 6px;line-height:1.2}
+.bkc .bkm .setrow{margin-top:6px}
 
 #s-lock #lockc>b.ct{display:none}#s-lock #lockc{padding:14px}
 
