@@ -580,7 +580,7 @@ return{
 <label>Driver balance held per working day</label><input type="number" id="dbal"><label>Held reduction for a repeat trip on the same day</label><input type="number" id="drep"><div class="mut" style="margin-top:4px">Own figure, not tied to the driver deposit. For a driver's second trip the same day the deposit is paid again and the balance held is reduced by this amount.</div>
 <button class="btn" id="sset2" disabled>Update/Save Rates &amp; Data</button></div><div class="card" id="rveh"><div class="rh">VEHICLE &amp; DRIVER</div><label>Vehicles and drivers</label><div class="mut">Each plate is tied to one driver. Picking the plate on the Enter tab fills the driver automatically.</div><div class="mut" id="vnote" style="margin-top:6px"></div><div id="vrows"></div><button type="button" class="btn" id="vadd" style="background:var(--mut);margin-top:10px">+ Add vehicle</button><button class="btn" id="sset" disabled>Update/Save Rates &amp; Data</button></div><div class="card" id="rwinch"><div class="rh">Winch</div><div class="mut">Choose the one vehicle used as the winch. The Winch tab shows a detailed report for it.</div>
 <label>Plate</label><select id="wplate"></select><label>Driver</label><input id="wdrv" readonly placeholder="Fills in from the plate"><div class="mut" id="wnote" style="margin-top:6px"></div>
-<button class="btn" id="wsave" disabled>Save winch vehicle</button></div><div class="card" id="lockc"></div><div class="card" id="rrsn"><div class="rh">Expense reasons</div><div class="mut">Reasons you can pick for Other expense when filling a trip entry. Changes save straight away.</div><div id="rsnrows"></div><div id="rsnorph"></div><div class="vrow" style="grid-template-columns:1fr auto"><input id="rsnin" maxlength="40" placeholder="New reason, e.g. Food"><button type="button" class="btn" id="rsnadd" style="margin:0;width:auto;padding:0 16px">Add</button></div><div class="mut" style="margin-top:8px">Tap ✎ to rename a reason. Reports and entries then show the new name, and past entries are not edited. Removing a reason does not change past entries either.</div></div></section>
+<button class="btn" id="wsave" disabled>Save winch vehicle</button></div><div class="card" id="rrsn"><div class="rh">Expense reasons</div><div class="mut">Reasons you can pick for Other expense when filling a trip entry. Changes save straight away.</div><div id="rsnrows"></div><div id="rsnorph"></div><div class="vrow" style="grid-template-columns:1fr auto"><input id="rsnin" maxlength="40" placeholder="New reason, e.g. Food"><button type="button" class="btn" id="rsnadd" style="margin:0;width:auto;padding:0 16px">Add</button></div><div class="mut" style="margin-top:8px">Tap ✎ to rename a reason. Reports and entries then show the new name, and past entries are not edited. Removing a reason does not change past entries either.</div></div></section>
 
 <section id="fen" class="hide">
 <div class="acts"><button type="button" class="btn alt sm" id="fnBack">← ALL FUEL LOGS</button></div>
@@ -648,6 +648,7 @@ return{
 </div></div>
 <div class="ssec" id="s-sec"><div class="sh2">Security</div><div class="ssub">Applies on this device.</div>
 <div class="card sc"><div class="setrow"><div class="st"><b>Password for edits &amp; deletes</b><small id="spwnote">Off. Edits and deletes go through without asking. Turning it off needs your password.</small></div><button type="button" class="sw" id="spwsw" role="switch" aria-checked="false" aria-label="Ask password for edits and deletes"><i></i></button></div></div></div>
+<div class="ssec" id="s-lock"><div class="sh2">Month lock</div><div class="ssub">Lock a finished month so it cannot be changed.</div><div class="card sc" id="lockc"></div></div>
 <div class="ssec" id="s-data"><div class="sh2">Data &amp; backup</div><div class="ssub">Keep a copy outside the app.</div><div id="bkhost"></div></div>
 <div class="ssec" id="s-app"><div class="sh2">App</div><div class="ssub">Look and feel.</div>
 <div class="card sc">
@@ -763,7 +764,7 @@ $("logl").onclick=function(ev){var r=ev.target.closest("tr[data-id]");if(r)detai
 var _eM={"&":"&amp;","<":"&lt;",">":"&gt;","\u00a0":"&nbsp;","\"":"&quot;","'":"&#39;"};function esc(s){return s==null?"":String(s).replace(/[&<>\u00a0"']/g,function(c){return _eM[c]})}
 function fillVeh(){var cv=$("veh").value;$("veh").innerHTML='<option value="">Select plate…</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)$("veh").value=cv;if(!editing)applyDrv();chk();try{renderFuel()}catch(x){}}
 function applyDrv(){var d=(cfg.vd||{})[$("veh").value],i=$("drv");if(!$("veh").value){i.value="";i.readOnly=true;$("dhint").textContent="Pick a plate first. The driver fills in from the plate.";return}if(d){i.value=d;i.readOnly=true;$("dhint").textContent="Driver is set by the vehicle. Change it in Update Rates → Vehicle & Driver."}else{i.readOnly=!!editing;$("dhint").textContent="No driver set for this plate. Set it in Update Rates → Vehicle & Driver."}}
-function chk(){var lk=isLocked($("date").value);$("lkw").textContent=lk?"This month is locked. Unlock it in Update Rates → Month lock to add or change entries.":"";$("save").disabled=!(canWrite&&!lk&&$("date").value&&$("veh").value&&$("drv").value.trim()&&$("ton").value!==""&&!(editing&&esnap!==null&&tsnap()===esnap))}
+function chk(){var lk=isLocked($("date").value);$("lkw").textContent=lk?"This month is locked. Unlock it in Settings → Month lock to add or change entries.":"";$("save").disabled=!(canWrite&&!lk&&$("date").value&&$("veh").value&&$("drv").value.trim()&&$("ton").value!==""&&!(editing&&esnap!==null&&tsnap()===esnap))}
 function cur(){return{tonnes:n($("ton").value),deposit:n($("dep").value),expense:n($("exp").value),advance:n($("adv").value),id:editing,date:$("date").value,driver:($("drv").value||"").trim(),ts:(function(){var o=editing&&entries.find(function(x){return x.id===editing});return o?o.ts:undefined})(),ddep:$("ddp").value===""?null:n($("ddp").value)}}
 function remain(nm){var h=0,a=0,p=0;entries.forEach(function(e){if((e.driver||"")===nm&&e.id!==editing){h+=dheld(e);a+=e.advance||0}});livePays().forEach(function(x){if(x.kind==="driver"&&x.who===nm)p+=x.amount});liveAdvs().forEach(function(x){if(x.driver===nm)a+=x.amount});return h-a-p}
 function prev(){chk();var c=cur();$("prev").textContent=fmt(pay(c));var nm=$("drv").value.trim(),r=$("rem");
@@ -782,7 +783,7 @@ document.querySelectorAll(".main button").forEach(function(b){b.onclick=function
 function payM(kind,who,u){if(needRates()){gatePop();return}$("mbody").innerHTML='<b style="font-size:18px">Mark paid</b><div class="mut">'+esc(who)+' · '+kind+' balance</div><label>Amount paid</label><input type="number" inputmode="decimal" id="pamt" value="'+(Math.round(u*100)/100)+'"><div class="mut" style="margin-top:6px">Unpaid now: '+fmt(u)+'. Lower the amount for a part payment.</div><label>Date paid</label><input type="date" id="pdate" value="'+today()+'"><div id="pwarn" class="neg" style="margin-top:8px;font-size:14px"></div><div class="b2"><button class="pr" id="pOK">Confirm paid</button><button id="pNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("pNo").onclick=closeM;
  $("pOK").onclick=async function(){var a=n($("pamt").value);if(a<=0){alert("Enter an amount");return}
-  var pd=$("pdate").value||today(),wm=[];if(isLocked(pd)){alert("That month is locked. Unlock it in Update Rates → Month lock first.");return}if(a>Math.round(u*100)/100)wm.push("Amount "+fmt(a)+" is more than the unpaid "+fmt(u)+".");if(pd>today())wm.push("Date "+esc(pd)+" is in the future.");
+  var pd=$("pdate").value||today(),wm=[];if(isLocked(pd)){alert("That month is locked. Unlock it in Settings → Month lock first.");return}if(a>Math.round(u*100)/100)wm.push("Amount "+fmt(a)+" is more than the unpaid "+fmt(u)+".");if(pd>today())wm.push("Date "+esc(pd)+" is in the future.");
   if(wm.length&&$("pOK").dataset.c!==wm.join("|")){$("pOK").dataset.c=wm.join("|");$("pwarn").innerHTML=wm.join("<br>")+"<br>Tap again to confirm.";$("pOK").textContent="Confirm anyway";return}
   var p={kind:kind,who:who,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pOK").disabled=true;
   try{if(db)await db.collection("payments").add(p);else{p.id="p"+p.ts;pays.push(p);render()}closeM();toast("Marked paid")}catch(x){$("pOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
@@ -795,13 +796,13 @@ function dbalOf(nm){var h=0,a=0,p=0;entries.forEach(function(e){if((e.driver||""
 function renderAdv(){var sel=$("adrv"),cv=sel.value,nm=drvNames();
  sel.innerHTML='<option value="">Select driver…</option>'+nm.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(nm.indexOf(cv)>=0)sel.value=cv;
  var x=n($("aamt").value),d=sel.value,bal=d?dbalOf(d):null;
- $("abefore").innerHTML=(d?"Balance now: <b>"+mn(bal.b)+"</b>":"")+(isLocked($("adate").value)?'<div class="neg">This month is locked. Unlock it in Update Rates → Month lock.</div>':"");$("aafter").innerHTML=d?mn(bal.b-x):"—";
+ $("abefore").innerHTML=(d?"Balance now: <b>"+mn(bal.b)+"</b>":"")+(isLocked($("adate").value)?'<div class="neg">This month is locked. Unlock it in Settings → Month lock.</div>':"");$("aafter").innerHTML=d?mn(bal.b-x):"—";
  $("asave").disabled=!(canWrite&&d&&x>0&&$("adate").value&&!isLocked($("adate").value));
  $("abal").innerHTML=nm.length?nm.map(function(k){var b=dbalOf(k);return"<tr><td>"+esc(k)+orph(k)+"</td><td>"+fmt(b.h)+"</td><td>"+fmt(b.a)+"</td><td>"+fmt(b.p)+"</td><td><b>"+mn(b.b)+"</b></td></tr>"}).join(""):'<tr><td class="mut" colspan="5">No drivers yet</td></tr>';
  var LA=liveAdvs();$("ahist").innerHTML=LA.length?LA.slice().sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:b.ts-a.ts}).map(function(a){return"<tr><td>"+esc(a.date.slice(5))+"</td><td>"+esc(a.driver)+"</td><td>"+fmt(a.amount)+"</td><td>"+(own(a)?'<button class="undo" data-a="'+esc(a.id)+'">Delete</button>':"")+"</td></tr>"}).join(""):'<tr><td class="mut">No advances yet</td></tr>'}
 ["aamt","adate"].forEach(function(i){$(i).addEventListener("input",renderAdv)});$("adrv").addEventListener("change",renderAdv);
 $("asave").onclick=async function(){if(needRates()){gatePop();return}var x=n($("aamt").value),d=$("adrv").value;if(!d||x<=0||!$("adate").value){alert("Pick driver, date and amount");return}
- if(isLocked($("adate").value)){alert("That month is locked. Unlock it in Update Rates → Month lock first.");return}var AW=advWarns(d,x,$("adate").value);if(AW.length&&!(await ask("Please check this advance",AW.join("<br>"))))return;  var a={driver:d,amount:x,date:$("adate").value,by:me||"local",ts:Date.now()};$("asave").disabled=true;
+ if(isLocked($("adate").value)){alert("That month is locked. Unlock it in Settings → Month lock first.");return}var AW=advWarns(d,x,$("adate").value);if(AW.length&&!(await ask("Please check this advance",AW.join("<br>"))))return;  var a={driver:d,amount:x,date:$("adate").value,by:me||"local",ts:Date.now()};$("asave").disabled=true;
  try{if(db)await db.collection("advances").add(a);else{a.id="a"+a.ts;advs.push(a)}$("aamt").value="";$("adate").value=today();render();toast("Advance recorded");toTop()}catch(er){alert("Could not save: "+(er&&er.message||er))}renderAdv()};
 $("ahist").onclick=async function(ev){var b=ev.target.closest("button[data-a]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
  var id=b.dataset.a;try{await softDel("advances",id,advs,trashA);render();prev();toast("Advance moved to Deleted")}catch(er){toast("Could not remove")}};
@@ -893,7 +894,7 @@ $("save").onclick=async function(){if(needRates()){gatePop();return}
  var e={date:d,vehicle:$("veh").value,driver:$("drv").value.trim(),tonnes:n($("ton").value),deposit:n($("dep").value),ddep:$("ddp").value===""?cfg.dday:n($("ddp").value),advance:n($("adv").value),expense:n($("exp").value),reason:n($("exp").value)>0?$("rsn").value:"",note:$("nte").value.trim(),rate:cfg.rate,hold:cfg.dday+cfg.dbal,rep:repCfg(),by:me||"local",ts:Date.now()};
  if(editing){var o=entries.find(function(x){return x.id===editing});if(o){e.by=o.by;e.ts=o.ts;if(o.rate!=null){e.rate=o.rate;e.hold=o.hold;if(o.rep!=null)e.rep=o.rep;else delete e.rep}}}
  if(editing){e.editedBy=me||"local";e.editedAt=Date.now();var o2=entries.find(function(x){return x.id===editing});if(o2)e.hist=histAdd(o2)}
- if(e.tonnes<0||e.deposit<0||e.ddep<0||e.advance<0||e.expense<0){alert("Amounts can't be negative");return}  var oe0=editing&&entries.find(function(x){return x.id===editing});if(isLocked(e.date)||(oe0&&isLocked(oe0.date))){alert("That month is locked. Unlock it in Update Rates → Month lock first.");return}var W=entryWarns(e);if(W.length&&!(await ask("Please check this entry",W.join("<br>"))))return;
+ if(e.tonnes<0||e.deposit<0||e.ddep<0||e.advance<0||e.expense<0){alert("Amounts can't be negative");return}  var oe0=editing&&entries.find(function(x){return x.id===editing});if(isLocked(e.date)||(oe0&&isLocked(oe0.date))){alert("That month is locked. Unlock it in Settings → Month lock first.");return}var W=entryWarns(e);if(W.length&&!(await ask("Please check this entry",W.join("<br>"))))return;
  if(entries.some(function(x){return x.vehicle===e.vehicle&&x.date===e.date&&x.id!==editing})&&!(await ask("Duplicate entry",esc(e.vehicle)+" already has an entry on "+esc(e.date)+". A second trip the same day pays the driver deposit again, but its balance held is reduced by the repeat-trip figure in Update Rates.")))return;
  $("save").disabled=true;
  try{if(editing){if(db)await db.doc("entries/"+editing).set(e);else{e.id=editing;entries=entries.map(function(x){return x.id===editing?e:x})}}
@@ -1195,7 +1196,7 @@ function pvPay(w,mon){if(needRates()){gatePop();return}var P=pvP(),m0=mon||(P.k=
  $("modal").classList.remove("hide");$("pvNo").onclick=closeM;
  var up=function(){var u=pvUn(w.k,w.s,$("pvsm").value);$("pvamt").value=u>0?u:"";$("pvun").textContent="Unpaid for this month: "+fmt(u)+". Lower the amount for a part payment."};up();$("pvsm").onchange=up;
  $("pvOK").onclick=async function(){var a=n($("pvamt").value),m=$("pvsm").value;if(!m){alert("Pick the salary month");return}if(a<=0){alert("Enter an amount");return}var pd=$("pvdate").value||today(),u=pvUn(w.k,w.s,m);
-  if(isLocked(pd)){alert("That month is locked. Unlock it in Update Rates first.");return}
+  if(isLocked(pd)){alert("That month is locked. Unlock it in Settings → Month lock first.");return}
   if(a>u+0.001&&$("pvOK").dataset.c!=="1"){$("pvOK").dataset.c="1";$("pvOK").textContent="Amount is more than unpaid. Tap again";return}
   var q={who:w.k,month:m,amount:a,date:pd,by:me||"local",ts:Date.now()};$("pvOK").disabled=true;
   try{if(db)await db.collection("pvpays").add(q);else{q.id="v"+q.ts;pvp.push(q);pvSave();pvRender();try{rq()}catch(e){}}closeM();toast("Salary marked paid")}catch(x){$("pvOK").disabled=false;alert("Could not save: "+(x&&x.message||x))}}}
@@ -1206,7 +1207,7 @@ function fdrop(sel,inp,k){var o={},cv=inp.value.trim(),shown=!inp.classList.cont
  sel.innerHTML='<option value="">Select…</option>'+nm.map(function(v){return'<option value="'+esc(v).replace(/"/g,"&quot;")+'">'+esc(v)+"</option>"}).join("")+'<option value="__new">+ Add new name…</option>';
  if(cv&&nm.indexOf(cv)>=0){inp.classList.add("hide");sel.value=cv}else if(shown||!nm.length){sel.value="__new";inp.classList.remove("hide")}}
 function fsel(sel,inp){if(sel.value==="__new"){inp.classList.remove("hide");inp.value="";inp.focus()}else{inp.classList.add("hide");inp.value=sel.value}fprev()}
-function fprev(){var l=n($("flt").value),s=n($("fsp").value),c=n($("fap").value);$("fnp").innerHTML=mn(l*(s-c));var lk=isLocked($("fdate").value);$("flkw").textContent=lk?"This month is locked. Unlock it in Update Rates → Month lock to add or change entries.":"";$("fsave").disabled=!(canWrite&&!lk&&$("fdate").value&&$("fveh").value&&l>0&&$("fcb").value.trim()&&$("fib").value.trim()&&!(fedit&&fsnap!==null&&fsn()===fsnap))}
+function fprev(){var l=n($("flt").value),s=n($("fsp").value),c=n($("fap").value);$("fnp").innerHTML=mn(l*(s-c));var lk=isLocked($("fdate").value);$("flkw").textContent=lk?"This month is locked. Unlock it in Settings → Month lock to add or change entries.":"";$("fsave").disabled=!(canWrite&&!lk&&$("fdate").value&&$("fveh").value&&l>0&&$("fcb").value.trim()&&$("fib").value.trim()&&!(fedit&&fsnap!==null&&fsn()===fsnap))}
 function fpre(){var v=$("fveh").value,L=fuels.filter(function(f){return f.vehicle===v}).sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:(b.ts||0)-(a.ts||0)})[0];if(L){$("fsp").value=L.sell;$("fap").value=L.cost}fprev()}
 function fper(){var k=$("fper").value||"all",td=today();
  if(k==="day"){var dd=$("fday").value||td;return{k:"d",y:dd.slice(0,4),lab:"Date "+dd,t:function(f){return f.date===dd}}}
@@ -1247,7 +1248,7 @@ $("fcan").onclick=function(){fend();document.querySelector('#barfuel [data-t="fl
 $("fsave").onclick=async function(){if(needRates()){gatePop();return}var nm=function(v,k){v=v.replace(/\s+/g," ").trim();var m=fuels.filter(function(x){return x[k]&&x[k].toLowerCase()===v.toLowerCase()})[0];return m?m[k]:v};
  var f={date:$("fdate").value,vehicle:$("fveh").value,driver:$("fdrv").value,litres:n($("flt").value),sell:n($("fsp").value),cost:n($("fap").value),collected:nm($("fcb").value,"collected"),issued:nm($("fib").value,"issued"),note:$("fnt").value.trim(),by:me||"local",ts:Date.now()};
  if(!f.date||!f.vehicle||f.litres<=0||!f.collected||!f.issued){alert("Fill date, vehicle, litres, collected by and issued by");return}
- if(f.sell<=0||f.cost<=0){alert("Prices must be above zero. Set them in Update Rates → Fuel rates.");return}  var of0=fedit&&fuels.find(function(x){return x.id===fedit});if(isLocked(f.date)||(of0&&isLocked(of0.date))){alert("That month is locked. Unlock it in Update Rates → Month lock first.");return}var FW=fuelWarns(f);if(FW.length&&!(await ask("Please check this fuel entry",FW.join("<br>"))))return;
+ if(f.sell<=0||f.cost<=0){alert("Prices must be above zero. Set them in Update Rates → Fuel rates.");return}  var of0=fedit&&fuels.find(function(x){return x.id===fedit});if(isLocked(f.date)||(of0&&isLocked(of0.date))){alert("That month is locked. Unlock it in Settings → Month lock first.");return}var FW=fuelWarns(f);if(FW.length&&!(await ask("Please check this fuel entry",FW.join("<br>"))))return;
  var o=fedit&&fuels.find(function(x){return x.id===fedit});if(o){f.by=o.by;f.ts=o.ts;f.editedBy=me||"local";f.editedAt=Date.now();f.hist=histAdd(o)}
  if(fuels.some(function(x){return x.vehicle===f.vehicle&&x.date===f.date&&x.id!==fedit})&&!(await ask("Duplicate entry",esc(f.vehicle)+" already has a fuel entry on "+esc(f.date)+".")))return;
  if(f.sell<f.cost&&!(await ask("Selling below cost","Selling price ("+f.sell+") is lower than the actual price ("+f.cost+"), so this entry is a loss.")))return;
@@ -2535,6 +2536,8 @@ function wShowPer(){var k=$("wper").value;$("wdw").classList.toggle("hide",k!=="
 wShowPer();winchFill();winchRender();
 </script>
 <style id="drwcss">
+#s-lock #lockc>b.ct{display:none}#s-lock #lockc{padding:14px}
+
 .hd #mnu{flex:0 0 auto;cursor:pointer;width:36px}
 #drw{position:fixed;inset:0;z-index:1000;visibility:hidden;pointer-events:none}
 #drw.on{visibility:visible;pointer-events:auto}
@@ -2544,8 +2547,8 @@ html.dlock,html.dlock body{overflow:hidden!important;overscroll-behavior:none}
 #drw.on .dsh{opacity:1}
 #drw .dpn{position:absolute;top:0;bottom:0;left:0;width:min(78vw,300px);background:var(--bg);color:var(--tx);border-right:1px solid var(--ln);transform:translateX(-100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(14px + env(safe-area-inset-bottom,0px));overflow-y:auto;box-shadow:6px 0 24px rgba(0,0,0,.35)}
 #drw.on .dpn{transform:none}
-#drw .dtt{font-size:15px;font-weight:800;padding:4px 8px 12px;border-bottom:1px solid var(--ln);margin-bottom:8px;letter-spacing:.2px}
-#drw .dit{display:flex;align-items:center;gap:14px;width:100%;background:none;border:1px solid transparent;color:var(--tx);font:inherit;font-size:15px;font-weight:700;text-align:left;padding:12px 10px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:.3px}
+#drw .dtt{font-size:13.5px;font-weight:800;padding:4px 8px 12px;border-bottom:1px solid var(--ln);margin-bottom:8px;letter-spacing:.2px}
+#drw .dit{display:flex;align-items:center;gap:14px;width:100%;background:none;border:1px solid transparent;color:var(--tx);font:inherit;font-size:13px;font-weight:700;text-align:left;padding:12px 10px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:.2px}
 #drw .dit:active{background:var(--card)}
 #drw .dit{background:var(--card);border:1px solid #16a34a;border-radius:6px;margin-bottom:8px}
 #drw .dit.on{color:var(--ac);border-color:#16a34a;background:color-mix(in srgb,#16a34a 12%,var(--card))}
@@ -2742,7 +2745,7 @@ function seedPay(id,k){var AA=load();drvCalc(AA);var e=AA.filter(function(x){ret
  $("modal").classList.remove("hide");$("vpNo").onclick=closeM;var u0=un();$("vpamt").value=u0>0?u0:"";
  $("vpun").textContent=u0==null?"Type the amount you are paying the loader.":"Unpaid for this entry: "+fmt(u0)+". Lower the amount for a part payment.";
  $("vpOK").onclick=function(){var a=n($("vpamt").value);if(!(a>0)){alert("Enter an amount");return}var pd=$("vpdate").value||today();
-  if(window.isLocked&&isLocked(pd)){alert("That month is locked. Unlock it in Update Rates first.");return}
+  if(window.isLocked&&isLocked(pd)){alert("That month is locked. Unlock it in Settings → Month lock first.");return}
   var u1=un();if(u1!=null&&a>u1+0.001&&$("vpOK").dataset.c!=="1"){$("vpOK").dataset.c="1";$("vpOK").textContent="Amount is more than unpaid. Tap again";return}
   var A=loadP();A.push({id:e.ts,k:k,amt:a,date:pd,ts:Date.now()});if(!putP(A)){toast("Could not save on this device",true);return}try{seedAct.pay(e,k,a)}catch(x){}closeM();refreshPay();draw();toast(({veh:"Vehicle",drv:"Driver",ldr:"Loader"}[k]||"")+" pay marked paid")}}
 function refreshPay(){["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}
@@ -2782,7 +2785,7 @@ $("seedl").addEventListener("click",function(ev){var r=ev.target.closest&&ev.tar
   $("eVeh").onchange=function(){var d=(cfg.vd||{})[this.value];if(d)$("eDrv").value=d};
   $("eOK").onclick=function(){var dt=$("eDt").value||e.date,tn=parseFloat($("eTn").value)||0,v=$("eVeh").value;
    if(!v){toast("Select a plate first",true);return}if(!(tn>0)){toast("Enter the tonnes",true);return}
-   if(window.isLocked&&(isLocked(dt)||isLocked(e.date))){alert("That month is locked. Unlock it in Update Rates first.");return}
+   if(window.isLocked&&(isLocked(dt)||isLocked(e.date))){alert("That month is locked. Unlock it in Settings → Month lock first.");return}
    var A=load(),i,ld=parseFloat($("eLd").value)||0,dd=parseFloat($("eDd").value)||0;
    for(i=0;i<A.length;i++)if(String(A[i].ts)===id){A[i].date=dt;A[i].vehicle=v;A[i].driver=$("eDrv").value.trim();A[i].tonnes=tn;A[i].mil=parseFloat($("eMl").value)||0;A[i].ldep=ld;A[i].dep=dd;A[i].exp=ld+dd}
    if(!put(A)){toast("Could not save on this device",true);return}try{seedAct.log("Edited",A.filter(function(x){return String(x.ts)===id})[0]||e)}catch(x){}draw();drawVP();closeM();toast("Entry updated")}};
