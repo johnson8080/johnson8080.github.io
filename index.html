@@ -2171,7 +2171,7 @@ function show(v){if(bn)return;bn=document.createElement("div");bn.className="not
   try{if(navigator.serviceWorker){var rg=await navigator.serviceWorker.getRegistrations();for(var i=0;i<rg.length;i++)await rg[i].unregister()}if(window.caches){var ks=await caches.keys();for(var j=0;j<ks.length;j++)await caches.delete(ks[j])}}catch(e){}
   location.reload()}}
 function check(){if(!cur||window.NETREAL===false||Date.now()<last)return;last=Date.now()+6e5;
- fetch(location.pathname+"?_="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){var m=/name="app-version"\s+content="([^"]+)"/.exec(t);if(m&&m[1]!==cur)show(m[1])}).catch(function(){})}
+ fetch(location.pathname+"?__v="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){var m=/name="app-version"\s+content="([^"]+)"/.exec(t);if(m&&m[1]!==cur)show(m[1])}).catch(function(){})}
 setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibilitychange",function(){if(!document.hidden)check()});window.addEventListener("online",function(){setTimeout(check,2000)})})();
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){try{navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}})}</script>
