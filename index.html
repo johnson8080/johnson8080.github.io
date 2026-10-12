@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.3.1">
+<meta name="app-version" content="1.3.2">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -354,6 +354,8 @@ button:not(.sw),.btn,.ib,input,select,textarea,.card{transition:none!important}
 .pals button i{display:block;width:100%;height:30px;border-radius:9px;border:1px solid rgba(128,128,128,.35)}
 .pals button.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac)}
 .setrow.wp{flex-wrap:wrap}
+
+#annbar:empty{display:none}.annb{display:flex;align-items:flex-start;gap:8px;margin:0 0 8px;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--ac);border-left-width:5px;color:var(--tx)}.annt{flex:1 1 auto;min-width:0;font-size:13px}.annt b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ac);margin-bottom:2px}.annt span{display:block;white-space:pre-wrap;overflow-wrap:anywhere}.annt small{display:block;margin-top:4px;color:var(--mut);font-size:11px}.annx{flex:0 0 auto;background:none;border:0;color:var(--mut);font-size:22px;line-height:1;padding:0 4px}
 </style>
 <style>
 /* perf 1.0.4 */
@@ -502,7 +504,7 @@ return{
 }})();</script>
 </head><body>
 <header class="hd"><button class="ib" id="mnu" type="button" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h7"/></svg></button><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
-<div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div>
+<div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div><div id="annbar"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Winch</button><button data-g="seed">Seedcane</button></div>
 <div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button><button data-t="pdt" style="display:none">PAID</button></div>
 <div class="tabs hide" id="barrates" data-g="rates" style="grid-template-columns:minmax(0,1fr)"><button data-t="set" class="on">Update Rates</button></div>
@@ -659,6 +661,12 @@ return{
 <div class="setrow"><div class="st"><b>Low fuel margin warning<span class="nw">NEW</span></b><small>Ask before saving a fuel entry that earns less than this profit</small></div><label class="sf"><input type="number" inputmode="decimal" id="slowm" placeholder="0 = off"><span>%</span></label></div>
 <div class="setrow"><div class="st"><b>Daily reminder<span class="nw">NEW</span></b><small>Shows a banner after this time if no trip or fuel is logged today</small></div><button type="button" class="sw" id="srmsw" role="switch" aria-checked="false" aria-label="Daily reminder"><i></i></button></div>
 <div class="setrow hide" id="srmrow"><div class="st"><b>Reminder time</b></div><input type="time" id="srmtime" class="ssel" value="18:00" aria-label="Reminder time"></div>
+</div></div>
+<div class="ssec hide" id="s-ann"><div class="sh2">Announcement</div><div class="ssub">Shows to everyone as a banner until they dismiss it. Posting a new one replaces the old one.</div>
+<div class="card sc"><div class="mut" id="annnote"></div>
+<textarea id="annin" maxlength="300" rows="3" placeholder="Type the announcement (max 300 characters)" style="width:100%;margin:8px 0"></textarea>
+<div class="setrow"><div class="st"><b>Expires on</b><small>Optional. It disappears after this date.</small></div><input type="date" id="annexp" class="ssel" aria-label="Expiry date"></div>
+<div class="setrow"><button type="button" class="btn" id="annpost">Post</button><button type="button" class="x" id="annclr">Clear announcement</button></div>
 </div></div>
 <div class="ssec" id="s-sec"><div class="sh2">Security</div><div class="ssub">Applies on this device.</div>
 <div class="card sc"><div class="setrow"><div class="st"><b>Password for edits &amp; deletes</b><small id="spwnote">Off. Edits and deletes go through without asking. Turning it off needs your password.</small></div><button type="button" class="sw" id="spwsw" role="switch" aria-checked="false" aria-label="Ask password for edits and deletes"><i></i></button></div></div></div>
@@ -1619,7 +1627,7 @@ function acUi(){var f=$("sfoot"),a=$("salert"),can=isAdmin&&canWrite;
 function acApply(r){appCfg=acClean(r);acLocalSet();acUi();acWm();try{render()}catch(x){}}
 $("sappsave").onclick=async function(){var r=acClean({footer:$("sfoot").value,alertAt:$("salert").value});this.disabled=true;
  try{if(db)await db.doc("config/app").set(r);acApply(r);toast("Settings saved")}catch(x){toast("Could not save: "+(x&&x.message||"no permission"))}acUi()};
-function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
+function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();try{annInit()}catch(x){}
  if(db){try{db.doc("config/app").onSnapshot(function(s){acApply(s.exists?s.data():{})},function(){})}catch(x){}}}
 (function(){var bk=document.querySelector(".bkc"),h=$("bkhost");if(bk&&h)h.appendChild(bk)})();
 (async function init(){
@@ -1671,6 +1679,29 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();
  if(vv){vv.addEventListener("resize",kbh)}
  document.addEventListener("focusout",function(){setTimeout(function(){if(!isF(document.activeElement))document.documentElement.style.setProperty("--kb","0px")},200)});
 })();
+/* Announcement: one current message from the owner, shown to everyone until dismissed or expired */
+var ANNK="fleetAnnSeen",ANNC="fleetAnnCache",ann=null;
+function annClean(r){if(!r||typeof r!=="object")return null;var t=String(r.text||"").trim().slice(0,300);if(!t)return null;var e=/^\d{4}-\d{2}-\d{2}$/.test(r.exp||"")?r.exp:"";return{text:t,exp:e,id:String(r.id||""),at:+r.at||0}}
+function annLive(a){return!!a&&(!a.exp||today()<=a.exp)}
+function annSeen(){try{return localStorage.getItem(ANNK)||""}catch(x){return""}}
+function annRender(){var h=$("annbar");if(!h)return;
+ if(!annLive(ann)||annSeen()===ann.id){h.innerHTML="";return}
+ h.innerHTML='<div class="annb" role="status"><div class="annt"><b>Announcement</b><span>'+esc(ann.text)+'</span>'+(ann.exp?'<small>Until '+esc(ann.exp)+'</small>':"")+'</div><button type="button" class="annx" id="annx" aria-label="Dismiss announcement">&times;</button></div>';
+ $("annx").onclick=function(){try{localStorage.setItem(ANNK,ann.id)}catch(x){}annRender()}}
+function annUi(){var s=$("s-ann");if(!s)return;var own=!!window.fbIsOwn;s.classList.toggle("hide",!own);if(!own)return;
+ $("annnote").textContent=annLive(ann)?"Live now: "+ann.text+(ann.exp?" (until "+ann.exp+")":""):"No announcement is live.";
+ $("annclr").style.display=ann?"":"none"}
+function annSet(r){ann=annClean(r);try{if(ann)localStorage.setItem(ANNC,JSON.stringify(ann));else localStorage.removeItem(ANNC)}catch(x){}annRender();annUi()}
+function annInit(){try{annSet(JSON.parse(localStorage.getItem(ANNC)||"null"))}catch(x){}
+ if(db){try{db.doc("config/announce").onSnapshot(function(s){annSet(s.exists?s.data():null)},function(){})}catch(x){}}
+ $("annexp").min=today();
+ $("annpost").onclick=async function(){var t=$("annin").value.trim(),e=$("annexp").value;
+  if(!t){toast("Type the announcement first");return}
+  if(e&&e<today()){toast("Expiry date is in the past");return}
+  var r={text:t.slice(0,300),exp:e||"",id:String(Date.now()),at:Date.now()};this.disabled=true;
+  try{if(!db)throw new Error("offline copy");await db.doc("config/announce").set(r);annSet(r);$("annin").value="";$("annexp").value="";toast("Announcement posted")}catch(x){toast("Could not post: "+(x&&x.message||"no permission"))}this.disabled=false};
+ $("annclr").onclick=async function(){try{if(db)await db.doc("config/announce").delete();annSet(null);toast("Announcement cleared")}catch(x){toast("Could not clear: "+(x&&x.message||"no permission"))}};
+ setInterval(annRender,60000);document.addEventListener("visibilitychange",function(){if(!document.hidden)annRender()})}
 </script><script>
 var LIM={maxT:35,maxDays:45,maxLit:300,maxExp:2000,dev:0.2};
 function ownerOK(){return !db||!!window.fbIsOwn}
