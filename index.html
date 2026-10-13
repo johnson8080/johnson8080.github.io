@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.3.3">
+<meta name="app-version" content="1.4.0">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -504,7 +504,7 @@ return{
 }})();</script>
 </head><body>
 <header class="hd"><button class="ib" id="mnu" type="button" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h7"/></svg></button><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
-<div id="banner"></div><div id="bkbanner"></div><div id="sbanner"></div><div id="annbar"></div>
+<div id="banner"></div><div id="sbanner"></div><div id="annbar"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Winch</button><button data-g="seed">Seedcane</button></div>
 <div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button><button data-t="pdt" style="display:none">PAID</button></div>
 <div class="tabs hide" id="barrates" data-g="rates" style="grid-template-columns:minmax(0,1fr)"><button data-t="set" class="on">Update Rates</button></div>
@@ -624,21 +624,11 @@ return{
 <div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfdsc"><button type="button" class="ed" data-cf="dsc">Clear filters</button></div>
 <div id="dsv" class="noprt" style="margin-top:12px"><div class="mut">Select a driver to preview the statement.</div></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm alt" id="dsdl" disabled>Download PDF</button><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dstx" disabled>Share text</button></div></div>
-<div class="card bkc"><div id="bkst" class="bkst"></div>
-<div class="bkh">Back up</div>
-<div class="bkg"><button class="btn" id="bjson"><b>JSON</b><small>Everything</small></button><button class="btn alt" id="bcsv" disabled><b>CSV</b><small>One year</small></button></div>
-<div class="bkyr"><label for="byr">CSV year</label><input type="number" inputmode="numeric" id="byr" placeholder="e.g. 2026"></div>
-<div class="bkline"></div>
-<div class="bkh">Restore</div>
-<div class="bkg"><label class="btn alt bkf" id="rbtn"><b>JSON</b><small>Choose file</small><input type="file" id="rfile" accept=".json,application/json,text/plain"></label><label class="btn alt bkf" id="rbtnc"><b>CSV</b><small>Choose file</small><input type="file" id="rfilec" accept=".csv,text/csv,text/plain"></label></div>
-<div class="bkhint">You see a summary and confirm before anything changes. CSV only adds records, it never deletes.</div>
-<details class="bkm"><summary>More options</summary>
-<div class="bkmr"><button class="btn alt" id="bshare">Share backup</button><button class="btn alt" id="rpaste">Paste backup text</button></div>
-<div class="bkmr"><button class="btn alt" id="snapnow">Save to cloud</button><button class="btn alt" id="snaprestore">Restore from cloud</button></div>
-<div class="bkmr"><button class="btn alt" id="lsnnow">Save on this phone</button><button class="btn alt" id="lsnrestore">Restore from this phone</button></div>
-<div class="bkhint" id="snapst"></div><div class="bkhint" id="lsnst"></div>
-<div class="setrow"><div class="st"><b>Remind me every</b><small>A banner shows when a backup is due</small></div><select id="bkint" class="ssel"><option value="3">3 days</option><option value="7">7 days</option><option value="14">14 days</option><option value="30">30 days</option></select></div>
-</details></div></section><section id="dhs" class="hide"><div class="card hide" id="actc"></div><div class="card" id="trashc"></div></section>  <section id="seed" class="hide"><div id="sdlist"><div class="card"><b class="ct">Seedcane entries</b><div class="mut ehint"><span class="ecn" id="scnt">0 entries</span><span>Swipe right | Tap for details</span><span></span></div><input type="search" id="sq" placeholder="Search date, vehicle, driver, note…" autocomplete="off" style="margin:0 0 8px"><div class="fgrid" style="margin:0 0 8px"><div><label>Period</label><select id="fmnper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div><label>Driver</label><select id="fmndrv"></select></div><div id="fmndw" class="hide"><label>Date</label><input type="date" id="fmnday"></div><div id="fmnmw" class="hide"><label>Month</label><input type="month" id="fmnmon"></div><div id="fmnyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="fmnyr" min="2000" max="2100"></div><div id="fmnrw" class="hide"><label>From</label><input type="date" id="fmnfrom"></div><div id="fmntw" class="hide"><label>To</label><input type="date" id="fmnto"></div></div><div class="cfr noprt hide" id="fmncf" style="margin:0 0 8px"><button type="button" class="ed" id="fmnclr">Clear filters</button></div><div id="seedl"><div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody><tr><td class="mut" colspan="7">No seedcane entries yet</td></tr><tr style="font-weight:700"><td>Total</td><td></td><td></td><td>0.00</td><td></td><td>0.00</td><td></td></tr></tbody></table></div></div></div></div><div id="sdform" class="hide"><div class="acts"><button type="button" class="btn alt sm" id="sdBack">← ALL SEEDCANE LOGS</button></div><div class="card">
+<div class="card bkc"><div class="bkh">Back up</div>
+<div class="bkg"><button class="btn" id="bjson"><b>Back up</b><small>JSON file, everything</small></button><label class="btn alt bkf" id="rbtn"><b>Restore</b><small>Choose JSON file</small><input type="file" id="rfile" accept=".json,application/json,text/plain"></label></div>
+<div class="bkmr"><button class="btn alt" id="rpaste">Paste backup text</button></div>
+<div class="bkhint">You see a summary and confirm before anything changes.</div>
+</div></section><section id="dhs" class="hide"><div class="card hide" id="actc"></div><div class="card" id="trashc"></div></section>  <section id="seed" class="hide"><div id="sdlist"><div class="card"><b class="ct">Seedcane entries</b><div class="mut ehint"><span class="ecn" id="scnt">0 entries</span><span>Swipe right | Tap for details</span><span></span></div><input type="search" id="sq" placeholder="Search date, vehicle, driver, note…" autocomplete="off" style="margin:0 0 8px"><div class="fgrid" style="margin:0 0 8px"><div><label>Period</label><select id="fmnper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div><label>Driver</label><select id="fmndrv"></select></div><div id="fmndw" class="hide"><label>Date</label><input type="date" id="fmnday"></div><div id="fmnmw" class="hide"><label>Month</label><input type="month" id="fmnmon"></div><div id="fmnyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="fmnyr" min="2000" max="2100"></div><div id="fmnrw" class="hide"><label>From</label><input type="date" id="fmnfrom"></div><div id="fmntw" class="hide"><label>To</label><input type="date" id="fmnto"></div></div><div class="cfr noprt hide" id="fmncf" style="margin:0 0 8px"><button type="button" class="ed" id="fmnclr">Clear filters</button></div><div id="seedl"><div class="wrap"><table><thead><tr><th>Date</th><th>Vehicle</th><th>Driver</th><th>Tonnes</th><th>Milage</th><th>Trip expense</th><th>Unpaid</th></tr></thead><tbody><tr><td class="mut" colspan="7">No seedcane entries yet</td></tr><tr style="font-weight:700"><td>Total</td><td></td><td></td><td>0.00</td><td></td><td>0.00</td><td></td></tr></tbody></table></div></div></div></div><div id="sdform" class="hide"><div class="acts"><button type="button" class="btn alt sm" id="sdBack">← ALL SEEDCANE LOGS</button></div><div class="card">
 <label>Date</label><input type="date" id="sdate">
 <div class="row"><div><label>Vehicle</label><select id="sveh"></select></div>
 <div><label>Loader deposit</label><input type="number" inputmode="decimal" id="sdep" placeholder="0"></div></div>
@@ -1426,26 +1416,9 @@ $("oacsv").onclick=function(){var R=allRows(),L=[csvl(["Category","Date","Vehicl
  dlf("entries-"+nm+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
 $("oapdf").onclick=function(){oabFull(1);try{renderOb();exportPdf($("allc"),"Trips and fuel entries",allLabel(),entName())}finally{oabFull(0);renderOb()}};
 $("opdf").onclick=function(){PM=alloc();renderOv();var P=oper();exportPdf($("ovc"),"Vehicle overview: trips and fuel","Period: "+P.lab,"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf")};
-$("byr").value="";(function(){var ck=function(){var ok=/^\d{4}$/.test($("byr").value.trim()),b=$("bcsv");b.disabled=!ok;b.classList.toggle("alt",!ok)};$("byr").addEventListener("input",ck);ck()})();
 $("ocsv").onclick=function(){PM=alloc();var G=ovDetail(),L=[csvl(["Vehicle","Date","Type","Driver","Tonnes","Trip expense","Fuel litres","Litres per tonne","Fuel profit"])];
  G.forEach(function(g){if(!g.rows.length){L.push(csvl([g.veh,"","",g.drv,"","","","",""]));return}
   g.rows.forEach(function(r){L.push(csvl([g.veh,r.date,r.type,g.drv,r.hT?r.t:"",r.hT?(+(r.p)||0).toFixed(2):"",r.hF?r.l:"",ovLtd(r.t,r.l)==="—"?"":ovLtd(r.t,r.l),r.hF?(+(r.q)||0).toFixed(2):""]))})});dlf("overview-"+oper().lab.replace(/[^\w-]+/g,"-")+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
-$("bcsv").onclick=function(){PM=alloc();var y=String($("byr").value||today().slice(0,4)),iy=function(x){return x.date&&x.date.slice(0,4)===y},L=[];
- var T=function(t,h){if(L.length)L.push("");L.push(csvl(["#"+t+" "+y]),csvl(h))};
- T("TRIPS",["ID","Date","Vehicle","Driver","Tonnes","Loader deposit","Driver deposit","Driver advance","Other expense","Expense reason","Reason code","Note","Loader rate","Held amount","Repeat reduction","Added by","Timestamp","Total trip expense"]);
- entries.filter(iy).sort(bd).forEach(function(e){L.push(csvl([e.id,e.date,e.vehicle,e.driver,e.tonnes,e.deposit,e.ddep,e.advance,e.expense,rsnName(e.reason),e.reason,e.note,e.rate,e.hold,e.rep,e.by,e.ts,(+(pay(e))||0).toFixed(2)]))});
- T("FUEL",["ID","Date","Vehicle","Driver","Litres","Sell price","Actual price","Collected by","Issued by","Note","Added by","Timestamp","Amount","Net profit"]);
- fuels.filter(iy).sort(bd).forEach(function(f){var a=f.litres*f.sell,c=f.litres*f.cost;L.push(csvl([f.id,f.date,f.vehicle,f.driver,f.litres,f.sell,f.cost,f.collected,f.issued,f.note,f.by,f.ts,a,a-c]))});
- T("ADVANCES",["ID","Date","Driver","Amount","Added by","Timestamp"]);
- advs.filter(iy).sort(bd).forEach(function(a){L.push(csvl([a.id,a.date,a.driver,a.amount,a.by,a.ts]))});
- T("SALARY_PAID",["ID","Date","Type","Who","Amount","Added by","Timestamp"]);
- pays.filter(iy).sort(bd).forEach(function(a){L.push(csvl([a.id,a.date,a.kind,a.who,a.amount,a.by,a.ts]))});
- var SE=SEEDBK.ents(),SP=SEEDBK.pays(),SB={};SE.forEach(function(e){SB[String(e.ts)]=e});
- T("SEED_TRIPS",["Entry ID","Date","Vehicle","Driver","Tonnes","Milage","Driver deposit","Loader deposit","Trip expense","Loader flat rate","Loader minimum tonne","Added by"]);
- SE.filter(iy).sort(bd).forEach(function(e){L.push(csvl([e.ts,e.date,e.vehicle,e.driver,e.tonnes,e.mil,e.dep,e.ldep,e.exp,e.lf,e.lm,e.by]))});
- T("SEED_PAYMENTS",["Entry ID","Type","Amount","Date paid","Timestamp","Vehicle","Driver","Entry date"]);
- SP.filter(iy).sort(bd).forEach(function(p){var e=SB[String(p.id)]||{};L.push(csvl([p.id,({veh:"Vehicle",drv:"Driver",ldr:"Loader"})[p.k||"veh"]||p.k,p.amt,p.date,p.ts,e.vehicle,e.driver,e.date]))});
- dlf("fuel-trips-"+y+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
 function bkObj(){return {app:"FUEL & TRIPS",exported:new Date().toISOString(),rates:cfg,fuelRates:fcfg,entries:entries,fuel:fuels,advances:advs,payments:pays,staff:staff,expenseReasons:reasons,reasonRenames:renToArr(ren),privateStaffPayments:pvp,seedcane:SEEDBK.obj(),deleted:{entries:trashE,fuel:trashF,advances:trashA,payments:trashP}}}
 $("bjson").onclick=function(){dlf("fuel-trips-backup-"+today()+".json",new Blob([JSON.stringify(bkObj(),null,1)],{type:"application/json"}))};
 function rOk(d){return typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d)}
@@ -1469,11 +1442,11 @@ function rParse(txt){var j=JSON.parse(txt);if(!rObj(j))throw new Error("This is 
 function rRes(h,b,bad){closeM();toast(h+": "+b,!!bad)}
 function rMsg(h,b){$("mbody").innerHTML='<b style="font-size:18px">'+h+'</b><div class="mut" style="margin-top:8px;line-height:1.5">'+b+'</div>';$("modal").classList.remove("hide")}
 function rAsk(R){var rate=(R.rates||R.fuelRates||(R.seed&&R.seed.rates))?(isAdmin?"Rates and vehicles in the file will also be restored (they replace the current ones).":"Rates are in the file but only editors and the owner can restore them, so they will be skipped."):"No rates in this file.";
- rMsg("Restore from backup",(R.exported?"Backup made: "+esc(String(R.exported).slice(0,10))+"<br>":"")+(R.csvYear?"CSV records for year: <b>"+esc(R.csvYear)+"</b><br>":"")+"Trip entries: <b>"+R.entries.length+"</b><br>Fuel entries: <b>"+R.fuel.length+"</b><br>Advances: <b>"+R.advances.length+"</b><br>Salary paid: <b>"+R.payments.length+"</b><br>Private staff payments: <b>"+R.pvp.length+"</b><br>Staff: <b>"+(R.emps?R.emps.length:0)+"</b><br>"+SEEDBK.ask(R)+rate+(R.skipped?'<br><span class="neg">'+R.skipped+' invalid record'+(R.skipped>1?"s":"")+' will be skipped.</span>':"")
-  +(R.csv?'<br><br>This CSV holds one year of records. <b>Restore</b> adds them and overwrites records with the same ID. Nothing is deleted. Rates, staff and settings are not changed (use a JSON backup for those).':'<br><br><b>Restore</b> adds everything in the file and overwrites entries that have the same ID. Nothing else is deleted.<br><b>Replace all</b> makes the app match the file exactly and deletes anything not in it. Seedcane data is replaced only when the file contains a Seedcane section.'));
+ rMsg("Restore from backup",(R.exported?"Backup made: "+esc(String(R.exported).slice(0,10))+"<br>":"")+"Trip entries: <b>"+R.entries.length+"</b><br>Fuel entries: <b>"+R.fuel.length+"</b><br>Advances: <b>"+R.advances.length+"</b><br>Salary paid: <b>"+R.payments.length+"</b><br>Private staff payments: <b>"+R.pvp.length+"</b><br>Staff: <b>"+(R.emps?R.emps.length:0)+"</b><br>"+SEEDBK.ask(R)+rate+(R.skipped?'<br><span class="neg">'+R.skipped+' invalid record'+(R.skipped>1?"s":"")+' will be skipped.</span>':"")
+  +('<br><br><b>Restore</b> adds everything in the file and overwrites entries that have the same ID. Nothing else is deleted.<br><b>Replace all</b> makes the app match the file exactly and deletes anything not in it. Seedcane data is replaced only when the file contains a Seedcane section.'));
  var b=document.createElement("div");b.style.cssText="display:flex;flex-direction:column;gap:8px;margin-top:14px";
  b.innerHTML='<button class="btn" id="rM" style="margin:0">Restore (keep existing data)</button><button class="btn alt" id="rR" style="margin:0">Replace all data</button><button class="btn alt" id="rC" style="margin:0;background:var(--card);color:var(--tx);border:1px solid var(--ln)">Cancel</button>';
- $("mbody").appendChild(b);if(R.csv){var rr0=$("rR");if(rr0)rr0.remove()}$("rC").onclick=closeM;$("rM").onclick=function(){rRun(R,false)};
+ $("mbody").appendChild(b);$("rC").onclick=closeM;$("rM").onclick=function(){rRun(R,false)};
  $("rR").onclick=function(){if(!this.dataset.s){this.dataset.s=1;this.textContent="Sure? Tap again to replace everything";return}rRun(R,true)}}
 async function rRun(R,replace){try{if(db)await holdPw(true)}catch(e){rRes("Cannot restore","Password not confirmed.",1);return}try{return await rRun0(R,replace)}finally{holdPw(false)}}
 async function rRun0(R,replace){
@@ -1509,55 +1482,22 @@ async function rRun0(R,replace){
  if((R.rates||R.fuelRates||(R.seed&&R.seed.rates))&&!isAdmin)msg+="<br>Rates were not restored because only editors and the owner can change them.";
  if(fails)msg+='<br><span class="neg">'+fails+' item'+(fails>1?"s":"")+' could not be saved. Your data may only be partly restored'+(replace?", so nothing was deleted":"")+'. You can run the restore again.</span>';
  rRes(fails?"Restore finished with problems":"Restore complete",msg,!!fails)}
-function rErr(m){rRes("Cannot restore this file",esc(m||"The file is not a valid backup")+'. Choose a backup file (JSON or CSV) made by this app.',1)}
+function rErr(m){rRes("Cannot restore this file",esc(m||"The file is not a valid backup")+'. Choose a JSON backup made by this app.',1)}
 $("rfile").addEventListener("click",function(ev){if(!canWrite){ev.preventDefault();uiAlert("You have view-only access, so you can't restore data.")}});
 $("rpaste").onclick=function(){if(!canWrite){uiAlert("You have view-only access, so you can't restore data.");return}
- rMsg("Paste backup text","Open your backup file (.json or .csv), copy all of its text, and paste it below.");
+ rMsg("Paste backup text","Open your backup file (.json), copy all of its text, and paste it below.");
  var t=document.createElement("textarea");t.id="rtx";t.rows=6;t.placeholder="Paste backup text here";t.style.cssText="margin-top:10px;width:100%;font-size:13px";
  var b=document.createElement("div");b.className="b2";b.innerHTML='<button class="pr" id="rGo">Continue</button><button id="rNo">Cancel</button>';
  $("mbody").appendChild(t);$("mbody").appendChild(b);$("rNo").onclick=closeM;
  $("rGo").onclick=function(){var v=t.value.trim();if(!v){uiAlert("Paste the backup text first");return}try{rAsk(rParseAny(v))}catch(x){rErr(x&&x.message)}}};
-function csvParse(t){t=String(t||"").replace(/^\ufeff/,"");var rows=[],r=[],c="",q=false,n=t.length,i,ch;
- for(i=0;i<n;i++){ch=t.charAt(i);
-  if(q){if(ch==='"'){if(t.charAt(i+1)==='"'){c+='"';i++}else q=false}else c+=ch}
-  else if(ch==='"')q=true;
-  else if(ch===","){r.push(c);c=""}
-  else if(ch==="\n"||ch==="\r"){if(ch==="\r"&&t.charAt(i+1)==="\n")i++;r.push(c);c="";rows.push(r);r=[]}
-  else c+=ch}
- if(c!==""||r.length){r.push(c);rows.push(r)}return rows}
-function rParseCsv(txt){var rows=csvParse(txt),S={},cur=null,yr="";
- rows.forEach(function(r){var blank=r.every(function(x){return String(x).trim()===""});
-  if(blank){cur=null;return}
-  var c0=String(r[0]||"").trim();
-  if(c0.charAt(0)==="#"){var m=/^#\s*([A-Za-z_]+)\s*(\d{4})?/.exec(c0);if(m){cur={n:m[1].toUpperCase(),h:null,rows:[]};S[cur.n]=cur;if(m[2])yr=m[2]}else cur=null;return}
-  if(!cur)return;
-  if(!cur.h){cur.h=r.map(function(x){return String(x).trim().toLowerCase()});return}
-  var o={};cur.h.forEach(function(h,k){o[h]=r[k]==null?"":String(r[k]).trim()});cur.rows.push(o)});
- var names=Object.keys(S);if(!names.length)throw new Error("This CSV was not made by Backup (CSV) in this app");
- var bad=function(){return NaN},N=function(v){return v===undefined||v===""?undefined:(isFinite(+v)?+v:NaN)},
- g=function(o,k){return o[k.toLowerCase()]},
- sx=function(rows,fn){return(rows||[]).map(function(o){var x=fn(o);Object.keys(x).forEach(function(k){if(x[k]===undefined)delete x[k]});return x})},
- idv=function(o,k){var v=g(o,k||"ID");return v?v:undefined},
- j={app:"FUEL & TRIPS",exported:"",entries:[],fuel:[],advances:[],payments:[]};
- if(S.TRIPS)j.entries=sx(S.TRIPS.rows,function(o){var rc=g(o,"Reason code"),rs=rc!==undefined?rc:g(o,"Expense reason"),t=N(g(o,"Tonnes")),dp=N(g(o,"Loader deposit")),ad=N(g(o,"Driver advance")),ex=N(g(o,"Other expense")),dd=N(g(o,"Driver deposit")),ra=N(g(o,"Loader rate")),ho=N(g(o,"Held amount")),rp=N(g(o,"Repeat reduction")),ts=N(g(o,"Timestamp"));
-  return{id:idv(o),date:g(o,"Date"),vehicle:g(o,"Vehicle"),driver:g(o,"Driver")||"",tonnes:t===undefined?0:t,deposit:dp===undefined?0:dp,ddep:dd,advance:ad===undefined?0:ad,expense:ex===undefined?0:ex,reason:rs||"",note:g(o,"Note")||"",rate:ra,hold:ho,rep:rp,by:g(o,"Added by")||undefined,ts:ts}});
- if(S.FUEL)j.fuel=sx(S.FUEL.rows,function(o){return{id:idv(o),date:g(o,"Date"),vehicle:g(o,"Vehicle"),driver:g(o,"Driver")||"",litres:N(g(o,"Litres")),sell:N(g(o,"Sell price")),cost:N(g(o,"Actual price")),collected:g(o,"Collected by")||"",issued:g(o,"Issued by")||"",note:g(o,"Note")||"",by:g(o,"Added by")||undefined,ts:N(g(o,"Timestamp"))}});
- if(S.ADVANCES)j.advances=sx(S.ADVANCES.rows,function(o){return{id:idv(o),date:g(o,"Date"),driver:g(o,"Driver"),amount:N(g(o,"Amount")),by:g(o,"Added by")||undefined,ts:N(g(o,"Timestamp"))}});
- if(S.SALARY_PAID)j.payments=sx(S.SALARY_PAID.rows,function(o){return{id:idv(o),date:g(o,"Date"),kind:String(g(o,"Type")||"").toLowerCase(),who:g(o,"Who"),amount:N(g(o,"Amount")),by:g(o,"Added by")||undefined,ts:N(g(o,"Timestamp"))}});
- if(S.SEED_TRIPS||S.SEED_PAYMENTS){var KM={vehicle:"veh",driver:"drv",loader:"ldr",veh:"veh",drv:"drv",ldr:"ldr"};j.seedcane={entries:S.SEED_TRIPS?sx(S.SEED_TRIPS.rows,function(o){return{ts:N(g(o,"Entry ID")),date:g(o,"Date"),vehicle:g(o,"Vehicle"),driver:g(o,"Driver")||"",tonnes:N(g(o,"Tonnes")),mil:N(g(o,"Milage")),dep:N(g(o,"Driver deposit")),ldep:N(g(o,"Loader deposit")),exp:N(g(o,"Trip expense")),lf:N(g(o,"Loader flat rate")),lm:N(g(o,"Loader minimum tonne")),by:g(o,"Added by")||undefined}}):[],payments:S.SEED_PAYMENTS?sx(S.SEED_PAYMENTS.rows,function(o){var d=g(o,"Date paid");return{id:N(g(o,"Entry ID")),k:KM[String(g(o,"Type")||"").toLowerCase()]||"veh",amt:N(g(o,"Amount")),date:d||undefined,ts:N(g(o,"Timestamp"))}}):[]}}
- var R=rParse(JSON.stringify(j));R.csv=true;R.csvYear=yr;return R}
 function rParseAny(txt){var s=String(txt||"").replace(/^\ufeff/,"").trim();if(!s)throw new Error("The file is empty");
  if(s.charAt(0)==="{")return rParse(s);
- if(/(^|\n)"?#[A-Za-z_]+/.test(s))return rParseCsv(s);
  throw new Error("This file is not a backup made by this app")}
 async function rFromFile(inp){var f=inp.files&&inp.files[0];if(!f)return;
  if(f.size>8*1024*1024){uiAlert("That file is too large to be a backup");try{inp.value=""}catch(x){}return}
  try{var txt=await new Promise(function(res,rej){var fr=new FileReader();fr.onload=function(){res(fr.result)};fr.onerror=function(){rej(new Error("Could not read the file"))};fr.readAsText(f)});rAsk(rParseAny(txt))}
  catch(x){rErr(x&&x.message)}finally{try{inp.value=""}catch(x){}}}
 $("rfile").onchange=function(){rFromFile(this)};
-$("rfilec").addEventListener("click",function(ev){if(!canWrite){ev.preventDefault();uiAlert("You have view-only access, so you can't restore data.")}});
-$("rfilec").onchange=function(){rFromFile(this)};
-(function(){var y=$("byr");if(y&&!y.value){y.value=today().slice(0,4);y.dispatchEvent(new Event("input"))}})();
 function pwOk(){return window.askPw?window.askPw():Promise.resolve()}function holdPw(on){return window.gateHold?window.gateHold(on):Promise.resolve()}function pwCancel(x){return!!(x&&/cancel|password/i.test(String(x.message||x)))}
 var paySaved=false,cfgLoaded=false,fcfgLoaded=false,gateDone=false,GATED={enter:1,advt:1,fen:1};
 function needRates(){if(db)try{stBind()}catch(e){}var loaded=db?(cfgLoaded&&fcfgLoaded):true;return loaded&&!(paySaved&&cfg.veh&&cfg.veh.length>0&&fcfg.sell>0&&fcfg.cost>0)}
@@ -1789,21 +1729,6 @@ function renderTrash(){try{renderAct()}catch(x){}var el=$("trashc");if(!el)retur
 $("trashc").onclick=async function(ev){var b=ev.target.closest("button[data-rk]");if(!b)return;var m=trashSet(b.dataset.rk),id=b.dataset.rid,o=m[1].find(function(x){return x.id===id});if(!o)return;if(isLocked(o.date)){toast("That month is locked. Unlock it first.");return}b.disabled=true;
  var c=stripId(o);delete c.deleted;delete c.deletedBy;delete c.deletedAt;c.restoredBy=me||"local";c.restoredAt=Date.now();
  try{if(db)await db.doc(m[0]+"/"+id).set(c);m[1].splice(m[1].indexOf(o),1);m[2].push(Object.assign({id:id},c));pvSave();render();try{renderFuel()}catch(x){}try{pvRender()}catch(x){}renderTrash();toast("Restored")}catch(x){b.disabled=false;toast("Could not restore: "+(x&&x.message||"no permission"))}};
-var BK={l:"fleetLastBackup",i:"fleetBackupDays",z:"fleetBkSnooze"};
-function bkGet(k,d){try{var v=localStorage.getItem(k);return v==null?d:v}catch(x){return d}}
-function bkSet(k,v){try{localStorage.setItem(k,String(v))}catch(x){}}
-function bkSnooze(){bkSet(BK.z,Date.now()+864e5);bkCheck()}
-function bkCheck(){var last=+bkGet(BK.l,0),days=+bkGet(BK.i,7)||7,all=[].concat(entries,fuels,advs,pays,pvp,SEEDBK.ents(),SEEDBK.pays()),age=last?(Date.now()-last)/864e5:Infinity,
- since=all.filter(function(x){return(x.ts||0)>last}).length,st=$("bkst"),bb=$("bkbanner"),due=all.length>0&&age>=days;
- if(st)st.innerHTML=last?'Last full backup on this device: <b>'+esc(new Date(last).toLocaleString())+'</b> ('+Math.floor(age)+' day(s) ago). New records since: <b>'+since+'</b>.':'<span class="neg">No full backup made from this device yet.</span>';
- if(bb)bb.innerHTML=(due&&isAdmin&&Date.now()>+bkGet(BK.z,0))?'<div class="note" style="border-color:var(--bad)"><b>Backup due.</b> '+(last?'Last backup was '+Math.floor(age)+' days ago':'No backup made yet')+' · '+since+' new record(s). <button class="x" onclick="$(\'bjson\').click()">Back up now</button><button class="x" onclick="bkSnooze()" style="color:var(--mut)">Later</button></div>':""}
-$("bkint").value=bkGet(BK.i,"7");$("bkint").onchange=function(){bkSet(BK.i,$("bkint").value);bkSet(BK.z,0);bkCheck()};
-$("bjson").addEventListener("click",function(){bkSet(BK.l,Date.now());bkSet(BK.z,0);bkCheck()});
-$("bshare").onclick=async function(){try{var o=bkObj();if(appCfg.footer)o.footer=appCfg.footer;o.developer=WM;var txt=JSON.stringify(o,null,2),base="fuel-trips-backup-"+today(),f=null,ok=false,opts=[[base+".txt","text/plain"],[base+".json","application/json"]];
- for(var i=0;i<opts.length&&!ok;i++){try{f=new File([txt],opts[i][0],{type:opts[i][1]});if(navigator.canShare&&navigator.canShare({files:[f]}))ok=true}catch(x){}}
- if(ok){await navigator.share({files:[f],title:"Fuel & Trips backup "+today()});bkSet(BK.l,Date.now());bkSet(BK.z,0);bkCheck();toast("Backup shared")}
- else{$("bjson").click();toast("Sharing is not available here. Backup downloaded instead.")}
-}catch(x){if(x&&x.name==="AbortError")return;try{$("bjson").click()}catch(y){}toast("Could not share ("+((x&&x.name)||"error")+"). Backup downloaded instead - send it from your Files app.")}};
 
 function confirmX(t,m,yes){return new Promise(function(res){var M=document.getElementById("mbody");M.innerHTML='<b style="font-size:18px">'+t+'</b><div class="mut" style="margin-top:8px">'+m+'</div><div class="b2"><button class="pr" id="cxY">'+yes+'</button><button id="cxN">Cancel</button></div>';document.getElementById("modal").classList.remove("hide");document.getElementById("cxY").onclick=function(){closeM();res(true)};document.getElementById("cxN").onclick=function(){closeM();res(false)}})}
 function orphLists(){return{A:advs.filter(function(x){return noEnt(x.driver)}),P:pays.filter(function(x){return noEnt(x.who)})}}
@@ -1831,9 +1756,9 @@ document.addEventListener("click",async function(ev){var t=ev.target&&ev.target.
   if(!stop&&window.seedAct){seedAct.clearTrash();ok+=sn}
   holdPw(false);pvSave();renderTrash();toast(stop?"Cancelled. "+ok+" erased":ok+" erased"+(sk?", "+sk+" skipped (month locked)":"")+(fl?", "+fl+" failed":""))}
 });
-var _inR=0,_r=render;render=function(){var v;_inR++;try{v=_r.apply(this,arguments)}finally{_inR--}try{bkCheck();renderTrash();renderLocks();renderOrph()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v};
-if(typeof renderFuel==="function"){var _rf=renderFuel;renderFuel=function(){var v=_rf.apply(this,arguments);if(_inR)return v;try{bkCheck();renderTrash();renderLocks()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v}}
-bkCheck();renderTrash();renderLocks();
+var _inR=0,_r=render;render=function(){var v;_inR++;try{v=_r.apply(this,arguments)}finally{_inR--}try{renderTrash();renderLocks();renderOrph()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v};
+if(typeof renderFuel==="function"){var _rf=renderFuel;renderFuel=function(){var v=_rf.apply(this,arguments);if(_inR)return v;try{renderTrash();renderLocks()}catch(x){}try{if(window.schedPersist)schedPersist()}catch(x){}return v}}
+renderTrash();renderLocks();
 </script>
 <script>(function(){var sw=document.getElementById("hth"),mq=window.matchMedia?matchMedia("(prefers-color-scheme: dark)"):null;
 function isDark(){var t=document.documentElement.getAttribute("data-theme");return t?t==="dark":!!(mq&&mq.matches)}
@@ -2192,59 +2117,7 @@ try{scrollTo({top:Math.max(0,y),behavior:"smooth"})}catch(x){scrollTo(0,Math.max
 b.classList.remove("pgh");void b.offsetWidth;b.classList.add("pgh");b.addEventListener("click",function(){b.classList.remove("pgh")},{once:true});
 clearTimeout(window.pgt2);window.pgt2=setTimeout(function(){b.classList.remove("pgh")},5100)},450)}})();</script>
 <script>(function(){document.addEventListener("click",function(ev){var t=ev.target;if(!t||t.tagName!=="INPUT")return;if(t.type!=="month"&&t.type!=="date")return;if(t.readOnly||t.disabled)return;if(typeof t.showPicker!=="function")return;try{t.showPicker()}catch(e){}},true)})();</script>
-<script>(function(){
-var $=function(i){return document.getElementById(i)},meta={snaps:{}},busy=false,tried=false,SC=400000,DAY=864e5;
-function slotNow(){return Math.floor(Date.now()/(3*DAY))%5}
-function once(p){return new Promise(function(res,rej){var un=null,done=false;try{un=db.doc(p).onSnapshot(function(s){if(done)return;done=true;setTimeout(function(){try{un&&un()}catch(e){}},0);res(s)},function(e){if(!done){done=true;rej(e)}})}catch(e){rej(e)}})}
-function paint(){var el=$("snapst");if(!el)return;var L=Object.keys(meta.snaps||{}).map(function(k){return meta.snaps[k]});
- el.innerHTML=meta.last?"Cloud snapshots: last saved <b>"+esc(new Date(meta.last).toLocaleString())+"</b>. "+L.length+" kept (the latest 5, rotating). A new one is saved automatically every 3 days when the app is open and online.":"No cloud snapshot yet. One is saved automatically every 3 days when the app is open and online."}
-async function snap(manual){if(!db||busy||window.readOnly)return false;if(window.NETREAL===false){if(manual)toast("No internet connection",true);return false}busy=true;
- try{var txt=JSON.stringify(bkObj()),parts=[],i;for(i=0;i<txt.length;i+=SC)parts.push(txt.slice(i,i+SC));var sl=slotNow();
-  for(i=0;i<parts.length;i++)await db.doc("backups/s"+sl+"_"+i).set({t:parts[i],i:i});
-  var sn=Object.assign({},meta.snaps||{});sn["s"+sl]={at:Date.now(),parts:parts.length,e:entries.length,f:fuels.length,sd:SEEDBK.count()};
-  await db.doc("config/backupmeta").set({last:Date.now(),snaps:sn});if(manual)toast("Cloud snapshot saved");return true}
- catch(x){if(manual)toast("Could not save snapshot: "+(x&&x.message||x),true);return false}finally{busy=false}}
-function start(){try{db.doc("config/backupmeta").onSnapshot(function(s){meta=s.exists?(s.data()||{snaps:{}}):{snaps:{}};if(!meta.snaps)meta.snaps={};paint();
-  if(!tried){tried=true;var due=function(){var ls=Date.now()-3*DAY;if(!window.readOnly&&canWrite&&(meta.last||0)<ls&&(entries.length+fuels.length+SEEDBK.count())>0)snap(false)};setTimeout(due,12000);window.addEventListener("online",function(){setTimeout(due,4000)});document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(due,3000)});setInterval(due,30*60*1000)}},function(){})}catch(e){}}
-var n=0,t=setInterval(function(){if(db){clearInterval(t);start()}else if(++n>150)clearInterval(t)},800);paint();
-$("snapnow").onclick=async function(){if(!db){toast("Connect to the internet and sign in first",true);return}if(window.readOnly){toast("Read-only account",true);return}var b=this;b.disabled=true;await snap(true);b.disabled=false};
-$("snaprestore").onclick=function(){if(!db){toast("Connect to the internet and sign in first",true);return}if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
- var L=Object.keys(meta.snaps||{}).map(function(k){var o=meta.snaps[k];o.k=k;return o}).sort(function(a,b){return b.at-a.at});
- $("mbody").innerHTML='<b style="font-size:18px">Restore from cloud snapshot</b><div class="mut" style="margin-top:6px">Pick a snapshot. You will see a summary and confirm before anything changes.</div>'+(L.length?L.map(function(o){return'<button class="btn alt" data-s="'+esc(o.k)+'" style="margin-top:8px">'+esc(new Date(o.at).toLocaleString())+" \u00b7 "+o.e+" trips, "+o.f+" fuel"+(o.sd?", "+o.sd+" seedcane":"")+"</button>"}).join(""):'<div class="mut" style="margin-top:10px">No snapshots yet.</div>')+'<div class="b2"><button id="snC">Cancel</button></div>';
- $("modal").classList.remove("hide");$("snC").onclick=closeM;
- [].forEach.call($("mbody").querySelectorAll("button[data-s]"),function(b){b.onclick=async function(){var o=meta.snaps[b.dataset.s];b.disabled=true;b.textContent="Loading\u2026";
-  try{var txt="";for(var i=0;i<o.parts;i++){var sn=await once("backups/"+b.dataset.s+"_"+i);if(!sn.exists)throw new Error("Snapshot part "+(i+1)+" is missing");txt+=sn.data().t}rAsk(rParse(txt))}
-  catch(x){closeM();toast("Could not load snapshot: "+(x&&x.message||x),true)}}})}})();
-/* device snapshot: every 3 days, works offline */
-(function(){var $=function(i){return document.getElementById(i)},DBN="fleetSnapsDB",STN="snaps",KEEP=5,LSK="fleetSnapsLS",busy=false,tm=0;
-var D3=3*864e5;
-function open(){return new Promise(function(res,rej){try{var r=indexedDB.open(DBN,1);r.onupgradeneeded=function(){r.result.createObjectStore(STN,{keyPath:"id"})};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}}catch(e){rej(e)}})}
-function lsGet(){try{return JSON.parse(localStorage.getItem(LSK)||"[]")}catch(e){return[]}}
-async function list(){try{var d=await open();return await new Promise(function(res,rej){var q=d.transaction(STN,"readonly").objectStore(STN).getAll();q.onsuccess=function(){res(q.result||[])};q.onerror=function(){rej(q.error)}})}catch(e){return lsGet()}}
-async function put(rec){try{var d=await open();await new Promise(function(res,rej){var tx=d.transaction(STN,"readwrite"),st=tx.objectStore(STN);st.put(rec);tx.oncomplete=res;tx.onerror=function(){rej(tx.error)}});
- var all=await list();all.sort(function(a,b){return b.at-a.at});var old=all.slice(KEEP);if(old.length){var tx2=d.transaction(STN,"readwrite"),s2=tx2.objectStore(STN);old.forEach(function(o){s2.delete(o.id)})}return true}
- catch(e){try{var l=lsGet();l.unshift(rec);l=l.slice(0,2);localStorage.setItem(LSK,JSON.stringify(l));return true}catch(x){return false}}}
-function loaded(){try{return(entries.length+fuels.length+SEEDBK.count())>0}catch(e){return false}}
-async function paint(){var el=$("lsnst");if(!el)return;var L=await list();L.sort(function(a,b){return b.at-a.at});
- el.innerHTML=L.length?"Device snapshots: last saved <b>"+esc(new Date(L[0].at).toLocaleString())+"</b>. "+L.length+" kept. A new one is saved every 3 days, with or without internet, whenever the app is open.":"No device snapshot yet. One is saved every 3 days, with or without internet, whenever the app is open."}
-async function take(manual){if(busy)return false;if(!loaded()){if(manual)toast("Nothing to back up yet",true);return false}busy=true;
- try{var now=Date.now(),o=bkObj(),slot=now;o.snapshotType=manual?"manual":"auto";
-  var ok=await put({id:(manual?"m":"a")+now,slot:slot,at:now,e:entries.length,f:fuels.length,sd:SEEDBK.count(),json:JSON.stringify(o)});
-  if(manual)toast(ok?"Device snapshot saved":"Could not save snapshot on this phone",!ok);paint();return ok}
- catch(x){if(manual)toast("Could not save snapshot",true);return false}finally{busy=false}}
-async function check(){if(!loaded())return;var L=await list(),ls=Date.now()-D3;if(!L.some(function(r){return r.at>=ls}))take(false)}
-setTimeout(function(){check();paint()},15000);
-setInterval(check,20*60*1000);
-document.addEventListener("visibilitychange",function(){if(!document.hidden){setTimeout(check,2500)}});
-window.addEventListener("online",function(){setTimeout(check,3000)});
-var nb=$("lsnnow");if(nb)nb.onclick=async function(){var b=this;b.disabled=true;await take(true);b.disabled=false};
-var rb=$("lsnrestore");if(rb)rb.onclick=async function(){if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
- var L=await list();L.sort(function(a,b){return b.at-a.at});
- $("mbody").innerHTML='<b style="font-size:18px">Restore from device snapshot</b><div class="mut" style="margin-top:6px">Pick a snapshot. You will see a summary and confirm before anything changes.</div>'+(L.length?L.map(function(o,i){return'<button class="btn alt" data-i="'+i+'" style="margin-top:8px">'+esc(new Date(o.at).toLocaleString())+" \u00b7 "+o.e+" trips, "+o.f+" fuel"+(o.sd?", "+o.sd+" seedcane":"")+"</button>"}).join(""):'<div class="mut" style="margin-top:10px">No snapshots yet.</div>')+'<div class="b2"><button id="lsC">Cancel</button></div>';
- $("modal").classList.remove("hide");$("lsC").onclick=closeM;
- [].forEach.call($("mbody").querySelectorAll("button[data-i]"),function(b){b.onclick=function(){try{var o=L[+b.dataset.i];rAsk(rParse(o.json))}catch(x){closeM();toast("Could not load snapshot: "+(x&&x.message||x),true)}}})};
-})();
-/* new-version check: compares app-version in the live page with this copy */
+<script>/* new-version check: compares app-version in the live page with this copy */
 (function(){var cur=(document.querySelector('meta[name="app-version"]')||{}).content||"",bn=null,last=0;
 function show(v){if(bn)return;bn=document.createElement("div");bn.className="note";bn.style.cssText="border:2px solid var(--ac);color:var(--tx);text-align:center";
  bn.innerHTML="<b>New version "+esc(v)+" available.</b> <button class=\"x\" id=\"updNow\" style=\"color:var(--ac)\">Update now</button> <button class=\"x\" id=\"updLater\" style=\"color:var(--mut)\">Later</button>";
@@ -2625,14 +2498,7 @@ wShowPer();winchFill();winchRender();
 .bkc .bkg>.btn{margin:0!important;width:100%;box-sizing:border-box;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;text-align:center;line-height:1.15;padding:7px 6px;position:relative;overflow:hidden;border-radius:10px}
 .bkc .bkg .btn b{font-size:14.5px}.bkc .bkg .btn small{font-size:11px;font-weight:500;opacity:.8}
 .bkc .bkf{cursor:pointer}.bkc .bkf input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
-.bkc .bkyr{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 0 4px;font-size:13.5px;color:var(--mut)}
-#stg .bkc .bkyr input{width:130px!important;min-width:0!important;max-width:130px!important;flex:none!important;margin:0;text-align:center}
-.bkc .bkline{height:1px;background:var(--ln);margin:16px 0 14px}
 .bkc .bkhint{font-size:12.5px;color:var(--mut);line-height:1.4;margin:2px 0 8px}.bkc .bkhint:empty{display:none}
-.bkc .bkm{margin-top:10px;border-top:1px solid var(--ln);padding-top:10px}
-.bkc .bkm summary{cursor:pointer;font-weight:700;font-size:14px;padding:6px 0;list-style:none}
-.bkc .bkm summary::-webkit-details-marker{display:none}
-.bkc .bkm summary::after{content:" \25BE";color:var(--mut)}.bkc .bkm[open] summary::after{content:" \25B4"}
 .bkc .bkmr .btn{margin:0!important;width:100%;box-sizing:border-box;font-size:13px;padding:11px 6px;line-height:1.2}
 .bkc .bkm .setrow{margin-top:6px}
 
@@ -3038,13 +2904,13 @@ $("rpper").addEventListener("change",function(){var k=this.value,t=today();if(k=
 $("rpclr").onclick=function(){rst();draw()};
 var o=window.seedPage;window.seedPage=function(n){o(n);if(n==="prep"){draw()}else rst()};
 })();</script>
-<script>/* automatic full JSON backup. Shows a panel as soon as the app opens (after sign-in), then makes a backup by itself every 2 days. No clicks needed.
-   Copy 1: on this phone, inside the app (its own storage, separate from "Save on this phone" snapshots). Works with no internet.
+<script>/* automatic full JSON backup. Shows a panel as soon as the app opens (after sign-in), then makes a backup by itself every 5 days. No clicks needed.
+   Copy 1: on this phone, inside the app. Keeps the latest 3. Works with no internet.
    Copy 2: a .json file sent to Downloads. Works with no internet.
-   Copy 3: cloud (Firestore). Needs internet: if offline it waits and saves by itself when the connection is back.
+   Copy 3: cloud (Firestore). Keeps the latest 3 per phone. Needs internet: if offline it waits and saves by itself when the connection is back.
    A web app can only run while it is open: if the app was closed for days, the backup is made the moment it is opened. */
 (function(){try{
-var $=function(i){return document.getElementById(i)},DAY=864e5,EVERY=2*DAY,KEEPD=7,KEEPC=5,CH=300000,LS="fleetAutoBk_v1",DEVK="fleetAutoBkDev",LSC="fleetAutoBkCopy",
+var $=function(i){return document.getElementById(i)},DAY=864e5,EVERY=5*DAY,KEEPD=3,KEEPC=3,CH=300000,LS="fleetAutoBk_v1",DEVK="fleetAutoBkDev",LSC="fleetAutoBkCopy",
  DBN="fleetAutoBkDB",STN="copies",busy=false,opened=false,waiting=false,res=[],hideT=0,ui=null,lastCloudTry=0;
 function lsr(){try{var o=JSON.parse(localStorage.getItem(LS)||"{}");return o&&typeof o==="object"?o:{}}catch(e){return{}}}
 function put(k,v){try{var o=lsr();o[k]=v;localStorage.setItem(LS,JSON.stringify(o))}catch(e){}}
@@ -3084,25 +2950,27 @@ async function saveFile(o,at){
  try{var d=new Date(at),p=function(n){return(n<10?"0":"")+n},
   name="fuel-trips-auto-backup-"+d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"_"+p(d.getHours())+p(d.getMinutes())+".json";
   await dlf(name,new Blob([JSON.stringify(o,null,1)],{type:"application/json"}));
-  try{localStorage.setItem("fleetLastBackup",String(at));localStorage.setItem("fleetBkSnooze","0");if(window.bkCheck)bkCheck()}catch(e){}
   return true}catch(e){return false}}
 
-/* ---------- copy 3: cloud (Firestore "backups" + a small list in "config"). Keeps the latest 5 per phone. ---------- */
+/* ---------- copy 3: cloud (Firestore "backups" + a small list in "config"). Keeps the latest 3 per phone. ---------- */
 function isRun(r){return r&&typeof r==="object"&&typeof r.dev==="string"&&typeof r.slot==="number"&&typeof r.at==="number"&&typeof r.parts==="number"}
 function pid(r,i){return"backups/auto_"+who()+"_"+r.dev+"_"+r.slot+"_"+i}
 async function readMeta(wait){var s=await rd("config/autobackup_"+who(),wait),d=s.exists?s.data():null;return d&&Array.isArray(d.runs)?d.runs.filter(isRun):[]}
 async function saveCloud(o,at){
  var mp="config/autobackup_"+who(),runs;
  try{runs=await readMeta(true)}catch(e){throw new Error("could not read the backup list")}
- var others=runs.filter(function(r){return r.dev!==DEV}),mine=runs.filter(function(r){return r.dev===DEV}).sort(function(a,b){return a.at-b.at}),used={},slot,k;
- mine.forEach(function(r){used[r.slot]=1});
+ var others=runs.filter(function(r){return r.dev!==DEV}),mine=runs.filter(function(r){return r.dev===DEV}).sort(function(a,b){return b.at-a.at}),
+  keep=mine.slice(0,KEEPC-1),drop=mine.slice(KEEPC-1),used={},slot,k;
+ keep.forEach(function(r){used[r.slot]=1});
  for(k=0;k<KEEPC;k++){if(!used[k]){slot=k;break}}
- if(slot===undefined){slot=mine[0].slot;mine=mine.slice(1)}
+ mine=keep;
  /* take the slot out of the list first, so a half-written copy is never listed */
  await withT(db.doc(mp).set({runs:others.concat(mine),last:at}),20000);
  var txt=JSON.stringify(o),n=Math.max(1,Math.ceil(txt.length/CH)),run={dev:DEV,slot:slot,at:at,parts:n,e:entries.length,f:fuels.length,sd:SEEDBK.count()},i;
  for(i=0;i<n;i++)await withT(db.doc(pid(run,i)).set({t:txt.slice(i*CH,(i+1)*CH),i:i,at:at}),30000);
  await withT(db.doc(mp).set({runs:others.concat(mine,[run]),last:at}),20000);
+ /* delete the pieces of the copies that are no longer listed (older than the latest 3) */
+ for(var di=0;di<drop.length;di++){var dr=drop[di];for(var dp=(dr.slot===slot?n:0);dp<dr.parts;dp++){try{await withT(db.doc(pid(dr,dp)).delete(),15000)}catch(e){}}}
  return true}
 
 /* ---------- the panel shown when the app opens ---------- */
@@ -3114,8 +2982,8 @@ function mk(){if(ui)return ui;
   document.head.appendChild(s)}
  ui=document.createElement("div");ui.id="autobk";ui.setAttribute("role","dialog");ui.setAttribute("aria-label","Backup");ui.style.display="none";document.body.appendChild(ui);return ui}
 function statusLines(){var s=st(),nx=s.local?s.local+EVERY:0;
- return[{m:"Phone copy: <b>"+esc(fmt(s.local))+"</b> &middot; File: <b>"+esc(fmt(s.file))+"</b> &middot; Cloud: <b>"+esc(fmt(s.cloud))+"</b>"},
-  {m:"A full backup is made automatically every 2 days while the app is open, with or without internet."+(nx>Date.now()?" Next: <b>"+esc(fmt(nx))+"</b>.":"")}]}
+ return[{m:"Phone: <b>"+esc(fmt(s.local))+"</b> &middot; File: <b>"+esc(fmt(s.file))+"</b> &middot; Cloud: <b>"+esc(fmt(s.cloud))+"</b>"},
+  {m:"A full backup is made automatically every 5 days while the app is open. The latest 3 are kept on this phone and in the cloud."+(nx>Date.now()?" Next: <b>"+esc(fmt(nx))+"</b>.":"")}]}
 function paint(){paintCard();if(!opened)return;var el=mk(),L=busy?[{t:"Backing up… please wait"}]:(waiting?[{t:"Loading your data, then backing up…"}]:(res.length?res:statusLines()));
  el.innerHTML='<b class="t">Backup</b>'+L.map(function(x){return'<div class="l '+(x.ok===1?"ok":x.ok===0?"bd":"m")+'">'+(x.ok===1?"✔ ":x.ok===0?"⚠ ":"")+(x.t?esc(x.t):x.m)+"</div>"}).join("")+
   '<div class="r"><button class="p" id="abNow"'+(busy?" disabled":"")+'>Back up now</button><button id="abX">Close</button></div>';
@@ -3167,19 +3035,19 @@ function pick(title,rows,onPick){
  [].forEach.call($("mbody").querySelectorAll("button[data-i]"),function(b){b.onclick=function(){onPick(rows[+b.dataset.i],b)}})}
 function card(){var bk=document.querySelector(".bkc");if(!bk||$("autobkc"))return;
  var d=document.createElement("div");d.id="autobkc";
- d.innerHTML='<div style="border-top:1px solid var(--ln,#ccc);margin:14px 0 10px"></div><div class="bkh">Automatic backup (every 2 days)</div><div class="mut" id="autost" style="margin:4px 0 8px"></div><div class="bkmr"><button class="btn alt" id="autonow">Back up now</button></div><div class="bkmr"><button class="btn alt" id="autodev">Restore from auto backup on this phone</button><button class="btn alt" id="autorest">Restore from auto cloud backup</button></div>';
+ d.innerHTML='<div style="border-top:1px solid var(--ln,#ccc);margin:14px 0 10px"></div><div class="bkh">Automatic backup (every 5 days, keeps 3)</div><div class="mut" id="autost" style="margin:4px 0 8px"></div><div class="bkmr"><button class="btn alt" id="autonow">Back up now</button></div><div class="bkmr"><button class="btn alt" id="autodev">Restore from this phone</button><button class="btn alt" id="autorest">Restore from cloud</button></div>';
  bk.appendChild(d);paintCard();
  $("autonow").onclick=function(){run(true)};
  $("autodev").onclick=async function(){
   if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
   var L=await listDevice();L.sort(function(a,b){return b.at-a.at});hide();
-  pick("Restore from auto backup on this phone",L,function(r){try{rAsk(rParse(r.json))}catch(e){closeM();toast("Could not load backup: "+(e&&e.message||e),true)}})};
+  pick("Restore from this phone",L,function(r){try{rAsk(rParse(r.json))}catch(e){closeM();toast("Could not load backup: "+(e&&e.message||e),true)}})};
  $("autorest").onclick=async function(){
   if(!db){toast("Connect to the internet and sign in first",true);return}
   if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
   var runs;try{runs=await readMeta(false)}catch(e){toast("Could not read the cloud backups",true);return}
   runs.sort(function(a,b){return b.at-a.at});hide();
-  pick("Restore from auto cloud backup",runs,async function(r,b){b.disabled=true;b.textContent="Loading…";
+  pick("Restore from cloud",runs,async function(r,b){b.disabled=true;b.textContent="Loading…";
    try{var t="";for(var i=0;i<r.parts;i++){var s=await rd(pid(r,i),false);if(!s.exists)throw new Error("part "+(i+1)+" is missing");var x=s.data();if(x.at!==r.at)throw new Error("this backup was replaced by a newer one");t+=x.t}rAsk(rParse(t))}
    catch(e){closeM();toast("Could not load backup: "+(e&&e.message||e),true)}})}}
 card();boot();
