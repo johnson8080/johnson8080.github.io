@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.4.0">
+<meta name="app-version" content="1.4.1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -525,12 +525,11 @@ return{
 <section id="enter" class="hide">
 <div class="acts"><button type="button" class="btn alt sm" id="enBack">← ALL TRIP LOGS</button></div>
 <div class="card">
-<label>Date</label><input type="date" id="date">
-<div id="editbar" class="note hide">Editing an entry <button class="x" id="cancel">cancel</button></div><label>Vehicle</label><select id="veh"></select>
-<label>Driver</label><input id="drv" list="dl" placeholder="Driver name"><datalist id="dl"></datalist><div class="mut" id="dhint" style="margin-top:4px"></div>
+<div id="editbar" class="note hide">Editing an entry <button class="x" id="cancel">cancel</button></div>
+<div class="row"><div><label>Date</label><input type="date" id="date"></div><div><label>Vehicle</label><select id="veh"></select></div></div>
+<div class="row"><div><label>Driver</label><input id="drv" list="dl" placeholder="Driver name"><datalist id="dl"></datalist></div><div><label>Driver deposit</label><input type="number" inputmode="decimal" id="ddp" placeholder="200"></div><div class="hide"><label>Driver advance</label><input type="number" inputmode="decimal" id="adv" placeholder="0"></div></div><div class="mut" id="dhint" style="margin-top:4px"></div><div class="mut" id="rem" style="margin-top:8px"></div>
 <div class="row"><div><label>Tonnes</label><input type="number" inputmode="decimal" id="ton" placeholder="0"></div>
-<div><label>Loader deposit</label><input type="number" inputmode="decimal" id="dep" placeholder="0"></div></div>
-<div class="row"><div><label>Driver deposit</label><input type="number" inputmode="decimal" id="ddp" placeholder="200"></div><div class="hide"><label>Driver advance</label><input type="number" inputmode="decimal" id="adv" placeholder="0"></div></div><div class="mut" id="rem" style="margin-top:8px"></div><div class="row"><div><label>Other expense</label><input type="number" inputmode="decimal" id="exp" placeholder="0"></div><div><label>Expense reason</label><select id="rsn"><option value="">Select…</option></select><div class="mut" id="rsnnote" style="margin-top:4px"></div></div></div>
+<div><label>Loader deposit</label><input type="number" inputmode="decimal" id="dep" placeholder="0"></div></div><div class="row"><div><label>Other expense</label><input type="number" inputmode="decimal" id="exp" placeholder="0"></div><div><label>Expense reason</label><select id="rsn"><option value="">Select…</option></select><div class="mut" id="rsnnote" style="margin-top:4px"></div></div></div>
 <label>Add a note</label><textarea id="nte" rows="2" placeholder="Optional"></textarea>
 <div class="pvb"><div class="mut">Total trip expense</div><div class="pay" id="prev">0</div></div>
 <div class="neg" id="lkw" style="margin-top:8px;font-size:14px"></div><button class="btn" id="save">Save entry</button><div class="mut" id="mine" style="margin-top:8px"></div></div></section>
@@ -596,9 +595,9 @@ return{
 <section id="fen" class="hide">
 <div class="acts"><button type="button" class="btn alt sm" id="fnBack">← ALL FUEL LOGS</button></div>
 <div class="card"><div id="feb" class="note hide" style="margin-top:8px">Editing an entry <button class="x" id="fcan">cancel</button></div>
-<label>Date</label><input type="date" id="fdate"><label>Vehicle</label><select id="fveh"></select><label>Driver</label><input id="fdrv" readonly><div class="mut" id="fdh" style="margin-top:4px"></div>
-<div class="row"><div><label>Litres</label><input type="number" inputmode="decimal" id="flt" placeholder="0"></div><div><label>Sell price/ltr</label><input type="number" inputmode="decimal" id="fsp" placeholder="0"></div></div>
-<label>Actual price/ltr (cost)</label><input type="number" inputmode="decimal" id="fap" placeholder="0">
+<div class="row"><div><label>Date</label><input type="date" id="fdate"></div><div><label>Vehicle</label><select id="fveh"></select></div></div>
+<div class="row"><div><label>Driver</label><input id="fdrv" readonly></div><div><label>Litres</label><input type="number" inputmode="decimal" id="flt" placeholder="0"></div></div><div class="mut" id="fdh" style="margin-top:4px"></div>
+<div class="row"><div><label>Sell price/ltr</label><input type="number" inputmode="decimal" id="fsp" placeholder="0"></div><div><label>Actual price/ltr</label><input type="number" inputmode="decimal" id="fap" placeholder="0"></div></div>
 <div class="row"><div><label>Collected by</label><select id="fcs"></select><input id="fcb" class="hide" placeholder="New name" style="margin-top:6px"></div><div><label>Issued by</label><select id="fis"></select><input id="fib" class="hide" placeholder="New name" style="margin-top:6px"></div></div>
 <label>Add a note</label><textarea id="fnt" rows="2" placeholder="Optional"></textarea>
 <div class="pvb"><div class="mut">Net profit</div><div class="pay" id="fnp">0</div></div>
