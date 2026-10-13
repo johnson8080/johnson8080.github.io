@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.3.3">
+<meta name="app-version" content="1.3.4">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -513,6 +513,57 @@ return{
 
 <div id="st1" class="hide"><div class="stats"><div class="stat b"><span>Today's tonnes</span><b id="s1a">0.00 ton</b><small id="s1b">All time: 0.00 ton</small></div><div class="stat g"><span>Today's trip expenses</span><b id="s1c">0.00</b><small id="s1d">All time: 0.00</small></div></div></div><div id="st2" class="hide"><div class="stats"><div class="stat b"><span>Today's litres</span><b id="s2a">0 ltrs</b><small id="s2b">All time: 0 ltrs</small></div><div class="stat g"><span>Today's net profit</span><b id="s2c">0.00</b><small id="s2d">All time: 0.00</small></div></div></div>
 <div class="sn hide" id="sn"></div>
+<style>
+#splash{position:fixed;inset:0;z-index:100001;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;background:#0a0e16;color:#eef2f9;font-family:"Plus Jakarta Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;transition:opacity .5s ease,transform .5s ease,visibility 0s linear .5s;-webkit-tap-highlight-color:transparent}
+#splash.out{opacity:0;transform:scale(1.04);visibility:hidden;pointer-events:none}
+#splash .bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 46% at 50% 38%,rgba(47,109,246,.32),rgba(47,109,246,0) 70%),radial-gradient(ellipse 80% 40% at 50% 112%,rgba(34,197,139,.16),rgba(34,197,139,0) 70%),linear-gradient(180deg,#0a0e16,#0d1424 60%,#0a0e16)}
+#splash .grid{position:absolute;left:-20%;right:-20%;bottom:-6%;height:46%;opacity:.5;background-image:linear-gradient(rgba(91,157,255,.22) 1px,transparent 1px),linear-gradient(90deg,rgba(91,157,255,.22) 1px,transparent 1px);background-size:44px 44px;transform:perspective(380px) rotateX(62deg);transform-origin:50% 100%;animation:spGrid 1.6s linear infinite;-webkit-mask-image:linear-gradient(to top,#000 10%,transparent 92%);mask-image:linear-gradient(to top,#000 10%,transparent 92%)}
+@keyframes spGrid{to{background-position:0 44px}}
+#splash .mark{position:relative;width:132px;height:132px;opacity:0;animation:spIn .6s .1s cubic-bezier(.2,.8,.2,1) forwards}
+#splash .mark svg{width:100%;height:100%;overflow:visible}
+#splash .glow{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,rgba(47,109,246,.5),rgba(47,109,246,0) 65%);animation:spPulse 1.8s ease-in-out infinite}
+#splash .ring{stroke-dasharray:340;stroke-dashoffset:340;animation:spDraw 1.1s .25s cubic-bezier(.65,0,.25,1) forwards}
+#splash .ring2{transform-origin:60px 60px;animation:spSpin 3.2s linear infinite}
+#splash .drop{transform-origin:60px 74px;transform:scale(0);animation:spPop .7s .75s cubic-bezier(.3,1.5,.5,1) forwards}
+#splash .shine{opacity:0;animation:spFade .5s 1.15s forwards}
+#splash .road{position:absolute;left:50%;top:calc(100% + 18px);width:210px;height:8px;margin-left:-105px;opacity:0;animation:spFade .4s 1s forwards}
+#splash .road i{position:absolute;left:0;right:0;top:3px;border-top:2px dashed rgba(255,255,255,.28);animation:spRoad .55s linear infinite}
+#splash .road b{position:absolute;top:0;left:0;width:8px;height:8px;border-radius:50%;background:#22c58b;box-shadow:0 0 12px 3px rgba(34,197,139,.7);animation:spTrip 1.5s 1s ease-in-out infinite}
+#splash .name{margin-top:62px;font-size:28px;font-weight:800;letter-spacing:.2em;display:flex;gap:.45em;align-items:baseline}
+#splash .name span{opacity:0;transform:translateY(14px);animation:spUp .6s cubic-bezier(.2,.8,.2,1) forwards}
+#splash .name span:nth-child(1){animation-delay:1.05s}#splash .name span:nth-child(2){animation-delay:1.15s;color:#22c58b}#splash .name span:nth-child(3){animation-delay:1.25s}
+#splash .tag{margin-top:10px;font-size:12.5px;font-weight:600;letter-spacing:.32em;text-transform:uppercase;color:#8b96ab;opacity:0;animation:spFade .7s 1.5s forwards}
+#splash .bar{position:absolute;left:50%;bottom:calc(54px + env(safe-area-inset-bottom,0px));width:132px;height:3px;margin-left:-66px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;opacity:0;animation:spFade .4s 1.2s forwards}
+#splash .bar i{display:block;height:100%;width:40%;border-radius:3px;background:linear-gradient(90deg,#2f6df6,#22c58b);animation:spBar 1.1s ease-in-out infinite}
+@keyframes spIn{from{opacity:0;transform:translateY(10px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes spDraw{to{stroke-dashoffset:0}}
+@keyframes spPop{to{transform:scale(1)}}
+@keyframes spFade{to{opacity:1}}
+@keyframes spUp{to{opacity:1;transform:none}}
+@keyframes spPulse{0%,100%{opacity:.55;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes spSpin{to{transform:rotate(360deg)}}
+@keyframes spRoad{to{background-position:0 0;transform:translateX(-12px)}}
+@keyframes spTrip{0%{left:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{left:calc(100% - 8px);opacity:0}}
+@keyframes spBar{0%{transform:translateX(-110%)}100%{transform:translateX(280%)}}
+@media (prefers-reduced-motion:reduce){#splash *{animation-duration:.01s!important;animation-delay:0s!important;animation-iteration-count:1!important}#splash{transition-duration:.15s}}
+</style>
+<div id="splash" role="presentation" aria-hidden="true"><div class="bg"></div><div class="grid"></div>
+<div class="mark"><div class="glow"></div>
+<svg viewBox="0 0 120 120" fill="none"><defs><linearGradient id="spg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b9dff"/><stop offset="1" stop-color="#2f6df6"/></linearGradient><linearGradient id="spg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7db3ff"/><stop offset="1" stop-color="#2563eb"/></linearGradient></defs>
+<circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+<circle class="ring" cx="60" cy="60" r="54" stroke="url(#spg1)" stroke-width="4" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+<g class="ring2"><circle cx="60" cy="6" r="3.2" fill="#22c58b"/></g>
+<path class="drop" d="M60 26C60 26 38 52 38 72a22 22 0 0 0 44 0C82 52 60 26 60 26Z" fill="url(#spg2)"/>
+<path class="shine" d="M50 70a10 10 0 0 0 7 9" stroke="rgba(255,255,255,.75)" stroke-width="3.5" stroke-linecap="round"/>
+</svg><div class="road"><i></i><b></b></div></div>
+<div class="name"><span>FUEL</span><span>&amp;</span><span>TRIPS</span></div>
+<div class="tag">Trips &middot; Fuel &middot; Salary</div>
+<div class="bar"><i></i></div></div>
+<script>(function(){var s=document.getElementById("splash");if(!s)return;var t0=Date.now(),MIN=2300,MAX=7000,gone=false;
+function ready(){return !!window.me||!!document.getElementById("fbE")}
+function go(){if(gone)return;gone=true;s.classList.add("out");setTimeout(function(){try{s.remove()}catch(e){}},700)}
+var iv=setInterval(function(){var a=Date.now()-t0;if((a>=MIN&&ready())||a>=MAX){clearInterval(iv);go()}},120);
+s.addEventListener("click",function(){if(Date.now()-t0>900){clearInterval(iv);go()}})})();</script>
 <section id="hist" class="hide"><div class="card hf"><input type="search" id="hq" placeholder="Search vehicle, driver, note, date…" autocomplete="off">
 <div class="hch" id="hch"><button data-v="p" class="on">Trips</button><button data-v="f">Fuel</button><button data-v="sd">SEED.CN</button><button data-v="o">Salary</button><button data-v="a">Advance</button><button data-v="s">Staff</button></div>
 <div class="row"><div><label>Period</label><select id="hper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div><label>Vehicle</label><select id="hveh"></select></div></div>
