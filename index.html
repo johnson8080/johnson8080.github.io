@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.4.1">
+<meta name="app-version" content="1.5.0">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -98,8 +98,8 @@ section:not(.hide){animation:sin .3s cubic-bezier(.2,.8,.2,1) both}.tabs:not(.hi
 .sn button{font-size:12.5px!important;letter-spacing:0}
 .logo{display:none!important}.hd{margin-bottom:8px;gap:8px}
 .stats{gap:8px;margin-bottom:8px}.stat{padding:7px 11px 6px;border-top-width:2px;border-radius:12px}.stat span{font-size:10.5px;letter-spacing:.4px}.stat b{font-size:18px;margin:2px 0 1px}.stat small{font-size:11px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#banner .note,#bkbanner .note,#sbanner .note{padding:6px 10px;margin-bottom:6px;font-size:12px;border-radius:10px}
-#banner:empty,#bkbanner:empty,#sbanner:empty{display:none}
+#banner .note,#sbanner .note{padding:6px 10px;margin-bottom:6px;font-size:12px;border-radius:10px}
+#banner:empty,#sbanner:empty{display:none}
 .hf input[type=search]{width:100%}.hch{display:grid;grid-template-columns:.8fr .8fr .8fr 1.3fr 1.3fr;gap:4px;margin:10px 0 0}.hch button{padding:9px 2px;white-space:nowrap;border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:10px;font-size:14px;font-weight:600}.hch button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
 tr.mtr>td,tr.mtr>th,table tr.mtr>td:first-child{background-color:color-mix(in srgb,#f5a524 20%,var(--card))!important;border-radius:0!important}table tr.mtr>td:first-child{border-top-left-radius:6px!important;border-bottom-left-radius:6px!important}table tr.mtr>td:last-child{border-top-right-radius:6px!important;border-bottom-right-radius:6px!important}.hi.mtr,#dsc .dse.mtr{background-color:color-mix(in srgb,#f5a524 20%,var(--card))}#hl{padding:2px 10px}.ehint{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px;font-size:12px;margin:-4px 0 8px;text-align:center}.ehint .ecn{text-align:left;white-space:nowrap}.hi,.hh{display:grid;grid-template-columns:46px 20px minmax(0,1.15fr) minmax(0,1fr) 44px 68px;gap:4px;align-items:center;font-size:12.5px;padding:9px 0;border-bottom:1px solid var(--ln)}.hi{cursor:pointer}.hi:last-child{border:0}.hh{position:sticky;top:0;background:var(--card);color:var(--mut);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;padding:8px 0}.hi>*,.hh>*{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.hi .q,.hh .q{text-align:right}.hi .a,.hh .a{text-align:right;font-weight:700}.hi .d,.hi .q{color:var(--mut)}.hi .d{overflow:visible;text-overflow:clip;font-variant-numeric:tabular-nums}.hp{display:inline-grid;place-items:center;width:18px;height:18px;font-size:10.5px;font-weight:800;border-radius:6px}.hp.p{background:color-mix(in srgb,var(--ac) 18%,transparent);color:var(--ac)}.hp.f{background:rgba(34,197,139,.18);color:var(--ok)}
 .hf{padding:10px}.hf label{display:none}.hf input,.hf select{padding:9px 11px;font-size:14px;border-radius:11px}.hf .row{gap:8px;margin-top:8px}.hch{margin-top:8px}.hch button{padding:7px 4px}*,*::before,*::after{border-radius:6px!important}.sw{border-radius:999px!important}.sw i,.hd .sub:before{border-radius:50%!important}.t3c{display:flex;gap:4px}.t3c button{padding:5px 10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font-size:12.5px;font-weight:600}.t3c button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
@@ -115,8 +115,6 @@ body.nohd .hd{display:none}body.nohd{padding-top:8px}
 .stat{padding:10px 12px 9px!important}.stat b{margin:3px 0 4px!important}.stat small{font-size:13.5px!important;font-weight:600;color:var(--tx)!important;opacity:.85;white-space:normal!important;line-height:1.25}
 .fab{position:fixed;z-index:7;right:max(16px,calc(50% - 304px));bottom:calc(76px + env(safe-area-inset-bottom,0px));width:46px;height:46px;padding:0;display:grid;place-items:center;font:400 28px/1 system-ui,sans-serif;color:var(--ac);background:transparent;border:2px solid var(--ac);border-radius:6px;box-shadow:none;-webkit-tap-highlight-color:transparent}.fab:active{background:transparent;transform:scale(.96)}.fab.hide{display:none!important}.pgs{display:flex;flex-direction:column;gap:12px;padding:4px 0}.pgc{width:100%;text-align:left;display:flex;flex-direction:column;gap:8px;padding:16px 12px;background:var(--card);color:var(--tx);border:1px solid var(--ln);border-radius:var(--rad,14px);box-shadow:0 8px 24px rgba(0,0,0,.12);font:inherit;cursor:pointer;overflow:hidden}.pgc b{display:block;white-space:nowrap;font-size:clamp(11px,calc((100vw - 64px)/21),16px);letter-spacing:.2px}.pgc span{display:block;white-space:nowrap;overflow:hidden;font-size:14px;line-height:1.4;color:var(--mut);font-weight:400}.pgc:active{transform:scale(.98)}@media print{.pgs{display:none!important}}html.mlock,html.mlock body{overflow:hidden!important}.modal{align-items:flex-start!important;padding-top:calc(12px + env(safe-area-inset-top,0px))!important;overscroll-behavior:contain;touch-action:none}.modal .card{touch-action:pan-y;overscroll-behavior:contain;max-height:88vh!important;animation:tdown .28s cubic-bezier(.2,.8,.2,1)!important}.pgh{position:relative;z-index:2;outline:4px solid #22c55e;outline-offset:3px;animation:pgp 1.25s ease-in-out 0s 4!important}@keyframes pgp{0%,100%{outline-color:#22c55e;box-shadow:0 0 18px 4px rgba(34,197,94,.9)}50%{outline-color:rgba(34,197,94,0);box-shadow:0 0 0 0 rgba(34,197,94,0)}}@media print{.fab{display:none!important}}
 .hch button{font-size:13px!important;padding-left:2px!important;padding-right:2px!important}.hch button.hit:not(.on){border-color:var(--ac)!important;box-shadow:0 0 0 1px var(--ac);color:var(--ac)!important;background:color-mix(in srgb,var(--ac) 14%,transparent)!important}.hch .bdg{display:inline-block;min-width:16px;padding:0 4px;margin-left:2px;font-size:11px;font-weight:800;line-height:16px;border-radius:8px!important;background:var(--ac);color:#fff}.hch button.on .bdg{background:#fff;color:var(--ac)}#hmo,#hday,#hveh,#hper,#hyr{box-sizing:border-box;height:42px;width:100%;margin:0;padding:0 11px!important;font-size:14px!important;line-height:40px;border-radius:11px!important;border-width:1px;display:block;min-width:0;-webkit-appearance:none;appearance:none;text-align:left}
-#htoday{text-align:left;box-shadow:none!important;background:var(--fld)!important;color:var(--tx)!important;border:1px solid var(--ln)!important;font-weight:400;line-height:normal}
-#htoday.on{background:var(--ac)!important;border-color:var(--ac)!important;color:#fff!important;font-weight:600}
 .dw{position:relative}.dw .ph{position:absolute;left:12px;top:0;height:42px;line-height:42px;font-size:14px;color:var(--mut);pointer-events:none;display:none}
 .dw.em .ph{display:block}.dw.em input{color:transparent!important}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}.rh{font-size:17px;font-weight:800;margin-bottom:6px}#rfuel,#rpay,#rveh,#lockc{scroll-margin-top:12px}#barrates{display:none!important}
 
@@ -168,7 +166,7 @@ html{scroll-padding-top:52px}
 input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus,input:-webkit-autofill:active,select:-webkit-autofill,textarea:-webkit-autofill{-webkit-box-shadow:0 0 0 1000px var(--fld) inset!important;box-shadow:0 0 0 1000px var(--fld) inset!important;-webkit-text-fill-color:var(--tx)!important;caret-color:var(--tx);background-color:var(--fld)!important;transition:background-color 99999s ease-out 0s}
 #fen input:not([type=checkbox]),#enter input:not([type=checkbox]){background-color:var(--fld)}
 .hd:has(#toast:not(.hide)){z-index:11}
-#toast.bad{--tc:220,38,38}#banner .note,#bkbanner .note,#sbanner .note{text-align:center!important}#toast{justify-content:center!important;text-align:center!important;padding-left:32px!important;padding-right:32px!important}#toast i{position:absolute!important;left:10px;top:50%;transform:translateY(-50%)}#toast span{flex:1 1 auto!important;width:100%;text-align:center!important}#toast span b{display:block!important;text-align:center!important}
+#toast.bad{--tc:220,38,38}#banner .note,#sbanner .note{text-align:center!important}#toast{justify-content:center!important;text-align:center!important;padding-left:32px!important;padding-right:32px!important}#toast i{position:absolute!important;left:10px;top:50%;transform:translateY(-50%)}#toast span{flex:1 1 auto!important;width:100%;text-align:center!important}#toast span b{display:block!important;text-align:center!important}
 #toast i{flex:0 0 auto;width:16px;height:16px;border-radius:50%!important;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:800;line-height:1;color:#fff;background:rgb(var(--tc))}
 #toast span{min-width:0;flex:1;display:block;white-space:nowrap;overflow:hidden;max-height:34px;line-height:1.15;word-break:break-word}
 #toast span b{display:inline;font-weight:inherit}
@@ -190,7 +188,6 @@ html{scroll-padding-top:62px}
 #ovc{border-top-left-radius:0!important;border-top-right-radius:0!important;border-top:0!important;box-shadow:none!important;padding-top:0!important}
 #ovf,#ovc,#allc,#dsc{border-color:var(--ac)!important}.acts{flex-wrap:wrap}.acts .btn:disabled{opacity:.4;filter:grayscale(1);cursor:not-allowed}
 #stg .card{border-color:var(--ac)}
-.stt{display:block;text-align:center;text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px}
 #stg .sh{font-size:12.5px;margin-top:6px}
 #stg .acts{justify-content:center}
 #devtxt{font-size:14.5px;color:var(--tx)}
@@ -262,10 +259,6 @@ html{scroll-padding-top:62px}
 .utb{height:46px;width:100%;box-sizing:border-box;border:1px solid var(--bad);border-radius:12px;background:transparent;color:var(--tx);display:flex;align-items:center;padding:0 12px;min-width:0}
 .utb span{font-size:10.5px;font-weight:600;color:var(--mut);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.2px}
 .utb b{font-size:17px;font-weight:700;color:var(--tx);line-height:1.25;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.umw{position:relative;min-width:0;height:46px}
-.umw .uph{display:none;position:absolute;left:13px;right:34px;top:0;height:46px;align-items:center;color:var(--mut);font-size:15px;white-space:nowrap;overflow:hidden;pointer-events:none}
-.umw.em .uph{display:flex}
-.umw.em #umon,.umw.em #pmon,.umw.em #uday,.umw.em #pday{color:transparent}
 /* Trip logs: swipe sideways, Date column frozen, Total row like the Fuel tab */
 #logl .wrap{overflow-x:auto;overflow-y:hidden;max-width:100%;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y;overscroll-behavior-x:contain}
 /* compact footer nav to match the compact header */
@@ -300,12 +293,6 @@ html,body{overscroll-behavior-y:none!important}
 #stg .sf:focus-within{border-color:var(--ac)}
 #stg .sf input{width:100%;min-width:0;border:0;background:none;padding:10px 0;text-align:right;font-weight:700;outline:0}
 #stg .ssel{width:auto;flex:none;padding:10px 12px;font-weight:700}
-#stg .bkst{margin:12px 0 4px;padding:10px 12px;font-size:13.5px;color:var(--mut);background:var(--bg);border-left:3px solid var(--ok)}
-#stg .bkst:has(.neg){border-left-color:var(--bad)}
-#stg .sacts{display:flex;gap:8px;flex-wrap:wrap;padding:6px 0 10px}
-#stg .sacts .btn{display:flex!important;align-items:center;justify-content:center}
-#stg .sacts .btn.alt{background:var(--mut)}
-#stg .sacts .btn{flex:1 1 0;min-width:130px;font-family:inherit;width:auto;margin:0;padding:11px 14px;font-size:13.5px;box-shadow:none;text-align:center}
 #stg .sabout{text-align:center;margin:20px 0 4px}
 #stg .sabout #devtxt{font-size:13px;color:var(--mut)}
 #stg.hide+#sbar{display:none!important}
@@ -341,8 +328,7 @@ button:not(.sw),.btn,.ib,input,select,textarea,.card{transition:none!important}
 :root[data-theme="light"] .sw:not([aria-checked="true"]){border-color:#97a3b8;background:#c9d1de}
 :root[data-theme="light"] .pvb{border:1.5px solid #2563eb;background:linear-gradient(160deg,rgba(37,99,235,.12),rgba(37,99,235,.04))}
 .lkw{position:relative}.lkw .lkph{position:absolute;left:14px;right:44px;top:50%;transform:translateY(-50%);color:var(--mut);font-size:15.5px;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:none}.lkw.empty .lkph{display:block}.lkw.empty input::-webkit-datetime-edit{color:transparent}.lkw.empty input{color:transparent}
-#byr::placeholder{font-weight:500;font-size:13px;color:var(--mut);opacity:1}
-#stg .bkc .sf,#stg #bkint{box-sizing:border-box;width:150px!important;min-width:150px!important;max-width:150px!important;flex:0 0 150px!important}#stg .bkc .sf input{width:100%;min-width:0}
+#stg .bkc .sf{box-sizing:border-box;width:150px!important;min-width:150px!important;max-width:150px!important;flex:0 0 150px!important}#stg .bkc .sf input{width:100%;min-width:0}
 #ntl .nti{padding:7px 0!important;align-items:center;cursor:pointer;gap:10px}#ntl .ntb{min-width:0;flex:1}#ntl .ntr{display:flex;justify-content:space-between;align-items:baseline;gap:8px}#ntl .ntr b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#ntl .ntr .mut{font-size:12px;white-space:nowrap}#ntl .ntx{font-size:13px;opacity:.8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}#ntl .nti .undo{padding:4px 6px;font-size:12px;flex:none}
 
 /* ===== Dark colour palettes (Settings > Dark color). Navy = default ===== */
@@ -601,7 +587,7 @@ return{
 <div class="row"><div><label>Collected by</label><select id="fcs"></select><input id="fcb" class="hide" placeholder="New name" style="margin-top:6px"></div><div><label>Issued by</label><select id="fis"></select><input id="fib" class="hide" placeholder="New name" style="margin-top:6px"></div></div>
 <label>Add a note</label><textarea id="fnt" rows="2" placeholder="Optional"></textarea>
 <div class="pvb"><div class="mut">Net profit</div><div class="pay" id="fnp">0</div></div>
-<div class="neg" id="flkw" style="margin-top:8px;font-size:14px"></div><button class="btn" id="fsave" disabled>Save fuel</button><div class="mut" style="margin-top:8px">Prices fill in from Update Rates → Fuel rates. You can change them for this entry.</div></div>
+<div class="neg" id="flkw" style="margin-top:8px;font-size:14px"></div><button class="btn" id="fsave" disabled>Save fuel</button></div>
 </section><section id="fsm" class="hide"><div class="card"><div class="fgrid"><div><label>Period</label><select id="fper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="fdw" class="hide"><label>Date</label><input type="date" id="fday"></div><div id="fmw" class="hide"><label>Month</label><input type="month" id="fmon"></div><div id="fyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="fyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cffsm"><button type="button" class="ed" data-cf="fsm">Clear filters</button></div><div class="row" style="margin-top:10px;grid-template-columns:repeat(3,minmax(0,1fr))"><div><div class="mut">Litres</div><div class="pay" id="fl" style="font-size:20px">0</div></div><div><div class="mut">Net profit</div><div class="pay" id="fp" style="font-size:20px">0</div></div><div><div class="mut">Profit %</div><div class="pay" id="fpc" style="font-size:20px">0%</div></div></div></div>
 <div class="card" id="fwkc"><b class="ct">By week</b><div class="wrap"><table><thead><tr><th>Week</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fwk"></tbody></table></div></div>
 <div class="card"><b class="ct">By vehicle</b><div class="wrap"><table><thead><tr><th>Vehicle</th><th>Litres</th><th>Sell</th><th>Cost</th><th>Profit</th></tr></thead><tbody id="fvh"></tbody></table></div></div>
@@ -1828,7 +1814,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    $("hl").innerHTML=tot?'<div class="hh"><span>Date</span><span></span><span>Vehicle</span><span>Driver</span><span class="q">Qty</span><span class="a">Amount</span></div>'+(HMT=mtMap(),"")+R.slice(0,300).map(function(r){var o=r.o,q,am;
      if(r.k==="p"){q=(+o.tonnes||0).toFixed(2)+" t";am=fmt(pay(o))}else if(r.k==="s"){q=(+o.tonnes||0).toFixed(2)+" t";am=fmt(window.seedTripExp?seedTripExp(o):(+o.exp||0))}else{q=o.litres+" L";am=fmt(o.litres*o.sell)}
      return'<div class="hi'+(r.k==="p"&&mtN(HMT,r.date,r.drv)>1?" smt":"")+'"'+(r.k==="p"&&mtN(HMT,r.date,r.drv)>1?' style="--mc:'+drvCol(r.drv)+'"':"")+' data-k="'+r.k+'" data-id="'+esc(r.id)+'"><span class="d">'+esc(r.date.slice(5))+'</span><span class="hp '+r.k+'">'+(r.k==="p"?"T":r.k==="s"?"S":"F")+'</span><span>'+esc(r.veh)+'</span><span>'+esc(r.drv||"—")+(r.note?" ✎":"")+'</span><span class="q">'+esc(q)+'</span><span class="a">'+am+'</span></div>'}).join("")+(tot>300?'<div class="mut" style="margin:8px 0">Showing the latest 300. Narrow the search to see older ones.</div>':""):'<div class="mut" style="padding:10px 0">No entries match.</div>'}
-  $("hl").onclick=function(ev){var r=ev.target.closest(".hi");if(!r)return;if(r.dataset.k==="p")detail(r.dataset.id);else if(r.dataset.k==="s"){var sl=$("seedl");if(!sl)return;var tmp=document.createElement("div");tmp.innerHTML='<table><tbody><tr data-t="'+r.dataset.id+'"><td>x</td></tr></tbody></table>';var td0=tmp.querySelector("td");sl.appendChild(tmp);td0.dispatchEvent(new MouseEvent("click",{bubbles:true}));tmp.remove()}else fdetail(r.dataset.id)};
+  $("hl").onclick=function(ev){var r=ev.target.closest(".hi");if(!r)return;if(r.dataset.k==="p")detail(r.dataset.id);else if(r.dataset.k==="s"){var sl=$("seedl");if(!sl)return;var tmp=document.createElement("div");tmp.innerHTML='<table><tbody><tr data-t="'+esc(r.dataset.id)+'"><td>x</td></tr></tbody></table>';var td0=tmp.querySelector("td");sl.appendChild(tmp);td0.dispatchEvent(new MouseEvent("click",{bubbles:true}));tmp.remove()}else fdetail(r.dataset.id)};
   $("hq").oninput=renderHist;$("hper").onchange=renderHist;$("hmo").onchange=renderHist;$("hday").onchange=renderHist;$("hyr").onchange=renderHist;$("hveh").onchange=renderHist;
   $("hch").onclick=function(ev){var b=ev.target.closest("button");if(!b)return;HT=b.dataset.v;[].forEach.call($("hch").querySelectorAll("button"),function(x){x.classList.toggle("on",x===b)});renderHist()};
   $("hclr").onclick=function(){$("hq").value="";$("hper").value="all";$("hmo").value="";$("hday").value="";$("hyr").value="";$("hveh").value="";HT="p";[].forEach.call($("hch").querySelectorAll("button"),function(x){x.classList.toggle("on",x.dataset.v==="p")});renderHist()};
@@ -2499,7 +2485,6 @@ wShowPer();winchFill();winchRender();
 .bkc .bkf{cursor:pointer}.bkc .bkf input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;font-size:0}
 .bkc .bkhint{font-size:12.5px;color:var(--mut);line-height:1.4;margin:2px 0 8px}.bkc .bkhint:empty{display:none}
 .bkc .bkmr .btn{margin:0!important;width:100%;box-sizing:border-box;font-size:13px;padding:11px 6px;line-height:1.2}
-.bkc .bkm .setrow{margin-top:6px}
 
 #s-lock #lockc>b.ct{display:none}#s-lock #lockc{padding:14px}
 
@@ -2909,10 +2894,11 @@ var o=window.seedPage;window.seedPage=function(n){o(n);if(n==="prep"){draw()}els
    Copy 3: cloud (Firestore). Keeps the latest 3 per phone. Needs internet: if offline it waits and saves by itself when the connection is back.
    A web app can only run while it is open: if the app was closed for days, the backup is made the moment it is opened. */
 (function(){try{
-var $=function(i){return document.getElementById(i)},DAY=864e5,EVERY=5*DAY,KEEPD=3,KEEPC=3,CH=300000,LS="fleetAutoBk_v1",DEVK="fleetAutoBkDev",LSC="fleetAutoBkCopy",
+var $=function(i){return document.getElementById(i)},DAY=864e5,EVERY=5*DAY,KEEPD=3,KEEPC=3,CH=300000,LS="fleetAutoBk_v1",DEVK="fleetAutoBkDev",LSC="fleetAutoBkCopy",LSF="fleetAutoBkFile",
  DBN="fleetAutoBkDB",STN="copies",busy=false,opened=false,waiting=false,res=[],hideT=0,ui=null,lastCloudTry=0;
 function lsr(){try{var o=JSON.parse(localStorage.getItem(LS)||"{}");return o&&typeof o==="object"?o:{}}catch(e){return{}}}
 function put(k,v){try{var o=lsr();o[k]=v;localStorage.setItem(LS,JSON.stringify(o))}catch(e){}}
+function fileOn(){try{return localStorage.getItem(LSF)!=="0"}catch(e){return true}}
 function st(){var o=lsr();return{local:+o.local||0,file:+o.file||0,cloud:+o.cloud||0}}
 var DEV=(function(){try{var d=localStorage.getItem(DEVK);if(!d){d=Math.random().toString(36).slice(2,6)||"x";localStorage.setItem(DEVK,d)}return d.replace(/[^A-Za-z0-9]/g,"")||"x"}catch(e){return"x"}})();
 function online(){return window.NETREAL!==false&&navigator.onLine!==false}
@@ -2981,7 +2967,7 @@ function mk(){if(ui)return ui;
   document.head.appendChild(s)}
  ui=document.createElement("div");ui.id="autobk";ui.setAttribute("role","dialog");ui.setAttribute("aria-label","Backup");ui.style.display="none";document.body.appendChild(ui);return ui}
 function statusLines(){var s=st(),nx=s.local?s.local+EVERY:0;
- return[{m:"Phone: <b>"+esc(fmt(s.local))+"</b> &middot; File: <b>"+esc(fmt(s.file))+"</b> &middot; Cloud: <b>"+esc(fmt(s.cloud))+"</b>"},
+ return[{m:"Phone: <b>"+esc(fmt(s.local))+"</b> &middot; File: <b>"+esc(fileOn()?fmt(s.file):"off")+"</b> &middot; Cloud: <b>"+esc(fmt(s.cloud))+"</b>"},
   {m:"A full backup is made automatically every 5 days while the app is open. The latest 3 are kept on this phone and in the cloud."+(nx>Date.now()?" Next: <b>"+esc(fmt(nx))+"</b>.":"")}]}
 function paint(){paintCard();if(!opened)return;var el=mk(),L=busy?[{t:"Backing up… please wait"}]:(waiting?[{t:"Loading your data, then backing up…"}]:(res.length?res:statusLines()));
  el.innerHTML='<b class="t">Backup</b>'+L.map(function(x){return'<div class="l '+(x.ok===1?"ok":x.ok===0?"bd":"m")+'">'+(x.ok===1?"✔ ":x.ok===0?"⚠ ":"")+(x.t?esc(x.t):x.m)+"</div>"}).join("")+
@@ -2998,10 +2984,10 @@ async function run(manual){
   var now=Date.now(),s=st(),localDue=manual||now-s.local>=EVERY,cloudDue=manual||now-s.cloud>=EVERY;
   if(!localDue&&!cloudDue)return;
   var o=bkObj();o.snapshotType="auto";
-  if(localDue){var txt=JSON.stringify(o),dv=await saveDevice(txt,now),fl=await saveFile(o,now);
+  if(localDue){var txt=JSON.stringify(o),dv=await saveDevice(txt,now),fon=fileOn(),fl=fon?await saveFile(o,now):false;
    if(dv||fl)put("local",now);if(fl)put("file",now);
    res.push(dv?{ok:1,t:"Saved on this phone (inside the app)."}:{ok:0,t:"Could not save the copy inside the app."});
-   res.push(fl?{ok:1,t:"JSON file sent to Downloads."}:{ok:0,t:"Could not create the JSON file."})}
+   res.push(!fon?{ok:-1,t:"JSON file skipped (turned off)."}:fl?{ok:1,t:"JSON file sent to Downloads."}:{ok:0,t:"Could not create the JSON file."})}
   if(cloudDue){
    if(!cloudOk())res.push({ok:-1,t:window.readOnly?"Cloud copy skipped (read-only account).":"Cloud copy skipped (not signed in)."});
    else if(!online())res.push({ok:0,t:"No internet. The cloud copy will save by itself when you are back online."});
@@ -3025,17 +3011,45 @@ setInterval(tick,10*60*1000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(tick,3000)});
 window.addEventListener("online",function(){setTimeout(tick,4000)});
 
+/* ---------- old snapshots from earlier versions: shown only if some still exist, so they can be restored once or deleted ---------- */
+var OLDDB="fleetSnapsDB",OLDST="snaps",OLDLS="fleetSnapsLS",oldC=[],oldD=[],oldTried=0;
+function oldOpen(){return new Promise(function(res,rej){try{var r=indexedDB.open(OLDDB,1);r.onupgradeneeded=function(){r.result.createObjectStore(OLDST,{keyPath:"id"})};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej(r.error)}}catch(e){rej(e)}})}
+async function oldDevList(){var out=[];try{var d=await oldOpen();try{out=await new Promise(function(res,rej){var q=d.transaction(OLDST,"readonly").objectStore(OLDST).getAll();q.onsuccess=function(){res(q.result||[])};q.onerror=function(){rej(q.error)}})}finally{d.close()}}catch(e){}
+ try{var l=JSON.parse(localStorage.getItem(OLDLS)||"[]");if(Array.isArray(l))out=out.concat(l)}catch(e){}
+ return out.filter(function(r){return r&&r.json})}
+async function oldScan(){try{oldD=await oldDevList()}catch(e){oldD=[]}
+ if(window.db){try{var sn=await rd("config/backupmeta",false),m=sn&&sn.exists?(sn.data()||{}):{};oldC=Object.keys(m.snaps||{}).map(function(k){return Object.assign({k:k},m.snaps[k])}).filter(function(o){return o&&o.parts>0})}catch(e){}}
+ paintOld()}
+function paintOld(){var e=$("autoold");if(!e)return;var n=oldC.length+oldD.length;e.style.display=n?"block":"none";
+ var t=$("autooldt");if(t)t.textContent="Old snapshots from an earlier version: "+oldC.length+" in the cloud, "+oldD.length+" on this phone. They are no longer made. You can restore one or delete them all."}
+function oldRestore(){if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
+ var rows=oldD.map(function(r){return{at:r.at,e:r.e,f:r.f,sd:r.sd,tag:"Phone",json:r.json}}).concat(oldC.map(function(o){return{at:o.at,e:o.e,f:o.f,sd:o.sd,tag:"Cloud",k:o.k,parts:o.parts}}));
+ rows.sort(function(a,b){return b.at-a.at});hide();
+ pick("Restore an old snapshot",rows,async function(r,b){try{var t=r.json;if(!t){b.disabled=true;b.textContent="Loading…";t="";for(var i=0;i<r.parts;i++){var s=await rd("backups/"+r.k+"_"+i,false);if(!s.exists)throw new Error("part "+(i+1)+" is missing");t+=s.data().t}}rAsk(rParse(t))}
+  catch(e){closeM();toast("Could not load snapshot: "+(e&&e.message||e),true)}})}
+function oldDelete(){if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
+ $("mbody").innerHTML='<b style="font-size:18px">Delete old snapshots?</b><div class="mut" style="margin-top:8px;line-height:1.5">This permanently deletes '+oldC.length+' cloud and '+oldD.length+' phone snapshots from earlier versions. Your data and the new automatic backups are not touched. This cannot be undone.</div><div class="b2"><button class="dg" id="odY">Delete</button><button id="odN">Cancel</button></div>';
+ $("modal").classList.remove("hide");$("odN").onclick=closeM;
+ $("odY").onclick=async function(){this.disabled=true;this.textContent="Deleting…";var bad=0;
+  try{for(var a=0;a<oldC.length;a++){for(var i=0;i<oldC[a].parts;i++){try{await withT(db.doc("backups/"+oldC[a].k+"_"+i).delete(),15000)}catch(e){bad++}}}
+   if(oldC.length){try{await withT(db.doc("config/backupmeta").delete(),15000)}catch(e){bad++}}}catch(e){bad++}
+  try{await new Promise(function(res){var r=indexedDB.deleteDatabase(OLDDB);r.onsuccess=r.onerror=r.onblocked=function(){res()}})}catch(e){}
+  try{localStorage.removeItem(OLDLS)}catch(e){}
+  oldC=bad?oldC:[];oldD=bad?await oldDevList():[];paintOld();closeM();toast(bad?"Some old snapshots could not be deleted. Try again online.":"Old snapshots deleted",!!bad)}}
+
 /* ---------- card in Settings > Data & backup ---------- */
 function paintCard(){var e=$("autost");if(e)e.innerHTML=statusLines().map(function(x){return x.m}).join("<br>")}
 function pick(title,rows,onPick){
  $("mbody").innerHTML='<b style="font-size:18px">'+title+'</b><div class="mut" style="margin-top:6px">Pick a backup. You will see a summary and confirm before anything changes.</div>'+
-  (rows.length?rows.map(function(r,i){return'<button class="btn alt" data-i="'+i+'" style="margin-top:8px">'+esc(new Date(r.at).toLocaleString())+" · "+(r.e||0)+" trips, "+(r.f||0)+" fuel"+(r.sd?", "+r.sd+" seedcane":"")+"</button>"}).join(""):'<div class="mut" style="margin-top:10px">No automatic backups yet.</div>')+'<div class="b2"><button id="abC">Cancel</button></div>';
+  (rows.length?rows.map(function(r,i){return'<button class="btn alt" data-i="'+i+'" style="margin-top:8px">'+(r.tag?esc(r.tag)+" · ":"")+esc(new Date(r.at).toLocaleString())+" · "+(r.e||0)+" trips, "+(r.f||0)+" fuel"+(r.sd?", "+r.sd+" seedcane":"")+"</button>"}).join(""):'<div class="mut" style="margin-top:10px">No automatic backups yet.</div>')+'<div class="b2"><button id="abC">Cancel</button></div>';
  $("modal").classList.remove("hide");$("abC").onclick=closeM;
  [].forEach.call($("mbody").querySelectorAll("button[data-i]"),function(b){b.onclick=function(){onPick(rows[+b.dataset.i],b)}})}
 function card(){var bk=document.querySelector(".bkc");if(!bk||$("autobkc"))return;
  var d=document.createElement("div");d.id="autobkc";
- d.innerHTML='<div style="border-top:1px solid var(--ln,#ccc);margin:14px 0 10px"></div><div class="bkh">Automatic backup (every 5 days, keeps 3)</div><div class="mut" id="autost" style="margin:4px 0 8px"></div><div class="bkmr"><button class="btn alt" id="autonow">Back up now</button></div><div class="bkmr"><button class="btn alt" id="autodev">Restore from this phone</button><button class="btn alt" id="autorest">Restore from cloud</button></div>';
+ d.innerHTML='<div style="border-top:1px solid var(--ln,#ccc);margin:14px 0 10px"></div><div class="bkh">Automatic backup (every 5 days, keeps 3)</div><div class="mut" id="autost" style="margin:4px 0 8px"></div><label style="display:flex;gap:10px;align-items:center;margin:2px 0 10px"><input type="checkbox" id="autofile" style="width:auto;margin:0"><span>Also save a JSON file to Downloads</span></label><div class="bkmr"><button class="btn alt" id="autonow">Back up now</button></div><div class="bkmr"><button class="btn alt" id="autodev">Restore from this phone</button><button class="btn alt" id="autorest">Restore from cloud</button></div><div id="autoold" style="display:none"><div style="border-top:1px solid var(--ln,#ccc);margin:14px 0 10px"></div><div class="mut" id="autooldt" style="margin:0 0 8px"></div><div class="bkmr"><button class="btn alt" id="autooldr">Restore old snapshot</button><button class="btn alt" id="autooldd">Delete old snapshots</button></div></div>';
  bk.appendChild(d);paintCard();
+ $("autooldr").onclick=oldRestore;$("autooldd").onclick=oldDelete;oldScan();(function(){var t=setInterval(function(){oldTried++;if(window.db&&!oldC.length){oldScan();clearInterval(t)}else if(oldTried>90)clearInterval(t)},2000)})();
+ var cb=$("autofile");cb.checked=fileOn();cb.onchange=function(){try{localStorage.setItem(LSF,cb.checked?"1":"0")}catch(e){}paintCard()};
  $("autonow").onclick=function(){run(true)};
  $("autodev").onclick=async function(){
   if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
