@@ -5,14 +5,12 @@ html.sp-on{background:#050508!important}
 #sp,#sp *{box-sizing:border-box;margin:0;padding:0}
 #sp{--spy:0px;position:fixed;inset:0;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
  display:flex;align-items:center;justify-content:center;
- background:radial-gradient(120% 70% at 50% -5%,rgba(37,99,235,.30),transparent 62%),radial-gradient(90% 55% at 50% 108%,rgba(30,64,175,.26),transparent 66%),#050508;
+ background:#050508;
  opacity:1;will-change:opacity;transition:opacity .5s ease,visibility 0s linear .5s!important}
 #sp.out{opacity:0;visibility:hidden;pointer-events:none}
-#sp .sp-glow{position:absolute;left:50%;top:50%;width:420px;height:420px;margin:-210px 0 0 -210px;border-radius:50%!important;background:radial-gradient(circle,rgba(59,130,246,.16),transparent 70%);will-change:transform,opacity;animation:spGlow 4s ease-in-out infinite!important;pointer-events:none}
-#sp .sp-grid{position:absolute;inset:0;opacity:.04;background-image:linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
 #sp .sp-c{position:relative;display:flex;flex-direction:column;align-items:center;padding:0 24px;text-align:center;transform:translate3d(0,var(--spy),0)}
 #sp .sp-spin{position:relative;width:96px;height:96px;margin-bottom:24px;flex:none}
-#sp .sp-halo{position:absolute;inset:-14px;border-radius:50%!important;background:radial-gradient(circle,rgba(59,130,246,.22) 0,rgba(59,130,246,.10) 48%,transparent 72%)}
+#sp .sp-halo{position:absolute;inset:-14px;border-radius:50%!important;background:radial-gradient(circle,rgba(59,130,246,.14) 0,rgba(59,130,246,.06) 48%,transparent 72%)}
 #sp .sp-pr{position:absolute;inset:0;will-change:transform;animation:spSpin 1.2s linear infinite!important}
 #sp .sp-tr{position:absolute;inset:0;border:4px solid rgba(59,130,246,.14);border-radius:50%!important}
 #sp .sp-h{position:absolute;inset:0}
@@ -31,18 +29,17 @@ html.sp-on{background:#050508!important}
 #sp .sp-dt{margin-top:4px;font-size:12px;color:#64748b}
 #sp,#sp *,#sp *::before,#sp *::after{text-overflow:clip}
 @keyframes spSpin{to{transform:rotate(360deg)}}
-@keyframes spGlow{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.3);opacity:.85}}
 @keyframes spBeat{0%,100%{transform:scale(1)}12%{transform:scale(1.22)}24%{transform:scale(1)}36%{transform:scale(1.14)}52%{transform:scale(1)}}
 @keyframes spTitle{from{opacity:0;transform:translate3d(0,8px,0)}to{opacity:1;transform:none}}
 @keyframes spCap{from{opacity:0;transform:translate3d(0,6px,0)}to{opacity:1;transform:none}}
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.6.5">
+<meta name="app-version" content="1.6.6">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0a0e16" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#050508" data-o="#f3f5f9" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#050508" data-o="#0a0e16" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Fuel & Trips"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 
@@ -523,7 +520,7 @@ return{
   try{["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}catch(e){}try{if(window.seedCap)window.seedCap()}catch(e){}}
 }})();</script>
 </head><body>
-<div id="sp" role="status" aria-live="polite" aria-label="Loading Fuel and Trips"><div class="sp-glow"></div><div class="sp-grid"></div><div class="sp-c"><div class="sp-spin"><div class="sp-halo"></div><div class="sp-pr"><div class="sp-tr"></div><div class="sp-h sp-hr"><div class="sp-f" id="spr"></div></div><div class="sp-h sp-hl"><div class="sp-f" id="spl"></div></div></div><svg class="sp-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12,2.09C12,2.09 5,8.14 5,13.5C5,17.36 8.13,20.5 12,20.5C15.87,20.5 19,17.36 19,13.5C19,8.14 12,2.09 12,2.09M12,18.5C9.24,18.5 7,16.26 7,13.5C7,12.5 7.42,11.25 8,10.25L12,5.25L16,10.25C16.58,11.25 17,12.5 17,13.5C17,16.26 14.76,18.5 12,18.5Z"/></svg></div><div class="sp-t">FUEL &amp; TRIPS</div><div class="sp-m"><span>Trips</span><span class="sp-dot">•</span><span>Fuel</span><span class="sp-dot">•</span><span>Salary</span></div><div class="sp-p"><div class="sp-b" id="spb"></div></div><div class="sp-cap" id="spcap"><div class="sp-ph" id="spph">Initializing</div><div class="sp-dt" id="spdt">Warming up the engine</div></div></div></div>
+<div id="sp" role="status" aria-live="polite" aria-label="Loading Fuel and Trips"><div class="sp-c"><div class="sp-spin"><div class="sp-halo"></div><div class="sp-pr"><div class="sp-tr"></div><div class="sp-h sp-hr"><div class="sp-f" id="spr"></div></div><div class="sp-h sp-hl"><div class="sp-f" id="spl"></div></div></div><svg class="sp-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12,2.09C12,2.09 5,8.14 5,13.5C5,17.36 8.13,20.5 12,20.5C15.87,20.5 19,17.36 19,13.5C19,8.14 12,2.09 12,2.09M12,18.5C9.24,18.5 7,16.26 7,13.5C7,12.5 7.42,11.25 8,10.25L12,5.25L16,10.25C16.58,11.25 17,12.5 17,13.5C17,16.26 14.76,18.5 12,18.5Z"/></svg></div><div class="sp-t">FUEL &amp; TRIPS</div><div class="sp-m"><span>Trips</span><span class="sp-dot">•</span><span>Fuel</span><span class="sp-dot">•</span><span>Salary</span></div><div class="sp-p"><div class="sp-b" id="spb"></div></div><div class="sp-cap" id="spcap"><div class="sp-ph" id="spph">Initializing</div><div class="sp-dt" id="spdt">Warming up the engine</div></div></div></div>
 <script>
 /* Opening screen. Real progress: page parsed -> signed in -> rates and data loaded -> automatic backup finished (it runs behind this screen, so its pop-up never shows over the app). The ring fills together with the bar. */
 (function(){
@@ -531,7 +528,7 @@ var el=document.getElementById("sp");if(!el)return;
 var de=document.documentElement,t0=Date.now(),seen=false;
 try{seen=sessionStorage.getItem("fsplash")==="1";sessionStorage.setItem("fsplash","1")}catch(e){}
 var MIN=seen?700:1700,MAX=18000,BG="#050508";
-var tcs=[].slice.call(document.querySelectorAll('meta[name="theme-color"]')),orig=tcs.map(function(m){return m.getAttribute("content")});
+var tcs=[].slice.call(document.querySelectorAll('meta[name="theme-color"]')),orig=tcs.map(function(m){return m.getAttribute("data-o")});
 tcs.forEach(function(m){m.setAttribute("content",BG)});
 var P=[["Initializing","Warming up the engine"],["Syncing trips","Reading your routes"],["Logging fuel","Calibrating consumption"],["Ready to drive","All systems go"],["Backing up your data","Saving a safe copy"]];
 var bar=document.getElementById("spb"),fr=document.getElementById("spr"),fl=document.getElementById("spl"),ph=document.getElementById("spph"),dt=document.getElementById("spdt"),cap=document.getElementById("spcap");
