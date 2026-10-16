@@ -1,8 +1,37 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="en" class="sp-on"><head><meta charset="utf-8">
+<style id="sp-css">
+html.sp-on{background:#050508!important}
+#sp,#sp *{box-sizing:border-box;margin:0;padding:0}
+#sp{position:fixed;inset:0;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
+ background:radial-gradient(120% 70% at 50% -5%,rgba(37,99,235,.30),transparent 62%),radial-gradient(90% 55% at 50% 108%,rgba(30,64,175,.26),transparent 66%),#050508;
+ opacity:1;transform:scale(1);transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1),visibility 0s linear .55s}
+#sp.out{opacity:0;transform:scale(1.035);visibility:hidden;pointer-events:none}
+#sp .sp-glow{position:absolute;left:50%;top:50%;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.16),transparent 70%);animation:spGlow 4s ease-in-out infinite;pointer-events:none}
+#sp .sp-grid{position:absolute;inset:0;opacity:.04;background-image:linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+#sp .sp-c{position:absolute;left:0;right:0;top:50%;display:flex;flex-direction:column;align-items:center;padding:0 24px;text-align:center}
+#sp .sp-spin{position:relative;width:96px;height:96px;margin-top:-48px;margin-bottom:24px;flex:none}
+#sp .sp-ring{position:absolute;inset:0;border:4px solid rgba(59,130,246,.12);border-top-color:#3b82f6;border-radius:50%;box-shadow:0 0 18px rgba(59,130,246,.25);animation:spSpin 1.2s linear infinite}
+#sp .sp-drop{position:absolute;inset:0;margin:auto;width:36px;height:36px;fill:#3b82f6;filter:drop-shadow(0 0 6px rgba(59,130,246,.55))}
+#sp .sp-t{font-size:24px;line-height:1.2;font-weight:800;letter-spacing:.25em;text-shadow:0 0 22px rgba(59,130,246,.35);padding-left:.25em;animation:spTitle .8s ease-out both}
+#sp .sp-m{display:flex;align-items:center;margin-top:12px;font-size:11.2px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#94a3b8}
+#sp .sp-dot{margin:0 10px;color:#34d399}
+#sp .sp-p{width:280px;max-width:100%;height:4px;margin-top:24px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}
+#sp .sp-b{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#3b82f6,#60a5fa);box-shadow:0 0 15px rgba(59,130,246,.6)}
+#sp .sp-cap{height:40px;margin-top:20px}
+#sp .sp-ph{font-size:14px;font-weight:600;letter-spacing:.025em;color:#93c5fd}
+#sp .sp-dt{margin-top:4px;font-size:12px;color:#64748b}
+#sp .sp-ring,#sp .sp-glow{border-radius:50%!important}#sp .sp-p,#sp .sp-b{border-radius:999px!important}#sp,#sp *,#sp *::before,#sp *::after{text-overflow:clip}
+@keyframes spSpin{to{transform:rotate(360deg)}}
+@keyframes spGlow{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.3);opacity:.85}}
+@keyframes spTitle{from{opacity:0;transform:translateY(8px);letter-spacing:.1em}to{opacity:1;transform:translateY(0);letter-spacing:.25em}}
+@keyframes spCap{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+#sp .sp-cap.on{animation:spCap .35s ease-out}
+@media (prefers-reduced-motion:reduce){#sp{transition:opacity .2s linear,visibility 0s linear .2s}#sp.out{transform:none}#sp .sp-glow,#sp .sp-t,#sp .sp-cap.on{animation:none}#sp .sp-ring{animation-duration:2.4s}}
+</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.5.3">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="app-version" content="1.6.0">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#f3f5f9" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#0a0e16" media="(prefers-color-scheme: dark)">
@@ -391,10 +420,7 @@ section:not(.hide){animation:pgIn .2s ease-out both}
 @media (prefers-reduced-motion:reduce){section:not(.hide){animation:none}}
 /* touch: no tap delay or grey flash, quicker taps */
 button,.tabs button,.main button,.bn button,select,summary,label.btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-</style>
-
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<script>(function(){
+</style><script>(function(){
 var CFG={apiKey:"AIzaSyA6nXEX_xskZnCY3Z113-d7Fs9GjO9LcPs",authDomain:"fleet-9e308.firebaseapp.com",projectId:"fleet-9e308",storageBucket:"fleet-9e308.firebasestorage.app",messagingSenderId:"258425450498",appId:"1:258425450498:web:74cb05c2364b0d7011771b"};
 var COLS={entries:1,fuel:1,advances:1,payments:1,pvpays:1};function bg(p){p.catch(function(e){try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}});return Promise.resolve()}function soft(p){return new Promise(function(res,rej){var done=false,t=null;function ok(){if(done)return;done=true;clearTimeout(t);res()}p.then(ok,function(e){if(!done){done=true;clearTimeout(t);rej(e)}else{try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}}});if(window.NETREAL===false)ok();else t=setTimeout(ok,3000)})}var IS="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #334;background:#141a26;color:#fff;font-size:16px;box-sizing:border-box";
 function login(auth){return new Promise(function(res){var o=document.createElement("div");o.style.cssText="position:fixed;inset:0;z-index:99999;background:#0a0e16;color:#fff;display:flex;align-items:center;justify-content:center;padding:24px 24px calc(24px + var(--kb,0px));overflow-y:auto;transition:padding-bottom .2s ease";
@@ -405,7 +431,7 @@ b.onclick=go;o.querySelector("#fbP").onkeydown=function(e){if(e.key==="Enter")go
 window.fbConnect=async function(){
 if(typeof firebase==="undefined")throw new Error("Firebase not loaded");
 firebase.initializeApp(CFG);var auth=firebase.auth(),fs=firebase.firestore();fs.settings({ignoreUndefinedProperties:true});try{await fs.enablePersistence({synchronizeTabs:true})}catch(e){window.offlineSaveOff=(e&&e.code)||"error";setTimeout(function(){try{if(document.getElementById("offwarn"))return;var w=document.createElement("div");w.id="offwarn";w.style.cssText="position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99999;background:#b3261e;color:#fff;padding:10px 38px 10px 12px;border-radius:10px;font:600 13px/1.35 system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.35)";w.textContent="Offline saving is not available in this browser. Changes made without internet may be lost if you close the app. Stay online until saves finish.";var x=document.createElement("button");x.textContent="\u00d7";x.setAttribute("aria-label","Close");x.style.cssText="position:absolute;right:6px;top:4px;background:none;border:0;color:#fff;font-size:22px;line-height:1;padding:2px 8px";x.onclick=function(){w.remove()};w.appendChild(x);document.body.appendChild(w)}catch(z){}},1500)}
-var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){off();r(x)})});if(!u)u=await login(auth);
+var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){off();r(x)})});if(!u&&window.splash)splash.done();if(!u)u=await login(auth);
 var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#fabS,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs)}
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
 (function addSO(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){addSO(n+1)},300);return}if(document.getElementById("sgnout"))return;var b=document.createElement("button");b.id="sgnout";b.className="btn";b.textContent="Sign out ("+who+")";b.onclick=function(){(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};s.appendChild(b)})(0);
@@ -489,6 +515,43 @@ return{
   try{["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}catch(e){}try{if(window.seedCap)window.seedCap()}catch(e){}}
 }})();</script>
 </head><body>
+<div id="sp" role="status" aria-live="polite" aria-label="Loading Fuel and Trips"><div class="sp-glow"></div><div class="sp-grid"></div><div class="sp-c"><div class="sp-spin"><div class="sp-ring"></div><svg class="sp-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12,2.09C12,2.09 5,8.14 5,13.5C5,17.36 8.13,20.5 12,20.5C15.87,20.5 19,17.36 19,13.5C19,8.14 12,2.09 12,2.09M12,18.5C9.24,18.5 7,16.26 7,13.5C7,12.5 7.42,11.25 8,10.25L12,5.25L16,10.25C16.58,11.25 17,12.5 17,13.5C17,16.26 14.76,18.5 12,18.5Z"/></svg></div><div class="sp-t">FUEL &amp; TRIPS</div><div class="sp-m"><span>Trips</span><span class="sp-dot">•</span><span>Fuel</span><span class="sp-dot">•</span><span>Salary</span></div><div class="sp-p"><div class="sp-b" id="spb"></div></div><div class="sp-cap" id="spcap"><div class="sp-ph" id="spph">Initializing</div><div class="sp-dt" id="spdt">Warming up the engine</div></div></div></div>
+<script>
+/* Opening screen. Real progress: page parsed -> signed in -> rates and data loaded. It fades out only when the app is ready (or after a safety limit). */
+(function(){
+var el=document.getElementById("sp");if(!el)return;
+var de=document.documentElement,t0=Date.now(),seen=false;
+try{seen=sessionStorage.getItem("fsplash")==="1";sessionStorage.setItem("fsplash","1")}catch(e){}
+var MIN=seen?700:1700,MAX=9000,BG="#050508";
+var tcs=[].slice.call(document.querySelectorAll('meta[name="theme-color"]')),orig=tcs.map(function(m){return m.getAttribute("content")});
+tcs.forEach(function(m){m.setAttribute("content",BG)});
+var P=[["Initializing","Warming up the engine"],["Syncing trips","Reading your routes"],["Logging fuel","Calibrating consumption"],["Ready to drive","All systems go"]];
+var bar=document.getElementById("spb"),ph=document.getElementById("spph"),dt=document.getElementById("spdt"),cap=document.getElementById("spcap");
+var phase=-1,cur=0,target=6,ready=false,leaving=false,got={},raf=0,hold=0;
+function show(i){if(i===phase)return;phase=i;ph.textContent=P[i][0];dt.textContent=P[i][1];cap.classList.remove("on");void cap.offsetWidth;cap.classList.add("on")}
+function up(v){if(v>target)target=v}
+function ok(){try{return typeof cfgLoaded!=="undefined"&&cfgLoaded&&typeof fcfgLoaded!=="undefined"&&fcfgLoaded}catch(e){return false}}
+function leave(){if(leaving)return;leaving=true;el.classList.add("out");
+ setTimeout(function(){try{el.remove()}catch(e){}de.classList.remove("sp-on");tcs.forEach(function(m,i){if(orig[i]!=null)m.setAttribute("content",orig[i])})},650)}
+function tick(){var now=Date.now()-t0;
+ if(!got.i&&document.readyState!=="loading"){got.i=1;up(30)}
+ if(!got.a&&window.me){got.a=1;up(62)}
+ if(!got.d&&ok()){got.d=1;up(92)}
+ if(!ready&&(got.d||got.x))ready=true;
+ if(!ready&&now>MAX)ready=true;
+ var creep=Math.min(84,6+now/90);if(!ready&&creep>target)target=creep;
+ if(ready&&now>=MIN)target=100;
+ cur+=(target-cur)*(target>=100?.14:.06);if(target-cur<.15)cur=target;
+ bar.style.width=cur+"%";
+ show(cur>=95?3:cur>=65?2:cur>=30?1:0);
+ if(cur>=100){if(!hold)hold=Date.now();if(Date.now()-hold>350){leave();return}}
+ raf=requestAnimationFrame(tick)}
+window.splash={done:function(){got.x=1},local:function(){got.x=1}};
+show(0);raf=requestAnimationFrame(tick);
+setTimeout(function(){got.x=1;ready=true},MAX+1500);
+})();
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <header class="hd"><button class="ib" id="mnu" type="button" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h7"/></svg></button><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="sbanner"></div><div id="annbar"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Winch</button><button data-g="seed">Seedcane</button></div>
@@ -1564,7 +1627,7 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();try{annInit()}catc
 (async function init(){
  var t=new Date();$("date").value=today();$("adate").value=today();$("mon").value=today().slice(0,7);$("mon").onchange=render;$("pday").onchange=render;$("pyr").onchange=render;
  fillVeh();showCfg();setDdp();prev();render();
- try{db=await fbConnect()}catch(x){db=null;console.warn(x)}
+ try{db=await fbConnect()}catch(x){db=null;console.warn(x);if(window.splash)splash.local()}
  var user=window.fbUser||null;canWrite=true;isAdmin=true;
  $("rolenote").textContent="Rate changes apply to new entries only; saved entries keep their own rates.";chkR();chk();frchk();try{appInit()}catch(x){}
  if(!db){var LK="fleetPayFuelLocal1";
