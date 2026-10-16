@@ -1,5 +1,5 @@
-const CACHE = "fuel-trips-v1.6.6";
-const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-48.png"];
+const CACHE = "fuel-trips-v1.6.7";
+const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-maskable-512-v2.png", "icons/apple-touch-icon-v2.png", "icons/favicon-48-v2.png", "icons/splash-blank-192.png", "icons/splash-blank-512.png"];
 
 self.addEventListener("install", (e) => {
   // Add files one by one so a single missing icon cannot stop the whole install
