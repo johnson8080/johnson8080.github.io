@@ -21,7 +21,7 @@ html.sp-on{background:#050508!important}
 #sp .sp-f{position:absolute;inset:0;border:4px solid transparent;border-top-color:#3b82f6;border-right-color:#3b82f6;border-radius:50%!important;transform:rotate(-135deg);will-change:transform;transition:transform .15s linear!important}
 #sp .sp-hl .sp-f{transform:rotate(45deg)}
 #sp .sp-drop{position:absolute;inset:0;margin:auto;width:36px;height:36px;fill:#3b82f6;will-change:transform;transform-origin:50% 55%;animation:spBeat 1.3s ease-in-out infinite!important}
-#sp .sp-t{font-size:24px;line-height:1.2;font-weight:800;letter-spacing:.25em;text-shadow:0 0 22px rgba(59,130,246,.35);padding-left:.25em;animation:spTitle .7s ease-out both!important}
+#sp .sp-t{font-size:24px;line-height:1.2;font-weight:800;letter-spacing:.25em;text-shadow:0 0 22px rgba(59,130,246,.35);padding-left:.25em;animation:spTitle .35s ease-out both!important}
 #sp .sp-m{display:flex;align-items:center;margin-top:12px;font-size:11.2px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#94a3b8}
 #sp .sp-dot{margin:0 10px;color:#34d399}
 #sp .sp-p{width:280px;max-width:100%;height:4px;margin-top:24px;border-radius:999px!important;background:rgba(255,255,255,.1);overflow:hidden}
@@ -38,7 +38,7 @@ html.sp-on{background:#050508!important}
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.6.4">
+<meta name="app-version" content="1.6.5">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -674,7 +674,7 @@ show(0);raf=requestAnimationFrame(tick);
 <div class="mut" id="ocnt" style="margin:8px 0"></div>
 <div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Category</th><th>Date</th><th>Vehicle</th><th class="l">Driver</th><th>Quantity</th><th>Trip expense</th><th>Fuel profit</th></tr></thead><tbody id="oab"></tbody></table></div>
 <div class="acts noprt" style="margin:10px 0 0"><button class="btn" id="oacsv">Download CSV</button><button class="btn alt" id="oapdf">Download PDF</button><button class="btn" id="oashare">Share PDF</button></div></div>
-<div class="card ovx" id="ovf"><b class="ct noprt">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="ovLim=150;renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
+<div class="card ovx" id="ovf"><b class="ct noprt">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
 <div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
 <div class="card noprt" id="dsc"><b class="ct">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
@@ -1437,18 +1437,15 @@ function ovDetail(){var OP=oper(),M={},ord=[],MM2=mtMap();cfg.veh.forEach(functi
  fuels.forEach(function(f){if(!f.date||!OP.t(f.date))return;var o=slot(f.vehicle||"",f.date);o.l+=+f.litres||0;o.q+=f.litres*(f.sell-f.cost);o.hF=true});
  return ord.map(function(v){var rows=Object.keys(M[v]).sort().map(function(d){var o=M[v][d];return{date:d,type:o.hT&&o.hF?"Trips + Fuel":(o.hT?"Trips":"Fuel"),t:o.t,p:o.p,l:o.l,q:o.q,hT:o.hT,hF:o.hF,n:o.n||1}}),tot={t:0,p:0,l:0,q:0};
   rows.forEach(function(r){for(var i in tot)tot[i]+=r[i]});return{veh:v,drv:(cfg.vd||{})[v]||"",rows:rows,tot:tot}})}
-var ovLim=150;function ovFull(f){ovLim=f?1e9:150}
 function ovLtd(t,l){return t>0&&l>0?(l/t).toFixed(1):"—"}
 function capAll(){if($("ov").classList.contains("hide"))return;["ovb","oab"].forEach(function(id){var b=$(id),w=b.closest(".wrap"),th=b.parentNode.tHead,r=b.rows[0];if(!th||!r||!th.offsetHeight||!r.offsetHeight)return;w.style.maxHeight=(th.offsetHeight+r.offsetHeight*6+2)+"px"})}
-function renderOv(){if(!$("omon").value)$("omon").value=today().slice(0,7);if(!$("ovday").value)$("ovday").value=today();if(!$("ovyr").value)$("ovyr").value=today().slice(0,4);var ok_=$("oper").value;$("omw").classList.toggle("hide",ok_!=="month");$("ovdw").classList.toggle("hide",ok_!=="day");$("ovyw").classList.toggle("hide",ok_!=="year");try{renderOb()}catch(x){}var G=ovDetail(),T={t:0,p:0,l:0,q:0},h="",shown=0,hid=0;
+function renderOv(){if(!$("omon").value)$("omon").value=today().slice(0,7);if(!$("ovday").value)$("ovday").value=today();if(!$("ovyr").value)$("ovyr").value=today().slice(0,4);var ok_=$("oper").value;$("omw").classList.toggle("hide",ok_!=="month");$("ovdw").classList.toggle("hide",ok_!=="day");$("ovyw").classList.toggle("hide",ok_!=="year");try{renderOb()}catch(x){}var G=ovDetail(),T={t:0,p:0,l:0,q:0},h="";
  G.forEach(function(g){var dn=esc(g.drv||"—");
-  if(shown>=ovLim){for(var i0 in T)T[i0]+=g.tot[i0];hid+=g.rows.length;return}
   if(!g.rows.length){h+="<tr><td>"+esc(g.veh)+'</td><td class="l">—</td><td class="l">—</td><td class="l">'+dn+"</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>";return}
-  shown+=g.rows.length;g.rows.forEach(function(r){h+="<tr"+(r.hT&&r.n>1?' class="smt" style="--mc:'+drvCol(g.drv)+'"':"")+"><td>"+esc(g.veh)+'</td><td class="l">'+esc(r.date)+'</td><td class="l">'+r.type+'</td><td class="l">'+dn+"</td><td>"+(r.hT?r.t.toFixed(2):"—")+"</td><td>"+(r.hT?fmt(r.p):"—")+"</td><td>"+(r.hF?r.l.toFixed(1):"—")+"</td><td>"+ovLtd(r.t,r.l)+"</td><td>"+(r.hF?mn(r.q):"—")+"</td></tr>"});
+  g.rows.forEach(function(r){h+="<tr"+(r.hT&&r.n>1?' class="smt" style="--mc:'+drvCol(g.drv)+'"':"")+"><td>"+esc(g.veh)+'</td><td class="l">'+esc(r.date)+'</td><td class="l">'+r.type+'</td><td class="l">'+dn+"</td><td>"+(r.hT?r.t.toFixed(2):"—")+"</td><td>"+(r.hT?fmt(r.p):"—")+"</td><td>"+(r.hF?r.l.toFixed(1):"—")+"</td><td>"+ovLtd(r.t,r.l)+"</td><td>"+(r.hF?mn(r.q):"—")+"</td></tr>"});
   for(var i in T)T[i]+=g.tot[i];
   if(g.rows.length>1)h+='<tr style="font-weight:700"><td>Total '+esc(g.veh)+'</td><td class="l"></td><td class="l"></td><td class="l"></td><td>'+g.tot.t.toFixed(2)+"</td><td>"+fmt(g.tot.p)+"</td><td>"+g.tot.l.toFixed(1)+"</td><td>"+ovLtd(g.tot.t,g.tot.l)+"</td><td>"+mn(g.tot.q)+"</td></tr>"});
- $("ovb").innerHTML=h+(hid?'<tr class="smr"><td class="l" colspan="9"><button type="button" class="btn sm alt" data-more="ovb" style="margin:4px 0">Show more ('+hid+' rows left)</button></td></tr>':"")+'<tr style="font-weight:700"><td>Total</td><td class="l"></td><td class="l"></td><td class="l"></td><td>'+T.t.toFixed(2)+"</td><td>"+fmt(T.p)+"</td><td>"+T.l.toFixed(1)+"</td><td>"+ovLtd(T.t,T.l)+"</td><td>"+mn(T.q)+"</td></tr>";capAll()}
-$("ovb").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-more]");if(b){ovLim+=150;renderOv()}});
+ $("ovb").innerHTML=h+'<tr style="font-weight:700"><td>Total</td><td class="l"></td><td class="l"></td><td class="l"></td><td>'+T.t.toFixed(2)+"</td><td>"+fmt(T.p)+"</td><td>"+T.l.toFixed(1)+"</td><td>"+ovLtd(T.t,T.l)+"</td><td>"+mn(T.q)+"</td></tr>";capAll()}
 $("omon").onchange=renderOv;$("ovday").onchange=renderOv;$("ovyr").onchange=renderOv;$("ovday").addEventListener("input",renderOv);$("ovyr").addEventListener("input",renderOv);$("omon").addEventListener("input",renderOv);
 function wkStart(){var t=new Date();t.setHours(0,0,0,0);var w=(t.getDay()+6)%7;t.setDate(t.getDate()-w);return t}
 function dstr(t){var z=function(x){return(x<10?"0":"")+x};return t.getFullYear()+"-"+z(t.getMonth()+1)+"-"+z(t.getDate())}
@@ -1482,7 +1479,7 @@ $("oacsv").onclick=function(){var R=allRows(),L=[csvl(["Category","Date","Vehicl
  var nm=(($("ocat").value==="all"?"all":$("ocat").value.toLowerCase())+"-"+$("odf").value+($("odf").value==="day"?"-"+($("oday").value||today()):"")+($("odf").value==="year"?"-"+($("oyr").value||today().slice(0,4)):"")+($("odf").value==="month"?"-"+($("ofm").value||today().slice(0,7)):"")+($("odf").value==="range"&&RNG.get("odf")?"-"+RNG.get("odf").a+"_to_"+RNG.get("odf").b:"")+"-"+today());
  dlf("entries-"+nm+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
 $("oapdf").onclick=function(){oabFull(1);try{renderOb();exportPdf($("allc"),"Trips and fuel entries",allLabel(),entName())}finally{oabFull(0);renderOb()}};
-$("opdf").onclick=function(){PM=alloc();ovFull(1);try{renderOv();var P=oper();exportPdf($("ovc"),"Vehicle overview: trips and fuel","Period: "+P.lab,"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf")}finally{ovFull(0);renderOv()}};
+$("opdf").onclick=function(){PM=alloc();renderOv();var P=oper();exportPdf($("ovc"),"Vehicle overview: trips and fuel","Period: "+P.lab,"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf")};
 $("ocsv").onclick=function(){PM=alloc();var G=ovDetail(),L=[csvl(["Vehicle","Date","Type","Driver","Tonnes","Trip expense","Fuel litres","Litres per tonne","Fuel profit"])];
  G.forEach(function(g){if(!g.rows.length){L.push(csvl([g.veh,"","",g.drv,"","","","",""]));return}
   g.rows.forEach(function(r){L.push(csvl([g.veh,r.date,r.type,g.drv,r.hT?r.t:"",r.hT?(+(r.p)||0).toFixed(2):"",r.hF?r.l:"",ovLtd(r.t,r.l)==="—"?"":ovLtd(r.t,r.l),r.hF?(+(r.q)||0).toFixed(2):""]))})});dlf("overview-"+oper().lab.replace(/[^\w-]+/g,"-")+".csv",new Blob(["\ufeff"+L.join("\r\n")],{type:"text/csv"}))};
@@ -1603,7 +1600,7 @@ function fdetail(id){var f=fuels.find(function(x){return x.id===id});if(!f)retur
  if(own(f)){$("mE").onclick=function(){closeM();fed(id)};
   $("mD").onclick=async function(){var b=$("mD");if(!b.dataset.s){b.dataset.s=1;b.textContent="Tap again to confirm";return}
    b.disabled=true;try{await softDel("fuel",id,fuels,trashF);renderFuel();closeM();toast("Fuel entry moved to Deleted")}catch(x){closeM();toast("Could not remove")}}}}
-var ntDirty=0;function renderNotes(){if($("nts").classList.contains("hide")){ntDirty=1;return}ntDirty=0;var L=[];
+function renderNotes(){var L=[];
  entries.forEach(function(e){if(e.note)L.push({o:e,k:"p",id:e.id,date:e.date,ts:e.ts||0,t:e.vehicle,s:"Trip · "+(e.driver||"—")+" · "+e.tonnes+" t",note:e.note})});
  fuels.forEach(function(f){if(f.note)L.push({o:f,k:"f",id:f.id,date:f.date,ts:f.ts||0,t:f.vehicle,s:"Fuel · "+(f.driver||(cfg.vd||{})[f.vehicle]||"—")+" · "+f.litres+" L",note:f.note})});
  L.sort(function(a,b){return a.date<b.date?1:a.date>b.date?-1:b.ts-a.ts});
@@ -1614,7 +1611,6 @@ async function delNote(k,id){var isP=k==="p",o=(isP?entries:fuels).find(function
  try{if(db)await db.doc((isP?"entries/":"fuel/")+id).set(c);else{c.id=id;var m=function(x){return x.id===id?c:x};if(isP)entries=entries.map(m);else fuels=fuels.map(m)}
   if(isP&&editing===id)$("nte").value="";if(!isP&&fedit===id)$("fnt").value="";
   if(isP)render();else renderFuel();toast("Note deleted")}catch(x){toast("Could not delete note")}}
-(function(){var n=$("nts");if(n&&window.MutationObserver)new MutationObserver(function(){if(!n.classList.contains("hide"))try{renderNotes()}catch(e){}}).observe(n,{attributes:true,attributeFilter:["class"]})})();
 $("ntl").onclick=function(ev){var d=ev.target.closest("button[data-d]");if(d){if(!d.dataset.s){d.dataset.s=1;d.textContent="Sure?";return}delNote(d.dataset.k,d.dataset.d);return}var r=ev.target.closest(".item[data-id]");if(!r)return;if(r.dataset.k==="f")fdetail(r.dataset.id);else detail(r.dataset.id)};
 function fwho(f){var w=(f.by==="local"||(me&&f.by===me))?"You":(names[f.by]||"Someone");return w+(f.editedAt?" (edited)":"")}
 
@@ -2125,7 +2121,7 @@ $("dstx").onclick=function(){try{var d=make(true);if(!d)return;var adT=d.advE+d.
  if(navigator.share){navigator.share({title:"Driver statement - "+d.nm,text:txt}).catch(function(){})}
  else{window.open("https://wa.me/?text="+encodeURIComponent(txt),"_blank")}
 }catch(x){uiAlert("Could not create the text")}};
-$("oshare").onclick=function(){try{PM=alloc();ovFull(1);renderOv();var P=oper();sharePdf(pdfBlob("Vehicle overview: trips and fuel","Period: "+P.lab,domItems($("ovc"))),"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf","Vehicle overview")}catch(x){uiAlert("Could not create the PDF")}finally{ovFull(0);renderOv()}};
+$("oshare").onclick=function(){try{PM=alloc();renderOv();var P=oper();sharePdf(pdfBlob("Vehicle overview: trips and fuel","Period: "+P.lab,domItems($("ovc"))),"overview-"+P.lab.replace(/[^\w-]+/g,"-")+".pdf","Vehicle overview")}catch(x){uiAlert("Could not create the PDF")}};
 $("oashare").onclick=function(){oabFull(1);try{renderOb();sharePdf(pdfBlob("Trips and fuel entries",allLabel(),domItems($("allc"))),entName(),"Trips and fuel entries")}catch(x){uiAlert("Could not create the PDF")}finally{oabFull(0);renderOb()}};
 var _r=render;render=function(){var v=_r.apply(this,arguments);try{fillD();gate()}catch(x){}return v};
 ["oper","ovday","omon","ovyr","ocat","odf","oday","ofm","oyr","dsd","dsp","dsm","dsy"].forEach(function(i){var e=$(i);if(!e)return;e.addEventListener("change",gate);e.addEventListener("input",gate)});

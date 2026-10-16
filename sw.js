@@ -1,4 +1,4 @@
-const CACHE = "fuel-trips-v1.6.4";
+const CACHE = "fuel-trips-v1.6.5";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png", "icons/apple-touch-icon.png", "icons/favicon-48.png"];
 
 self.addEventListener("install", (e) => {
@@ -24,35 +24,42 @@ self.addEventListener("fetch", (e) => {
   const url = new URL(req.url);
   if (url.searchParams.has("__v")) return; // update check: always go to the network
 
-  // The app page: network first (so updates arrive). If the network is slow
-  // (over 4 seconds) or offline, open the saved copy instead.
+  // The app page: open the saved copy straight away (so the opening animation
+  // starts at once, even on slow data) and refresh the saved copy in the
+  // background for the next launch. The app's own "New version" banner still
+  // tells you when an update is waiting. A manual reload, or a first visit with
+  // nothing saved yet, goes to the network (slow network: saved copy after 4s).
   if (req.mode === "navigate") {
+    const keep = (res) => {
+      if (res && res.ok) {
+        const copy = res.clone();
+        caches.open(CACHE).then((c) => c.put("index.html", copy));
+      }
+      return res;
+    };
+    const saved = () => caches.match("index.html").then((r) => r || caches.match("./"));
+    const reload = req.cache === "reload" || req.cache === "no-cache" || req.cache === "no-store";
+    if (!reload) {
+      const net = fetch(req).then(keep).catch(() => null);
+      e.waitUntil(net);
+      e.respondWith(saved().then((hit) => hit || net.then((r) => r || Response.error())));
+      return;
+    }
     e.respondWith(
       new Promise((resolve) => {
         let done = false;
-        const fallback = () =>
-          caches.match("index.html").then((r) => r || caches.match("./"));
         const timer = setTimeout(() => {
-          fallback().then((r) => {
-            if (r && !done) { done = true; resolve(r); }
-          });
+          saved().then((r) => { if (r && !done) { done = true; resolve(r); } });
         }, 4000);
         fetch(req)
           .then((res) => {
             clearTimeout(timer);
-            // Only keep good pages, so an error page never replaces the saved copy
-            if (res && res.ok) {
-              const copy = res.clone();
-              caches.open(CACHE).then((c) => c.put("index.html", copy));
-            }
+            keep(res);
             if (!done) { done = true; resolve(res); }
           })
           .catch(() => {
             clearTimeout(timer);
-            if (!done) {
-              done = true;
-              fallback().then((r) => resolve(r || Response.error()));
-            }
+            if (!done) { done = true; saved().then((r) => resolve(r || Response.error())); }
           });
       })
     );
