@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.5.0">
+<meta name="app-version" content="1.5.3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -513,7 +513,7 @@ return{
 <div class="card">
 <div id="editbar" class="note hide">Editing an entry <button class="x" id="cancel">cancel</button></div>
 <div class="row"><div><label>Date</label><input type="date" id="date"></div><div><label>Vehicle</label><select id="veh"></select></div></div>
-<div class="row"><div><label>Driver</label><input id="drv" list="dl" placeholder="Driver name"><datalist id="dl"></datalist></div><div><label>Driver deposit</label><input type="number" inputmode="decimal" id="ddp" placeholder="200"></div><div class="hide"><label>Driver advance</label><input type="number" inputmode="decimal" id="adv" placeholder="0"></div></div><div class="mut" id="dhint" style="margin-top:4px"></div><div class="mut" id="rem" style="margin-top:8px"></div>
+<div class="row"><div><label>Driver</label><input id="drv" list="dl" placeholder="Driver name"><datalist id="dl"></datalist></div><div><label>Driver deposit</label><input type="number" inputmode="decimal" id="ddp" placeholder="0"></div><div class="hide"><label>Driver advance</label><input type="number" inputmode="decimal" id="adv" placeholder="0"></div></div><div class="mut" id="dhint" style="margin-top:4px"></div><div class="mut" id="rem" style="margin-top:8px"></div>
 <div class="row"><div><label>Tonnes</label><input type="number" inputmode="decimal" id="ton" placeholder="0"></div>
 <div><label>Loader deposit</label><input type="number" inputmode="decimal" id="dep" placeholder="0"></div></div><div class="row"><div><label>Other expense</label><input type="number" inputmode="decimal" id="exp" placeholder="0"></div><div><label>Expense reason</label><select id="rsn"><option value="">Select…</option></select><div class="mut" id="rsnnote" style="margin-top:4px"></div></div></div>
 <label>Add a note</label><textarea id="nte" rows="2" placeholder="Optional"></textarea>
@@ -703,15 +703,20 @@ function repIdx(){if(_ri.ref!==entries||_ri.len!==entries.length){var m={};entri
 /* true when the same driver already has an earlier trip on the same day (this one is a repeat trip) */
 function isRep(e){if(!(e.tonnes>0)||!e.driver||!e.date)return false;var L=repIdx()[e.driver+"|"+e.date];if(!L)return false;var me=e.id||editing,ts=e.ts==null?Infinity:e.ts;
  return L.some(function(x){if(x.id===me)return false;var xt=x.ts||0;return xt<ts||(xt===ts&&String(x.id)<String(me||"\uffff"))})}
-/* first trip of the day: held = rate - deposit (e.g. 800). Repeat trip the same day: deposit is paid again, and held is reduced by the separate repeat-trip figure (default 200, set in Update Rates) */
-function dheld(e){return e.tonnes>0?Math.max(0,(e.hold!=null?e.hold:cfg.dday+cfg.dbal)-dpaid(e)-(isRep(e)?(e.rep!=null?e.rep:repCfg()):0)):0}
-function setDdp(){$("ddp").value=cfg.dday}
+/* first trip of the day: held = rate - deposit (e.g. 800). Repeat trip the same day: no driver deposit, held = rate - standard deposit - the separate repeat-trip figure (default 200, set in Update Rates), e.g. 600 */
+/* held = rate - deposit. On a repeat trip the driver gets no deposit but the standard deposit still comes off the held amount, then the repeat cut: e.g. 1000 - 200 - 200 = 600 */
+function dheld(e){if(!(e.tonnes>0))return 0;var dp=dpaid(e),rp=isRep(e),base=rp&&e.dd!=null?Math.max(dp,e.dd):dp;return Math.max(0,(e.hold!=null?e.hold:cfg.dday+cfg.dbal)-base-(rp?(e.rep!=null?e.rep:repCfg()):0))}
+/* driver deposit on the entry form: full on the driver's first trip of the day, none on later trips the same day */
+function ddAuto(){var d=($("drv").value||"").trim(),dt=$("date").value;if(!d||!dt)return cfg.dday;return isRep({tonnes:1,driver:d,date:dt,id:editing,ts:undefined})?0:cfg.dday}
+/* the field stays empty until a plate and the tonnes are filled in; typing in it by hand switches the automatic value off */
+function ddFill(){if(editing)return;var el=$("ddp");if(!el||el.dataset.man==="1")return;el.value=($("veh").value&&n($("ton").value)>0)?String(ddAuto()):""}
+function setDdp(){var el=$("ddp");if(el)el.dataset.man="0";ddFill()}
 function pay(e){return ((e.deposit||0)>0?e.deposit:e.tonnes*rt(e))+dpaid(e)+(e.expense||0)+(e.advance||0)+((e.id&&PM[e.id])?(PM[e.id].dp||0)+(PM[e.id].lp||0):0)}
 function own(e){return canWrite&&(isAdmin||!db||e.by===me)&&!isLocked(e.date)}
 var esnap=null,fsnap=null;
 function tsnap(){return JSON.stringify([$("date").value,$("veh").value,($("drv").value||"").trim(),n($("ton").value),n($("dep").value),n($("adv").value),n($("ddp").value),n($("exp").value),($("rsn").value||"").trim(),($("nte").value||"").trim()])}
 function edit(id){var e=entries.find(function(x){return x.id===id});if(!e)return;editing=id;
- $("date").value=e.date;$("veh").value=e.vehicle;$("drv").value=e.driver||"";$("ton").value=e.tonnes||"";$("dep").value=e.deposit||"";$("adv").value=e.advance||"";$("ddp").value=e.ddep==null?cfg.dday:e.ddep;$("exp").value=e.expense||"";rsnFill(rsnName(e.reason));$("nte").value=e.note||"";
+ $("date").value=e.date;$("veh").value=e.vehicle;$("drv").value=e.driver||"";$("ton").value=e.tonnes||"";$("dep").value=e.deposit||"";$("adv").value=e.advance||"";$("ddp").dataset.man="1";$("ddp").value=e.ddep==null?cfg.dday:e.ddep;$("exp").value=e.expense||"";rsnFill(rsnName(e.reason));$("nte").value=e.note||"";
  $("editbar").classList.remove("hide");$("save").textContent="Update entry";$("drv").readOnly=true;$("dhint").textContent="Driver is locked. Change it in Update Rates → Vehicle & Driver.";prev();document.querySelector('[data-t="enter"]').click();esnap=tsnap();chk()}
 function toTop(){try{scrollTo({top:0,behavior:"auto"})}catch(x){scrollTo(0,0)}document.documentElement.scrollTop=0;document.body.scrollTop=0}
 function endEdit(){editing=null;esnap=null;$("date").value=today();["ton","dep","adv","exp","drv","rsn","nte"].forEach(function(i){$(i).value=""});setDdp();$("editbar").classList.add("hide");$("save").textContent="Save entry";$("veh").value="";applyDrv();prev();toTop()}
@@ -761,11 +766,12 @@ var _eM={"&":"&amp;","<":"&lt;",">":"&gt;","\u00a0":"&nbsp;","\"":"&quot;","'":"
 function fillVeh(){var cv=$("veh").value;$("veh").innerHTML='<option value="">Select plate…</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)$("veh").value=cv;if(!editing)applyDrv();chk();try{renderFuel()}catch(x){}}
 function applyDrv(){var d=(cfg.vd||{})[$("veh").value],i=$("drv");if(!$("veh").value){i.value="";i.readOnly=true;$("dhint").textContent="Pick a plate first. The driver fills in from the plate.";return}if(d){i.value=d;i.readOnly=true;$("dhint").textContent="Driver is set by the vehicle. Change it in Update Rates → Vehicle & Driver."}else{i.readOnly=!!editing;$("dhint").textContent="No driver set for this plate. Set it in Update Rates → Vehicle & Driver."}}
 function chk(){var lk=isLocked($("date").value);$("lkw").textContent=lk?"This month is locked. Unlock it in Settings → Month lock to add or change entries.":"";$("save").disabled=!(canWrite&&!lk&&$("date").value&&$("veh").value&&$("drv").value.trim()&&$("ton").value!==""&&!(editing&&esnap!==null&&tsnap()===esnap))}
-function cur(){return{tonnes:n($("ton").value),deposit:n($("dep").value),expense:n($("exp").value),advance:n($("adv").value),id:editing,date:$("date").value,driver:($("drv").value||"").trim(),ts:(function(){var o=editing&&entries.find(function(x){return x.id===editing});return o?o.ts:undefined})(),ddep:$("ddp").value===""?null:n($("ddp").value)}}
+function cur(){return{tonnes:n($("ton").value),deposit:n($("dep").value),expense:n($("exp").value),advance:n($("adv").value),id:editing,dd:cfg.dday,date:$("date").value,driver:($("drv").value||"").trim(),ts:(function(){var o=editing&&entries.find(function(x){return x.id===editing});return o?o.ts:undefined})(),ddep:$("ddp").value===""?(editing?null:0):n($("ddp").value)}}
 function remain(nm){var h=0,a=0,p=0;entries.forEach(function(e){if((e.driver||"")===nm&&e.id!==editing){h+=dheld(e);a+=e.advance||0}});livePays().forEach(function(x){if(x.kind==="driver"&&x.who===nm)p+=x.amount});liveAdvs().forEach(function(x){if(x.driver===nm)a+=x.amount});return h-a-p}
-function prev(){chk();var c=cur();$("prev").textContent=fmt(pay(c));var nm=$("drv").value.trim(),r=$("rem");
+function prev(){ddFill();chk();var c=cur();$("prev").textContent=fmt(pay(c));var nm=$("drv").value.trim(),r=$("rem");
  if(!nm){r.innerHTML="";return}
  var v=remain(nm)+dheld(c)-c.advance;r.innerHTML="This trip holds: <b>"+fmt(dheld(c))+"</b> \u00b7 driver's earlier balance: <b>"+mn(remain(nm))+"</b><br>Driver's total balance after this entry: <b>"+mn(v)+"</b>"+(c.advance>0?" (advance taken from it)":"")+(isRep(c)?"<br>Repeat trip today: balance held is reduced by "+fmt(c.rep!=null?c.rep:repCfg())+" ("+fmt(dheld(c))+" held).":"")}
+$("ddp").addEventListener("input",function(){this.dataset.man=this.value===""?"0":"1"});
 ["ton","dep","ddp","exp","adv","drv","rsn","nte"].forEach(function(i){$(i).addEventListener("input",prev)});$("date").addEventListener("input",prev);$("date").addEventListener("change",prev);$("veh").addEventListener("change",function(){applyDrv();prev()});
 var G={pay:"log",fuel:"flg",ov:"ov",rates:"set"};
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){if(GATED[b.dataset.t]&&needRates()){gatePop();return}var bar=b.parentNode;G[bar.dataset.g]=b.dataset.t;
@@ -887,11 +893,11 @@ function banner(t){if(t&&t.indexOf("Offline copy")===0){offCopy=true;window.offM
 $("save").onclick=async function(){if(needRates()){gatePop();return}
  var d=$("date").value;if(!d||!$("veh").value||!$("drv").value.trim()||$("ton").value===""){uiAlert("Fill date, vehicle, driver and tonnes");return}
  if(n($("exp").value)>0&&!$("rsn").value){uiAlert(reasons.length?"Choose a reason for the expense":"No expense reasons set yet. Add them in Update Rates, at the bottom (Expense reasons).");return}
- var e={date:d,vehicle:$("veh").value,driver:$("drv").value.trim(),tonnes:n($("ton").value),deposit:n($("dep").value),ddep:$("ddp").value===""?cfg.dday:n($("ddp").value),advance:n($("adv").value),expense:n($("exp").value),reason:n($("exp").value)>0?$("rsn").value:"",note:$("nte").value.trim(),rate:cfg.rate,hold:cfg.dday+cfg.dbal,rep:repCfg(),by:me||"local",ts:Date.now()};
- if(editing){var o=entries.find(function(x){return x.id===editing});if(o){e.by=o.by;e.ts=o.ts;if(o.rate!=null){e.rate=o.rate;e.hold=o.hold;if(o.rep!=null)e.rep=o.rep;else delete e.rep}}}
+ var e={date:d,vehicle:$("veh").value,driver:$("drv").value.trim(),tonnes:n($("ton").value),deposit:n($("dep").value),ddep:$("ddp").value===""?(editing?cfg.dday:ddAuto()):n($("ddp").value),advance:n($("adv").value),expense:n($("exp").value),reason:n($("exp").value)>0?$("rsn").value:"",note:$("nte").value.trim(),rate:cfg.rate,hold:cfg.dday+cfg.dbal,dd:cfg.dday,rep:repCfg(),by:me||"local",ts:Date.now()};
+ if(editing){var o=entries.find(function(x){return x.id===editing});if(o){e.by=o.by;e.ts=o.ts;if(o.rate!=null){e.rate=o.rate;e.hold=o.hold;e.dd=o.dd!=null?o.dd:(o.ddep>0?o.ddep:cfg.dday);if(o.rep!=null)e.rep=o.rep;else delete e.rep}}}
  if(editing){e.editedBy=me||"local";e.editedAt=Date.now();var o2=entries.find(function(x){return x.id===editing});if(o2)e.hist=histAdd(o2)}
  if(e.tonnes<0||e.deposit<0||e.ddep<0||e.advance<0||e.expense<0){uiAlert("Amounts can't be negative");return}  var oe0=editing&&entries.find(function(x){return x.id===editing});if(isLocked(e.date)||(oe0&&isLocked(oe0.date))){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}var W=entryWarns(e);if(W.length&&!(await ask("Please check this entry",W.join("<br>"))))return;
- if(entries.some(function(x){return x.vehicle===e.vehicle&&x.date===e.date&&x.id!==editing})&&!(await ask("Duplicate entry",esc(e.vehicle)+" already has an entry on "+esc(e.date)+". A second trip the same day pays the driver deposit again, but its balance held is reduced by the repeat-trip figure in Update Rates.")))return;
+ if(entries.some(function(x){return x.vehicle===e.vehicle&&x.date===e.date&&x.id!==editing})&&!(await ask("Duplicate entry",esc(e.vehicle)+" already has an entry on "+esc(e.date)+". A second trip the same day pays no driver deposit, and its balance held is lower (standard deposit and the repeat-trip figure in Update Rates are both taken off).")))return;
  $("save").disabled=true;
  try{if(editing){if(db)await db.doc("entries/"+editing).set(e);else{e.id=editing;entries=entries.map(function(x){return x.id===editing?e:x})}}
   else if(db){await db.collection("entries").add(e)}else{e.id="l"+e.ts;entries.push(e)}
@@ -1576,7 +1582,7 @@ function appInit(){appCfg=acClean(acLocalGet());acUi();acWm();try{annInit()}catc
   banner("Offline copy: entries are saved on this phone only. Use the published page to keep them online.");gateCheck();return}
  if(!canWrite){banner("View-only access: ask the owner to make you a Contributor to add entries.");$("save").disabled=true}
  netUpdate();$("who").onclick=function(){window.netProbe().then(function(ok){toast(ok?"You are online":"You are offline")})};
- db.doc("config/main").onSnapshot(function(s){paySaved=!!s.exists;cfgLoaded=true;if(s.exists){cfg=Object.assign(cfg,s.data());fillVeh();if(cfgKey!==cfgSig())showCfg();if(!editing&&!(+$("ddp").value>0))setDdp();rq()}gateCheck()});
+ db.doc("config/main").onSnapshot(function(s){paySaved=!!s.exists;cfgLoaded=true;if(s.exists){cfg=Object.assign(cfg,s.data());fillVeh();if(cfgKey!==cfgSig())showCfg();if(!editing)ddFill();rq()}gateCheck()});
  db.collection("entries").onSnapshot(async function(s){
   var _a=s.docs.map(function(d){return Object.assign({id:d.id},d.data())});entries=_a.filter(function(e){return!e.deleted&&!e.seed});trashE=_a.filter(function(e){return e.deleted&&!e.seed});try{if(window.seedCloud)seedCloud.docs("E",_a.filter(function(e){return e.seed}),!!(s.metadata&&s.metadata.fromCache))}catch(x){}var ids=[];_a.forEach(function(e){[e.by,e.editedBy,e.deletedBy].forEach(function(i){if(i&&i!=="local"&&ids.indexOf(i)<0)ids.push(i)})});
   if(user&&user.profiles&&ids.length){try{var p=await user.profiles(ids);ids.forEach(function(i){names[i]=(p[i]&&p[i].name)||""})}catch(x){}}
@@ -3065,5 +3071,31 @@ function card(){var bk=document.querySelector(".bkc");if(!bk||$("autobkc"))retur
    catch(e){closeM();toast("Could not load backup: "+(e&&e.message||e),true)}})}}
 card();boot();
 }catch(e){try{console.warn("auto backup",e)}catch(x){}}})();
+/* One-time fix for second trips saved before the new repeat-trip rule (no driver deposit, held 600).
+   A card appears in Settings > Data & backup only while such trips exist. It lists them first and changes nothing until confirmed. */
+(function(){
+var sig="~",busy=false;
+function cands(){var out=[];try{entries.forEach(function(e){if(e&&e.tonnes>0&&e.dd==null&&isRep(e)){
+  var nd=e.ddep>0?e.ddep:cfg.dday,ne=Object.assign({},e,{ddep:0,dd:nd});
+  out.push({e:e,dep:dpaid(e),nd:nd,oh:dheld(e),nh:dheld(ne),lock:!!isLocked(e.date)})}})}catch(x){}
+ out.sort(function(a,b){return a.e.date<b.e.date?-1:a.e.date>b.e.date?1:0});return out}
+function paint(){var anchor=$("bkhost");if(!anchor||busy)return;var card=$("fixrep"),c=cands(),s=c.map(function(x){return x.e.id+"|"+x.e.ddep+"|"+x.lock}).join(",");
+ if(s===sig&&(card||!c.length))return;sig=s;
+ if(!c.length){if(card)card.remove();return}
+ if(!card){card=document.createElement("div");card.id="fixrep";card.className="card";anchor.parentNode.insertBefore(card,anchor)}
+ var ok=c.filter(function(x){return!x.lock}).length,tot=c.reduce(function(a,x){return a+(x.lock?0:x.dep)},0);
+ card.innerHTML='<div class="bkh">Fix second trips</div><div class="mut" style="line-height:1.5;margin-bottom:8px">These second trips on the same day were saved before the new rule. Each will be changed to <b>deposit 0</b> and the balance held lowered the same way as a new second trip.</div>'
+  +'<div style="max-height:220px;overflow:auto;margin-bottom:8px">'+c.map(function(x){return'<div style="display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-top:1px solid var(--ln,#ddd);font-size:13.5px"><span>'+esc(x.e.date)+' · '+esc(x.e.vehicle)+(x.lock?' · <b>month locked</b>':'')+'</span><span style="white-space:nowrap">Deposit '+fmt(x.dep)+' → 0 · Held '+fmt(x.oh)+' → '+fmt(x.nh)+'</span></div>'}).join("")+'</div>'
+  +(ok?'<div class="mut" style="margin-bottom:8px">Total deposit removed: <b>'+fmt(tot)+'</b></div><div class="bkmr"><button class="btn" id="fixrepgo">Fix '+ok+(ok===1?' trip':' trips')+'</button></div>':'')
+  +(c.length>ok?'<div class="mut" style="margin-top:8px">Locked months are skipped. Unlock them in Month lock, then come back here.</div>':'');
+ var g=$("fixrepgo");if(g)g.onclick=apply}
+async function apply(){if(!canWrite||window.readOnly){toast("You have view-only access",true);return}
+ var c=cands().filter(function(x){return!x.lock});if(!c.length)return;busy=true;var bad=0,done=0;var g=$("fixrepgo");if(g){g.disabled=true;g.textContent="Fixing…"}
+ for(var i=0;i<c.length;i++){var o=c[i].e,ne=stripId(o);ne.ddep=0;ne.dd=c[i].nd;ne.hist=histAdd(o);ne.editedBy=me||"local";ne.editedAt=Date.now();
+  try{if(db)await db.doc("entries/"+o.id).set(ne);else{ne.id=o.id;(function(id,n2){entries=entries.map(function(x){return x.id===id?n2:x})})(o.id,ne)}done++}catch(e){bad++}}
+ busy=false;sig="~";try{render()}catch(e){}paint();
+ toast(bad?done+" fixed, "+bad+" could not be saved. Try again online.":done+(done===1?" trip":" trips")+" fixed",!!bad)}
+setInterval(paint,3000);setTimeout(paint,1200);
+})();
 </script>
 </body></html>
