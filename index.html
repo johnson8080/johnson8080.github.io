@@ -5,32 +5,34 @@ html.sp-on{background:#050508!important}
 #sp,#sp *{box-sizing:border-box;margin:0;padding:0}
 #sp{position:fixed;inset:0;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
  background:radial-gradient(120% 70% at 50% -5%,rgba(37,99,235,.30),transparent 62%),radial-gradient(90% 55% at 50% 108%,rgba(30,64,175,.26),transparent 66%),#050508;
- opacity:1;transform:scale(1);transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1),visibility 0s linear .55s}
+ opacity:1;transform:scale(1);transition:opacity .55s cubic-bezier(.4,0,.2,1),transform .55s cubic-bezier(.4,0,.2,1),visibility 0s linear .55s!important}
 #sp.out{opacity:0;transform:scale(1.035);visibility:hidden;pointer-events:none}
-#sp .sp-glow{position:absolute;left:50%;top:50%;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.16),transparent 70%);animation:spGlow 4s ease-in-out infinite;pointer-events:none}
+#sp .sp-glow{position:absolute;left:50%;top:50%;width:420px;height:420px;border-radius:50%!important;background:radial-gradient(circle,rgba(59,130,246,.16),transparent 70%);animation:spGlow 4s ease-in-out infinite!important;pointer-events:none}
 #sp .sp-grid{position:absolute;inset:0;opacity:.04;background-image:linear-gradient(to right,#fff 1px,transparent 1px),linear-gradient(to bottom,#fff 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
 #sp .sp-c{position:absolute;left:0;right:0;top:50%;display:flex;flex-direction:column;align-items:center;padding:0 24px;text-align:center}
 #sp .sp-spin{position:relative;width:96px;height:96px;margin-top:-48px;margin-bottom:24px;flex:none}
-#sp .sp-ring{position:absolute;inset:0;border:4px solid rgba(59,130,246,.12);border-top-color:#3b82f6;border-radius:50%;box-shadow:0 0 18px rgba(59,130,246,.25);animation:spSpin 1.2s linear infinite}
-#sp .sp-drop{position:absolute;inset:0;margin:auto;width:36px;height:36px;fill:#3b82f6;filter:drop-shadow(0 0 6px rgba(59,130,246,.55))}
-#sp .sp-t{font-size:24px;line-height:1.2;font-weight:800;letter-spacing:.25em;text-shadow:0 0 22px rgba(59,130,246,.35);padding-left:.25em;animation:spTitle .8s ease-out both}
+#sp .sp-svg{position:absolute;inset:0;width:96px;height:96px;overflow:visible;animation:spSpin 1.2s linear infinite!important;filter:drop-shadow(0 0 7px rgba(59,130,246,.35))}
+#sp .sp-tr{fill:none;stroke:rgba(59,130,246,.14);stroke-width:4}
+#sp .sp-arc{fill:none;stroke:#3b82f6;stroke-width:4;stroke-linecap:round;transform:rotate(-90deg);transform-origin:48px 48px}
+#sp .sp-drop{position:absolute;inset:0;margin:auto;width:36px;height:36px;fill:#3b82f6;filter:drop-shadow(0 0 6px rgba(59,130,246,.55));transform-origin:50% 55%;animation:spBeat 1.3s ease-in-out infinite!important}
+#sp .sp-t{font-size:24px;line-height:1.2;font-weight:800;letter-spacing:.25em;text-shadow:0 0 22px rgba(59,130,246,.35);padding-left:.25em;animation:spTitle .8s ease-out both!important}
 #sp .sp-m{display:flex;align-items:center;margin-top:12px;font-size:11.2px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#94a3b8}
 #sp .sp-dot{margin:0 10px;color:#34d399}
-#sp .sp-p{width:280px;max-width:100%;height:4px;margin-top:24px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden}
-#sp .sp-b{height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#3b82f6,#60a5fa);box-shadow:0 0 15px rgba(59,130,246,.6)}
+#sp .sp-p{width:280px;max-width:100%;height:4px;margin-top:24px;border-radius:999px!important;background:rgba(255,255,255,.1);overflow:hidden}
+#sp .sp-b{height:100%;width:0;border-radius:999px!important;background:linear-gradient(90deg,#3b82f6,#60a5fa);box-shadow:0 0 15px rgba(59,130,246,.6)}
 #sp .sp-cap{height:40px;margin-top:20px}
 #sp .sp-ph{font-size:14px;font-weight:600;letter-spacing:.025em;color:#93c5fd}
 #sp .sp-dt{margin-top:4px;font-size:12px;color:#64748b}
-#sp .sp-ring,#sp .sp-glow{border-radius:50%!important}#sp .sp-p,#sp .sp-b{border-radius:999px!important}#sp,#sp *,#sp *::before,#sp *::after{text-overflow:clip}
+#sp,#sp *,#sp *::before,#sp *::after{text-overflow:clip}
 @keyframes spSpin{to{transform:rotate(360deg)}}
 @keyframes spGlow{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.3);opacity:.85}}
+@keyframes spBeat{0%,100%{transform:scale(1)}12%{transform:scale(1.22)}24%{transform:scale(1)}36%{transform:scale(1.14)}52%{transform:scale(1)}}
 @keyframes spTitle{from{opacity:0;transform:translateY(8px);letter-spacing:.1em}to{opacity:1;transform:translateY(0);letter-spacing:.25em}}
 @keyframes spCap{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-#sp .sp-cap.on{animation:spCap .35s ease-out}
-@media (prefers-reduced-motion:reduce){#sp{transition:opacity .2s linear,visibility 0s linear .2s}#sp.out{transform:none}#sp .sp-glow,#sp .sp-t,#sp .sp-cap.on{animation:none}#sp .sp-ring{animation-duration:2.4s}}
+#sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.6.0">
+<meta name="app-version" content="1.6.1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -515,18 +517,18 @@ return{
   try{["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}catch(e){}try{if(window.seedCap)window.seedCap()}catch(e){}}
 }})();</script>
 </head><body>
-<div id="sp" role="status" aria-live="polite" aria-label="Loading Fuel and Trips"><div class="sp-glow"></div><div class="sp-grid"></div><div class="sp-c"><div class="sp-spin"><div class="sp-ring"></div><svg class="sp-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12,2.09C12,2.09 5,8.14 5,13.5C5,17.36 8.13,20.5 12,20.5C15.87,20.5 19,17.36 19,13.5C19,8.14 12,2.09 12,2.09M12,18.5C9.24,18.5 7,16.26 7,13.5C7,12.5 7.42,11.25 8,10.25L12,5.25L16,10.25C16.58,11.25 17,12.5 17,13.5C17,16.26 14.76,18.5 12,18.5Z"/></svg></div><div class="sp-t">FUEL &amp; TRIPS</div><div class="sp-m"><span>Trips</span><span class="sp-dot">•</span><span>Fuel</span><span class="sp-dot">•</span><span>Salary</span></div><div class="sp-p"><div class="sp-b" id="spb"></div></div><div class="sp-cap" id="spcap"><div class="sp-ph" id="spph">Initializing</div><div class="sp-dt" id="spdt">Warming up the engine</div></div></div></div>
+<div id="sp" role="status" aria-live="polite" aria-label="Loading Fuel and Trips"><div class="sp-glow"></div><div class="sp-grid"></div><div class="sp-c"><div class="sp-spin"><svg class="sp-svg" viewBox="0 0 96 96" aria-hidden="true"><circle class="sp-tr" cx="48" cy="48" r="46"/><circle class="sp-arc" id="spa" cx="48" cy="48" r="46" stroke-dasharray="289.03" stroke-dashoffset="280"/></svg><svg class="sp-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12,2.09C12,2.09 5,8.14 5,13.5C5,17.36 8.13,20.5 12,20.5C15.87,20.5 19,17.36 19,13.5C19,8.14 12,2.09 12,2.09M12,18.5C9.24,18.5 7,16.26 7,13.5C7,12.5 7.42,11.25 8,10.25L12,5.25L16,10.25C16.58,11.25 17,12.5 17,13.5C17,16.26 14.76,18.5 12,18.5Z"/></svg></div><div class="sp-t">FUEL &amp; TRIPS</div><div class="sp-m"><span>Trips</span><span class="sp-dot">•</span><span>Fuel</span><span class="sp-dot">•</span><span>Salary</span></div><div class="sp-p"><div class="sp-b" id="spb"></div></div><div class="sp-cap" id="spcap"><div class="sp-ph" id="spph">Initializing</div><div class="sp-dt" id="spdt">Warming up the engine</div></div></div></div>
 <script>
-/* Opening screen. Real progress: page parsed -> signed in -> rates and data loaded. It fades out only when the app is ready (or after a safety limit). */
+/* Opening screen. Real progress: page parsed -> signed in -> rates and data loaded -> automatic backup finished (it runs behind this screen, so its pop-up never shows over the app). The ring fills together with the bar. */
 (function(){
 var el=document.getElementById("sp");if(!el)return;
 var de=document.documentElement,t0=Date.now(),seen=false;
 try{seen=sessionStorage.getItem("fsplash")==="1";sessionStorage.setItem("fsplash","1")}catch(e){}
-var MIN=seen?700:1700,MAX=9000,BG="#050508";
+var MIN=seen?700:1700,MAX=18000,BG="#050508",C=289.03;
 var tcs=[].slice.call(document.querySelectorAll('meta[name="theme-color"]')),orig=tcs.map(function(m){return m.getAttribute("content")});
 tcs.forEach(function(m){m.setAttribute("content",BG)});
-var P=[["Initializing","Warming up the engine"],["Syncing trips","Reading your routes"],["Logging fuel","Calibrating consumption"],["Ready to drive","All systems go"]];
-var bar=document.getElementById("spb"),ph=document.getElementById("spph"),dt=document.getElementById("spdt"),cap=document.getElementById("spcap");
+var P=[["Initializing","Warming up the engine"],["Syncing trips","Reading your routes"],["Logging fuel","Calibrating consumption"],["Ready to drive","All systems go"],["Backing up your data","Saving a safe copy"]];
+var bar=document.getElementById("spb"),arc=document.getElementById("spa"),ph=document.getElementById("spph"),dt=document.getElementById("spdt"),cap=document.getElementById("spcap");
 var phase=-1,cur=0,target=6,ready=false,leaving=false,got={},raf=0,hold=0;
 function show(i){if(i===phase)return;phase=i;ph.textContent=P[i][0];dt.textContent=P[i][1];cap.classList.remove("on");void cap.offsetWidth;cap.classList.add("on")}
 function up(v){if(v>target)target=v}
@@ -536,19 +538,21 @@ function leave(){if(leaving)return;leaving=true;el.classList.add("out");
 function tick(){var now=Date.now()-t0;
  if(!got.i&&document.readyState!=="loading"){got.i=1;up(30)}
  if(!got.a&&window.me){got.a=1;up(62)}
- if(!got.d&&ok()){got.d=1;up(92)}
- if(!ready&&(got.d||got.x))ready=true;
+ if(!got.d&&ok()){got.d=1;up(88)}
+ var bk=!!window.__bkWait;
+ if(!ready&&got.x)ready=true;
+ if(!ready&&got.d&&!bk)ready=true;
  if(!ready&&now>MAX)ready=true;
- var creep=Math.min(84,6+now/90);if(!ready&&creep>target)target=creep;
+ var creep=Math.min(got.d?94:84,6+now/90);if(!ready&&creep>target)target=creep;
  if(ready&&now>=MIN)target=100;
  cur+=(target-cur)*(target>=100?.14:.06);if(target-cur<.15)cur=target;
  bar.style.width=cur+"%";
- show(cur>=95?3:cur>=65?2:cur>=30?1:0);
+ arc.setAttribute("stroke-dashoffset",(C*(1-Math.max(cur,3)/100)).toFixed(2));
+ show(got.d&&bk&&!ready?4:cur>=95?3:cur>=65?2:cur>=30?1:0);
  if(cur>=100){if(!hold)hold=Date.now();if(Date.now()-hold>350){leave();return}}
  raf=requestAnimationFrame(tick)}
 window.splash={done:function(){got.x=1},local:function(){got.x=1}};
 show(0);raf=requestAnimationFrame(tick);
-setTimeout(function(){got.x=1;ready=true},MAX+1500);
 })();
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
@@ -3038,7 +3042,9 @@ function mk(){if(ui)return ui;
 function statusLines(){var s=st(),nx=s.local?s.local+EVERY:0;
  return[{m:"Phone: <b>"+esc(fmt(s.local))+"</b> &middot; File: <b>"+esc(fileOn()?fmt(s.file):"off")+"</b> &middot; Cloud: <b>"+esc(fmt(s.cloud))+"</b>"},
   {m:"A full backup is made automatically every 5 days while the app is open. The latest 3 are kept on this phone and in the cloud."+(nx>Date.now()?" Next: <b>"+esc(fmt(nx))+"</b>.":"")}]}
-function paint(){paintCard();if(!opened)return;var el=mk(),L=busy?[{t:"Backing up… please wait"}]:(waiting?[{t:"Loading your data, then backing up…"}]:(res.length?res:statusLines()));
+var quiet0=!!document.getElementById("sp");function quietNow(){return quiet0&&!!document.getElementById("sp")}
+window.__bkWait=true;
+function paint(){paintCard();if(!opened)return;if(quietNow())return;var el=mk(),L=busy?[{t:"Backing up… please wait"}]:(waiting?[{t:"Loading your data, then backing up…"}]:(res.length?res:statusLines()));
  el.innerHTML='<b class="t">Backup</b>'+L.map(function(x){return'<div class="l '+(x.ok===1?"ok":x.ok===0?"bd":"m")+'">'+(x.ok===1?"✔ ":x.ok===0?"⚠ ":"")+(x.t?esc(x.t):x.m)+"</div>"}).join("")+
   '<div class="r"><button class="p" id="abNow"'+(busy?" disabled":"")+'>Back up now</button><button id="abX">Close</button></div>';
  el.style.display="block";$("abX").onclick=hide;$("abNow").onclick=function(){run(true)}}
@@ -3047,7 +3053,7 @@ function later(ms){clearTimeout(hideT);hideT=setTimeout(function(){if(!busy&&!wa
 
 /* ---------- running a backup ---------- */
 async function run(manual){
- if(busy)return;busy=true;waiting=false;res=[];opened=true;paint();
+ if(busy)return;if(manual)quiet0=false;busy=true;waiting=false;res=[];opened=true;paint();
  try{
   if(!loaded()){res.push({ok:0,t:"Nothing to back up yet."});return}
   var now=Date.now(),s=st(),localDue=manual||now-s.local>=EVERY,cloudDue=manual||now-s.cloud>=EVERY;
@@ -3062,7 +3068,7 @@ async function run(manual){
    else if(!online())res.push({ok:0,t:"No internet. The cloud copy will save by itself when you are back online."});
    else{lastCloudTry=Date.now();try{await saveCloud(o,now);put("cloud",now);res.push({ok:1,t:"Cloud copy saved."})}catch(e){res.push({ok:0,t:"Cloud copy not saved ("+(e&&e.message||"error")+"). It will try again soon."})}}}
  }catch(e){res.push({ok:0,t:"Backup problem: "+(e&&e.message||e)})}
- finally{busy=false;paint();later(res.some(function(x){return x.ok===0})?25000:10000)}}
+ finally{busy=false;if(res.some(function(x){return x.ok===0}))quiet0=false;paint();later(res.some(function(x){return x.ok===0})?25000:10000)}}
 
 /* ---------- when to run ---------- */
 function due(){var s=st(),n=Date.now();return n-s.local>=EVERY||(cloudOk()&&n-s.cloud>=EVERY&&online()&&n-lastCloudTry>15*60*1000)}
@@ -3070,12 +3076,16 @@ function tick(){if(!opened||busy||waiting||!loaded())return;if(due())run(false)}
 /* wait until the app has finished loading its records (they stop changing), so a backup is never half empty */
 function dataReady(){return new Promise(function(r){var n=0,same=0,last=-1,t=setInterval(function(){n++;var c=total();if(loaded()&&c===last)same++;else same=0;last=c;if(same>=3||n>60){clearInterval(t);r()}},1000)})}
 async function boot(){
+ try{
  var n=0;await new Promise(function(r){var t=setInterval(function(){n++;if(window.me||n>1200){clearInterval(t);r()}},500)});
- opened=true;waiting=true;paint();
- await dataReady();waiting=false;
+ opened=true;
  /* if the saved copies on this phone were cleared, treat the phone copy as due */
  try{var L=await listDevice();if(!L.length)put("local",0)}catch(e){}
- if(due())run(false);else{paint();later(15000)}}
+ if(!due()){paint();later(15000);return}
+ waiting=true;paint();
+ await dataReady();waiting=false;
+ if(due())await run(false);else{paint();later(15000)}
+ }finally{window.__bkWait=false}}
 setInterval(tick,10*60*1000);
 document.addEventListener("visibilitychange",function(){if(!document.hidden)setTimeout(tick,3000)});
 window.addEventListener("online",function(){setTimeout(tick,4000)});
