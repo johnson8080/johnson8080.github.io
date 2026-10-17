@@ -3,10 +3,11 @@
 <style id="sp-css">
 html.sp-on{background:#050508!important}
 #sp,#sp *{box-sizing:border-box;margin:0;padding:0}
-#sp{--spy:0px;position:fixed;inset:0;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
+#sp{--spy:0px;position:fixed;left:0;right:0;bottom:0;height:100vh;height:100lvh;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
   background:#050508;
  opacity:1;will-change:opacity;transition:opacity .4s ease,visibility 0s linear .4s!important}
 #sp.out{opacity:0;visibility:hidden;pointer-events:none}
+html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibility:hidden!important}
 #sp .sp-c{position:absolute;left:0;right:0;top:50%;display:flex;flex-direction:column;align-items:center;padding:0 24px;text-align:center;transform:translate3d(0,var(--spy),0)}
 #sp .sp-spin{position:relative;width:96px;height:96px;margin-top:-48px;margin-bottom:24px;flex:none}
 #sp .sp-halo{position:absolute;inset:-14px;border-radius:50%!important;background:radial-gradient(circle,rgba(59,130,246,.14) 0,rgba(59,130,246,.06) 48%,transparent 72%)}
@@ -35,7 +36,7 @@ html.sp-on{background:#050508!important}
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.0">
+<meta name="app-version" content="1.7.2">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -536,7 +537,7 @@ var phase=-1,cur=0,target=6,ready=false,leaving=false,got={},raf=0,hold=0,last=0
 function show(i){if(i===phase)return;phase=i;ph.textContent=P[i][0];dt.textContent=P[i][1];cap.classList.remove("on");void cap.offsetWidth;cap.classList.add("on")}
 function up(v){if(v>target)target=v}
 function ok(){try{return typeof cfgLoaded!=="undefined"&&cfgLoaded&&typeof fcfgLoaded!=="undefined"&&fcfgLoaded}catch(e){return false}}
-function leave(){if(leaving)return;leaving=true;el.classList.add("out");
+function leave(){if(leaving)return;leaving=true;de.classList.add("sp-lv");el.classList.add("out");
  setTimeout(function(){try{el.remove()}catch(e){}de.classList.remove("sp-on");tcs.forEach(function(m,i){if(orig[i]!=null)m.setAttribute("content",orig[i])})},520)}
 function tick(ts){var now=Date.now()-t0,dt0=last?Math.min(100,ts-last):16;last=ts;
  if(!got.i&&document.readyState!=="loading"){got.i=1;up(30)}
@@ -554,6 +555,7 @@ function tick(ts){var now=Date.now()-t0,dt0=last?Math.min(100,ts-last):16;last=t
  show(got.d&&bk&&!ready?4:cur>=95?3:cur>=65?2:cur>=30?1:0);
  if(cur>=100){if(!hold)hold=Date.now();if(Date.now()-hold>140){requestAnimationFrame(function(){requestAnimationFrame(leave)});return}}
  raf=requestAnimationFrame(tick)}
+setTimeout(function(){de.classList.add("sp-lv");de.classList.remove("sp-on");try{el.remove()}catch(e){}tcs.forEach(function(m,i){if(orig[i]!=null)m.setAttribute("content",orig[i])})},30000);
 window.splash={done:function(){got.x=1},local:function(){got.x=1}};
 show(0);raf=requestAnimationFrame(tick);
 })();
@@ -2617,13 +2619,36 @@ btn.addEventListener("click",function(){dr&&dr.classList.contains("on")?close():
 d.addEventListener("keydown",function(e){if(e.key==="Escape"){if(ab&&ab.classList.contains("on"))aboutClose();else close()}});
 })();</script>
 <script>(function(){
-var st=document.createElement("style");st.textContent="tr.smt>td{background-color:color-mix(in srgb,var(--mc) 24%,var(--card))!important;border-radius:0!important}tr.smt>td:first-child{border-top-left-radius:6px!important;border-bottom-left-radius:6px!important}tr.smt>td:last-child{border-top-right-radius:6px!important;border-bottom-right-radius:6px!important}";st.textContent+=".hi.smt,#dsc .dse.smt{background-color:color-mix(in srgb,var(--mc) 24%,var(--card))}";document.head.appendChild(st);
-var H=[35,210,140,290,0,180,320,65];
-window.drvCol=function(d){d=(d||"").trim().toLowerCase();var h=0,i;for(i=0;i<d.length;i++)h=(h*31+d.charCodeAt(i))>>>0;return"hsl("+H[h%8]+" 75% 52%)"};
+var st=document.createElement("style");
+st.textContent="tr.smt>td{background-color:color-mix(in srgb,var(--mc) var(--tint,11%),var(--card))!important;border-radius:0!important}tr.smt>td:first-child{border-top-left-radius:6px!important;border-bottom-left-radius:6px!important}tr.smt>td:last-child{border-top-right-radius:6px!important;border-bottom-right-radius:6px!important}";
+st.textContent+=".hi.smt,#dsc .dse.smt{background-color:color-mix(in srgb,var(--mc) var(--tint,11%),var(--card))}";
+st.textContent+="html[data-theme=\"dark\"]{--tint:16%}@media (prefers-color-scheme:dark){html:not([data-theme=\"light\"]){--tint:16%}}";
+document.head.appendChild(st);
+/* One colour per driver. Drivers are numbered in the order they first appear (earliest trip first, drivers with no trips yet last),
+   and each number gets its own hue using the golden angle, so any number of drivers always get different, well-spread colours
+   and a new driver never changes the colour of an existing one. */
+var RK="",RT=0,RM={};
+function build(){
+ var now=Date.now(),E=[],F=[],V={};
+ try{E=entries||[]}catch(x){}try{F=fuels||[]}catch(x){}try{V=(cfg&&cfg.vd)||{}}catch(x){}
+ var key=E.length+"|"+F.length+"|"+Object.keys(V).join(",");
+ if(key===RK&&now-RT<1200)return;
+ RK=key;RT=now;
+ var first={};
+ function add(n,dt){n=(n||"").trim().toLowerCase();if(!n)return;dt=dt||"9999";if(!(n in first)||dt<first[n])first[n]=dt}
+ E.forEach(function(e){add(e.driver,e.date)});F.forEach(function(e){add(e.driver,e.date)});
+ Object.keys(V).forEach(function(p){add(V[p],"9999-99")});
+ var names=Object.keys(first).sort(function(a,b){return first[a]<first[b]?-1:first[a]>first[b]?1:a<b?-1:a>b?1:0});
+ RM={};names.forEach(function(n,i){RM[n]=i})}
+function hue(d){d=(d||"").trim().toLowerCase();build();
+ if(d in RM)return(35+RM[d]*137.508)%360;
+ var h=0,i;for(i=0;i<d.length;i++)h=(h*31+d.charCodeAt(i))>>>0;return h%360}
+window.drvCol=function(d){return"hsl("+hue(d).toFixed(1)+" 68% 50%)"};
 window.seedCnt=function(all){var m={};all.forEach(function(e){var k=e.date+"|"+(e.driver||"").trim().toLowerCase();m[k]=(m[k]||0)+1});return m};
-window.seedTr=function(e,m,at,sy){var d=(e.driver||"").trim().toLowerCase(),rep=d&&m[e.date+"|"+d]>1,h=0,i,s=sy||"";if(rep){for(i=0;i<d.length;i++)h=(h*31+d.charCodeAt(i))>>>0;s+=(s?";":"")+"--mc:hsl("+H[h%8]+" 75% 52%)"}
+window.seedTr=function(e,m,at,sy){var d=(e.driver||"").trim().toLowerCase(),rep=d&&m[e.date+"|"+d]>1,s=sy||"";if(rep){s+=(s?";":"")+"--mc:"+drvCol(d)}
  return"<tr"+(rep?' class="smt"':"")+(at||"")+(s?' style="'+s+'"':"")+">"};
-})();</script>
+})();
+</script>
 <script>(function(){
 function sv(){var c=$("sveh").value;$("sveh").innerHTML='<option value="">Select plate…</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(c)>=0)$("sveh").value=c}
 function sw(f){window.sdOpen=f;$("sdlist").classList.toggle("hide",f);$("sdform").classList.toggle("hide",!f);$("fabS").classList.toggle("hide",f);scrollTo({top:0})}
