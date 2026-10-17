@@ -38,7 +38,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.3">
+<meta name="app-version" content="1.7.5">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -839,7 +839,8 @@ function detail(id){PM=alloc();var e=entries.find(function(x){return x.id===id})
    b.disabled=true;await del(id)}}}
 $("logl").onclick=function(ev){var r=ev.target.closest("tr[data-id]");if(r)detail(r.dataset.id)};
 var _eM={"&":"&amp;","<":"&lt;",">":"&gt;","\u00a0":"&nbsp;","\"":"&quot;","'":"&#39;"};function esc(s){return s==null?"":String(s).replace(/[&<>\u00a0"']/g,function(c){return _eM[c]})}
-function fillVeh(){var cv=$("veh").value;$("veh").innerHTML='<option value="">Select plate…</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)$("veh").value=cv;if(!editing)applyDrv();chk();try{renderFuel()}catch(x){}}
+function plateOpts(){var vd=cfg.vd||{};return'<option value="">Select plate…</option>'+cfg.veh.map(function(v){var d=vd[v];return'<option value="'+esc(v)+'">'+esc(v)+(d?" · "+esc(d):"")+"</option>"}).join("")}
+function fillVeh(){var cv=$("veh").value;$("veh").innerHTML=plateOpts();if(cfg.veh.indexOf(cv)>=0)$("veh").value=cv;if(!editing)applyDrv();chk();try{renderFuel()}catch(x){}}
 function applyDrv(){var d=(cfg.vd||{})[$("veh").value],i=$("drv");if(!$("veh").value){i.value="";i.readOnly=true;$("dhint").textContent="Pick a plate first. The driver fills in from the plate.";return}if(d){i.value=d;i.readOnly=true;$("dhint").textContent="Driver is set by the vehicle. Change it in Update Rates → Vehicle & Driver."}else{i.readOnly=!!editing;$("dhint").textContent="No driver set for this plate. Set it in Update Rates → Vehicle & Driver."}}
 function chk(){var lk=isLocked($("date").value);$("lkw").textContent=lk?"This month is locked. Unlock it in Settings → Month lock to add or change entries.":"";$("save").disabled=!(canWrite&&!lk&&$("date").value&&$("veh").value&&$("drv").value.trim()&&$("ton").value!==""&&!(editing&&esnap!==null&&tsnap()===esnap))}
 function cur(){return{tonnes:n($("ton").value),deposit:n($("dep").value),expense:n($("exp").value),advance:n($("adv").value),id:editing,dd:cfg.dday,date:$("date").value,driver:($("drv").value||"").trim(),ts:(function(){var o=editing&&entries.find(function(x){return x.id===editing});return o?o.ts:undefined})(),ddep:$("ddp").value===""?(editing?null:0):n($("ddp").value)}}
@@ -1294,7 +1295,7 @@ function fper(){var k=$("fper").value||"all",td=today();
  if(k==="range"){var ft=RNG.t("fper");return{k:"r",y:td.slice(0,4),lab:RNG.lab("fper"),t:function(f){return ft(f.date)}}}
  return{k:"all",y:td.slice(0,4),lab:"All dates",t:function(){return true}}}
 var flLim=100;
-function renderFuel(){var sel=$("fveh"),cv=sel.value,fresh=!sel.options.length;sel.innerHTML='<option value="">Select plate…</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)sel.value=cv;
+function renderFuel(){var sel=$("fveh"),cv=sel.value,fresh=!sel.options.length;sel.innerHTML=plateOpts();if(cfg.veh.indexOf(cv)>=0)sel.value=cv;
  if(!$("fmon").value)$("fmon").value=today().slice(0,7);if(!$("fday").value)$("fday").value=today();if(!$("fyr").value)$("fyr").value=today().slice(0,4);if(fresh)fautofill();fdset();
  var m=$("fmon").value,rows=fuels,P=fper(),y=P.y,sr=fuels.filter(P.t);$("fdw").classList.toggle("hide",P.k!=="d");$("fmw").classList.toggle("hide",P.k!=="m");$("fyw").classList.toggle("hide",P.k!=="y");$("fwkc").classList.toggle("hide",P.k!=="m");
  var Z=function(){return{l:0,s:0,c:0}},ad=function(o,f){o.l+=f.litres;o.s+=f.litres*f.sell;o.c+=f.litres*f.cost};
@@ -2441,8 +2442,8 @@ sync();["change","input"].forEach(function(e){document.addEventListener(e,functi
 
 <script>
 /* WINCH: one selected vehicle (Update Rates -> Winch) and its full detailed report */
-function winchFill(){var sel=$("wplate");if(!sel)return;var vs=cfg.veh||[],key=vs.join("\u0001"),cur=sel.__d?sel.value:(cfg.winch||"");
- if(sel.__k!==key){sel.innerHTML='<option value="">Select plate\u2026</option>'+vs.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");sel.__k=key}
+function winchFill(){var sel=$("wplate");if(!sel)return;var vs=cfg.veh||[],key=vs.map(function(v){return v+"\u0002"+((cfg.vd||{})[v]||"")}).join("\u0001"),cur=sel.__d?sel.value:(cfg.winch||"");
+ if(sel.__k!==key){sel.innerHTML=plateOpts();sel.__k=key}
  sel.value=vs.indexOf(cur)>=0?cur:"";winchDrv()}
 function winchDrv(){var v=$("wplate").value,d=v?(cfg.vd||{})[v]||"":"";$("wdrv").value=d;
  var same=v&&v===cfg.winch;$("wnote").textContent=!(cfg.veh||[]).length?"Add plates and drivers in Vehicle & Driver first.":(cfg.winch&&(cfg.veh||[]).indexOf(cfg.winch)>=0?"Current winch: "+cfg.winch+(((cfg.vd||{})[cfg.winch])?" · "+cfg.vd[cfg.winch]:""):"No winch vehicle chosen yet.");
@@ -2654,7 +2655,7 @@ window.seedTr=function(e,m,at,sy){var d=(e.driver||"").trim().toLowerCase(),rep=
 })();
 </script>
 <script>(function(){
-function sv(){var c=$("sveh").value;$("sveh").innerHTML='<option value="">Select plate…</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(c)>=0)$("sveh").value=c}
+function sv(){var c=$("sveh").value;$("sveh").innerHTML=plateOpts();if(cfg.veh.indexOf(c)>=0)$("sveh").value=c}
 function sw(f){window.sdOpen=f;$("sdlist").classList.toggle("hide",f);$("sdform").classList.toggle("hide",!f);$("fabS").classList.toggle("hide",f);scrollTo({top:0})}
 $("fabS").addEventListener("click",function(){sv();if(!$("sdate").value)$("sdate").value=today();sw(true)});
 $("sdBack").onclick=function(){sw(false)};
