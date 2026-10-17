@@ -6,7 +6,7 @@ html.sp-on{background:#050508!important}
 #sp{--spy:0px;position:fixed;inset:0;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
  display:flex;align-items:center;justify-content:center;
  background:#050508;
- opacity:1;will-change:opacity;transition:opacity .5s ease,visibility 0s linear .5s!important}
+ opacity:1;will-change:opacity;transition:opacity .4s ease,visibility 0s linear .4s!important}
 #sp.out{opacity:0;visibility:hidden;pointer-events:none}
 #sp .sp-c{position:relative;display:flex;flex-direction:column;align-items:center;padding:0 24px;text-align:center;transform:translate3d(0,var(--spy),0)}
 #sp .sp-spin{position:relative;width:96px;height:96px;margin-bottom:24px;flex:none}
@@ -35,7 +35,7 @@ html.sp-on{background:#050508!important}
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.6.7">
+<meta name="app-version" content="1.6.8">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -537,7 +537,7 @@ function show(i){if(i===phase)return;phase=i;ph.textContent=P[i][0];dt.textConte
 function up(v){if(v>target)target=v}
 function ok(){try{return typeof cfgLoaded!=="undefined"&&cfgLoaded&&typeof fcfgLoaded!=="undefined"&&fcfgLoaded}catch(e){return false}}
 function leave(){if(leaving)return;leaving=true;el.classList.add("out");
- setTimeout(function(){try{el.remove()}catch(e){}de.classList.remove("sp-on");tcs.forEach(function(m,i){if(orig[i]!=null)m.setAttribute("content",orig[i])})},650)}
+ setTimeout(function(){try{el.remove()}catch(e){}de.classList.remove("sp-on");tcs.forEach(function(m,i){if(orig[i]!=null)m.setAttribute("content",orig[i])})},520)}
 function tick(ts){var now=Date.now()-t0,dt0=last?Math.min(100,ts-last):16;last=ts;
  if(!got.i&&document.readyState!=="loading"){got.i=1;up(30)}
  if(!got.a&&window.me){got.a=1;up(62)}
@@ -549,10 +549,10 @@ function tick(ts){var now=Date.now()-t0,dt0=last?Math.min(100,ts-last):16;last=t
  if(got.d&&bk&&!ready)up(Math.min(97,88+(now-got.t)/400));
  var creep=Math.min(got.d?94:84,6+now/90);if(!ready&&creep>target)target=creep;
  if(ready&&now>=MIN)target=100;
- cur+=(target-cur)*(1-Math.exp(-dt0/(target>=100?110:380)));if(target-cur<.08)cur=target;
+ cur+=(target-cur)*(1-Math.exp(-dt0/(target>=100?70:300)));if(target-cur<.08)cur=target;
  if(ts-lastApply>=120||cur>=100&&shown<100){var dd=Math.abs(cur-shown);if(dd>.05){lastApply=ts;shown=cur;var p=Math.max(cur,3),f=p*3.6;bar.style.transform="scaleX("+(cur/100).toFixed(4)+")";fr.style.transform="rotate("+(-135+Math.min(f,180)).toFixed(1)+"deg)";fl.style.transform="rotate("+(45+Math.max(f-180,0)).toFixed(1)+"deg)"}}
  show(got.d&&bk&&!ready?4:cur>=95?3:cur>=65?2:cur>=30?1:0);
- if(cur>=100){if(!hold)hold=Date.now();if(Date.now()-hold>350){requestAnimationFrame(function(){requestAnimationFrame(leave)});return}}
+ if(cur>=100){if(!hold)hold=Date.now();if(Date.now()-hold>140){requestAnimationFrame(function(){requestAnimationFrame(leave)});return}}
  raf=requestAnimationFrame(tick)}
 window.splash={done:function(){got.x=1},local:function(){got.x=1}};
 show(0);raf=requestAnimationFrame(tick);
