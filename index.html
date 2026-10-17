@@ -2,8 +2,10 @@
 <html lang="en" class="sp-on"><head><meta charset="utf-8">
 <style id="sp-css">
 html.sp-on{background:#050508!important}
+html.sp-on:not(.sp-lv) body{background:transparent!important;transition:none!important}
+html.sp-lv{transition:background-color .4s ease}
 #sp,#sp *{box-sizing:border-box;margin:0;padding:0}
-#sp{--spy:0px;position:fixed;left:0;right:0;bottom:0;height:100vh;height:100lvh;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
+#sp{--spy:0px;position:fixed;left:0;right:0;bottom:0;height:100vh;height:100lvh;min-height:var(--sph,0px);box-shadow:0 0 0 600px #050508!important;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
   background:#050508;
  opacity:1;will-change:opacity;transition:opacity .4s ease,visibility 0s linear .4s!important}
 #sp.out{opacity:0;visibility:hidden;pointer-events:none}
@@ -36,7 +38,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.2">
+<meta name="app-version" content="1.7.3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -533,13 +535,15 @@ var tcs=[].slice.call(document.querySelectorAll('meta[name="theme-color"]')),ori
 tcs.forEach(function(m){m.setAttribute("content",BG)});
 var P=[["Initializing","Warming up the engine"],["Syncing trips","Reading your routes"],["Logging fuel","Calibrating consumption"],["Ready to drive","All systems go"],["Backing up your data","Saving a safe copy"]];
 var bar=document.getElementById("spb"),fr=document.getElementById("spr"),fl=document.getElementById("spl"),ph=document.getElementById("spph"),dt=document.getElementById("spdt"),cap=document.getElementById("spcap");
-var phase=-1,cur=0,target=6,ready=false,leaving=false,got={},raf=0,hold=0,last=0,shown=-1,lastApply=0;
+var phase=-1,cur=0,target=6,ready=false,leaving=false,got={},raf=0,hold=0,last=0,shown=-1,lastApply=0,spH=0,lastH=0;
+function lat(){var h=el.offsetHeight;if(h>spH+.5){spH=h;el.style.setProperty("--sph",h+"px")}}
+lat();window.addEventListener("resize",lat);window.addEventListener("orientationchange",lat);try{if(window.visualViewport)visualViewport.addEventListener("resize",lat)}catch(e){}
 function show(i){if(i===phase)return;phase=i;ph.textContent=P[i][0];dt.textContent=P[i][1];cap.classList.remove("on");void cap.offsetWidth;cap.classList.add("on")}
 function up(v){if(v>target)target=v}
 function ok(){try{return typeof cfgLoaded!=="undefined"&&cfgLoaded&&typeof fcfgLoaded!=="undefined"&&fcfgLoaded}catch(e){return false}}
-function leave(){if(leaving)return;leaving=true;de.classList.add("sp-lv");el.classList.add("out");
- setTimeout(function(){try{el.remove()}catch(e){}de.classList.remove("sp-on");tcs.forEach(function(m,i){if(orig[i]!=null)m.setAttribute("content",orig[i])})},520)}
-function tick(ts){var now=Date.now()-t0,dt0=last?Math.min(100,ts-last):16;last=ts;
+function leave(){if(leaving)return;leaving=true;de.classList.add("sp-lv");de.classList.remove("sp-on");el.classList.add("out");
+ setTimeout(function(){try{el.remove()}catch(e){}tcs.forEach(function(m,i){if(orig[i]!=null)m.setAttribute("content",orig[i])})},520)}
+function tick(ts){var now=Date.now()-t0,dt0=last?Math.min(100,ts-last):16;last=ts;if(ts-lastH>150){lastH=ts;lat()}
  if(!got.i&&document.readyState!=="loading"){got.i=1;up(30)}
  if(!got.a&&window.me){got.a=1;up(62)}
  if(!got.d&&ok()){got.d=1;got.t=now;up(88)}
