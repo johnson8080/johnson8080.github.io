@@ -4,6 +4,7 @@
 html.sp-on{background:#050508!important}
 html.sp-on:not(.sp-lv) body{background:transparent!important;transition:none!important}
 html.sp-lv{transition:background-color .4s ease}
+.sp-probe{position:absolute;left:0;bottom:0;width:1px;height:100vh;height:100lvh;visibility:hidden;pointer-events:none}
 #sp,#sp *{box-sizing:border-box;margin:0;padding:0}
 #sp{--spy:0px;position:fixed;left:0;right:0;bottom:0;height:100vh;height:100lvh;min-height:var(--sph,0px);box-shadow:0 0 0 600px #050508!important;z-index:2147483000;overflow:hidden;color:#fff;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;touch-action:none;overscroll-behavior:contain;user-select:none;-webkit-user-select:none;
   background:#050508;
@@ -38,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.6">
+<meta name="app-version" content="1.7.7">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -522,12 +523,13 @@ return{
  refresh:function(){try{if(window.seedList)window.seedList()}catch(e){}try{if(window.drawVP)window.drawVP()}catch(e){}
   try{["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}catch(e){}try{if(window.seedCap)window.seedCap()}catch(e){}}
 }})();</script>
+<script>try{var h=+localStorage.getItem("fsph:"+screen.width+"x"+screen.height);if(h>200&&h<5000)document.documentElement.style.setProperty("--sph",h+"px")}catch(e){}</script>
 </head><body>
-<div id="sp" role="status" aria-live="polite" aria-label="Loading Fuel and Trips"><div class="sp-c"><div class="sp-spin"><div class="sp-halo"></div><div class="sp-pr"><div class="sp-tr"></div><div class="sp-h sp-hr"><div class="sp-f" id="spr"></div></div><div class="sp-h sp-hl"><div class="sp-f" id="spl"></div></div></div><svg class="sp-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12,2.09C12,2.09 5,8.14 5,13.5C5,17.36 8.13,20.5 12,20.5C15.87,20.5 19,17.36 19,13.5C19,8.14 12,2.09 12,2.09M12,18.5C9.24,18.5 7,16.26 7,13.5C7,12.5 7.42,11.25 8,10.25L12,5.25L16,10.25C16.58,11.25 17,12.5 17,13.5C17,16.26 14.76,18.5 12,18.5Z"/></svg></div><div class="sp-t">FUEL &amp; TRIPS</div><div class="sp-m"><span>Trips</span><span class="sp-dot">•</span><span>Fuel</span><span class="sp-dot">•</span><span>Salary</span></div><div class="sp-p"><div class="sp-b" id="spb"></div></div><div class="sp-cap" id="spcap"><div class="sp-ph" id="spph">Initializing</div><div class="sp-dt" id="spdt">Warming up the engine</div></div></div></div>
+<div id="sp" role="status" aria-live="polite" aria-label="Loading Fuel and Trips"><div class="sp-probe"></div><div class="sp-c"><div class="sp-spin"><div class="sp-halo"></div><div class="sp-pr"><div class="sp-tr"></div><div class="sp-h sp-hr"><div class="sp-f" id="spr"></div></div><div class="sp-h sp-hl"><div class="sp-f" id="spl"></div></div></div><svg class="sp-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12,2.09C12,2.09 5,8.14 5,13.5C5,17.36 8.13,20.5 12,20.5C15.87,20.5 19,17.36 19,13.5C19,8.14 12,2.09 12,2.09M12,18.5C9.24,18.5 7,16.26 7,13.5C7,12.5 7.42,11.25 8,10.25L12,5.25L16,10.25C16.58,11.25 17,12.5 17,13.5C17,16.26 14.76,18.5 12,18.5Z"/></svg></div><div class="sp-t">FUEL &amp; TRIPS</div><div class="sp-m"><span>Trips</span><span class="sp-dot">•</span><span>Fuel</span><span class="sp-dot">•</span><span>Salary</span></div><div class="sp-p"><div class="sp-b" id="spb"></div></div><div class="sp-cap" id="spcap"><div class="sp-ph" id="spph">Initializing</div><div class="sp-dt" id="spdt">Warming up the engine</div></div></div></div>
 <script>
 /* Opening screen. Real progress: page parsed -> signed in -> rates and data loaded -> automatic backup finished (it runs behind this screen, so its pop-up never shows over the app). The ring fills together with the bar. */
 (function(){
-var el=document.getElementById("sp");if(!el)return;
+var el=document.getElementById("sp");if(!el)return;var pr=el.querySelector(".sp-probe")||el;
 var de=document.documentElement,t0=Date.now(),seen=false;
 try{seen=sessionStorage.getItem("fsplash")==="1";sessionStorage.setItem("fsplash","1")}catch(e){}
 var MIN=seen?700:1700,MAX=18000,BG="#050508";
@@ -536,12 +538,13 @@ tcs.forEach(function(m){m.setAttribute("content",BG)});
 var P=[["Initializing","Warming up the engine"],["Syncing trips","Reading your routes"],["Logging fuel","Calibrating consumption"],["Ready to drive","All systems go"],["Backing up your data","Saving a safe copy"]];
 var bar=document.getElementById("spb"),fr=document.getElementById("spr"),fl=document.getElementById("spl"),ph=document.getElementById("spph"),dt=document.getElementById("spdt"),cap=document.getElementById("spcap");
 var phase=-1,cur=0,target=6,ready=false,leaving=false,got={},raf=0,hold=0,last=0,shown=-1,lastApply=0,spH=0,lastH=0;
-function lat(){var h=el.offsetHeight;if(h>spH+.5){spH=h;el.style.setProperty("--sph",h+"px")}}
+function lat(){var h=pr.offsetHeight;if(h>spH+.5){spH=h;el.style.setProperty("--sph",Math.max(h,base)+"px")}}
+var base=0;try{base=+localStorage.getItem("fsph:"+screen.width+"x"+screen.height)||0}catch(e){}
 lat();window.addEventListener("resize",lat);window.addEventListener("orientationchange",lat);try{if(window.visualViewport)visualViewport.addEventListener("resize",lat)}catch(e){}
 function show(i){if(i===phase)return;phase=i;ph.textContent=P[i][0];dt.textContent=P[i][1];cap.classList.remove("on");void cap.offsetWidth;cap.classList.add("on")}
 function up(v){if(v>target)target=v}
 function ok(){try{return typeof cfgLoaded!=="undefined"&&cfgLoaded&&typeof fcfgLoaded!=="undefined"&&fcfgLoaded}catch(e){return false}}
-function leave(){if(leaving)return;leaving=true;de.classList.add("sp-lv");de.classList.remove("sp-on");el.classList.add("out");
+function leave(){if(leaving)return;leaving=true;try{if(spH>200)localStorage.setItem("fsph:"+screen.width+"x"+screen.height,String(Math.round(spH)))}catch(e){}de.classList.add("sp-lv");de.classList.remove("sp-on");el.classList.add("out");
  setTimeout(function(){try{el.remove()}catch(e){}tcs.forEach(function(m,i){if(orig[i]!=null)m.setAttribute("content",orig[i])})},520)}
 function tick(ts){var now=Date.now()-t0,dt0=last?Math.min(100,ts-last):16;last=ts;if(ts-lastH>150){lastH=ts;lat()}
  if(!got.i&&document.readyState!=="loading"){got.i=1;up(30)}
