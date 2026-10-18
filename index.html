@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.7">
+<meta name="app-version" content="1.7.8">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -529,7 +529,10 @@ return{
 <script>
 /* Opening screen. Real progress: page parsed -> signed in -> rates and data loaded -> automatic backup finished (it runs behind this screen, so its pop-up never shows over the app). The ring fills together with the bar. */
 (function(){
-var el=document.getElementById("sp");if(!el)return;var pr=el.querySelector(".sp-probe")||el;
+var el=document.getElementById("sp");if(!el)return;
+/* Live directly under <html>, not <body>: the "text size" setting zooms <body> (body.ts-s / ts-l), which used to shrink this screen and drop the ring when it switched on. */
+if(el.parentNode!==document.documentElement)document.documentElement.appendChild(el);
+var pr=el.querySelector(".sp-probe")||el;
 var de=document.documentElement,t0=Date.now(),seen=false;
 try{seen=sessionStorage.getItem("fsplash")==="1";sessionStorage.setItem("fsplash","1")}catch(e){}
 var MIN=seen?700:1700,MAX=18000,BG="#050508";
