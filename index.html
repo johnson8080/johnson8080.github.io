@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.8">
+<meta name="app-version" content="1.7.11">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2614,6 +2614,52 @@ html.dlock,html.dlock body{overflow:hidden!important;overscroll-behavior:none}
 #abt .abc{margin-top:4px;padding:12px;border:1px solid var(--ln);border-radius:8px;background:color-mix(in srgb,#16a34a 10%,var(--card))}
 #abt .abc p:last-child,#abt .card>p:last-child{margin-bottom:0}
 @media print{#abt{display:none!important}}
+#clc{position:fixed;inset:0;z-index:1100;background:var(--bg);color:var(--tx);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+#clc.on{display:flex}
+#clc .ch{display:flex;align-items:center;gap:10px;padding:12px}
+#clc .cx{flex:0 0 auto;width:38px;height:38px;display:grid;place-items:center;background:var(--card);border:1px solid #16a34a;border-radius:6px;color:var(--tx);cursor:pointer;padding:0}
+#clc .cx svg{width:20px;height:20px}
+#clc .cn{flex:1;min-width:0;font-size:15px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#clc .cqw{padding:0 12px 10px}
+#clc .cq{width:100%;box-sizing:border-box;height:40px;margin:0;padding:0 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit;font-size:14px}
+#clc .cb{flex:1;overflow-y:auto;padding:4px 12px calc(24px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;overscroll-behavior:contain;border-top:1px solid var(--ln)}
+#clc .tg{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+#clc .tl{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:132px;padding:14px;text-align:left;background:var(--card);border:1px solid #16a34a;border-radius:14px;color:var(--tx);font:inherit;cursor:pointer}
+#clc .tl:active{background:color-mix(in srgb,#16a34a 14%,var(--card))}
+#clc .tn{font-size:17px;font-weight:800;letter-spacing:.4px;color:var(--ac)}
+#clc .td{font-size:12.5px;line-height:1.4;color:var(--mut);flex:1}
+#clc .tc{font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:color-mix(in srgb,var(--ac) 14%,var(--bg));color:var(--ac)}
+#clc .ci{font-size:13px;line-height:1.5;color:var(--mut);margin:14px 2px 0;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card)}
+#clc .gi{font-size:12.5px;line-height:1.5;color:var(--mut);margin:12px 2px 0}
+#clc .cs{margin:16px 2px 6px;font-size:11.5px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--mut)}
+#clc .lr{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;padding:11px 12px;margin-bottom:8px;background:var(--card);border:1px solid var(--ln);border-radius:12px;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+#clc .lr:active{border-color:#16a34a}
+#clc .no{flex:0 0 auto;min-width:30px;height:24px;padding:0 5px;box-sizing:border-box;display:grid;place-items:center;border-radius:6px;background:color-mix(in srgb,var(--ac) 16%,var(--bg));color:var(--ac);font-size:11.5px;font-weight:800}
+#clc .lm{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+#clc .rt{font-weight:800;font-size:14px;line-height:1.3}
+#clc .lf{font-size:12.5px;line-height:1.45;color:var(--mut);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal}
+#clc .lf .v,#clc .df .v{color:var(--ac);font-weight:700}
+#clc .chev{flex:0 0 auto;width:7px;height:7px;margin:0 4px 0 0;border-right:2px solid var(--mut);border-top:2px solid var(--mut);transform:rotate(45deg)}
+#clc .dh{display:flex;align-items:center;gap:10px;margin:14px 0 10px}
+#clc .dt{font-size:17px;font-weight:800;line-height:1.3}
+#clc .df{padding:12px 14px;border-radius:10px;background:color-mix(in srgb,var(--ac) 10%,var(--bg));border-left:3px solid var(--ac);font-weight:600;font-size:14.5px;line-height:1.65;white-space:pre-line;overflow-wrap:anywhere}
+#clc .dc{margin-top:14px;padding:12px;border:1px solid #16a34a;border-radius:14px;background:var(--card)}
+#clc .dl,#clc .lb{font-size:10.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:var(--mut);margin-bottom:8px}
+#clc .di{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#clc .ti{display:flex;flex-direction:column;gap:4px;min-width:0}
+#clc .ti.w{grid-column:1/-1}
+#clc .ti span{font-size:12px;color:var(--mut);line-height:1.3}
+#clc .ti input,#clc .ti select{width:100%;box-sizing:border-box;height:42px;margin:0;padding:0 10px;border-radius:10px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:inherit;font-size:15px}
+#clc .dr{margin-top:12px;padding:12px;border-radius:10px;background:var(--bg);text-align:center}
+#clc .ds{font-size:13.5px;color:var(--mut);line-height:1.5;overflow-wrap:anywhere}
+#clc .dn{margin-top:4px;font-size:28px;font-weight:800;color:var(--ac);letter-spacing:.3px}
+#clc .dd{margin-top:14px;font-size:13.5px;line-height:1.55}
+#clc .dd .lb{margin-bottom:4px}
+#clc .dd .v{font-weight:700}
+#clc .cnone{padding:24px 8px;text-align:center;color:var(--mut);font-size:14px}
+#clc .g{color:var(--ok)}
+#clc .r{color:var(--bad)}
+@media print{#clc{display:none!important}}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt">FUEL &amp; TRIPS</div><div id="dli"></div></nav>';d.body.appendChild(dr);
@@ -2627,12 +2673,171 @@ function item(label,icon,src,on){var b=d.createElement("button");b.type="button"
 function fill(){var L=g("dli");L.innerHTML="";
 var st=g("hst");
  if(st)L.appendChild(item("Settings",st.innerHTML,st,st.classList.contains("on")));
+ L.appendChild(item("All Calculations",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',{click:function(){if(window.calcOpen)calcOpen()}},false));
  L.appendChild(item("About FuelTrips",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',{click:aboutOpen},false))}
 function open(){build();fill();btn.setAttribute("aria-expanded","true");d.documentElement.classList.add("dlock");requestAnimationFrame(function(){dr.classList.add("on")})}
 function close(){if(!dr)return;dr.classList.remove("on");d.documentElement.classList.remove("dlock");btn.setAttribute("aria-expanded","false")}
 btn.addEventListener("click",function(){dr&&dr.classList.contains("on")?close():open()});
 d.addEventListener("keydown",function(e){if(e.key==="Escape"){if(ab&&ab.classList.contains("on"))aboutClose();else close()}});
 })();</script>
+<script>(function(){var d=document,g=function(i){return d.getElementById(i)},ov=null,cur="trips";
+function f(s){return s.replace(/\[([^\]]+)\]/g,'<span class="v">$1</span>')}
+function X(t,form,note,ex){return{t:t,f:f(form),n:note?f(note):"",e:ex||""}}
+function S(t,items){return{s:t,r:items}}
+var G=function(s){return'<b class="g">'+s+'</b>'},R=function(s){return'<b class="r">'+s+'</b>'},B=function(s){return'<b>'+s+'</b>'};
+var P={
+trips:{t:"TRIPS",i:"Set in Update Rates: loader rate per tonne, default driver deposit, driver balance held per working day, and the repeat-trip reduction.",
+ h:[
+ S("Cost of a trip",[
+  X("Loader pay","[Tonnes] × [Loader rate per tonne]","If a loader deposit is typed on the trip, the deposit is used in the trip expense instead of this figure.","8.5 t × 100 = "+B("850")),
+  X("Driver deposit (paid that day)","[Deposit typed on the trip]  (default: [Default driver deposit])","Nothing is paid when tonnes is 0. A second or later trip by the same driver on the same day pays no driver deposit.","First trip "+B("200")+" · repeat trip "+B("0")),
+  X("Total trip expense","[Loader pay] + [Driver deposit] + [Other expense] + [Driver advance] + [Payments made on this trip]","This is the figure in the Trip expense column and the TOTAL TRIP EXPENSE line.","850 + 200 + 150 + 100 = "+B("1,300"))
+ ]),
+ S("Driver balance",[
+  X("Balance held (first trip of the day)","([Deposit per day] + [Balance held per day]) − [Driver deposit paid]","The held amount is what the app keeps back from the driver for later payment.","(200 + 800) − 200 = "+B("800")),
+  X("Balance held (repeat trip, same driver, same day)","([Deposit per day] + [Balance held per day]) − [Standard deposit] − [Repeat-trip reduction]","The standard deposit still comes off even though none is paid. The result never goes below 0.","1,000 − 200 − 200 = "+B("600")),
+  X("Driver balance on a trip","[Balance held] − [Driver advance on the trip]","Then advances given separately and salary payments are taken off, oldest trip first (see below).","800 − 100 = "+B("700"))
+ ]),
+ S("Loader balance",[
+  X("Loader balance (only when a loader deposit is typed)","[Tonnes] × [Loader rate] − [Loader deposit]","Loader payments you record are taken off the oldest balance first.","850 − 300 = "+B("550"))
+ ]),
+ S("Order in which payments are applied",[
+  X("Advances and payments","1. [Advance on the trip]  →  2. [Advances given separately]  →  3. [Salary payments]","Each driver's advances and payments are used up against their oldest trips first, so the oldest balances clear first. Any leftover reduces the latest trip.","")
+ ]),
+ S("Trips list",[
+  X("Unpaid column","[Driver balance left] + [Loader balance left]","Shows Paid in green when nothing is left, or Advance when the balance was cleared by an advance only.","")
+ ])
+ ]},
+salary:{t:"SALARY",i:"Unpaid tab, Paid tab, Advance and Priv Staff. Green is paid, red is unpaid.",
+ h:[
+ S("Drivers",[
+  X("Driver unpaid","[Held] − [Advances] − [Payments]","The Paid column also shows the driver deposits, but they are not taken off again because Held already excludes them.","5,400 − 0 − 1,000 = "+R("4,400")),
+  X("Driver paid (Paid tab)","[Driver deposits] + [Salary payments]","","200 + 1,000 = "+G("1,200"))
+ ]),
+ S("Loaders",[
+  X("Loader owed","[Tonnes] × [Loader rate]  (added up over the trips)","Only trips with tonnes or a loader deposit count.","8.5 t × 100 + 9 t × 100 = "+B("1,750")),
+  X("Loader unpaid","[Owed] − [Paid]","Paid includes the loader deposit typed on each trip plus any payments you record. A trip with no loader deposit typed counts as paid in full, so only trips with a deposit can leave a balance.","1,750 − 1,000 = "+R("750"))
+ ]),
+ S("Private staff",[
+  X("Staff owed","[Monthly salary] × [Months since the payroll start month]","","20,000 × 3 = "+B("60,000")),
+  X("Staff unpaid","Sum over each month of  max(0, [Salary] − [Paid that month])","Unpaid carries over month to month. Paying extra in one month does not reduce another month.","Months paid 20,000 / 5,000 / 0 → 0 + 15,000 + 20,000 = "+R("35,000"))
+ ]),
+ S("Totals and filters",[
+  X("Total unpaid","[Driver unpaid] + [Loader unpaid] + [Staff unpaid]","","")
+  ,X("Total paid","[Driver paid] + [Loader paid] + [Staff paid]","","")
+  ,X("What the Period filter includes","Month or Year: everything up to the end of it. Date or Period: only that window","Unpaid balances build up over time, so a month or year shows what is owed up to that point. A date or period shows only entries inside it. On the Paid tab every option shows only payments inside it.","")
+  ,X("Unpaid alert","Balance &gt; [Alert amount]  →  ⚠","Set the alert amount in Settings. Balances above it get the mark and appear in the banner on the home screen.","")
+ ])
+ ]},
+fuel:{t:"FUEL",i:"Set in Fuel prices: selling price per litre and actual price (cost) per litre.",
+ h:[
+ S("Per fuel entry",[
+  X("Sales","[Litres] × [Selling price per litre]","","60 × 200 = "+B("12,000")),
+  X("Cost","[Litres] × [Actual price per litre]","","60 × 180 = "+B("10,800")),
+  X("Profit","[Litres] × ([Selling price] − [Actual price])","Same as Sales − Cost.","60 × (200 − 180) = "+G("1,200"))
+ ]),
+ S("Margin and totals",[
+  X("Profit margin","([Selling price] − [Actual price]) ÷ [Selling price] × 100","If it is below the warning level you set in Settings, the entry shows a warning.","(200 − 180) ÷ 200 × 100 = "+B("10%")),
+  X("Totals (by week, vehicle, month, report)","Sum of [Litres], [Sales], [Cost] and [Profit] for the entries in the period","","")
+ ])
+ ]},
+seed:{t:"SEED.CN",i:"Set in Update Rates under SEED.CN: constant, deposit, held amount, repeat reduction, flat rate and minimum tonne.",
+ h:[
+ S("Vehicle",[
+  X("Vehicle pay","[Constant] × [Tonnes] × [Milage]","Counted only after the milage is entered on the entry.","5 × 8 × 120 = "+B("4,800")),
+  X("Vehicle unpaid","[Vehicle pay] − [Vehicle payments]","","4,800 − 1,000 = "+R("3,800"))
+ ]),
+ S("Driver",[
+  X("Driver deposit","First trip of the day: [Deposit]  ·  later trips the same day: 0","Counted per driver per date.","First "+B("200")+" · repeat "+B("0")),
+  X("Driver held amount","First trip: [Held amount]  ·  repeat trip: [Held amount] − [Repeat reduction]","The result never goes below 0.","800 · repeat 800 − 200 = "+B("600")),
+  X("Driver paid","[Driver deposit] + [Driver payments]","","200 + 0 = "+G("200")),
+  X("Driver unpaid","[Held amount] − [Driver payments]","","800 − 200 = "+R("600"))
+ ]),
+ S("Loader",[
+  X("Loader owed","[Tonnes] ≥ [Minimum tonne]:  [Flat rate]\n[Tonnes] &lt; [Minimum tonne]:  [Flat rate] ÷ [Minimum tonne] × [Tonnes]","Under the minimum, the flat rate is shared out by the tonnes carried. The rate is saved on each entry, so later rate changes do not change old entries.","Flat 700, minimum 7 t:  8 t → "+B("700")+" · 5 t → 700 ÷ 7 × 5 = "+B("500")),
+  X("Loader unpaid","[Loader owed] − ([Loader deposit] + [Loader payments])","","700 − 300 = "+R("400"))
+ ]),
+ S("Entry totals",[
+  X("Trip expense","[Loader deposit] + [Driver deposit] + [Payments marked paid on the entry]","","300 + 200 + 0 = "+B("500")),
+  X("Unpaid column on the entries list","[Driver unpaid] + [Vehicle unpaid]","Loader balances are on the Loader pay page.","600 + 3,800 = "+R("4,400")),
+  X("Rounding","Amounts are rounded to 2 decimals","","")
+ ])
+ ]}
+};
+var KEYS=["trips","salary","fuel","seed"],PRE={trips:"T",salary:"S",fuel:"F",seed:"C"},
+ TILE={trips:"Loads, deposits and driver balances",salary:"Unpaid, paid and staff salaries",fuel:"Sales, cost and profit",seed:"Vehicle, driver and loader pay"};
+function N(x){var v=parseFloat(String(x).replace(/,/g,""));return isFinite(v)?v:0}
+function F(n){return(Math.round(n*100)/100).toLocaleString("en-US",{maximumFractionDigits:2})}
+var add=function(v){var r=0;v.forEach(function(x){r+=x});return{r:r,s:v.map(F).join(" + ")+" = "+F(r)}};
+var sub=function(v){var r=v[0];for(var i=1;i<v.length;i++)r-=v[i];return{r:r,s:v.map(F).join(" − ")+" = "+F(r)}};
+var mul=function(v){var r=1;v.forEach(function(x){r*=x});return{r:r,s:v.map(F).join(" × ")+" = "+F(r)}};
+var CALC={
+ T1:{i:[["Tonnes",8.5],["Loader rate per tonne",100]],fn:mul},
+ T2:{i:[["Trip",0,"sel",["First trip of the day","Repeat trip, same day"]],["Tonnes",8.5],["Deposit typed on the trip",200]],fn:function(v){var r=v[1]>0&&v[0]===0?v[2]:0;return{r:r,s:(v[1]>0?(v[0]===0?"First trip: ":"Repeat trip: "):"No tonnes: ")+F(r)}}},
+ T3:{i:[["Loader pay",850],["Driver deposit",200],["Other expense",150],["Driver advance",100],["Payments made on this trip",0]],fn:add},
+ T4:{i:[["Deposit per day",200],["Balance held per day",800],["Driver deposit paid",200]],fn:function(v){var r=Math.max(0,v[0]+v[1]-v[2]);return{r:r,s:"("+F(v[0])+" + "+F(v[1])+") − "+F(v[2])+" = "+F(r)}}},
+ T5:{i:[["Deposit per day",200],["Balance held per day",800],["Standard deposit",200],["Repeat-trip reduction",200]],fn:function(v){var r=Math.max(0,v[0]+v[1]-v[2]-v[3]);return{r:r,s:"("+F(v[0])+" + "+F(v[1])+") − "+F(v[2])+" − "+F(v[3])+" = "+F(r)}}},
+ T6:{i:[["Balance held",800],["Driver advance on the trip",100]],fn:sub},
+ T7:{i:[["Tonnes",8.5],["Loader rate",100],["Loader deposit",300]],fn:function(v){var r=v[0]*v[1]-v[2];return{r:r,s:F(v[0])+" × "+F(v[1])+" − "+F(v[2])+" = "+F(r)}}},
+ S1:{i:[["Held",5400],["Advances",0],["Payments",1000]],fn:sub},
+ S2:{i:[["Driver deposits",200],["Salary payments",1000]],fn:add},
+ S3:{i:[["Tonnes (all trips)",17.5],["Loader rate",100]],fn:mul},
+ S4:{i:[["Owed",1750],["Paid",1000]],fn:sub},
+ S5:{i:[["Monthly salary",20000],["Months since payroll start",3]],fn:mul},
+ S6:{i:[["Monthly salary",20000],["Paid in each month (separate with commas)","20000, 5000, 0","text"]],fn:function(v){var ps=String(v[1]).split(/[,\s]+/).filter(Boolean).map(N),parts=ps.map(function(p){return Math.max(0,v[0]-p)}),r=0;parts.forEach(function(x){r+=x});return{r:r,s:parts.length?parts.map(F).join(" + ")+" = "+F(r):"Add the amounts paid in each month"}}},
+ S7:{i:[["Driver unpaid",4400],["Loader unpaid",750],["Staff unpaid",35000]],fn:add},
+ S8:{i:[["Driver paid",1200],["Loader paid",1000],["Staff paid",25000]],fn:add},
+ F1:{i:[["Litres",60],["Selling price per litre",200]],fn:mul},
+ F2:{i:[["Litres",60],["Actual price per litre",180]],fn:mul},
+ F3:{i:[["Litres",60],["Selling price",200],["Actual price",180]],fn:function(v){var r=v[0]*(v[1]-v[2]);return{r:r,s:F(v[0])+" × ("+F(v[1])+" − "+F(v[2])+") = "+F(r)}}},
+ F4:{i:[["Selling price",200],["Actual price",180]],fn:function(v){var r=v[0]>0?(v[0]-v[1])/v[0]*100:0;return{r:r,u:"%",s:"("+F(v[0])+" − "+F(v[1])+") ÷ "+F(v[0])+" × 100 = "+F(r)+"%"}}},
+ C1:{i:[["Constant",5],["Tonnes",8],["Milage",120]],fn:mul},
+ C2:{i:[["Vehicle pay",4800],["Vehicle payments",1000]],fn:sub},
+ C3:{i:[["Trip",0,"sel",["First trip of the day","Later trip, same day"]],["Deposit",200]],fn:function(v){var r=v[0]===0?v[1]:0;return{r:r,s:(v[0]===0?"First trip: ":"Later trip: ")+F(r)}}},
+ C4:{i:[["Trip",0,"sel",["First trip of the day","Repeat trip, same day"]],["Held amount",800],["Repeat reduction",200]],fn:function(v){var r=v[0]===0?v[1]:Math.max(0,v[1]-v[2]);return{r:r,s:v[0]===0?F(v[1])+" = "+F(r):F(v[1])+" − "+F(v[2])+" = "+F(r)}}},
+ C5:{i:[["Driver deposit",200],["Driver payments",0]],fn:add},
+ C6:{i:[["Held amount",800],["Driver payments",200]],fn:sub},
+ C7:{i:[["Tonnes",8],["Flat rate",700],["Minimum tonne",7]],fn:function(v){var t=v[0],f=v[1],m=v[2],r;if(m>0&&t<m){r=f/m*t;r=Math.round(r*100)/100;return{r:r,s:F(f)+" ÷ "+F(m)+" × "+F(t)+" = "+F(r)}}return{r:f,s:F(t)+" t is at least "+F(m)+" t, so the flat rate: "+F(f)}}},
+ C8:{i:[["Loader owed",700],["Loader deposit",300],["Loader payments",0]],fn:sub},
+ C9:{i:[["Loader deposit",300],["Driver deposit",200],["Payments marked paid",0]],fn:add},
+ C10:{i:[["Driver unpaid",600],["Vehicle unpaid",3800]],fn:add}
+};
+var ALL=null,stack=[{v:"home"}],cbEl=null;
+function idx(){if(ALL)return;ALL=[];KEYS.forEach(function(k){var n=0;P[k].h.forEach(function(sc){sc.r.forEach(function(x){n++;ALL.push({id:PRE[k]+n,k:k,sc:sc.s,t:x.t,f:x.f,n:x.n,e:x.e})})})})}
+function byId(id){for(var i=0;i<ALL.length;i++)if(ALL[i].id===id)return ALL[i]}
+function row(x){return'<button type="button" class="lr" data-id="'+x.id+'"><span class="no">'+x.id+'</span><span class="lm"><span class="rt">'+x.t+'</span><span class="lf">'+x.f+'</span></span><i class="chev"></i></button>'}
+function tiles(){return'<div class="tg">'+KEYS.map(function(k){var n=ALL.filter(function(x){return x.k===k}).length;return'<button type="button" class="tl" data-k="'+k+'"><span class="tn">'+P[k].t+'</span><span class="td">'+TILE[k]+'</span><span class="tc">'+n+' formulas</span></button>'}).join("")+'</div><div class="ci">Tap a group to see its formulas. Every formula has a place to try your own numbers. Green is paid, red is unpaid.</div>'}
+function results(q){var L=ALL.filter(function(x){return(x.t+" "+x.f+" "+x.n).replace(/<[^>]+>/g,"").toLowerCase().indexOf(q)>=0});return L.length?'<div class="cs">'+L.length+(L.length===1?" match":" matches")+'</div>'+L.map(row).join(""):'<div class="cnone">No formula matches your search.</div>'}
+function secView(k){var h='<div class="gi">'+f(P[k].i)+'</div>',sc=null;ALL.filter(function(x){return x.k===k}).forEach(function(x){if(x.sc!==sc){sc=x.sc;h+='<div class="cs">'+sc+'</div>'}h+=row(x)});return h}
+function detView(x){var c=CALC[x.id],h='<div class="dh"><span class="no">'+x.id+'</span><span class="dt">'+x.t+'</span></div><div class="df">'+x.f+'</div>';
+ if(c){h+='<div class="dc"><div class="dl">Try it with your numbers</div><div class="di">'+c.i.map(function(a,j){var inp=a[2]==="sel"?'<select data-j="'+j+'">'+a[3].map(function(o,q){return'<option value="'+q+'"'+(q===a[1]?" selected":"")+'>'+o+'</option>'}).join("")+'</select>':'<input data-j="'+j+'" type="text" inputmode="'+(a[2]==="text"?"text":"decimal")+'" value="'+a[1]+'" autocomplete="off">';return'<label class="ti'+(a[2]==="text"?" w":"")+'"><span>'+a[0]+'</span>'+inp+'</label>'}).join("")+'</div><div class="dr"><div class="ds" id="cs"></div><div class="dn" id="cr"></div></div></div>'}
+ if(x.n)h+='<div class="dd"><div class="lb">When it applies</div>'+x.n+'</div>';
+ if(x.e)h+='<div class="dd"><div class="lb">Example</div>'+x.e+'</div>';
+ return h}
+function bindCalc(x){var c=CALC[x.id];if(!c)return;var box=cbEl;function run(){var v=[];[].forEach.call(box.querySelectorAll("[data-j]"),function(el){var j=+el.dataset.j,a=c.i[j];v[j]=a[2]==="sel"?+el.value:a[2]==="text"?el.value:N(el.value)});var o=c.fn(v);g("cs").textContent=o.s;g("cr").textContent=F(o.r)+(o.u||"")}
+ box.addEventListener("input",run);box.addEventListener("change",run);run()}
+function view(){idx();var s=stack[stack.length-1],ttl=ov.querySelector(".cn"),qw=ov.querySelector(".cqw"),q=ov.querySelector(".cq").value.trim().toLowerCase();
+ qw.style.display=s.v==="home"?"":"none";
+ var h="",nb=cbEl.cloneNode(false);cbEl.parentNode.replaceChild(nb,cbEl);cbEl=nb;
+ if(s.v==="home"){ttl.textContent="All calculations";h=q?results(q):tiles()}
+ else if(s.v==="sec"){ttl.textContent=P[s.k].t;h=secView(s.k)}
+ else{var x=byId(s.id);ttl.textContent=x.t;h=detView(x)}
+ cbEl.innerHTML=h;cbEl.scrollTop=0;
+ cbEl.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;
+  if(t.dataset.k){stack.push({v:"sec",k:t.dataset.k});view()}
+  else if(t.dataset.id){stack.push({v:"det",id:t.dataset.id});view()}});
+ if(s.v==="det")bindCalc(byId(s.id))}
+function back(){if(stack.length>1){stack.pop();view()}else close()}
+function build(){ov=d.createElement("div");ov.id="clc";ov.setAttribute("role","dialog");ov.setAttribute("aria-label","All calculations");
+ ov.innerHTML='<div class="ch"><button type="button" class="cx" id="clx" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="cn">All calculations</div></div><div class="cqw"><input type="search" class="cq" placeholder="Search a formula…" autocomplete="off"></div><div class="cb"></div>';
+ d.body.appendChild(ov);cbEl=ov.querySelector(".cb");g("clx").onclick=back;
+ ov.querySelector(".cq").addEventListener("input",function(){stack=[{v:"home"}];view()})}
+function open(){if(!ov)build();ov.querySelector(".cq").value="";stack=[{v:"home"}];ov.classList.add("on");d.documentElement.classList.add("dlock");view()}
+function close(){if(!ov)return;ov.classList.remove("on");d.documentElement.classList.remove("dlock")}
+d.addEventListener("keydown",function(e){if(e.key==="Escape"&&ov&&ov.classList.contains("on"))close()});
+window.calcOpen=open;window.calcClose=close;
+})();
+</script>
 <script>(function(){
 var st=document.createElement("style");
 st.textContent="tr.smt>td{background-color:color-mix(in srgb,var(--mc) var(--tint,11%),var(--card))!important;border-radius:0!important}tr.smt>td:first-child{border-top-left-radius:6px!important;border-bottom-left-radius:6px!important}tr.smt>td:last-child{border-top-right-radius:6px!important;border-bottom-right-radius:6px!important}";
