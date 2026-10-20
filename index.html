@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.19">
+<meta name="app-version" content="1.7.22">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -443,7 +443,7 @@ firebase.initializeApp(CFG);var auth=firebase.auth(),fs=firebase.firestore();fs.
 var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){off();r(x)})});if(!u&&window.splash)splash.done();if(!u)u=await login(auth);
 var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#fabS,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs)}
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
-(function addSO(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){addSO(n+1)},300);return}if(document.getElementById("sgnout"))return;var b=document.createElement("button");b.id="sgnout";b.className="btn";b.textContent="Sign out ("+who+")";window.fbSignOut=function(){return(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};b.onclick=function(){window.fbSignOut()};s.appendChild(b)})(0);
+(function addSO(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){addSO(n+1)},300);return}if(document.getElementById("sgnout"))return;var b=document.createElement("button");b.id="sgnout";b.className="btn";b.textContent="Sign out ("+who+")";window.fbSignOut=function(){return(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};b.onclick=function(){if(window.soConfirm)window.soConfirm();else window.fbSignOut()};s.appendChild(b)})(0);
 var lastOk=0,gOpen=null,hold=false;
 var PW_CONFIRM=(function(){try{return localStorage.getItem("pwconfirm_v1")==="1"}catch(e){return false}})(); /* ON = ask for the password again before edits and deletes. Default OFF. */
 window.getPwConfirm=function(){return PW_CONFIRM};window.setPwConfirm=function(v){PW_CONFIRM=!!v;try{localStorage.setItem("pwconfirm_v1",v?"1":"0")}catch(e){}};
@@ -474,10 +474,10 @@ if(isOwn){var pb=document.getElementById("onl"),pp=null,PL=[];
 var ago=function(t){if(!t)return"not seen yet";var m=Math.floor((Date.now()-t)/60000);if(m<1)return"just now";if(m<60)return m+" min ago";var h=Math.floor(m/60);if(h<24)return h+" h ago";return new Date(t).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})};
 var draw=function(){if(!pb)return;var now=Date.now(),L=PL.slice().sort(function(a,b){return b.t-a.t}),on=L.filter(function(x){return x.t&&!x.off&&now-x.t<150000});
 pb.classList.add("on");pb.querySelector("b").textContent=on.length;pb.querySelector(".od").style.background=on.length?"#22c55e":"#6b7280";
-if(pp&&pp.style.display!=="none"){pp.textContent="";var hd=document.createElement("div");hd.textContent="Other accounts";hd.style.cssText="font-weight:800;margin-bottom:6px";pp.appendChild(hd);var me2=document.createElement("div");me2.textContent="This device: v"+APPV;me2.style.cssText="font-size:12px;color:var(--mut);margin:-2px 0 6px";pp.appendChild(me2);
+if(pp&&pp.style.display!=="none"){pp.textContent="";var hd=document.createElement("div");hd.textContent="> ACCOUNTS";hd.className="onh";hd.style.cssText="font-weight:800;margin-bottom:6px";pp.appendChild(hd);var me2=document.createElement("div");me2.textContent="> this_device  v"+APPV;me2.style.cssText="font-size:12px;color:var(--mut);margin:-2px 0 6px";pp.appendChild(me2);
 [RERR?"Cannot read other accounts ("+RERR+"). Check the Firestore rules for presence.":"",PERR?"This device could not save its own presence ("+PERR+"). Check the Firestore rules.":""].forEach(function(t){if(!t)return;var w=document.createElement("div");w.textContent=t;w.style.cssText="color:#f87171;font-size:12.5px;margin:4px 0";pp.appendChild(w)});
 if(!L.length&&!RERR){var em=document.createElement("div");em.textContent="No other account is listed yet.";em.style.opacity=".7";pp.appendChild(em)}
-L.forEach(function(x){var r=document.createElement("div");r.style.cssText="display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--ln)";var a=document.createElement("span");a.appendChild(document.createTextNode(x.name));var vs=document.createElement("div");vs.style.cssText="font-size:11.5px;font-weight:600;margin-top:1px;color:"+(!x.v?"#f59e0b":x.v!==APPV?"#f59e0b":"var(--mut)");vs.textContent=!x.v?"Version unknown (older app)":"v"+x.v+(x.v!==APPV?" (differs from yours)":"");a.appendChild(vs);var st=document.createElement("span"),o=x.t&&!x.off&&now-x.t<150000;st.textContent=o?"Online":"Last seen "+ago(x.t);st.style.cssText="font-weight:700;color:"+(o?"#22c55e":"var(--mut)");r.appendChild(a);r.appendChild(st);pp.appendChild(r)})}};
+L.forEach(function(x){var r=document.createElement("div");r.style.cssText="display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--ln);white-space:nowrap";var a=document.createElement("span");a.textContent="> "+x.name;a.style.cssText="flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;font-weight:600";var vs=document.createElement("span");vs.textContent=x.v?"v"+x.v:"v?";vs.style.cssText="flex:0 0 auto;font-size:11.5px;font-weight:700;color:"+(x.v&&x.v===APPV?"var(--mut)":"#f59e0b");if(!x.v)vs.title="Older app: version unknown";else if(x.v!==APPV)vs.title="Differs from yours";var st=document.createElement("span"),o=x.t&&!x.off&&now-x.t<150000;st.textContent=o?"Online":ago(x.t);st.style.cssText="flex:0 0 auto;font-weight:700;color:"+(o?"#00ff7b":"var(--mut)");r.appendChild(a);r.appendChild(vs);r.appendChild(st);pp.appendChild(r)})}};
 if(pb){pp=document.createElement("div");pp.id="onp";pp.style.display="none";document.body.appendChild(pp);
 pb.onclick=function(ev){ev.stopPropagation();pp.style.display=pp.style.display==="none"?"block":"none";draw()};
 document.addEventListener("click",function(ev){if(pp.style.display!=="none"&&!pp.contains(ev.target))pp.style.display="none"});
@@ -2242,7 +2242,16 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 #ptr .pd i{display:block;width:4px;height:4px;border-radius:50%!important;background:var(--ac);animation:ptd 1.2s ease-in-out infinite}
 #ptr .pd i:nth-child(1){animation-delay:0s!important}#ptr .pd i:nth-child(2){animation-delay:.25s!important}#ptr .pd i:nth-child(3){animation-delay:.5s!important}
 @keyframes ptd{0%{opacity:.15;transform:scale(.6)}20%{opacity:1;transform:scale(1.15)}45%{opacity:.15;transform:scale(.6)}100%{opacity:.15;transform:scale(.6)}}@media(prefers-reduced-motion:reduce){#ptr .pd i{animation:ptd 1.2s ease-in-out infinite!important}#ptr .pa{transition:transform .18s ease!important}}.dr2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dr2>div{min-width:0}.dr2 input,.dr2 select{width:100%!important;min-width:0;box-sizing:border-box}
-.hd .onb{display:none;height:36px;box-sizing:border-box;min-width:44px;padding:0 10px;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ln);border-radius:6px;background:var(--card);color:var(--tx);font-size:11px;font-weight:700;line-height:1;cursor:pointer}.hd .onb.on{display:inline-flex}.onb .od{width:8px;height:8px;border-radius:50%;background:#6b7280;flex:0 0 auto}#onp{position:fixed;z-index:9990;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);width:min(320px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card);color:var(--tx);font-size:13px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.hd .onb{display:none;height:36px;box-sizing:border-box;min-width:44px;padding:0 10px;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ln);border-radius:6px;background:var(--card);color:var(--tx);font-size:11px;font-weight:700;line-height:1;cursor:pointer}.hd .onb.on{display:inline-flex}.onb .od{width:8px;height:8px;border-radius:50%;background:#6b7280;flex:0 0 auto}#onp{position:fixed;z-index:9990;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);width:min(360px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card);color:var(--tx);font-size:12.5px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+
+#onp{--tx:#b6ffb6;--mut:#4fa86a;--ln:rgba(0,255,110,.22);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;background:#040906;color:#b6ffb6;border:1px solid #00ff7b;border-radius:6px;overflow:hidden;text-shadow:0 0 6px rgba(0,255,123,.45);box-shadow:0 0 16px rgba(0,255,123,.35),inset 0 0 22px rgba(0,255,123,.08)}
+#onp>*{position:relative;z-index:1}
+#onp::before{content:"";position:absolute;left:0;right:0;top:0;height:100%;z-index:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,123,.06) 0 1px,transparent 1px 3px)}
+#onp::after{content:"";position:absolute;left:0;right:0;top:-30%;height:30%;z-index:0;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(0,255,123,.14),transparent);animation:onscan 3.2s linear infinite}
+#onp .onh{color:#00ff7b;letter-spacing:2px;font-size:12.5px}
+#onp .onh::after{content:"\2588";margin-left:5px;animation:onbl 1s steps(2) infinite}
+@keyframes onscan{to{top:100%}}@keyframes onbl{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){#onp::after,#onp .onh::after{animation:none}}
 </style>
 <script>(function(){
 var TH=56,MAXP=84,HOLD=52,pull=0,sx=0,sy=0,armed=false,on=false,busy=false,el=document.createElement("div"),lb;
@@ -2614,7 +2623,7 @@ html.dlock,html.dlock body{overflow:hidden!important;overscroll-behavior:none}
 #drw.on .dsh{opacity:1}
 #drw .dpn{position:absolute;top:0;bottom:0;left:0;width:min(78vw,300px);background:var(--bg);color:var(--tx);border-right:1px solid var(--ln);transform:translateX(-100%);transition:transform .28s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:calc(14px + env(safe-area-inset-top,0px)) 12px calc(14px + env(safe-area-inset-bottom,0px));overflow-y:auto;box-shadow:6px 0 24px rgba(0,0,0,.35)}
 #drw.on .dpn{transform:none}
-#drw .dtt{font-size:13.5px;font-weight:800;padding:4px 8px 12px;border-bottom:1px solid var(--ln);margin-bottom:8px;letter-spacing:.2px}
+#drw .dtt{display:flex;align-items:baseline;justify-content:space-between;gap:8px;font-size:13.5px;font-weight:800;padding:4px 8px 12px;border-bottom:1px solid var(--ln);margin-bottom:8px;letter-spacing:.2px}
 #drw .dit{display:flex;align-items:center;gap:14px;width:100%;background:none;border:1px solid transparent;color:var(--tx);font:inherit;font-size:13px;font-weight:700;text-align:left;padding:12px 10px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:.2px}
 #drw .dit:active{background:var(--card)}
 #drw .dit{background:var(--card);border:1px solid #16a34a;border-radius:6px;margin-bottom:8px}
@@ -2723,10 +2732,13 @@ body:has(#stg:not(.hide)) .hd>:not(#toast){display:none!important}
 #drw .dpl{display:flex;justify-content:space-between;gap:6px;padding:2px 4px}
 #drw .dpd{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:0 0 0 1px var(--ln)}
 #drw .dpd.on{border-color:var(--tx);box-shadow:0 0 0 2px #16a34a}
+
+#drw .dtv{font-size:11px;font-weight:700;color:var(--mut);letter-spacing:.3px}
+#sgnout{display:block;width:100%;height:42px;margin-top:14px;border-radius:8px;border:1px solid color-mix(in srgb,var(--bad) 55%,var(--ln));background:color-mix(in srgb,var(--bad) 8%,var(--card));color:var(--bad);font:inherit;font-size:14px;font-weight:800;cursor:pointer;padding:0;box-shadow:none}#sgnout:active{transform:scale(.97)}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
-function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt">FUEL &amp; TRIPS</div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
- dr.querySelector(".dsh").addEventListener("click",close);dr.querySelector(".dsh").addEventListener("touchmove",function(e){e.preventDefault()},{passive:false});dr.addEventListener("touchmove",function(e){if(!e.target.closest(".dpn"))e.preventDefault()},{passive:false})}
+function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt"><span>FUEL &amp; TRIPS</span><small class="dtv"></small></div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
+ var vm0=d.querySelector('meta[name="app-version"]');dr.querySelector(".dtv").textContent=vm0&&vm0.content?"v"+vm0.content:"";dr.querySelector(".dsh").addEventListener("click",close);dr.querySelector(".dsh").addEventListener("touchmove",function(e){e.preventDefault()},{passive:false});dr.addEventListener("touchmove",function(e){if(!e.target.closest(".dpn"))e.preventDefault()},{passive:false})}
 var ab=null,ABT='<div class="abh"><button type="button" class="abx" id="abx" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="abn">About FUEL &amp; TRIPS</div></div><div class="abb"><div class="card"><p><b>FUEL &amp; TRIPS</b> is a mobile-first fleet management app for sugarcane, fuel and seedcane haulage operations. It replaces paper records with one place to log, pay and report on daily work.</p><p><b class="k">TRIPS:</b> records each load by vehicle, driver and tonnes, with deposits and expenses, and calculates loader and driver pay.</p><p><b class="k">FUEL:</b> tracks litres issued, selling and cost prices, and net profit per vehicle.</p><p><b class="k">SALARY and advances:</b> keeps driver balances, advances and part-payments, and shows what is still unpaid, including private staff salaries.</p><p><b class="k">SEED.CN (seedcane):</b> has its own entries, rates, and driver, loader and vehicle pay pages.<br><b class="k">Winch:</b> a dedicated report for the winch vehicle.</p><p><b class="k">REPORTS and history:</b> period filters (date, month, year or custom range), search by vehicle, and PDF and CSV export.</p><p><b class="k">Safeguards:</b> month locking, deleted-record history, password confirmation for changes, and warnings for unusual entries.</p><p><b class="k">Data protection:</b> full JSON backup, scheduled cloud and device snapshots, and restore.<br>It works both online and offline, installs on a phone like a normal app, and supports light and dark themes.</p><div class="abc"><p>If you would like a similar project or in need of a specific software/mobile application tailored to your needs, I have left my contacts at the bottom of the settings page. Do not hesitate to contact me.</p></div></div></div>';
 function aboutOpen(){if(!ab){ab=d.createElement("div");ab.id="abt";ab.setAttribute("role","dialog");ab.setAttribute("aria-label","About FUEL & TRIPS");ab.innerHTML=ABT;d.body.appendChild(ab);g("abx").onclick=aboutClose}
  ab.classList.add("on");d.documentElement.classList.add("dlock");ab.querySelector(".abb").scrollTop=0;if(window.ovOpen)ovOpen("abt",{close:aboutHide})}
@@ -2771,9 +2783,9 @@ function fillX(){var X=g("dxt");if(!X)return;X.innerHTML="";
  var r2=el("div","dfr");r2.appendChild(el("span","dfk","Last backup"));r2.appendChild(el("span","",ago(lastBk())));F.appendChild(r2);
  var r3=el("div","dfb"),bb=el("button","dfx","Back up now");bb.type="button";bb.onclick=function(){after(function(){var j=g("bjson");if(j){j.click();try{localStorage.setItem("fleetDrwBk",String(Date.now()))}catch(x){}try{toast("Backup downloaded")}catch(x){}}})};
  var nw=el("button","dfx","What's new");nw.type="button";nw.onclick=function(){after(function(){if(window.showWhatsNew)showWhatsNew()})};r3.appendChild(bb);r3.appendChild(nw);F.appendChild(r3);
- var vm=q('meta[name="app-version"]');F.appendChild(el("div","dfv","Version "+(vm?vm.content:"")));
+ 
  if(window.fbSignOut){var so=el("button","dso","Sign out ("+(window.me||"")+")");so.type="button";so.onclick=function(){after(soAsk)};F.appendChild(so)}}
-function soAsk(){var m=g("modal"),b=g("mbody");if(!m||!b){window.fbSignOut();return}
+window.soConfirm=soAsk;function soAsk(){var m=g("modal"),b=g("mbody");if(!m||!b){window.fbSignOut();return}
  b.innerHTML='<b style="font-size:18px">Sign out?</b><div class="mut" style="margin-top:8px">You will need your email and password to sign in again.'+(window.NETREAL===false?' <b>You are offline, so you will not be able to sign back in until you are online.</b>':"")+'</div><div class="b2"><button class="pr" id="soY">Sign out</button><button id="soN">Cancel</button></div>';
  m.classList.remove("hide");g("soN").onclick=function(){m.classList.add("hide")};g("soY").onclick=function(){g("soY").disabled=true;g("soY").textContent="Signing out\u2026";window.fbSignOut()}}
 function open(){window.drwFrom=false;build();fill();fillX();btn.setAttribute("aria-expanded","true");d.documentElement.classList.add("dlock");requestAnimationFrame(function(){dr.classList.add("on")});if(window.ovOpen)ovOpen("drw",{close:hide})}
@@ -3540,6 +3552,16 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.7.22",title:"Terminal-style status card",items:[
+  {t:"Hacker look",d:"The online status card now has a green terminal style with a scanning light."}
+ ]},
+ {v:"1.7.21",title:"Sign out check",items:[
+  {t:"Confirm before sign out",d:"Signing out from Settings now asks first, like the side menu."}
+ ]},
+ {v:"1.7.20",title:"Side menu tidy-up",items:[
+  {t:"Version at the top",d:"The app version now sits next to the app name at the top of the side menu."},
+  {t:"Sign out button",d:"The Sign out button in Settings now matches the one in the side menu."}
+ ]},
  {v:"1.7.19",title:"Menu fixes and sign out",items:[
   {t:"Sign out in the side menu",d:"A Sign out button now sits at the bottom of the side menu."},
   {t:"View-only accounts",d:"Quick add and the Add trip / Add fuel shortcuts no longer show for view-only accounts."}
