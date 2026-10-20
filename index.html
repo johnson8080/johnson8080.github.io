@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.23">
+<meta name="app-version" content="1.7.25">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -441,7 +441,7 @@ window.fbConnect=async function(){
 if(typeof firebase==="undefined")throw new Error("Firebase not loaded");
 firebase.initializeApp(CFG);var auth=firebase.auth(),fs=firebase.firestore();fs.settings({ignoreUndefinedProperties:true});try{await fs.enablePersistence({synchronizeTabs:true})}catch(e){window.offlineSaveOff=(e&&e.code)||"error";setTimeout(function(){try{if(document.getElementById("offwarn"))return;var w=document.createElement("div");w.id="offwarn";w.style.cssText="position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99999;background:#b3261e;color:#fff;padding:10px 38px 10px 12px;border-radius:10px;font:600 13px/1.35 system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.35)";w.textContent="Offline saving is not available in this browser. Changes made without internet may be lost if you close the app. Stay online until saves finish.";var x=document.createElement("button");x.textContent="\u00d7";x.setAttribute("aria-label","Close");x.style.cssText="position:absolute;right:6px;top:4px;background:none;border:0;color:#fff;font-size:22px;line-height:1;padding:2px 8px";x.onclick=function(){w.remove()};w.appendChild(x);document.body.appendChild(w)}catch(z){}},1500)}
 var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){off();r(x)})});if(!u&&window.splash)splash.done();if(!u)u=await login(auth);
-var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#fabS,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs);document.documentElement.classList.add("ro");(function lk(n){var s=document.getElementById("set");if(!s){if(n<60)setTimeout(function(){lk(n+1)},300);return}function go(){[].forEach.call(s.querySelectorAll("input,select,textarea"),function(e){if(!e.disabled)e.disabled=true})}go();new MutationObserver(go).observe(s,{childList:true,subtree:true})})(0)}
+var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#fabS,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs);document.documentElement.classList.add("ro");(function lk(n){var s=document.getElementById("set");if(!s){if(n<60)setTimeout(function(){lk(n+1)},300);return}function go(){[].forEach.call(s.querySelectorAll("input,select,textarea"),function(e){if(!e.disabled)e.disabled=true})}go();new MutationObserver(go).observe(s,{childList:true,subtree:true})})(0);(function sl(n){var ids=["advt","pvadd","unp","pvt","pdt","psl","seed","mbody"],els=ids.map(function(i){return document.getElementById(i)});if(els.some(function(e){return!e})){if(n<60)setTimeout(function(){sl(n+1)},300);return}var SEL=["#advt input","#advt select","#advt button","#pvadd input","#pvadd select","#pvadd button","#unp .mp","#unp .undo","#pvt .mp","#pvt .undo","#pdt .mp","#pdt .undo","#psl .mp","#psl .undo","#mbody .mp","#mbody .undo","#seed .mp","#seed .undo","#sdform input","#sdform select","#sdform button:not(#sdBack)","#mbody #mMil","#mbody #mMS"].join(",");function go(){[].forEach.call(document.querySelectorAll(SEL),function(e){if(!e.disabled)e.disabled=true})}go();els.forEach(function(e){new MutationObserver(go).observe(e,{childList:true,subtree:true})})})(0)}
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
 (function addSO(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){addSO(n+1)},300);return}if(document.getElementById("sgnout"))return;var b=document.createElement("button");b.id="sgnout";b.className="btn";b.textContent="Sign out ("+who+")";window.fbSignOut=function(){return(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};b.onclick=function(){if(window.soConfirm)window.soConfirm();else window.fbSignOut()};s.appendChild(b)})(0);
 var lastOk=0,gOpen=null,hold=false;
@@ -2738,6 +2738,12 @@ body:has(#stg:not(.hide)) .hd>:not(#toast){display:none!important}
 
 html.ro #set input:disabled,html.ro #set select:disabled{opacity:.6;background:color-mix(in srgb,var(--mut) 14%,var(--card));cursor:not-allowed;-webkit-text-fill-color:currentColor}
 html.ro #set .btn,html.ro #set .x,html.ro #set .vx,html.ro #rsnorph,html.ro #rrsn .vrow:has(#rsnin){display:none!important}
+
+html.ro #advt input:disabled,html.ro #advt select:disabled,html.ro #pvadd input:disabled{opacity:.6;background:color-mix(in srgb,var(--mut) 14%,var(--card));cursor:not-allowed;-webkit-text-fill-color:currentColor}
+html.ro #advt button:disabled,html.ro #pvadd button:disabled,html.ro #unp .undo:disabled,html.ro #pvt .undo:disabled,html.ro #pdt .undo:disabled,html.ro #psl .undo:disabled,html.ro #pvadd .ed:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(1)}
+
+html.ro #sdform input:disabled,html.ro #sdform select:disabled,html.ro #mbody #mMil:disabled{opacity:.6;background:color-mix(in srgb,var(--mut) 14%,var(--card));cursor:not-allowed;-webkit-text-fill-color:currentColor}
+html.ro #sdform button:disabled,html.ro #seed .undo:disabled,html.ro #mbody #mMS:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(1)}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt"><span>FUEL &amp; TRIPS</span><small class="dtv"></small></div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
@@ -3154,7 +3160,7 @@ function seedPay(id,k){var AA=load();drvCalc(AA);var e=AA.filter(function(x){ret
 function refreshPay(){["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}
 if($("sdpg"))$("sdpg").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-vp]");if(b)seedPay(b.dataset.vp,b.dataset.k||"veh")});
 window.drawVP=drawVP;
-function sdCan(e){return window.canWrite!==false&&(window.isAdmin!==false||!window.db||e.by===window.me)&&!(window.isLocked&&isLocked(e.date))}
+function sdCan(e){return window.canWrite!==false&&!window.readOnly&&(window.isAdmin!==false||!window.db||e.by===window.me)&&!(window.isLocked&&isLocked(e.date))}
 function tot(){$("stot").textContent=fmt(nv("sdep")+nv("sddp"))}
 ["sdep","sddp"].forEach(function(i){$(i).addEventListener("input",tot)});
 var FM="fmn";
@@ -3211,7 +3217,7 @@ PG.forEach(function(n){var x="f"+n,g=$("sdp-"+n).querySelector(".fgrid"),d=docum
 PG.forEach(function(n){var x="f"+n;["per","day","mon","yr","from","to","drv"].forEach(function(i){$(x+i).addEventListener("change",function(){draw(n)});$(x+i).addEventListener("input",function(){draw(n)})});$(x+"clr").addEventListener("click",function(){$(x+"drv").value="";draw(n)});draw(n)});
 function capH(w){if(!w)return;w.style.maxHeight="";var tb=w.querySelector("tbody"),rs=[].slice.call(tb.rows),th=w.querySelector("thead");if(rs.length<=11)return;var h=th.offsetHeight+rs[rs.length-1].offsetHeight+2,i;for(i=0;i<10;i++)h+=rs[i].offsetHeight;if(h>th.offsetHeight+20)w.style.maxHeight=h+"px"}
 function readPaid(){try{return JSON.parse(localStorage.getItem("seedVpPaid")||"[]")}catch(x){return[]}}
-function payOwn(q){return window.canWrite!==false&&(window.isAdmin!==false||!window.db||q.by===window.me)&&!(window.isLocked&&isLocked(q.date))}
+function payOwn(q){return window.canWrite!==false&&!window.readOnly&&(window.isAdmin!==false||!window.db||q.by===window.me)&&!(window.isLocked&&isLocked(q.date))}
 $("sdpg").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-sd]");if(!b)return;if(!b.dataset.s){b.dataset.s=1;b.textContent="Sure?";return}
  var kk=b.dataset.sd.split("|"),P=readPaid(),hit=null,N=P.filter(function(p){if(!hit&&String(p.ts)===kk[0]&&String(p.id)===kk[1]){hit=p;return false}return true});
  if(!hit)return;if(window.isLocked&&isLocked(hit.date)){toast("That month is locked",true);return}
@@ -3555,6 +3561,12 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.7.25",title:"View-only SEED.CN",items:[
+  {t:"Seedcane is read only",d:"For view-only accounts, Pay and undo buttons, the milage box and the entry form in SEED.CN are greyed out and cannot be used."}
+ ]},
+ {v:"1.7.24",title:"View-only Salary tab",items:[
+  {t:"Salary is read only",d:"For view-only accounts, Pay buttons, advances, staff forms and undo buttons in the Salary tab are greyed out and cannot be used."}
+ ]},
  {v:"1.7.23",title:"View-only Update Rates",items:[
   {t:"Rates are read only",d:"For view-only accounts, every box in Update Rates is greyed out and the add, delete, rename and save buttons are hidden."}
  ]},
