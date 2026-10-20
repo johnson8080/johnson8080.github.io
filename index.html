@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.25">
+<meta name="app-version" content="1.7.27">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2244,14 +2244,14 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 @keyframes ptd{0%{opacity:.15;transform:scale(.6)}20%{opacity:1;transform:scale(1.15)}45%{opacity:.15;transform:scale(.6)}100%{opacity:.15;transform:scale(.6)}}@media(prefers-reduced-motion:reduce){#ptr .pd i{animation:ptd 1.2s ease-in-out infinite!important}#ptr .pa{transition:transform .18s ease!important}}.dr2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dr2>div{min-width:0}.dr2 input,.dr2 select{width:100%!important;min-width:0;box-sizing:border-box}
 .hd .onb{display:none;height:36px;box-sizing:border-box;min-width:44px;padding:0 10px;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ln);border-radius:6px;background:var(--card);color:var(--tx);font-size:11px;font-weight:700;line-height:1;cursor:pointer}.hd .onb.on{display:inline-flex}.onb .od{width:8px;height:8px;border-radius:50%;background:#6b7280;flex:0 0 auto}#onp{position:fixed;z-index:9990;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);width:min(360px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card);color:var(--tx);font-size:12.5px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
 
-#onp{--tx:#b6ffb6;--mut:#4fa86a;--ln:rgba(0,255,110,.22);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;background:#040906;color:#b6ffb6;border:1px solid #00ff7b;border-radius:6px;overflow:hidden;text-shadow:0 0 6px rgba(0,255,123,.45);box-shadow:0 0 16px rgba(0,255,123,.35),inset 0 0 22px rgba(0,255,123,.08)}
+#onp{--tx:#b6ffb6;--mut:#4fa86a;--ln:rgba(0,255,110,.2);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;background:#040906;color:#b6ffb6;border:1px solid #0f4a2a;border-radius:0;padding:14px 16px;text-shadow:none;box-shadow:0 6px 20px rgba(0,0,0,.6)}
 #onp>*{position:relative;z-index:1}
-#onp::before{content:"";position:absolute;left:0;right:0;top:0;height:100%;z-index:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,123,.06) 0 1px,transparent 1px 3px)}
-#onp::after{content:"";position:absolute;left:0;right:0;top:-30%;height:30%;z-index:0;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(0,255,123,.14),transparent);animation:onscan 3.2s linear infinite}
+#onp::before{content:"";position:absolute;left:0;right:0;top:0;height:100%;z-index:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,123,.05) 0 1px,transparent 1px 3px)}
+#onp::after{content:"";position:absolute;inset:-1px;z-index:2;pointer-events:none;background:linear-gradient(#00ff7b,#00ff7b) top left/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) top left/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) top right/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) top right/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom left/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom left/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom right/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom right/2px 16px no-repeat}
 #onp .onh{color:#00ff7b;letter-spacing:2px;font-size:12.5px}
 #onp .onh::after{content:"\2588";margin-left:5px;animation:onbl 1s steps(2) infinite}
-@keyframes onscan{to{top:100%}}@keyframes onbl{50%{opacity:0}}
-@media (prefers-reduced-motion:reduce){#onp::after,#onp .onh::after{animation:none}}
+@keyframes onbl{50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){#onp .onh::after{animation:none}}
 </style>
 <script>(function(){
 var TH=56,MAXP=84,HOLD=52,pull=0,sx=0,sy=0,armed=false,on=false,busy=false,el=document.createElement("div"),lb;
@@ -3561,6 +3561,12 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.7.27",title:"Status card corners",items:[
+  {t:"Brackets on the border",d:"The green corner brackets now sit right on the edge of the status card."}
+ ]},
+ {v:"1.7.26",title:"Sharper status card",items:[
+  {t:"Corner brackets",d:"The online status card now has sharp green corner brackets and no glow."}
+ ]},
  {v:"1.7.25",title:"View-only SEED.CN",items:[
   {t:"Seedcane is read only",d:"For view-only accounts, Pay and undo buttons, the milage box and the entry form in SEED.CN are greyed out and cannot be used."}
  ]},
