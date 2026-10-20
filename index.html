@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.12">
+<meta name="app-version" content="1.7.14">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -3005,7 +3005,20 @@ window.seedAct={
  clearTrash:function(){if(window.seedCloud&&seedCloud.on())seedCloud.clearTrash();wr(TK,[]);refresh()}
 };
 })();</script>
-<style>#syncp{display:none;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;border:2px solid #f5a524;color:var(--tx);text-align:center;font-weight:700;cursor:pointer;font-family:inherit}#syncp.on{display:flex}#syncp .sd{flex:0 0 auto;width:10px;height:10px;border-radius:50%;border:2px solid #f5a524;border-top-color:transparent;animation:syncspin 1s linear infinite}#syncp.off .sd{animation:none;border-top-color:#f5a524;background:#f5a524}@keyframes syncspin{to{transform:rotate(360deg)}}@media print{#syncp{display:none!important}}</style>
+<style>#syncp{display:none;align-items:center;justify-content:center;gap:8px;width:100%;box-sizing:border-box;border:2px solid #f5a524;color:var(--tx);text-align:center;font-weight:700;cursor:pointer;font-family:inherit}#syncp.on{display:flex}#syncp .sd{flex:0 0 auto;width:10px;height:10px;border-radius:50%;border:2px solid #f5a524;border-top-color:transparent;animation:syncspin 1s linear infinite}#syncp.off .sd{animation:none;border-top-color:#f5a524;background:#f5a524}@keyframes syncspin{to{transform:rotate(360deg)}}@media print{#syncp{display:none!important}}
+/* Footer tabs: green squares rise from the base of the open tab */
+.bn button{position:relative;overflow:hidden}
+.bn button.on{border-color:#22c55e!important;color:color-mix(in srgb,#22c55e 78%,var(--tx));background:linear-gradient(0deg,rgba(34,197,94,.22),rgba(34,197,94,0) 70%)}
+.bn button.on::before,.bn button.on::after,.bn button.on i::before,.bn button.on i::after{content:"";position:absolute;bottom:2px;width:4px;height:4px;background:#22c55e;opacity:0;pointer-events:none;animation:bnrise 1.6s ease-in infinite}
+.bn button.on::before{left:16%}
+.bn button.on i::before{left:38%;animation-delay:.45s}
+.bn button.on::after{left:60%;animation-delay:.9s}
+.bn button.on i::after{left:80%;animation-delay:.2s}
+.bn button.on svg{animation:bnpop .35s cubic-bezier(.2,.9,.3,1.4)}
+@keyframes bnrise{0%{transform:translateY(0);opacity:0}20%{opacity:1}100%{transform:translateY(-34px);opacity:0}}
+@keyframes bnpop{0%{transform:scale(.7)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.bn button.on::before,.bn button.on::after,.bn button.on i::before,.bn button.on i::after,.bn button.on svg{animation:none}}
+</style>
 <script>(function(){
 var P={},el=null;
 function mk(){if(el&&el.isConnected)return el;if(!el){el=document.createElement("button");el.type="button";el.id="syncp";el.className="note";el.innerHTML='<span class="sd"></span><span id="synct"></span>';
@@ -3451,6 +3464,73 @@ async function apply(){if(!canWrite||window.readOnly){toast("You have view-only 
  busy=false;sig="~";try{render()}catch(e){}paint();
  toast(bad?done+" fixed, "+bad+" could not be saved. Try again online.":done+(done===1?" trip":" trips")+" fixed",!!bad)}
 setInterval(paint,3000);setTimeout(paint,1200);
+})();
+/* What's new pop-up: shows once after each update.
+   To announce a new update: add an entry at the TOP of WN_LOG with the same version
+   as app-version in src/html/01-page-head.html, then rebuild. */
+(function(){
+var WN_LOG=[
+ {v:"1.7.14",title:"Footer tabs come alive",items:[
+  {t:"Rising green squares",d:"The open footer tab now glows green, with small squares floating up from its base."},
+  {t:"What's new pop-up",d:"After every update, a short note like this tells you what was added. It shows once."}
+ ]}
+];
+var KEY="fleetWhatsNewSeen";
+function cur(){var m=document.querySelector('meta[name="app-version"]');return m?m.content:""}
+function num(v){return String(v).split(".").map(function(x){return parseInt(x,10)||0})}
+function cmp(a,b){a=num(a);b=num(b);for(var i=0;i<Math.max(a.length,b.length);i++){var d=(a[i]||0)-(b[i]||0);if(d)return d}return 0}
+function get(){try{return localStorage.getItem(KEY)||""}catch(e){return""}}
+function set(v){try{localStorage.setItem(KEY,v)}catch(e){}}
+function css(){if(document.getElementById("wnCss"))return;var s=document.createElement("style");s.id="wnCss";s.textContent=
+'#wn{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(6,10,16,.62);animation:wnF .25s ease}'+
+'#wn .wc{position:relative;width:100%;max-width:360px;max-height:84vh;display:flex;flex-direction:column;overflow:hidden;border-radius:18px;background:var(--card,#fff);color:var(--tx,#0b1220);border:1px solid var(--ln,#c9d0d9);box-shadow:0 24px 60px rgba(0,0,0,.45);animation:wnU .38s cubic-bezier(.2,.9,.3,1.1)}'+
+'#wn .wb{height:6px;flex:0 0 auto;background:linear-gradient(90deg,#22c55e 6px,transparent 6px) 0 0/14px 6px repeat-x;animation:wnS 1s linear infinite}'+
+'#wn .wh{flex:0 0 auto;padding:18px 20px 6px;display:flex;align-items:center;justify-content:space-between;gap:10px}'+
+'#wn .wh h2{margin:0;font-size:20px;font-weight:800;letter-spacing:-.2px}'+
+'#wn .wv{flex:0 0 auto;font-size:11px;font-weight:800;letter-spacing:.4px;padding:4px 9px;border-radius:999px;color:#15803d;background:rgba(34,197,94,.16);border:1px solid rgba(34,197,94,.55)}'+
+'#wn .ws{flex:0 0 auto;padding:0 20px 10px;font-size:13px;color:var(--mut,#3f4756)}'+
+'#wn .wl{flex:1 1 auto;overflow-y:auto;padding:4px 20px 8px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}'+
+'#wn .wg{margin:6px 0 4px;font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#16a34a}'+
+'#wn .wi{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--ln,#c9d0d9);opacity:0;animation:wnI .4s ease forwards}'+
+'#wn .wi:first-of-type{border-top:0}'+
+'#wn .wq{flex:0 0 auto;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff;background:#22c55e}'+
+'#wn .wq svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}'+
+'#wn .wi b{display:block;font-size:14px;margin-bottom:2px}#wn .wi span{display:block;font-size:13px;line-height:1.4;color:var(--mut,#3f4756)}'+
+'#wn .wf{flex:0 0 auto;padding:10px 20px calc(18px + env(safe-area-inset-bottom,0px))}'+
+'#wn button.wk{width:100%;height:46px;border:0;border-radius:12px;background:#16a34a;color:#fff;font-size:15px;font-weight:800;letter-spacing:.2px;cursor:pointer}'+
+'#wn button.wk:active{transform:scale(.97)}#wn button.wk:focus-visible{outline:3px solid #4ade80;outline-offset:2px}'+
+'#wn.wo{animation:wnO .2s ease forwards}#wn.wo .wc{animation:wnD .2s ease forwards}'+
+'@keyframes wnF{from{opacity:0}to{opacity:1}}@keyframes wnO{to{opacity:0}}'+
+'@keyframes wnU{from{opacity:0;transform:translateY(26px) scale(.96)}to{opacity:1;transform:none}}@keyframes wnD{to{opacity:0;transform:translateY(18px) scale(.97)}}'+
+'@keyframes wnI{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}'+
+'@keyframes wnS{from{background-position:0 0}to{background-position:14px 0}}'+
+'@media (prefers-reduced-motion:reduce){#wn,#wn *{animation-duration:.01s!important;animation-iteration-count:1!important}#wn .wi{opacity:1}}';
+document.head.appendChild(s)}
+function mk(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
+function show(list,ver){if(document.getElementById("wn"))return;css();
+ var ov=mk("div"),card=mk("div","wc");ov.id="wn";ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");ov.setAttribute("aria-labelledby","wnT");
+ card.appendChild(mk("div","wb"));
+ var h=mk("div","wh"),t=mk("h2","","What's new");t.id="wnT";h.appendChild(t);h.appendChild(mk("div","wv","v"+ver));card.appendChild(h);
+ card.appendChild(mk("div","ws",list.length>1?"Here is what changed since you last opened the app.":list[0].title));
+ var l=mk("div","wl"),n=0,tick='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+ list.forEach(function(g){if(list.length>1)l.appendChild(mk("div","wg","v"+g.v+" · "+g.title));
+  g.items.forEach(function(it){var r=mk("div","wi"),q=mk("div","wq"),x=mk("div");q.innerHTML=tick;x.appendChild(mk("b","",it.t));x.appendChild(mk("span","",it.d));r.appendChild(q);r.appendChild(x);r.style.animationDelay=(0.18+n*0.09)+"s";n++;l.appendChild(r)})});
+ card.appendChild(l);
+ var f=mk("div","wf"),b=mk("button","wk","Got it");b.type="button";f.appendChild(b);card.appendChild(f);ov.appendChild(card);document.body.appendChild(ov);
+ var prev=document.documentElement.style.overflow;document.documentElement.style.overflow="hidden";
+ function close(){set(ver);document.removeEventListener("keydown",key);ov.classList.add("wo");setTimeout(function(){if(ov.parentNode)ov.parentNode.removeChild(ov);document.documentElement.style.overflow=prev},210)}
+ function key(e){if(e.key==="Escape")close()}
+ b.onclick=close;ov.addEventListener("click",function(e){if(e.target===ov)close()});document.addEventListener("keydown",key);
+ try{b.focus({preventScroll:true})}catch(e){}}
+function pick(){var c=cur(),s=get();if(!c||s===c)return null;
+ var L=WN_LOG.filter(function(g){return s?(cmp(g.v,s)>0&&cmp(g.v,c)<=0):g.v===c}).sort(function(a,b){return cmp(b.v,a.v)}).slice(0,3);
+ return L.length?L:null}
+function ready(){return!document.querySelector('body > div[style*="99999"]')&&!document.getElementById("wn")}
+function run(){var L=pick();if(!L){var c=cur();if(c&&get()!==c)set(c);return}
+ var tries=0;(function wait(){if(ready()){setTimeout(function(){if(ready())show(L,cur())},900);return}
+  if(++tries<200)setTimeout(wait,500)})()}
+window.showWhatsNew=function(){show(WN_LOG.slice(0,3),cur())};
+if(document.readyState==="complete")setTimeout(run,600);else window.addEventListener("load",function(){setTimeout(run,600)});
 })();
 </script>
 </body></html>
