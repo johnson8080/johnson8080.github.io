@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.22">
+<meta name="app-version" content="1.7.23">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -441,7 +441,7 @@ window.fbConnect=async function(){
 if(typeof firebase==="undefined")throw new Error("Firebase not loaded");
 firebase.initializeApp(CFG);var auth=firebase.auth(),fs=firebase.firestore();fs.settings({ignoreUndefinedProperties:true});try{await fs.enablePersistence({synchronizeTabs:true})}catch(e){window.offlineSaveOff=(e&&e.code)||"error";setTimeout(function(){try{if(document.getElementById("offwarn"))return;var w=document.createElement("div");w.id="offwarn";w.style.cssText="position:fixed;left:8px;right:8px;top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99999;background:#b3261e;color:#fff;padding:10px 38px 10px 12px;border-radius:10px;font:600 13px/1.35 system-ui,sans-serif;box-shadow:0 4px 14px rgba(0,0,0,.35)";w.textContent="Offline saving is not available in this browser. Changes made without internet may be lost if you close the app. Stay online until saves finish.";var x=document.createElement("button");x.textContent="\u00d7";x.setAttribute("aria-label","Close");x.style.cssText="position:absolute;right:6px;top:4px;background:none;border:0;color:#fff;font-size:22px;line-height:1;padding:2px 8px";x.onclick=function(){w.remove()};w.appendChild(x);document.body.appendChild(w)}catch(z){}},1500)}
 var u=await new Promise(function(r){var off=auth.onAuthStateChanged(function(x){off();r(x)})});if(!u&&window.splash)splash.done();if(!u)u=await login(auth);
-var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#fabS,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs)}
+var who=(u.email||"user").split("@")[0];window.me=who;var RO=["njoroge@gmail.com","guest1@gmail.com"],ro=RO.indexOf((u.email||"").toLowerCase())>=0;window.readOnly=ro;if(ro){var rs=document.createElement("style");rs.textContent='.fab,#fabT,#fabF,#fabS,#mE,#mD,[data-t="enter"],[data-t="fen"],[data-t="advt"]{display:none!important}';document.head.appendChild(rs);document.documentElement.classList.add("ro");(function lk(n){var s=document.getElementById("set");if(!s){if(n<60)setTimeout(function(){lk(n+1)},300);return}function go(){[].forEach.call(s.querySelectorAll("input,select,textarea"),function(e){if(!e.disabled)e.disabled=true})}go();new MutationObserver(go).observe(s,{childList:true,subtree:true})})(0)}
 window.fbUser={profiles:async function(ids){var o={};ids.forEach(function(i){o[i]={name:i}});return o}};
 (function addSO(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){addSO(n+1)},300);return}if(document.getElementById("sgnout"))return;var b=document.createElement("button");b.id="sgnout";b.className="btn";b.textContent="Sign out ("+who+")";window.fbSignOut=function(){return(window.fbPresenceOff?window.fbPresenceOff():Promise.resolve()).then(function(){return auth.signOut()}).then(function(){location.reload()})};b.onclick=function(){if(window.soConfirm)window.soConfirm();else window.fbSignOut()};s.appendChild(b)})(0);
 var lastOk=0,gOpen=null,hold=false;
@@ -2735,6 +2735,9 @@ body:has(#stg:not(.hide)) .hd>:not(#toast){display:none!important}
 
 #drw .dtv{font-size:11px;font-weight:700;color:var(--mut);letter-spacing:.3px}
 #sgnout{display:block;width:100%;height:42px;margin-top:14px;border-radius:8px;border:1px solid color-mix(in srgb,var(--bad) 55%,var(--ln));background:color-mix(in srgb,var(--bad) 8%,var(--card));color:var(--bad);font:inherit;font-size:14px;font-weight:800;cursor:pointer;padding:0;box-shadow:none}#sgnout:active{transform:scale(.97)}
+
+html.ro #set input:disabled,html.ro #set select:disabled{opacity:.6;background:color-mix(in srgb,var(--mut) 14%,var(--card));cursor:not-allowed;-webkit-text-fill-color:currentColor}
+html.ro #set .btn,html.ro #set .x,html.ro #set .vx,html.ro #rsnorph,html.ro #rrsn .vrow:has(#rsnin){display:none!important}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt"><span>FUEL &amp; TRIPS</span><small class="dtv"></small></div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
@@ -3552,6 +3555,9 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.7.23",title:"View-only Update Rates",items:[
+  {t:"Rates are read only",d:"For view-only accounts, every box in Update Rates is greyed out and the add, delete, rename and save buttons are hidden."}
+ ]},
  {v:"1.7.22",title:"Terminal-style status card",items:[
   {t:"Hacker look",d:"The online status card now has a green terminal style with a scanning light."}
  ]},
