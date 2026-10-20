@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.27">
+<meta name="app-version" content="1.8.0">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -473,7 +473,7 @@ window.fbPresenceOff=function(){try{return pdoc.set({name:who,v:APPV,t:FV.server
 if(isOwn){var pb=document.getElementById("onl"),pp=null,PL=[];
 var ago=function(t){if(!t)return"not seen yet";var m=Math.floor((Date.now()-t)/60000);if(m<1)return"just now";if(m<60)return m+" min ago";var h=Math.floor(m/60);if(h<24)return h+" h ago";return new Date(t).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})};
 var draw=function(){if(!pb)return;var now=Date.now(),L=PL.slice().sort(function(a,b){return b.t-a.t}),on=L.filter(function(x){return x.t&&!x.off&&now-x.t<150000});
-pb.classList.add("on");pb.querySelector("b").textContent=on.length;pb.querySelector(".od").style.background=on.length?"#22c55e":"#6b7280";
+pb.classList.add("on");pb.classList.toggle("live",on.length>0);pb.querySelector("b").textContent=on.length;pb.querySelector(".od").style.background=on.length?"#22c55e":"#6b7280";
 if(pp&&pp.style.display!=="none"){pp.textContent="";var hd=document.createElement("div");hd.textContent="> ACCOUNTS";hd.className="onh";hd.style.cssText="font-weight:800;margin-bottom:6px";pp.appendChild(hd);var me2=document.createElement("div");me2.textContent="> this_device  v"+APPV;me2.style.cssText="font-size:12px;color:var(--mut);margin:-2px 0 6px";pp.appendChild(me2);
 [RERR?"Cannot read other accounts ("+RERR+"). Check the Firestore rules for presence.":"",PERR?"This device could not save its own presence ("+PERR+"). Check the Firestore rules.":""].forEach(function(t){if(!t)return;var w=document.createElement("div");w.textContent=t;w.style.cssText="color:#f87171;font-size:12.5px;margin:4px 0";pp.appendChild(w)});
 if(!L.length&&!RERR){var em=document.createElement("div");em.textContent="No other account is listed yet.";em.style.opacity=".7";pp.appendChild(em)}
@@ -481,8 +481,11 @@ L.forEach(function(x){var r=document.createElement("div");r.style.cssText="displ
 if(pb){pp=document.createElement("div");pp.id="onp";pp.style.display="none";document.body.appendChild(pp);
 pb.onclick=function(ev){ev.stopPropagation();pp.style.display=pp.style.display==="none"?"block":"none";draw()};
 document.addEventListener("click",function(ev){if(pp.style.display!=="none"&&!pp.contains(ev.target))pp.style.display="none"});
-draw();setInterval(draw,20000)}
-fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({name:x.name||"user",v:x.v||"",t:x.t&&x.t.toMillis?x.t.toMillis():0,off:!!x.off})});RERR="";draw()},function(e){RERR=(e&&e.code)||"error";draw()})}
+draw();setInterval(function(){draw();scan()},20000)}
+var ONM={},ONR=false,onC=null;
+var onNote=function(x){if(!onC){onC=document.createElement("div");onC.id="onn";document.body.appendChild(onC)}var c=document.createElement("div");c.className="onc";var h=document.createElement("div");h.className="onch";h.textContent="> ACCOUNT ONLINE";var r=document.createElement("div");r.className="onr";var a=document.createElement("span");a.className="onn1";a.textContent="> "+x.name;var v=document.createElement("span");v.textContent=x.v?"v"+x.v:"v?";v.style.color=(x.v&&x.v===APPV)?"var(--mut)":"#f59e0b";r.appendChild(a);r.appendChild(v);c.appendChild(h);c.appendChild(r);onC.appendChild(c);var rm=function(){if(c.parentNode)c.parentNode.removeChild(c)};c.onclick=rm;setTimeout(rm,4000)};
+var scan=function(snap){if(!ONR&&!snap)return;var now=Date.now();PL.forEach(function(x){var on=!!(x.t&&!x.off&&now-x.t<150000);if(ONR&&on&&!ONM[x.id])onNote(x);ONM[x.id]=on});ONR=true};
+fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({id:d.id,name:x.name||"user",v:x.v||"",t:x.t&&x.t.toMillis?x.t.toMillis():0,off:!!x.off})});RERR="";draw();scan(true)},function(e){RERR=(e&&e.code)||"error";draw()})}
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
 var SEEN={},GUARD={"config/main":1,"config/fuel":1,"config/seed":1,"config/staff":1,"config/reasons":1,"config/app":1};
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
@@ -2252,6 +2255,15 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 #onp .onh::after{content:"\2588";margin-left:5px;animation:onbl 1s steps(2) infinite}
 @keyframes onbl{50%{opacity:0}}
 @media (prefers-reduced-motion:reduce){#onp .onh::after{animation:none}}
+
+.hd .onb.live{border-color:#22c55e}
+#onn{position:fixed;z-index:9995;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 56px);width:min(340px,calc(100vw - 24px));box-sizing:border-box;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.onc{--tx:#b6ffb6;--mut:#4fa86a;pointer-events:auto;position:relative;box-sizing:border-box;padding:12px 16px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;font-size:12.5px;background:#040906;color:#b6ffb6;border:1px solid #0f4a2a;border-radius:0;box-shadow:0 6px 20px rgba(0,0,0,.6);animation:onin .25s steps(5)}
+.onc::after{content:"";position:absolute;inset:-1px;pointer-events:none;background:linear-gradient(#00ff7b,#00ff7b) top left/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) top left/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) top right/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) top right/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom left/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom left/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom right/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom right/2px 16px no-repeat}
+.onch{color:#00ff7b;font-weight:800;letter-spacing:2px;margin-bottom:6px}.onch::after{content:"\2588";margin-left:5px;animation:onbl 1s steps(2) infinite}
+.onr{display:flex;align-items:center;gap:8px;white-space:nowrap;font-weight:700}.onn1{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;color:#00ff7b}
+@keyframes onin{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.onc,.onch::after{animation:none}}
 </style>
 <script>(function(){
 var TH=56,MAXP=84,HOLD=52,pull=0,sx=0,sy=0,armed=false,on=false,busy=false,el=document.createElement("div"),lb;
@@ -3561,6 +3573,10 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.8.0",title:"Know who is online",items:[
+  {t:"Online alert",d:"A short terminal-style pop-up appears when another account comes online."},
+  {t:"Green eye border",d:"The online button border turns green while someone is online."}
+ ]},
  {v:"1.7.27",title:"Status card corners",items:[
   {t:"Brackets on the border",d:"The green corner brackets now sit right on the edge of the status card."}
  ]},
