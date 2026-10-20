@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.7.17">
+<meta name="app-version" content="1.7.18">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2001,11 +2001,11 @@ function nav(pg){try{if(pg==="hist"){q('.bn button[data-go="hist"]').click()}els
 else if(G[pg]){q('.main [data-g="'+G[pg]+'"]').click();var t=q('#bar'+G[pg]+' [data-t="'+pg+'"]');if(t)t.click()}
 else{q('.main [data-g="'+pg+'"]').click()}}catch(x){}}
 function check(){if(!ready||pback)return;var v=vis();if(!v||v===cur)return;if(popping){cur=v;return}
-cur=v;if(v==="log"){if(depth>0){var d=depth;depth=0;popping=true;history.go(-d);setTimeout(function(){popping=false},500)}return}
+if(v!=="stg")window.drwFrom=false;cur=v;if(v==="log"){if(depth>0){var d=depth;depth=0;popping=true;history.go(-d);setTimeout(function(){popping=false},500)}return}
 var pd=depth-((mflag||oflag)?1:0);if(pd>=1){try{history.replaceState({pg:v,d:depth,m:mflag?1:0},"")}catch(x){}}else{depth++;history.pushState({pg:v,d:depth},"")}}
 window.ovOpen=function(name,hook){if(!ready)return false;if(pback){pend={name:name,hook:hook||null};return true}if(oflag){oname=name;ohook=hook||null;try{history.replaceState({pg:cur||vis()||"log",d:depth,o:name},"")}catch(x){}return true}
  oflag=true;oname=name;ohook=hook||null;depth++;try{history.pushState({pg:cur||vis()||"log",d:depth,o:name},"")}catch(x){}return true};
-window.ovShut=function(name,cb){if(pend&&pend.name===name){pend=null;if(cb)cb();return}if(!oflag||oname!==name){if(cb)cb();return}
+window.ovShut=function(name,cb){if(name!=="drw")window.drwFrom=false;if(pend&&pend.name===name){pend=null;if(cb)cb();return}if(!oflag||oname!==name){if(cb)cb();return}
  oflag=false;oname=null;ohook=null;depth=Math.max(0,depth-1);pback=true;clearTimeout(pbt);pbt=setTimeout(function(){pback=false;flush();sched()},700);
  ocb=cb||null;clearTimeout(ocbt);if(cb)ocbt=setTimeout(function(){var f=ocb;ocb=null;if(f)f()},450);history.back()};
 window.ovBack=function(name){if(!oflag||oname!==name)return false;history.back();return true};
@@ -2014,11 +2014,11 @@ function sched(){if(raf)return;raf=requestAnimationFrame(function(){raf=0;check(
 window.addEventListener("popstate",function(e){var st=e.state&&e.state.pg?e.state:{pg:"log",d:0};depth=st.d||0;
 if(pback){pback=false;clearTimeout(pbt);if(ocb){var f=ocb;ocb=null;clearTimeout(ocbt);setTimeout(f,0)}setTimeout(flush,0);sched();return}
 if(oflag){var h=ohook,nm=oname;if(h&&h.back&&h.back()===true){depth++;try{history.pushState({pg:cur||vis()||"log",d:depth,o:nm},"")}catch(x){}return}
- oflag=false;oname=null;ohook=null;if(h&&h.close)h.close();return}
+ oflag=false;oname=null;ohook=null;if(h&&h.close)h.close();if(nm==="drw")window.drwFrom=false;else if(window.drwFrom){window.drwFrom=false;setTimeout(function(){if(window.drwOpen)window.drwOpen()},50)}return}
 if(mflag){mflag=false;document.getElementById("modal").classList.add("hide");return}
-document.getElementById("modal").classList.add("hide");popping=true;
+var wasS=vis()==="stg";document.getElementById("modal").classList.add("hide");popping=true;
 if(window.pgOn&&st.pg!=="ov"&&window.pgReset)window.pgReset();
-if(vis()!==st.pg)nav(st.pg);cur=vis()||st.pg;setTimeout(function(){popping=false},200)});
+if(vis()!==st.pg)nav(st.pg);cur=vis()||st.pg;if(wasS&&window.drwFrom&&st.pg!=="stg"){window.drwFrom=false;setTimeout(function(){if(window.drwOpen)window.drwOpen()},50)}setTimeout(function(){popping=false},200)});
 setTimeout(function(){cur=vis();try{history.replaceState({pg:"log",d:0},"")}catch(x){}
 if(cur&&cur!=="log"){depth=1;try{history.pushState({pg:cur,d:1},"")}catch(x){}}
 ready=true;var M=document.getElementById("modal");new MutationObserver(function(){var open=!M.classList.contains("hide");
@@ -2711,6 +2711,17 @@ body:has(#stg:not(.hide)) .hd>:not(#toast){display:none!important}
 #drw .dfb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:8px 0}
 #drw .dfx{height:36px;border-radius:8px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit;font-size:11.5px;font-weight:800;cursor:pointer;padding:0}#drw .dfx:first-child{border-color:#16a34a}#drw .dfx:active{transform:scale(.96)}
 #drw .dfv{font-size:10.5px;color:var(--mut);text-align:center;letter-spacing:.3px}
+
+#drw .dan{position:relative;display:block;width:100%;text-align:left;border:1px solid #16a34a;border-radius:8px;background:color-mix(in srgb,#16a34a 8%,var(--card));color:var(--tx);font:inherit;padding:9px 28px 9px 10px;cursor:pointer}
+#drw .dan .dat{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12.5px;font-weight:700;line-height:1.35;overflow-wrap:anywhere}
+#drw .dan small{display:block;margin-top:3px;font-size:10.5px;color:var(--mut)}#drw .dan i{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-style:normal;font-size:22px;color:var(--mut)}
+#drw .dqs{display:flex;flex-direction:column;gap:8px}
+#drw .dsg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border:1px solid var(--ln);border-radius:8px;overflow:hidden;background:var(--card)}
+#drw .dsb{height:36px;border:0;background:transparent;color:var(--mut);font:inherit;font-size:12px;font-weight:800;cursor:pointer;padding:0}
+#drw .dsb.on{background:color-mix(in srgb,#16a34a 16%,var(--card));color:var(--tx);box-shadow:inset 0 0 0 1px #16a34a}
+#drw .dpl{display:flex;justify-content:space-between;gap:6px;padding:2px 4px}
+#drw .dpd{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0;box-shadow:0 0 0 1px var(--ln)}
+#drw .dpd.on{border-color:var(--tx);box-shadow:0 0 0 2px #16a34a}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt">FUEL &amp; TRIPS</div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
@@ -2720,13 +2731,15 @@ function aboutOpen(){if(!ab){ab=d.createElement("div");ab.id="abt";ab.setAttribu
  ab.classList.add("on");d.documentElement.classList.add("dlock");ab.querySelector(".abb").scrollTop=0;if(window.ovOpen)ovOpen("abt",{close:aboutHide})}
 function aboutHide(){if(!ab)return;ab.classList.remove("on");d.documentElement.classList.remove("dlock")}
 function aboutClose(){if(!ab)return;if(!(window.ovBack&&ovBack("abt")))aboutHide()}
-function item(label,icon,src,on){var b=d.createElement("button");b.type="button";b.className="dit"+(on?" on":"");b.innerHTML='<span class="dic">'+icon+'</span><span></span>';b.lastChild.textContent=label;
- b.onclick=function(){hide();var go=function(){setTimeout(function(){try{src.click()}catch(x){}},60)};if(window.ovShut)ovShut("drw",go);else go()};return b}
+function item(label,icon,src,on,keep){var b=d.createElement("button");b.type="button";b.className="dit"+(on?" on":"");b.innerHTML='<span class="dic">'+icon+'</span><span></span>';b.lastChild.textContent=label;
+ b.onclick=function(){hide();window.drwFrom=true;
+  if(keep){setTimeout(function(){try{src.click()}catch(x){}},60);return}
+  var go=function(){setTimeout(function(){try{src.click()}catch(x){}},60)};if(window.ovShut)ovShut("drw",go);else go()};return b}
 function fill(){var L=g("dli");L.innerHTML="";
 var st=g("hst");
  if(st)L.appendChild(item("Settings",st.innerHTML,st,st.classList.contains("on")));
- L.appendChild(item("All Calculations",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',{click:function(){if(window.calcOpen)calcOpen()}},false));
- L.appendChild(item("About FuelTrips",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',{click:aboutOpen},false))}
+ L.appendChild(item("All Calculations",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',{click:function(){if(window.calcOpen)calcOpen()}},false,true));
+ L.appendChild(item("About FuelTrips",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',{click:aboutOpen},false,true))}
 
 function T(id){var e=g(id);return e?(e.textContent||"").trim()||"-":"-"}
 function el(tag,cls,txt){var e=d.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e}
@@ -2743,15 +2756,25 @@ function fillX(){var X=g("dxt");if(!X)return;X.innerHTML="";
  X.appendChild(el("div","dsec","Today"));
  var tg=el("div","dtg");[["Tonnes","s1a"],["Trip expenses","s1c"],["Fuel","s2a"],["Net profit","s2c"]].forEach(function(r){var c=el("div","dtl");c.appendChild(el("small","",r[0]));c.appendChild(el("b","",T(r[1])));tg.appendChild(c)});X.appendChild(tg);
  var u=el("button","dun");u.type="button";u.appendChild(el("small","",T("utl").toLowerCase().replace(/^./,function(c){return c.toUpperCase()})));u.appendChild(el("b","",T("utot")));u.appendChild(el("i","","›"));u.onclick=function(){after(function(){goTab("pay","unp")})};X.appendChild(u);
+ var an=null;try{an=(typeof annLive==="function"&&window.ann&&annLive(window.ann))?window.ann:null}catch(x){an=null}
+ if(an){X.appendChild(el("div","dsec","Announcement"));var ab=el("button","dan");ab.type="button";ab.appendChild(el("span","dat",an.text));if(an.exp)ab.appendChild(el("small","","Until "+an.exp));ab.appendChild(el("i","","›"));ab.onclick=function(){after(function(){var h=g("hann");if(h)h.click()})};X.appendChild(ab)}
+ X.appendChild(el("div","dsec","Quick settings"));
+ var qs=el("div","dqs"),root=d.documentElement;
+ function paintQS(){qs.innerHTML="";var dark=root.getAttribute("data-theme")==="dark",row=el("div","dsg");
+  [["light","Light"],["dark","Dark"]].forEach(function(t){var b=el("button","dsb"+((t[0]==="dark")===dark?" on":""),t[1]);b.type="button";b.onclick=function(){var s=q('#sthm [data-v="'+t[0]+'"]');if(s)s.click();paintQS()};row.appendChild(b)});qs.appendChild(row);
+  if(dark){var pr=el("div","dpl"),cur=root.getAttribute("data-palette")||"navy";
+   [["navy","#2f6df6"],["graphite","#4f8cf7"],["forest","#1fa971"],["plum","#8b5cf6"],["wine","#e0475b"]].forEach(function(c){var b=el("button","dpd"+(cur===c[0]?" on":""));b.type="button";b.setAttribute("aria-label",c[0]+" colour");b.style.background=c[1];b.onclick=function(){var s=q('#spal [data-p="'+c[0]+'"]');if(s)s.click();paintQS()};pr.appendChild(b)});qs.appendChild(pr)}}
+ paintQS();X.appendChild(qs);
  var F=g("dft");F.innerHTML="";
  var off=!!q(".hd h1.off"),r1=el("div","dfr"),dot=el("span","dfd"+(off?" off":""));r1.appendChild(dot);r1.appendChild(el("span","",off?"Offline: saving on this phone":"Online"));F.appendChild(r1);
  var r2=el("div","dfr");r2.appendChild(el("span","dfk","Last backup"));r2.appendChild(el("span","",ago(lastBk())));F.appendChild(r2);
  var r3=el("div","dfb"),bb=el("button","dfx","Back up now");bb.type="button";bb.onclick=function(){after(function(){var j=g("bjson");if(j){j.click();try{localStorage.setItem("fleetDrwBk",String(Date.now()))}catch(x){}try{toast("Backup downloaded")}catch(x){}}})};
  var nw=el("button","dfx","What's new");nw.type="button";nw.onclick=function(){after(function(){if(window.showWhatsNew)showWhatsNew()})};r3.appendChild(bb);r3.appendChild(nw);F.appendChild(r3);
  var vm=q('meta[name="app-version"]');F.appendChild(el("div","dfv","Version "+(vm?vm.content:"")))}
-function open(){build();fill();fillX();btn.setAttribute("aria-expanded","true");d.documentElement.classList.add("dlock");requestAnimationFrame(function(){dr.classList.add("on")});if(window.ovOpen)ovOpen("drw",{close:hide})}
+function open(){window.drwFrom=false;build();fill();fillX();btn.setAttribute("aria-expanded","true");d.documentElement.classList.add("dlock");requestAnimationFrame(function(){dr.classList.add("on")});if(window.ovOpen)ovOpen("drw",{close:hide})}
 function hide(){if(!dr)return;dr.classList.remove("on");d.documentElement.classList.remove("dlock");btn.setAttribute("aria-expanded","false")}
-function close(){if(!dr||!dr.classList.contains("on"))return;hide();if(window.ovShut)ovShut("drw")}
+function close(){if(!dr||!dr.classList.contains("on"))return;window.drwFrom=false;hide();if(window.ovShut)ovShut("drw")}
+window.drwOpen=function(){if(!dr||!dr.classList.contains("on"))open()};
 btn.addEventListener("click",function(){dr&&dr.classList.contains("on")?close():open()});
 d.addEventListener("keydown",function(e){if(e.key==="Escape"){if(ab&&ab.classList.contains("on"))aboutClose();else close()}});
 })();</script>
@@ -3512,6 +3535,11 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.7.18",title:"Side menu: back steps and shortcuts",items:[
+  {t:"Back works one step at a time",d:"In All Calculations, About and Settings, every step counts. Back goes one step, then returns to the side menu instead of leaving the app."},
+  {t:"Announcement in the menu",d:"A live announcement shows in the side menu. Tap it to read it."},
+  {t:"Quick settings",d:"Switch Light or Dark and pick the dark colour from the side menu."}
+ ]},
  {v:"1.7.17",title:"A more useful side menu",items:[
   {t:"Quick add",d:"Add a trip, fuel or advance straight from the side menu."},
   {t:"Today at a glance",d:"Today's tonnes, trip expenses, fuel, net profit and total unpaid, one tap from any screen."},
