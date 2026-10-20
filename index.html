@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.8.2">
+<meta name="app-version" content="1.8.3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -472,7 +472,7 @@ beat();setInterval(beat,60000);document.addEventListener("visibilitychange",func
 window.fbPresenceOff=function(){try{return pdoc.set({name:who,v:APPV,t:FV.serverTimestamp(),off:true}).catch(function(){})}catch(e){return Promise.resolve()}};
 if(isOwn){var pb=document.getElementById("onl"),pp=null,PL=[];
 var ago=function(t){if(!t)return"not seen yet";var m=Math.floor((Date.now()-t)/60000);if(m<1)return"just now";if(m<60)return m+" min ago";var h=Math.floor(m/60);if(h<24)return h+" h ago";return new Date(t).toLocaleString([],{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})};
-var TW="ONLINE ACCOUNTS!",twN=0,twD=1,twT=null,twPause=false;
+var TW="ONLINE ACCOUNTS & APP VERSIONS!",twN=0,twD=1,twT=null,twPause=false;
 var twText=function(){return"> "+TW.slice(0,twN)};
 var twPaint=function(){var h=pp&&pp.querySelector(".onh");if(h){h.textContent=twText();h.classList.toggle("tw",!twPause)}};
 var twTick=function(){if(!pp||pp.style.display==="none"){twT=null;return}var ms;
@@ -2259,7 +2259,7 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 #onp>*{position:relative;z-index:1}
 #onp::before{content:"";position:absolute;left:0;right:0;top:0;height:100%;z-index:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,255,123,.05) 0 1px,transparent 1px 3px)}
 #onp::after{content:"";position:absolute;inset:-1px;z-index:2;pointer-events:none;background:linear-gradient(#00ff7b,#00ff7b) top left/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) top left/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) top right/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) top right/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom left/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom left/2px 16px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom right/16px 2px no-repeat,linear-gradient(#00ff7b,#00ff7b) bottom right/2px 16px no-repeat}
-#onp .onh{color:#00ff7b;letter-spacing:2px;font-size:12.5px}
+#onp .onh{color:#00ff7b;letter-spacing:1px;font-size:12.5px;white-space:nowrap}
 #onp .onh::after{content:"\2588";margin-left:5px;animation:onbl 1s linear infinite}
 @keyframes onbl{0%,49.9%{opacity:1}50%,100%{opacity:0}}
 #onp .onh.tw::after{animation:none;opacity:1}
@@ -3582,6 +3582,9 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.8.3",title:"Status card title",items:[
+  {t:"New title",d:"The status card now types ONLINE ACCOUNTS & APP VERSIONS!"}
+ ]},
  {v:"1.8.2",title:"Status card animation",items:[
   {t:"Always animated",d:"The typing title and blinking cursor now play even on phones set to reduce motion."}
  ]},
