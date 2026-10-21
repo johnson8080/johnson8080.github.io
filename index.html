@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.8.3">
+<meta name="app-version" content="1.8.4">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -465,8 +465,31 @@ b.onclick=go;p.onkeydown=function(e){if(e.key==="Enter")go()};
 setTimeout(function(){try{p.focus()}catch(x){}},50)});
 return gOpen}
 window.askPw=function(){return gate()};window.askPwForce=function(){return gate(true)};window.gateHold=async function(on){if(on){await gate();hold=true}else hold=false};
-var root=fs.collection("fuelTrips").doc("app");
+var root=fs.collection("fuelTripsV2").doc("app");
 var OWN="ondeyojohnson@gmail.com",isOwn=(u.email||"").toLowerCase()===OWN;window.fbIsOwn=isOwn;var pdoc=fs.collection("presence").doc(u.uid),FV=firebase.firestore.FieldValue;
+var OLDROOT=fs.collection("fuelTrips").doc("app");
+window.fbCopyOld=async function(on){if(!isOwn)throw new Error("Owner only");if(navigator.onLine===false)throw new Error("No internet");
+var cols=["entries","fuel","advances","payments","pvpays","backups","config"],out={};
+for(var ci=0;ci<cols.length;ci++){var c=cols[ci];if(on)on("Reading "+c+"...");
+var os=await OLDROOT.collection(c).get({source:"server"}),ns=await root.collection(c).get({source:"server"}),have={},todo=[];
+ns.forEach(function(d){have[d.id]=1});os.forEach(function(d){if(!have[d.id])todo.push(d)});
+if(c==="config")todo.sort(function(a,b){return(a.id==="locks"?1:0)-(b.id==="locks"?1:0)});
+var n=c==="backups"?3:100,ok=0,bad=0;
+for(var i=0;i<todo.length;i+=n){var part=todo.slice(i,i+n);
+try{var b=fs.batch();part.forEach(function(d){b.set(root.collection(c).doc(d.id),d.data())});await b.commit();ok+=part.length}
+catch(e){for(var j=0;j<part.length;j++){try{await root.collection(c).doc(part[j].id).set(part[j].data());ok++}catch(e2){bad++}}}
+if(on)on("Copying "+c+": "+(ok+bad)+" of "+todo.length)}
+out[c]={found:os.size,copied:ok,already:os.size-todo.length,failed:bad}}
+return out};
+if(isOwn)(function addCP(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){addCP(n+1)},300);return}if(document.getElementById("cpold"))return;
+var w=document.createElement("div");w.id="cpold";w.style.cssText="margin-top:16px;padding:12px;border:1px solid var(--ln);border-radius:10px";
+var h=document.createElement("div");h.style.cssText="font-weight:800;margin-bottom:4px";h.textContent="Move data to the new location";
+var p=document.createElement("div");p.className="mut";p.style.cssText="font-size:12.5px;margin-bottom:8px";p.textContent="One time, after the new rules are published. Copies everything from the old location. Safe to run again: it only adds what is missing.";
+var b=document.createElement("button");b.className="btn";b.textContent="Copy data to new location";
+var r=document.createElement("div");r.style.cssText="margin-top:8px;font-size:12.5px;white-space:pre-line";
+b.onclick=function(){b.disabled=true;r.textContent="Starting...";window.fbCopyOld(function(m){r.textContent=m}).then(function(o){var t="Done.\n";Object.keys(o).forEach(function(k){t+=k+": "+o[k].copied+" copied, "+o[k].already+" already there"+(o[k].failed?", "+o[k].failed+" FAILED":"")+"\n"});r.textContent=t;b.disabled=false}).catch(function(e){r.textContent="Failed: "+(e&&e.message||e);b.disabled=false})};
+w.appendChild(h);w.appendChild(p);w.appendChild(b);w.appendChild(r);s.appendChild(w)})(0);
+
 var APPV=(document.querySelector('meta[name="app-version"]')||{}).content||"";var PERR="",RERR="";var beat=function(){if(document.visibilityState==="hidden")return;(window.netProbe?window.netProbe():Promise.resolve(true)).then(function(ok){if(!ok)return;try{pdoc.set({name:who,v:APPV,t:FV.serverTimestamp(),off:false}).then(function(){PERR=""}).catch(function(e){PERR=(e&&e.code)||"error"})}catch(e){}})};
 beat();setInterval(beat,60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")beat()});
 window.fbPresenceOff=function(){try{return pdoc.set({name:who,v:APPV,t:FV.serverTimestamp(),off:true}).catch(function(){})}catch(e){return Promise.resolve()}};
@@ -3582,6 +3605,9 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.8.4",title:"New data location",items:[
+  {t:"Safer data location",d:"The app now stores its data in a new place. Older app versions can no longer open or save the data, so please keep the app updated."}
+ ]},
  {v:"1.8.3",title:"Status card title",items:[
   {t:"New title",d:"The status card now types ONLINE ACCOUNTS & APP VERSIONS!"}
  ]},
