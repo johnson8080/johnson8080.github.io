@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.8.5">
+<meta name="app-version" content="1.8.6">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -424,9 +424,6 @@ button{transition:background .15s,color .15s,transform .12s}
 #sn[data-k="p"] button:nth-child(n+4){grid-column:span 2}
 
 /* smooth page change: short fade + slide when a page opens */
-@keyframes pgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-section:not(.hide){animation:pgIn .2s ease-out both}
-@media (prefers-reduced-motion:reduce){section:not(.hide){animation:none}}
 /* touch: no tap delay or grey flash, quicker taps */
 button,.tabs button,.main button,.bn button,select,summary,label.btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 </style><script>(function(){
@@ -3606,6 +3603,10 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.8.6",title:"Faster tab opening",items:[
+  {t:"Tabs open instantly",d:"Removed the slide-in animation when a page opens, which was heavy on some phones."},
+  {t:"Speed check upgrade",d:"Now also times the screen builders so slow parts can be found."}
+ ]},
  {v:"1.8.5",title:"Speed check",items:[
   {t:"Speed check",d:"Developer tool in Settings that records slow moments and taps that did not register."}
  ]},
@@ -3749,31 +3750,35 @@ if(document.readyState==="complete")setTimeout(run,600);else window.addEventList
    slow taps, and taps that never became a click ("tap twice"). Copy the report to share it. */
 (function(){
 var KEY="ftSpeed",ONK="ftSpeedOn",TABS=["enter","log","advt","unp","pvt","pvadd","psl","pdt","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","seed","stg","hist"];
-var ev=[],on=false,po=null,smp=null,last=0,pend=null,saveT=0,box=null,pre=null,tg=null,uiT=0;
+var dirty=false,fns={},wr=[],ev=[],on=false,po=null,smp=null,last=0,pend=null,saveT=0,box=null,pre=null,tg=null,uiT=0;
 var BTN='button[data-t],button[data-g],button[data-go],#hst';
 function now(){return performance.now()}
 function lg(k){try{return localStorage.getItem(k)}catch(e){return null}}
 function ls(k,v){try{localStorage.setItem(k,v)}catch(e){}}
-function tabName(){for(var i=0;i<TABS.length;i++){var e=document.getElementById(TABS[i]);if(e&&!e.classList.contains("hide")&&e.offsetParent!==null)return TABS[i]}return"?"}
+function tabName(){for(var i=0;i<TABS.length;i++){var e=document.getElementById(TABS[i]);if(e&&!e.classList.contains("hide"))return TABS[i]}return"?"}
 function nm(b){var d=b.dataset||{};return d.t||d.g||d.go||b.id||(b.textContent||"").trim().slice(0,12)}
 function tb(t){return t&&t.closest?t.closest(BTN):null}
 function hhmmss(t){var d=new Date(t),p=function(n){return(n<10?"0":"")+n};return p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds())}
 function save(){clearTimeout(saveT);saveT=setTimeout(function(){ls(KEY,JSON.stringify(ev))},1500)}
-function add(k,ms,x){ev.push({t:Date.now(),k:k,ms:Math.round(ms),tab:tabName(),x:x||""});if(ev.length>200)ev.shift();save();ui()}
-function pu(e){var b=tb(e.target);if(!b)return;var p={b:b,t:now(),seen:false};pend=p;setTimeout(function(){if(on&&!p.seen)add("miss",450,nm(b))},450)}
-function cl(e){var b=tb(e.target);if(!b)return;var t=now();
+function add(k,ms,x){ev.push({t:Date.now(),k:k,ms:Math.round(ms),tab:tabName(),x:x||""});if(ev.length>200)ev.shift();save();dirty=true}
+function pu(e){if(!e.isTrusted)return;var b=tb(e.target);if(!b)return;var p={b:b,t:now(),seen:false};pend=p;setTimeout(function(){if(on&&!p.seen)add("miss",450,nm(b))},450)}
+function cl(e){if(!e.isTrusted)return;var b=tb(e.target);if(!b)return;var t=now();
  if(pend&&pend.b===b&&!pend.seen){pend.seen=true;var d=t-pend.t;if(d>250)add("slowtap",d,nm(b))}
  var s=t,n=nm(b);requestAnimationFrame(function(){requestAnimationFrame(function(){add("open",now()-s,n)})})}
 function vc(){last=now()}
+function fstat(n,d){var r=fns[n]||(fns[n]={n:0,sum:0,max:0});r.n++;r.sum+=d;if(d>r.max)r.max=d;if(d>=40)add("fn",d,n)}
+function wrapAll(){wr=[];Object.keys(window).forEach(function(n){if(!/^(render[A-Za-z0-9_]*|winchRender|winchFill)$/.test(n))return;var f=window[n];if(typeof f!=="function"||f.__sp)return;
+ var w=function(){var t=now();try{return f.apply(this,arguments)}finally{fstat(n,now()-t)}};w.__sp=1;try{window[n]=w;wr.push([n,f])}catch(e){}})}
+function unwrapAll(){wr.forEach(function(p){try{window[p[0]]=p[1]}catch(e){}});wr=[]}
 function start(){if(on)return;on=true;ls(ONK,"1");
  document.addEventListener("pointerup",pu,true);document.addEventListener("click",cl,true);document.addEventListener("visibilitychange",vc);
  try{if(window.PerformanceObserver&&PerformanceObserver.supportedEntryTypes&&PerformanceObserver.supportedEntryTypes.indexOf("longtask")>=0){
   po=new PerformanceObserver(function(l){l.getEntries().forEach(function(e){if(e.duration>=80&&!document.hidden)add("busy",e.duration)})});po.observe({entryTypes:["longtask"]})}}catch(x){po=null}
  if(!po){last=now();smp=setInterval(function(){var n=now(),d=n-last-250;last=n;if(d>100&&!document.hidden)add("busy",d)},250)}
- uiT=setInterval(ui,2000);ui()}
+ wrapAll();uiT=setInterval(function(){if(dirty)ui()},2000);ui()}
 function stop(){if(!on)return;on=false;ls(ONK,"0");
  document.removeEventListener("pointerup",pu,true);document.removeEventListener("click",cl,true);document.removeEventListener("visibilitychange",vc);
- if(po){try{po.disconnect()}catch(e){}po=null}if(smp){clearInterval(smp);smp=null}clearInterval(uiT);ui()}
+ if(po){try{po.disconnect()}catch(e){}po=null}if(smp){clearInterval(smp);smp=null}clearInterval(uiT);unwrapAll();ui()}
 function stats(){var o={busy:[],open:[],miss:[],slowtap:[]};ev.forEach(function(e){if(o[e.k])o[e.k].push(e)});return o}
 function mx(a){var m=0,w=null;a.forEach(function(e){if(e.ms>m){m=e.ms;w=e}});return w}
 function summary(){var s=stats(),L=[],w;
@@ -3786,12 +3791,14 @@ function summary(){var s=stats(),L=[],w;
   L.push("Tab open time (tap to screen), average / slowest:");
   Object.keys(by).sort(function(a,b){return by[b].max-by[a].max}).forEach(function(k){var r=by[k];L.push("  "+k+": "+Math.round(r.sum/r.n)+" / "+r.max+" ms ("+r.n+" taps)")})}
  return L.join("\n")}
+function fsum(){var k=Object.keys(fns);if(!k.length)return"";k.sort(function(a,b){return fns[b].sum-fns[a].sum});
+ return"\n\nScreen builders (calls / total / slowest):\n"+k.slice(0,8).map(function(n){var r=fns[n];return"  "+n+": "+r.n+" / "+Math.round(r.sum)+" / "+Math.round(r.max)+" ms"}).join("\n")}
 function dev(){var n=navigator,c=n.connection||{},m=document.querySelector('meta[name="app-version"]');
- return["App version: "+(m?m.content:"?"),"Phone: "+(n.userAgent||"").replace(/^Mozilla\/5.0 /,"").slice(0,90),"Memory: "+(n.deviceMemory||"?")+" GB, cores: "+(n.hardwareConcurrency||"?"),"Network: "+(c.effectiveType||"?")+(window.NETREAL===false?" (offline)":""),"Entries on phone: "+(function(){try{return(load()||[]).length}catch(e){return"?"}})()].join("\n")}
-function report(n){var rec=ev.slice(-(n||40)).map(function(e){return hhmmss(e.t)+"  "+e.k+(e.k==="open"||e.k==="miss"||e.k==="slowtap"?" ["+e.x+"]":"")+"  "+e.ms+" ms  on "+e.tab}).join("\n");
- return"SPEED CHECK REPORT\n"+dev()+"\n\n"+summary()+"\n\nLatest events:\n"+(rec||"(none yet)")}
+ return["App version: "+(m?m.content:"?"),"Phone: "+(n.userAgent||"").replace(/^Mozilla\/5.0 /,"").slice(0,90),"Memory: "+(n.deviceMemory||"?")+" GB, cores: "+(n.hardwareConcurrency||"?"),"Network: "+(c.effectiveType||"?")+(window.NETREAL===false?" (offline)":"")].join("\n")}
+function report(n){var rec=ev.slice(-(n||40)).map(function(e){return hhmmss(e.t)+"  "+e.k+(e.k==="open"||e.k==="miss"||e.k==="slowtap"||e.k==="fn"?" ["+e.x+"]":"")+"  "+e.ms+" ms  on "+e.tab}).join("\n");
+ return"SPEED CHECK REPORT\n"+dev()+"\n\n"+summary()+fsum()+"\n\nLatest events:\n"+(rec||"(none yet)")}
 function ui(){if(!box)return;tg.textContent=on?"Stop recording":"Start recording";box.querySelector(".spst").textContent=on?"Recording. Use the app normally, then come back here.":"Not recording.";
- if(box.offsetParent!==null||!on)pre.textContent=report(10)}
+ var st=document.getElementById("stg");if(!on||(st&&!st.classList.contains("hide")))pre.textContent=report(10);dirty=false}
 function copyText(t){try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t)}catch(e){}
  return new Promise(function(res,rej){try{var a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();var ok=document.execCommand("copy");document.body.removeChild(a);ok?res():rej()}catch(e){rej(e)}})}
 function build(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){build(n+1)},300);return}if(document.getElementById("spchk"))return;
@@ -3801,7 +3808,7 @@ function build(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout
  tg=document.createElement("button");tg.className="btn";tg.onclick=function(){on?stop():start()};
  var row=document.createElement("div");row.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px";
  var cp=document.createElement("button");cp.className="btn";cp.textContent="Copy report";cp.onclick=function(){copyText(report(40)).then(function(){cp.textContent="Copied";setTimeout(function(){cp.textContent="Copy report"},1500)},function(){cp.textContent="Could not copy";setTimeout(function(){cp.textContent="Copy report"},1500)})};
- var cr=document.createElement("button");cr.className="btn";cr.textContent="Clear";cr.onclick=function(){ev=[];ls(KEY,"[]");ui()};
+ var cr=document.createElement("button");cr.className="btn";cr.textContent="Clear";cr.onclick=function(){ev=[];fns={};ls(KEY,"[]");ui()};
  row.appendChild(cp);row.appendChild(cr);
  pre=document.createElement("div");pre.style.cssText="margin-top:10px;font-size:12px;white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere";
  box.appendChild(h);box.appendChild(p);box.appendChild(tg);box.appendChild(row);box.appendChild(pre);s.appendChild(box);
