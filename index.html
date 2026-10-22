@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.8.6">
+<meta name="app-version" content="1.8.9">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -426,6 +426,22 @@ button{transition:background .15s,color .15s,transform .12s}
 /* smooth page change: short fade + slide when a page opens */
 /* touch: no tap delay or grey flash, quicker taps */
 button,.tabs button,.main button,.bn button,select,summary,label.btn{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+
+/* Vehicle / Driver Statement: compact layout */
+#dsc .dsg{gap:6px;border:0;background:none;border-radius:0;overflow:visible}
+#dsc .dsk{padding:5px 8px}
+#dsc .dsk span{font-size:9.5px}
+#dsc .dsk b{font-size:14px;margin-top:0}
+#dsc .dsk small{font-size:10px;margin-top:0}
+#dsc .dsk.bal b{font-size:17px}
+#dsc .dsw{margin:6px 0 2px;padding:5px 8px;font-size:11.5px;line-height:1.35}
+#dsc .dsh{margin:8px 0 1px;font-size:10px}
+#dsc .dse{padding:5px 0;gap:1px 8px}
+#dsc .dse .c{width:20px;height:20px;font-size:11px}
+#dsc .dse .n,#dsc .dse .v{font-size:12.5px}
+#dsc .dse .m,#dsc .dse .r{font-size:10.5px}
+#dsc .fgrid{grid-template-columns:1.4fr 1fr}
+#dsc .fgrid>div{min-width:0}
 </style><script>(function(){
 var CFG={apiKey:"AIzaSyA6nXEX_xskZnCY3Z113-d7Fs9GjO9LcPs",authDomain:"fleet-9e308.firebaseapp.com",projectId:"fleet-9e308",storageBucket:"fleet-9e308.firebasestorage.app",messagingSenderId:"258425450498",appId:"1:258425450498:web:74cb05c2364b0d7011771b"};
 var COLS={entries:1,fuel:1,advances:1,payments:1,pvpays:1};function bg(p){p.catch(function(e){try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}});return Promise.resolve()}function soft(p){return new Promise(function(res,rej){var done=false,t=null;function ok(){if(done)return;done=true;clearTimeout(t);res()}p.then(ok,function(e){if(!done){done=true;clearTimeout(t);rej(e)}else{try{if(window.toast)toast("NOT saved to server: "+(e&&e.message||e))}catch(x){}}});if(window.NETREAL===false)ok();else t=setTimeout(ok,3000)})}var IS="width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #334;background:#141a26;color:#fff;font-size:16px;box-sizing:border-box";
@@ -718,10 +734,9 @@ show(0);raf=requestAnimationFrame(tick);
 <div class="card ovx" id="ovf"><b class="ct noprt">Trips &amp; Fuel Summary</b><div class="fgrid"><div><label>Period</label><select id="oper" onchange="renderOv()"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="ovdw" class="hide"><label>Date</label><input type="date" id="ovday"></div><div id="omw" class="hide"><label>Month</label><input type="month" id="omon"></div><div id="ovyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="ovyr" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfovf"><button type="button" class="ed" data-cf="ovf">Clear filters</button></div><div class="mut" style="margin-top:8px">Trips and fuel side by side. Each row is one day for one vehicle, marked Trips, Fuel or Trips + Fuel, with a total after each vehicle. Every entry is listed further down, with filters.</div></div>
 <div class="card ovx" id="ovc"><div class="wrap cap5"><table class="ov"><thead><tr><th class="l">Vehicle</th><th class="l">Date</th><th class="l">Type</th><th class="l">Driver</th><th>Tonnes</th><th>Trip expense</th><th>Litres</th><th>L/tonne</th><th>Fuel profit</th></tr></thead><tbody id="ovb"></tbody></table></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm" id="ocsv">Download CSV</button><button class="btn sm alt" id="opdf">Download PDF</button><button class="btn sm" id="oshare">Share PDF</button></div></div>
-<div class="card noprt" id="dsc"><b class="ct">Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
-<label>Driver</label><select id="dsd"></select>
-<div class="fgrid"><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfdsc"><button type="button" class="ed" data-cf="dsc">Clear filters</button></div>
-<div id="dsv" class="noprt" style="margin-top:12px"><div class="mut">Select a driver to preview the statement.</div></div>
+<div class="card noprt" id="dsc"><b class="ct">Vehicle / Driver Statement</b><div class="mut noprt" style="margin-bottom:4px">One driver's trips, fuel taken, advances and salary paid, with the balance.</div>
+<div class="fgrid"><div><label>Vehicle | Driver</label><select id="dsd"></select></div><div><label>Period</label><select id="dsp"><option value="all" selected>All dates</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="dsmw" class="hide"><label>Month</label><input type="month" id="dsm"></div><div id="dsyw" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="dsy" min="2000" max="2100"></div></div><div class="cfr noprt hide" id="cfdsc"><button type="button" class="ed" data-cf="dsc">Clear filters</button></div>
+<div id="dsv" class="noprt" style="margin-top:12px"><div class="mut">Select a vehicle / driver to preview the statement.</div></div>
 <div class="acts" style="margin:10px 0 0"><button class="btn sm alt" id="dsdl" disabled>Download PDF</button><button class="btn sm" id="dssh" disabled>Share PDF</button><button class="btn sm alt" id="dstx" disabled>Share text</button></div></div>
 <div class="card bkc"><div class="bkh">Back up</div>
 <div class="bkg"><button class="btn" id="bjson"><b>Back up</b><small>JSON file, everything</small></button><label class="btn alt bkf" id="rbtn"><b>Restore</b><small>Choose JSON file</small><input type="file" id="rfile" accept=".json,application/json,text/plain"></label></div>
@@ -2093,7 +2108,7 @@ function hasD(nm){if(!nm)return false;var P=per();return entries.some(function(e
 function dsPrev(){var b=$("dsv");if(!b)return;var on=false;try{on=hasD($("dsd").value)}catch(e){}
  var E=function(msg){var z=fmt(0),K=function(l,v,sm,c){return'<div class="dsk'+(c?" "+c:"")+'"><span>'+l+'</span><b>'+v+'</b>'+(sm?'<small>'+sm+'</small>':"")+'</div>'};
   b.innerHTML='<div class="dsg">'+K("Trips expenses",z,"0 trips \u00b7 0.00 t")+K("Fuel taken",z,"0 L \u00b7 not deducted")+K("Advances",z,"trip "+z+" \u00b7 given "+z)+K("Salary paid",z,"")+K("Unpaid balance",z,per().lab,"bal")+'</div><div class="dsw"><div><span>Driver balance held</span><span>'+z+'</span></div><div><span>\u2212 Advances</span><span>'+z+'</span></div><div><span>\u2212 Salary paid</span><span>'+z+'</span></div><div class="t"><span>= Unpaid balance</span><span>'+z+'</span></div></div><div class="dsh">Entries</div><div class="mut" style="padding:10px 0">'+msg+'</div>'};
- if(!$("dsd").value){E("Select a driver to preview the statement.");return}
+ if(!$("dsd").value){E("Select a vehicle / driver to preview the statement.");return}
  if(!on){E("No entries for this driver in this period.");return}
  var d=make(true);if(!d){return}
  var rd=function(v){return Math.round((+v||0)*100)/100};
@@ -2113,9 +2128,9 @@ function dsPrev(){var b=$("dsv");if(!b)return;var on=false;try{on=hasD($("dsd").
  +'<div class="dsw"><div><span>Driver balance held</span><span>'+fmt(d.held)+'</span></div><div><span>\u2212 Advances</span><span>'+fmt(adT)+'</span></div><div><span>\u2212 Salary paid</span><span>'+fmt(d.paidD)+'</span></div><div class="t"><span>= Unpaid balance</span><span>'+mn(d.bal)+'</span></div>'
  +(d.lo>0||d.lp>0?'<div><span>Loader paid / unpaid</span><span>'+fmt(d.lp)+' / '+fmt(d.lo-d.lp)+'</span></div>':"")
  +(per().lab!=="All dates"?'<div><span>Balance now (all dates)</span><span>'+mn(d.now)+'</span></div>':"")+'</div>'
- +'<div class="dsh">Entries ('+R.length+')'+(R.length>5?' \u00b7 scroll for more':'')+'</div><div class="dsl" id="dsl">'+list+'</div>';
+ +'<div class="dsh">Entries ('+R.length+')'+(R.length>7?' \u00b7 scroll for more':'')+'</div><div class="dsl" id="dsl">'+list+'</div>';
  b.innerHTML=h;
- var L2=$("dsl");if(L2&&L2.children.length>5){var hh=0;for(var i=0;i<5;i++)hh+=L2.children[i].offsetHeight;L2.style.maxHeight=hh+"px"}}
+ var L2=$("dsl");if(L2&&L2.children.length>7){var hh=0;for(var i=0;i<7;i++)hh+=L2.children[i].offsetHeight;L2.style.maxHeight=hh+"px"}}
 function btns(){var on=false;try{on=hasD($("dsd").value)}catch(e){}$("dssh").disabled=!on;$("dstx").disabled=!on;$("dsdl").disabled=!on;try{dsPrev()}catch(e){}}
 /* grey out export/share buttons when the current selection has no data */
 function setD(ids,on){ids.forEach(function(i){var b=$(i);if(b)b.disabled=!on})}
@@ -2125,7 +2140,13 @@ function gate(){var ovOK=false,allOK=false;
  setD(["ocsv","opdf","oshare"],ovOK);setD(["oacsv","oapdf","oashare"],allOK);btns()}
 function fillD(){var s=$("dsd");if(!s)return;var cv=s.value,o={};
  try{drvNames().forEach(function(k){o[k]=1});fuels.forEach(function(f){var d=f.driver||(cfg.vd||{})[f.vehicle];if(d)o[d]=1})}catch(e){}
- var nm=Object.keys(o).sort();s.innerHTML='<option value="">Select driver…</option>'+nm.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");
+ /* each driver is listed with the plate(s) he drives: plate · driver (the value stays the driver) */
+ var vh={},vd=cfg.vd||{};
+ try{(cfg.veh||[]).forEach(function(v){var d=vd[v];if(d)(vh[d]=vh[d]||[]).push(v)});
+  entries.slice().sort(asc).reverse().forEach(function(e){if(e.driver&&e.vehicle&&!vh[e.driver])vh[e.driver]=[e.vehicle]})}catch(e){}
+ var lab=function(d){return(vh[d]?vh[d].join(" / ")+" \u00b7 ":"")+d};
+ var nm=Object.keys(o).sort(function(a,b){var x=(vh[a]?"0":"1")+lab(a),y=(vh[b]?"0":"1")+lab(b);return x<y?-1:x>y?1:0});
+ s.innerHTML='<option value="">Select vehicle | driver\u2026</option>'+nm.map(function(v){return'<option value="'+esc(v)+'">'+esc(lab(v))+"</option>"}).join("");
  if(nm.indexOf(cv)>=0)s.value=cv;btns()}
 function per(){var k=$("dsp").value,td=today();
  if(k==="month"){var m=$("dsm").value||td.slice(0,7);return{lab:"Month "+m,t:function(x){return String(x).slice(0,7)===m}}}
@@ -3603,6 +3624,15 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.8.9",title:"Statement filters on one line",items:[
+  {t:"Same line",d:"In the Vehicle / Driver Statement the vehicle | driver list now sits next to the Period filter."}
+ ]},
+ {v:"1.8.8",title:"Vehicle / Driver Statement",items:[
+  {t:"Vehicle / Driver Statement",d:"Renamed, the list now shows plate \u00b7 driver, and the preview is more compact."}
+ ]},
+ {v:"1.8.7",title:"Speed check tests",items:[
+  {t:"Test switches",d:"Speed check now splits tab opening into script and drawing time and has two test switches for speed fixes."}
+ ]},
  {v:"1.8.6",title:"Faster tab opening",items:[
   {t:"Tabs open instantly",d:"Removed the slide-in animation when a page opens, which was heavy on some phones."},
   {t:"Speed check upgrade",d:"Now also times the screen builders so slow parts can be found."}
@@ -3750,7 +3780,7 @@ if(document.readyState==="complete")setTimeout(run,600);else window.addEventList
    slow taps, and taps that never became a click ("tap twice"). Copy the report to share it. */
 (function(){
 var KEY="ftSpeed",ONK="ftSpeedOn",TABS=["enter","log","advt","unp","pvt","pvadd","psl","pdt","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","seed","stg","hist"];
-var dirty=false,fns={},wr=[],ev=[],on=false,po=null,smp=null,last=0,pend=null,saveT=0,box=null,pre=null,tg=null,uiT=0;
+var exp={a:false,b:false},dirty=false,fns={},wr=[],ev=[],on=false,po=null,smp=null,last=0,pend=null,saveT=0,box=null,pre=null,tg=null,uiT=0;
 var BTN='button[data-t],button[data-g],button[data-go],#hst';
 function now(){return performance.now()}
 function lg(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -3760,11 +3790,11 @@ function nm(b){var d=b.dataset||{};return d.t||d.g||d.go||b.id||(b.textContent||
 function tb(t){return t&&t.closest?t.closest(BTN):null}
 function hhmmss(t){var d=new Date(t),p=function(n){return(n<10?"0":"")+n};return p(d.getHours())+":"+p(d.getMinutes())+":"+p(d.getSeconds())}
 function save(){clearTimeout(saveT);saveT=setTimeout(function(){ls(KEY,JSON.stringify(ev))},1500)}
-function add(k,ms,x){ev.push({t:Date.now(),k:k,ms:Math.round(ms),tab:tabName(),x:x||""});if(ev.length>200)ev.shift();save();dirty=true}
+function add(k,ms,x,j){ev.push({t:Date.now(),k:k,ms:Math.round(ms),tab:tabName(),x:x||"",j:j==null?-1:Math.round(j)});if(ev.length>200)ev.shift();save();dirty=true}
 function pu(e){if(!e.isTrusted)return;var b=tb(e.target);if(!b)return;var p={b:b,t:now(),seen:false};pend=p;setTimeout(function(){if(on&&!p.seen)add("miss",450,nm(b))},450)}
 function cl(e){if(!e.isTrusted)return;var b=tb(e.target);if(!b)return;var t=now();
  if(pend&&pend.b===b&&!pend.seen){pend.seen=true;var d=t-pend.t;if(d>250)add("slowtap",d,nm(b))}
- var s=t,n=nm(b);requestAnimationFrame(function(){requestAnimationFrame(function(){add("open",now()-s,n)})})}
+ var s=t,n=nm(b),j=-1;setTimeout(function(){j=now()-s},0);requestAnimationFrame(function(){requestAnimationFrame(function(){add("open",now()-s,n,j)})})}
 function vc(){last=now()}
 function fstat(n,d){var r=fns[n]||(fns[n]={n:0,sum:0,max:0});r.n++;r.sum+=d;if(d>r.max)r.max=d;if(d>=40)add("fn",d,n)}
 function wrapAll(){wr=[];Object.keys(window).forEach(function(n){if(!/^(render[A-Za-z0-9_]*|winchRender|winchFill)$/.test(n))return;var f=window[n];if(typeof f!=="function"||f.__sp)return;
@@ -3787,18 +3817,22 @@ function summary(){var s=stats(),L=[],w;
  L.push("Taps that did not register: "+s.miss.length+" of "+(s.miss.length+s.open.length)+" tab taps");
  if(s.miss.length){var c={};s.miss.forEach(function(e){c[e.x]=(c[e.x]||0)+1});L.push("  tabs: "+Object.keys(c).map(function(k){return k+" x"+c[k]}).join(", "))}
  L.push("Slow taps (click arrived 250 ms+ late): "+s.slowtap.length);
- if(s.open.length){var by={};s.open.forEach(function(e){var r=by[e.x]||(by[e.x]={n:0,sum:0,max:0});r.n++;r.sum+=e.ms;if(e.ms>r.max)r.max=e.ms});
+ if(s.open.length){var by={};s.open.forEach(function(e){var r=by[e.x]||(by[e.x]={n:0,sum:0,max:0,js:0,jn:0});r.n++;r.sum+=e.ms;if(e.ms>r.max)r.max=e.ms;if(e.j>=0){r.js+=e.j;r.jn++}});
   L.push("Tab open time (tap to screen), average / slowest:");
-  Object.keys(by).sort(function(a,b){return by[b].max-by[a].max}).forEach(function(k){var r=by[k];L.push("  "+k+": "+Math.round(r.sum/r.n)+" / "+r.max+" ms ("+r.n+" taps)")})}
+  Object.keys(by).sort(function(a,b){return by[b].max-by[a].max}).forEach(function(k){var r=by[k];L.push("  "+k+": "+Math.round(r.sum/r.n)+" / "+r.max+" ms ("+r.n+" taps)"+(r.jn?", script "+Math.round(r.js/r.jn)+" ms, drawing "+Math.max(0,Math.round(r.sum/r.n-r.js/r.jn))+" ms":""))})}
  return L.join("\n")}
 function fsum(){var k=Object.keys(fns);if(!k.length)return"";k.sort(function(a,b){return fns[b].sum-fns[a].sum});
  return"\n\nScreen builders (calls / total / slowest):\n"+k.slice(0,8).map(function(n){var r=fns[n];return"  "+n+": "+r.n+" / "+Math.round(r.sum)+" / "+Math.round(r.max)+" ms"}).join("\n")}
 function dev(){var n=navigator,c=n.connection||{},m=document.querySelector('meta[name="app-version"]');
- return["App version: "+(m?m.content:"?"),"Phone: "+(n.userAgent||"").replace(/^Mozilla\/5.0 /,"").slice(0,90),"Memory: "+(n.deviceMemory||"?")+" GB, cores: "+(n.hardwareConcurrency||"?"),"Network: "+(c.effectiveType||"?")+(window.NETREAL===false?" (offline)":"")].join("\n")}
+ return["App version: "+(m?m.content:"?"),"Phone: "+(n.userAgent||"").replace(/^Mozilla\/5.0 /,"").slice(0,90),"Memory: "+(n.deviceMemory||"?")+" GB, cores: "+(n.hardwareConcurrency||"?"),"Network: "+(c.effectiveType||"?")+(window.NETREAL===false?" (offline)":""),"Page size: "+document.querySelectorAll("*").length+" elements, Reports: "+document.querySelectorAll("#ov *").length+", Trips: "+document.querySelectorAll("#log *").length,"Test switches on: "+((exp.a?"A ":"")+(exp.b?"B":"")||"none")].join("\n")}
 function report(n){var rec=ev.slice(-(n||40)).map(function(e){return hhmmss(e.t)+"  "+e.k+(e.k==="open"||e.k==="miss"||e.k==="slowtap"||e.k==="fn"?" ["+e.x+"]":"")+"  "+e.ms+" ms  on "+e.tab}).join("\n");
  return"SPEED CHECK REPORT\n"+dev()+"\n\n"+summary()+fsum()+"\n\nLatest events:\n"+(rec||"(none yet)")}
 function ui(){if(!box)return;tg.textContent=on?"Stop recording":"Start recording";box.querySelector(".spst").textContent=on?"Recording. Use the app normally, then come back here.":"Not recording.";
  var st=document.getElementById("stg");if(!on||(st&&!st.classList.contains("hide")))pre.textContent=report(10);dirty=false}
+function applyExp(){var st=document.getElementById("spexp");if(!st){st=document.createElement("style");st.id="spexp";document.head.appendChild(st)}
+ var c="";if(exp.a)c+="#ov>.card,#hist>.card{content-visibility:auto;contain-intrinsic-size:auto 600px}";
+ if(exp.b)c+="#logl .wrap th:first-child,#logl .wrap td:first-child,#ftab th:first-child,#ftab td:first-child,table.ov th:first-child,table.ov td:first-child{position:static!important;box-shadow:none!important}";
+ st.textContent=c}
 function copyText(t){try{if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t)}catch(e){}
  return new Promise(function(res,rej){try{var a=document.createElement("textarea");a.value=t;a.style.cssText="position:fixed;opacity:0";document.body.appendChild(a);a.select();var ok=document.execCommand("copy");document.body.removeChild(a);ok?res():rej()}catch(e){rej(e)}})}
 function build(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout(function(){build(n+1)},300);return}if(document.getElementById("spchk"))return;
@@ -3810,8 +3844,14 @@ function build(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout
  var cp=document.createElement("button");cp.className="btn";cp.textContent="Copy report";cp.onclick=function(){copyText(report(40)).then(function(){cp.textContent="Copied";setTimeout(function(){cp.textContent="Copy report"},1500)},function(){cp.textContent="Could not copy";setTimeout(function(){cp.textContent="Copy report"},1500)})};
  var cr=document.createElement("button");cr.className="btn";cr.textContent="Clear";cr.onclick=function(){ev=[];fns={};ls(KEY,"[]");ui()};
  row.appendChild(cp);row.appendChild(cr);
+ var ex=document.createElement("div");ex.style.cssText="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px";
+ var ta=document.createElement("button"),tb2=document.createElement("button");ta.className=tb2.className="btn";
+ var lab=function(){ta.textContent="Test A: "+(exp.a?"ON":"off");tb2.textContent="Test B: "+(exp.b?"ON":"off")};lab();
+ ta.onclick=function(){exp.a=!exp.a;applyExp();lab();ui()};tb2.onclick=function(){exp.b=!exp.b;applyExp();lab();ui()};
+ ex.appendChild(ta);ex.appendChild(tb2);
+ var xn=document.createElement("div");xn.className="mut";xn.style.cssText="font-size:12px;margin-top:6px";xn.textContent="Test switches try speed fixes. They reset when you reload the app.";
  pre=document.createElement("div");pre.style.cssText="margin-top:10px;font-size:12px;white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere";
- box.appendChild(h);box.appendChild(p);box.appendChild(tg);box.appendChild(row);box.appendChild(pre);s.appendChild(box);
+ box.appendChild(h);box.appendChild(p);box.appendChild(tg);box.appendChild(row);box.appendChild(ex);box.appendChild(xn);box.appendChild(pre);s.appendChild(box);
  try{ev=JSON.parse(lg(KEY)||"[]")||[]}catch(e){ev=[]}
  if(lg(ONK)==="1")start();else ui()}
 (function init(n){if(window.fbIsOwner===undefined){if(n<240)setTimeout(function(){init(n+1)},500);return}if(!window.fbIsOwner)return;build(0)})(0);
