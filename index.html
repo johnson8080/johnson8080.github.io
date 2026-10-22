@@ -573,6 +573,14 @@ return{
 }})();</script>
 <script>try{var h=+localStorage.getItem("fsph:"+screen.width+"x"+screen.height);if(h>200&&h<5000)document.documentElement.style.setProperty("--sph",h+"px")}catch(e){}</script>
 </head><body>
+<div id="flk" style="display:none;position:fixed;inset:0;z-index:2147483000;background:var(--bg,#0f1626);color:var(--tx,#fff);flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;font-family:inherit">
+<svg viewBox="0 0 24 24" width="76" height="76" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11c0 3-.5 5.5-1.5 8"/><path d="M8 11a4 4 0 1 1 8 0c0 2.6-.3 4.8-1 6.6"/><path d="M5 11a7 7 0 0 1 14 0c0 1.6-.1 3.1-.4 4.5"/><path d="M5.2 15.4c-.2-1.2-.2-2.6-.2-4.4"/><path d="M8.5 20.5c.7-1.6 1.1-3.6 1.3-6"/></svg>
+<div style="font-size:22px;font-weight:700">App locked</div>
+<div id="flkm" style="opacity:.75;font-size:14px;max-width:280px">Use your fingerprint or phone screen lock to open Fuel &amp; Trips.</div>
+<button type="button" id="flkb" class="btn" style="min-width:230px">Unlock with fingerprint</button>
+<button type="button" id="flko" style="display:none;background:none;border:0;color:inherit;opacity:.8;text-decoration:underline;font-size:14px">Can't unlock? Sign out</button>
+</div>
+<script>try{if(localStorage.getItem("ftFpLock")==="1")document.getElementById("flk").style.display="flex"}catch(e){}</script>
 <div id="sp" role="status" aria-live="polite" aria-label="Loading Fuel and Trips"><div class="sp-probe"></div><div class="sp-c"><div class="sp-spin"><div class="sp-halo"></div><div class="sp-pr"><div class="sp-tr"></div><div class="sp-h sp-hr"><div class="sp-f" id="spr"></div></div><div class="sp-h sp-hl"><div class="sp-f" id="spl"></div></div></div><svg class="sp-drop" viewBox="0 0 24 24" aria-hidden="true"><path d="M12,2.09C12,2.09 5,8.14 5,13.5C5,17.36 8.13,20.5 12,20.5C15.87,20.5 19,17.36 19,13.5C19,8.14 12,2.09 12,2.09M12,18.5C9.24,18.5 7,16.26 7,13.5C7,12.5 7.42,11.25 8,10.25L12,5.25L16,10.25C16.58,11.25 17,12.5 17,13.5C17,16.26 14.76,18.5 12,18.5Z"/></svg></div><div class="sp-t">FUEL &amp; TRIPS</div><div class="sp-m"><span>Trips</span><span class="sp-dot">•</span><span>Fuel</span><span class="sp-dot">•</span><span>Salary</span></div><div class="sp-p"><div class="sp-b" id="spb"></div></div><div class="sp-cap" id="spcap"><div class="sp-ph" id="spph">Initializing</div><div class="sp-dt" id="spdt">Warming up the engine</div></div></div></div>
 <script>
 /* Opening screen. Real progress: page parsed -> signed in -> rates and data loaded -> automatic backup finished (it runs behind this screen, so its pop-up never shows over the app). The ring fills together with the bar. */
@@ -773,7 +781,8 @@ show(0);raf=requestAnimationFrame(tick);
 <div class="setrow"><button type="button" class="btn" id="annpost">Post</button><button type="button" class="x" id="annclr">Clear announcement</button></div>
 </div></div>
 <div class="ssec" id="s-sec"><div class="sh2">Security</div><div class="ssub">Applies on this device.</div>
-<div class="card sc"><div class="setrow"><div class="st"><b>Password for edits &amp; deletes</b><small id="spwnote">Off. Edits and deletes go through without asking. Turning it off needs your password.</small></div><button type="button" class="sw" id="spwsw" role="switch" aria-checked="false" aria-label="Ask password for edits and deletes"><i></i></button></div></div></div>
+<div class="card sc"><div class="setrow"><div class="st"><b>Password for edits &amp; deletes</b><small id="spwnote">Off. Edits and deletes go through without asking. Turning it off needs your password.</small></div><button type="button" class="sw" id="spwsw" role="switch" aria-checked="false" aria-label="Ask password for edits and deletes"><i></i></button></div>
+<div class="setrow"><div class="st"><b>Fingerprint lock<span class="nw">NEW</span></b><small id="sfpnote">Off. Ask for your fingerprint (or phone screen lock) when the app opens and when you come back to it.</small></div><button type="button" class="sw" id="sfpsw" role="switch" aria-checked="false" aria-label="Fingerprint lock"><i></i></button></div></div></div>
 <div class="ssec" id="s-lock"><div class="sh2">Month lock</div><div class="ssub">Lock a finished month so it cannot be changed.</div><div class="card sc" id="lockc"></div></div>
 <div class="ssec" id="s-data"><div class="sh2">Data &amp; backup</div><div class="ssub">Keep a copy outside the app.</div><div id="bkhost"></div></div>
 <div class="ssec" id="s-app"><div class="sh2">App</div><div class="ssub">Look and feel.</div>
@@ -2287,14 +2296,17 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){try{navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}})}</script>
 <style>html,body{overscroll-behavior-y:none}
-#ptr{position:fixed;left:50%;top:0;height:34px;padding:0 14px;border-radius:999px!important;background:var(--card);border:1px solid var(--ac);box-shadow:0 2px 12px rgba(0,0,0,.3);display:flex;align-items:center;gap:8px;z-index:7;opacity:0;pointer-events:none;white-space:nowrap;font-size:12px;font-weight:700;letter-spacing:.2px;color:var(--ac);transform:translate(-50%,-60px)}
-#ptr .pa{width:16px;height:16px;flex:0 0 auto;transition:transform .18s ease}
-#ptr.rdy .pa{transform:rotate(180deg)}
-#ptr .pd{display:none;gap:3px;align-items:center}
-#ptr.spin .pd{display:inline-flex}#ptr.spin .pa{display:none}
-#ptr .pd i{display:block;width:4px;height:4px;border-radius:50%!important;background:var(--ac);animation:ptd 1.2s ease-in-out infinite}
-#ptr .pd i:nth-child(1){animation-delay:0s!important}#ptr .pd i:nth-child(2){animation-delay:.25s!important}#ptr .pd i:nth-child(3){animation-delay:.5s!important}
-@keyframes ptd{0%{opacity:.15;transform:scale(.6)}20%{opacity:1;transform:scale(1.15)}45%{opacity:.15;transform:scale(.6)}100%{opacity:.15;transform:scale(.6)}}@media(prefers-reduced-motion:reduce){#ptr .pd i{animation:ptd 1.2s ease-in-out infinite!important}#ptr .pa{transition:transform .18s ease!important}}.dr2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dr2>div{min-width:0}.dr2 input,.dr2 select{width:100%!important;min-width:0;box-sizing:border-box}
+#ptr{position:fixed;left:50%;top:0;height:44px;padding:4px 16px 4px 4px;box-sizing:border-box;border-radius:999px!important;background:var(--card);border:1px solid var(--ln);box-shadow:0 4px 16px rgba(0,0,0,.28);display:flex;align-items:center;gap:10px;z-index:7;opacity:0;pointer-events:none;white-space:nowrap;font-size:12.5px;font-weight:700;letter-spacing:.3px;color:var(--tx);transform:translate(-50%,-60px);transition:border-color .2s,box-shadow .2s}
+#ptr .pr{width:36px;height:36px;flex:0 0 auto;display:block;overflow:visible}
+#ptr .tk{stroke:var(--ln)}#ptr .pg{stroke:var(--ac);stroke-linecap:round;transform:rotate(-90deg);transform-origin:18px 18px}
+#ptr .dp{stroke:var(--ac);fill:none;stroke-width:1.8;stroke-linejoin:round}#ptr .df{fill:var(--ac)}
+#ptr.rdy{border-color:var(--ac);box-shadow:0 0 0 3px rgba(120,160,255,.22),0 4px 18px rgba(0,0,0,.32)}#ptr.rdy .pt{color:var(--ac)}
+#ptr.spin .pg{stroke-dasharray:26 68!important;stroke-dashoffset:0!important;animation:ptspin .8s linear infinite}
+#ptr.spin .dg{animation:ptbob 1s ease-in-out infinite}#ptr.spin .df{clip-path:none}
+@media(prefers-reduced-motion:reduce){#ptr.spin .pg{animation:ptspin .8s linear infinite!important}#ptr.spin .dg{animation:ptbob 1s ease-in-out infinite!important}}
+@keyframes ptspin{from{transform:rotate(-90deg)}to{transform:rotate(270deg)}}
+@keyframes ptbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+.dr2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dr2>div{min-width:0}.dr2 input,.dr2 select{width:100%!important;min-width:0;box-sizing:border-box}
 .hd .onb{display:none;height:36px;box-sizing:border-box;min-width:44px;padding:0 10px;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ln);border-radius:6px;background:var(--card);color:var(--tx);font-size:11px;font-weight:700;line-height:1;cursor:pointer}.hd .onb.on{display:inline-flex}.onb .od{width:8px;height:8px;border-radius:50%;background:#6b7280;flex:0 0 auto}#onp{position:fixed;z-index:9990;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);width:min(360px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card);color:var(--tx);font-size:12.5px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
 
 #onp{--tx:#b6ffb6;--mut:#4fa86a;--ln:rgba(0,255,110,.2);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;background:#040906;color:#b6ffb6;border:1px solid #0f4a2a;border-radius:0;padding:14px 16px;text-shadow:none;box-shadow:0 6px 20px rgba(0,0,0,.6)}
@@ -2318,10 +2330,10 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 </style>
 <script>(function(){
 var TH=56,MAXP=84,HOLD=52,pull=0,sx=0,sy=0,armed=false,on=false,busy=false,el=document.createElement("div"),lb;
-el.id="ptr";el.innerHTML='<svg class="pa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg><span class="pt">Pull to refresh</span><span class="pd"><i></i><i></i><i></i></span>';document.body.appendChild(el);lb=el.querySelector(".pt");
+el.id="ptr";el.innerHTML='<svg class="pr" viewBox="0 0 36 36" aria-hidden="true"><defs><clipPath id="ptrc"><rect id="ptrk" x="0" y="25.5" width="36" height="0"/></clipPath></defs><circle class="tk" cx="18" cy="18" r="15" fill="none" stroke-width="2.5"/><circle class="pg" cx="18" cy="18" r="15" fill="none" stroke-width="2.5" stroke-dasharray="94.25" stroke-dashoffset="94.25"/><g class="dg"><path class="df" clip-path="url(#ptrc)" d="M18 9.5c-3.4 4.4-5.8 7.4-5.8 10.2a5.8 5.8 0 0 0 11.6 0C23.8 16.9 21.4 13.9 18 9.5z"/><path class="dp" d="M18 9.5c-3.4 4.4-5.8 7.4-5.8 10.2a5.8 5.8 0 0 0 11.6 0C23.8 16.9 21.4 13.9 18 9.5z"/></g></svg><span class="pt">Pull down</span>';document.body.appendChild(el);lb=el.querySelector(".pt");var pg=el.querySelector(".pg"),rk=el.querySelector("#ptrk");
 function paint(p,spin){var h=document.querySelector(".hd");document.body.style.marginTop=p+"px";if(h)h.style.transform=p?"translateY("+(-p)+"px)":"";
- var hh=h?Math.max(0,h.getBoundingClientRect().bottom):0;el.style.top=hh+"px";el.style.opacity=p>3?"1":"0";el.style.transform="translate(-50%,"+((p-34)/2)+"px)";
- if(!spin){var rd=p>=TH;el.classList.toggle("rdy",rd);lb.textContent=rd?"Release to refresh":"Pull to refresh"}}
+ var hh=h?Math.max(0,h.getBoundingClientRect().bottom):0;el.style.top=hh+"px";el.style.opacity=p>3?"1":"0";var pr=Math.min(1,p/TH);el.style.transform="translate(-50%,"+((p-44)/2)+"px) scale("+(0.75+0.25*pr)+")";
+ if(!spin){var rd=p>=TH;if(rd&&!el.classList.contains("rdy")){try{if(navigator.vibrate)navigator.vibrate(12)}catch(e){}}el.classList.toggle("rdy",rd);lb.textContent=rd?"Release to refresh":"Pull down";pg.style.strokeDashoffset=94.25*(1-pr);rk.setAttribute("y",25.5-16*pr);rk.setAttribute("height",16*pr+1)}}
 function settle(p){var b=document.body,h=document.querySelector(".hd");b.style.transition="margin-top .22s ease,background .3s";if(h)h.style.transition="transform .22s ease";paint(p,busy);if(p===0)el.style.opacity="0";setTimeout(function(){b.style.transition="";if(h)h.style.transition="";if(p===0){b.style.marginTop="";if(h)h.style.transform=""}},260)}
 function blocked(t){if(busy)return true;if(document.documentElement.classList.contains("dlock"))return true;if((window.pageYOffset||document.documentElement.scrollTop||0)>0)return true;
  var m=document.getElementById("modal");if(m&&!m.classList.contains("hide"))return true;if(document.documentElement.classList.contains("mlock"))return true;
@@ -2329,8 +2341,10 @@ function blocked(t){if(busy)return true;if(document.documentElement.classList.co
  if(t&&t.closest&&t.closest("input,textarea,select"))return true;
  for(var n=t;n&&n!==document.body&&n.nodeType===1;n=n.parentElement){if(n.scrollTop>0)return true}return false}
 function online(){return window.netProbe?window.netProbe():Promise.resolve(navigator.onLine!==false)}
-function done(){busy=false;el.classList.remove("spin");settle(0)}
-function run(){busy=true;el.classList.remove("rdy");lb.textContent="Refreshing…";el.classList.add("spin");settle(HOLD);
+var raf=0;function spinStart(){cancelAnimationFrame(raf);var t0=performance.now();(function f(t){pg.style.transform="rotate("+(-90+((t-t0)*0.45)%360)+"deg)";raf=requestAnimationFrame(f)})(t0)}
+function spinStop(){cancelAnimationFrame(raf);pg.style.transform=""}
+function done(){busy=false;el.classList.remove("spin");spinStop();settle(0)}
+function run(){busy=true;el.classList.remove("rdy");lb.textContent="Refreshing…";el.classList.add("spin");spinStart();settle(HOLD);
  var safety=setTimeout(done,9000);
  Promise.all([online(),new Promise(function(r){setTimeout(r,1800)})]).then(function(a){
   if(a[0]){var fl=0;try{sessionStorage.setItem("fleetPtr","1");fl=sessionStorage.getItem("fleetPtr")==="1"}catch(e){}if(!fl){try{window.name="fleetPtr1";fl=1}catch(e){}}if(!fl)try{window.netMsg("Refreshed",false,3000)}catch(e){}
@@ -3858,4 +3872,33 @@ function build(n){var s=document.getElementById("stg");if(!s){if(n<30)setTimeout
 window.ftSpeed={start:start,stop:stop,report:report,events:function(){return ev}};
 })();
 </script>
+<script>(function(){
+var KEY="ftFpLock",KID="ftFpId",AWAY=30000,ov=$("flk"),btn=$("flkb"),msg=$("flkm"),so=$("flko"),sw=$("sfpsw"),nt=$("sfpnote"),busy=false,hid=0,fails=0;
+var OFF="Off. Ask for your fingerprint (or phone screen lock) when the app opens and when you come back to it.",ON="On. Asks for your fingerprint (or phone screen lock) when the app opens and after you have been away for a short while.";
+function on(){try{return localStorage.getItem(KEY)==="1"&&!!localStorage.getItem(KID)}catch(e){return false}}
+function rnd(n){var a=new Uint8Array(n);crypto.getRandomValues(a);return a}
+function b64(b){var s="",a=new Uint8Array(b),i;for(i=0;i<a.length;i++)s+=String.fromCharCode(a[i]);return btoa(s)}
+function unb64(t){var s=atob(t),a=new Uint8Array(s.length),i;for(i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a}
+function say(t){if(window.toast)window.toast(t);else alert(t)}
+function supported(){return!!(window.PublicKeyCredential&&navigator.credentials&&window.isSecureContext!==false)}
+function verify(){return navigator.credentials.get({publicKey:{challenge:rnd(32),allowCredentials:[{type:"public-key",id:unb64(localStorage.getItem(KID)),transports:["internal"]}],userVerification:"required",timeout:60000}})}
+function show(){if(!on())return;ov.style.display="flex";msg.textContent="Use your fingerprint or phone screen lock to open Fuel & Trips.";ask()}
+function hide(){ov.style.display="none";fails=0;so.style.display="none"}
+function ask(){if(busy)return;busy=true;msg.style.opacity=".75";
+ verify().then(function(){busy=false;hid=0;hide()},function(e){busy=false;fails++;msg.textContent=(e&&e.name==="NotAllowedError")?"Not unlocked. Tap the button to try again.":"Could not check your fingerprint. Tap the button to try again.";if(fails>=2)so.style.display="inline-block"})}
+btn.onclick=ask;
+so.onclick=function(){if(!window.fbSignOut){say("Wait for the app to finish loading, then try again");return}
+ if(!confirm("Sign out and turn off the fingerprint lock? You will need your email and password to sign in again."))return;
+ try{localStorage.removeItem(KEY);localStorage.removeItem(KID)}catch(e){}window.fbSignOut()};
+function paint(){var c=on();if(sw){sw.setAttribute("aria-checked",c?"true":"false");nt.textContent=c?ON:OFF}}
+if(sw)sw.onclick=function(){if(busy)return;
+ if(on()){busy=true;verify().then(function(){busy=false;try{localStorage.removeItem(KEY);localStorage.removeItem(KID)}catch(e){}paint();say("Fingerprint lock off")},function(){busy=false;say("Not turned off. Your fingerprint is needed to turn it off.")});return}
+ if(!supported()){say("This phone or browser does not support the fingerprint lock");return}
+ var chk=window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable?window.PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable():Promise.resolve(true);
+ busy=true;
+ chk.then(function(ok){if(!ok){busy=false;say("Set up a fingerprint or screen lock in your phone settings first");return}
+  return navigator.credentials.create({publicKey:{challenge:rnd(32),rp:{name:"Fuel & Trips"},user:{id:rnd(16),name:"fuel-trips",displayName:"Fuel & Trips"},pubKeyCredParams:[{type:"public-key",alg:-7},{type:"public-key",alg:-257}],authenticatorSelection:{authenticatorAttachment:"platform",userVerification:"required",residentKey:"discouraged"},attestation:"none",timeout:60000}}).then(function(c){busy=false;try{localStorage.setItem(KID,b64(c.rawId));localStorage.setItem(KEY,"1")}catch(e){say("Could not save the lock on this device");return}paint();say("Fingerprint lock on")})}).catch(function(e){busy=false;say(e&&e.name==="NotAllowedError"?"Cancelled. The fingerprint lock is still off.":"Could not turn on the fingerprint lock")})};
+document.addEventListener("visibilitychange",function(){if(busy)return;if(document.visibilityState==="hidden"){hid=Date.now()}else if(on()&&hid&&Date.now()-hid>AWAY){hid=0;show()}else hid=0});
+paint();if(on()&&ov.style.display==="flex")setTimeout(ask,400);
+})();</script>
 </body></html>
