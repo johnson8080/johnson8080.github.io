@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2.0.1">
+<meta name="app-version" content="2.0.3">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -3329,16 +3329,34 @@ function lInfo(e){var pay=paidOf(e.ts,null,"ldr"),o=lOwed(e),p=r2((+e.ldep||0)+p
 window.lCalc=lCalc;
 window.dInfo=dInfo;window.lInfo=lInfo;
 function drawVP(){refreshPay()}
-function seedPay(id,k){var AA=load();drvCalc(AA);var e=AA.filter(function(x){return String(x.ts)===String(id)})[0];if(!e)return;
+function seedPay(id,k){if(typeof needRates=="function"&&needRates()){gatePop();return}var AA=load();drvCalc(AA);var e=AA.filter(function(x){return String(x.ts)===String(id)})[0];if(!e)return;
  var T={veh:"Pay vehicle",drv:"Pay driver",ldr:"Pay loader"}[k]||"Pay",
  un=function(){return k==="veh"?vInfo(e).u:k==="drv"?dInfo(e).u:lInfo(e).u};
- $("mbody").innerHTML='<b style="font-size:18px">'+T+'</b><div class="mut">'+esc(k==="drv"?(e.driver||e.vehicle):e.vehicle)+" \u00b7 "+esc(e.date)+'</div><label>Amount paid</label><input type="number" inputmode="decimal" id="vpamt"><div class="mut" id="vpun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="vpdate" value="'+today()+'"><div class="b2"><button class="pr" id="vpOK">Confirm paid</button><button id="vpNo">Cancel</button></div>';
+ $("mbody").innerHTML='<b style="font-size:18px">'+T+'</b><div class="mut">'+esc(k==="drv"?(e.driver||e.vehicle):e.vehicle)+" \u00b7 "+esc(e.date)+'</div><label>Amount paid</label><input type="number" inputmode="decimal" id="vpamt"><div class="mut" id="vpun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="vpdate" value="'+today()+'"><div id="vpwarn" class="neg" style="margin-top:8px;font-size:14px"></div><div class="b2"><button class="pr" id="vpOK">Confirm paid</button><button id="vpNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("vpNo").onclick=closeM;var u0=un();$("vpamt").value=u0>0?u0:"";
  $("vpun").textContent=u0==null?"Type the amount you are paying the loader.":"Unpaid for this entry: "+fmt(u0)+". Lower the amount for a part payment.";
  $("vpOK").onclick=function(){var a=n($("vpamt").value);if(!(a>0)){uiAlert("Enter an amount");return}var pd=$("vpdate").value||today();
   if(window.isLocked&&isLocked(pd)){uiAlert("That month is locked. Unlock it in Settings → Month lock first.");return}
-  var u1=un();if(u1!=null&&a>u1+0.001&&$("vpOK").dataset.c!=="1"){$("vpOK").dataset.c="1";$("vpOK").textContent="Amount is more than unpaid. Tap again";return}
-  var A=loadP();A.push({id:e.ts,k:k,amt:a,date:pd,ts:Date.now()});if(!putP(A)){toast("Could not save on this device",true);return}try{seedAct.pay(e,k,a)}catch(x){}closeM();refreshPay();draw();toast(({veh:"Vehicle",drv:"Driver",ldr:"Loader"}[k]||"")+" pay marked paid")}}
+  var u1=un(),wm=[];if(u1!=null&&a>u1+0.001)wm.push("Amount "+fmt(a)+" is more than the unpaid "+fmt(u1)+".");if(pd>today())wm.push("Date "+esc(pd)+" is in the future.");if(wm.length&&$("vpOK").dataset.c!==wm.join("|")){$("vpOK").dataset.c=wm.join("|");$("vpwarn").innerHTML=wm.join("<br>")+"<br>Tap again to confirm.";$("vpOK").textContent="Confirm anyway";return}$("vpOK").disabled=true;
+  var A=loadP();A.push({id:e.ts,k:k,amt:a,date:pd,by:window.me||"local",ts:Date.now()});if(!putP(A)){$("vpOK").disabled=false;toast("Could not save on this device",true);return}try{seedAct.pay(e,k,a)}catch(x){}closeM();refreshPay();draw();toast(({veh:"Vehicle",drv:"Driver",ldr:"Loader"}[k]||"")+" pay marked paid")}}
+/* pay several trips of one person in one go: the amount is split over the trips, oldest first */
+function seedPayMany(ids,k){if(typeof needRates=="function"&&needRates()){gatePop();return}var AA=load();drvCalc(AA);var L=ids.map(function(id){return AA.filter(function(x){return String(x.ts)===String(id)})[0]}).filter(Boolean).sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)});
+ if(!L.length)return;if(L.length===1){seedPay(L[0].ts,k);return}
+ var T={veh:"Pay vehicle",drv:"Pay driver",ldr:"Pay loader"}[k]||"Pay",
+  un=function(e){var u=k==="veh"?vInfo(e).u:k==="drv"?dInfo(e).u:lInfo(e).u;return u>0?u:0},
+  tot=function(){var t=0;L.forEach(function(e){t+=un(e)});return r2(t)},
+  nm=k==="drv"?(L[0].driver||L[0].vehicle):L[0].vehicle;
+ $("mbody").innerHTML='<b style="font-size:18px">'+T+'</b><div class="mut">'+esc(nm)+" \u00b7 "+L.length+' trips \u00b7 '+esc(L[0].date)+(L[L.length-1].date!==L[0].date?" to "+esc(L[L.length-1].date):"")+'</div><label>Amount paid</label><input type="number" inputmode="decimal" id="vpamt"><div class="mut" id="vpun" style="margin-top:6px"></div><label>Date paid</label><input type="date" id="vpdate" value="'+today()+'"><div id="vpwarn" class="neg" style="margin-top:8px;font-size:14px"></div><div class="b2"><button class="pr" id="vpOK">Confirm paid</button><button id="vpNo">Cancel</button></div>';
+ $("modal").classList.remove("hide");$("vpNo").onclick=closeM;var u0=tot();$("vpamt").value=u0>0?u0:"";
+ $("vpun").textContent="Unpaid for these "+L.length+" trips: "+fmt(u0)+". Lower the amount for a part payment. It clears the oldest trips first.";
+ $("vpOK").onclick=function(){var a=n($("vpamt").value);if(!(a>0)){uiAlert("Enter an amount");return}var pd=$("vpdate").value||today();
+  if(window.isLocked&&isLocked(pd)){uiAlert("That month is locked. Unlock it in Settings \u2192 Month lock first.");return}
+  var u1=tot(),wm=[];if(a>u1+0.001)wm.push("Amount "+fmt(a)+" is more than the unpaid "+fmt(u1)+".");if(pd>today())wm.push("Date "+esc(pd)+" is in the future.");if(wm.length&&$("vpOK").dataset.c!==wm.join("|")){$("vpOK").dataset.c=wm.join("|");$("vpwarn").innerHTML=wm.join("<br>")+"<br>Tap again to confirm.";$("vpOK").textContent="Confirm anyway";return}$("vpOK").disabled=true;
+  var rem=a,al=[];L.forEach(function(e){var u=un(e);if(!(u>0)||rem<=0.004)return;var x=r2(Math.min(u,rem));al.push({e:e,x:x});rem=r2(rem-x)});
+  if(!al.length){$("vpOK").disabled=false;uiAlert("Nothing unpaid");return}if(rem>0.004)al[al.length-1].x=r2(al[al.length-1].x+rem);
+  var A=loadP(),now=Date.now();al.forEach(function(z,i){A.push({id:z.e.ts,k:k,amt:z.x,date:pd,by:window.me||"local",ts:now+i})});
+  if(!putP(A)){$("vpOK").disabled=false;toast("Could not save on this device",true);return}al.forEach(function(z){try{seedAct.pay(z.e,k,z.x)}catch(x){}});closeM();refreshPay();draw();toast(({veh:"Vehicle",drv:"Driver",ldr:"Loader"}[k]||"")+" pay marked paid")}}
+window.seedPayMany=seedPayMany;
 function refreshPay(){["pdrv","pldr","pveh"].forEach(function(g){if(window.seedDraw)window.seedDraw(g)})}
 if($("sdpg"))$("sdpg").addEventListener("click",function(ev){var b=ev.target.closest&&ev.target.closest("button[data-vp]");if(b)seedPay(b.dataset.vp,b.dataset.k||"veh")});
 window.drawVP=drawVP;
@@ -3743,6 +3761,12 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"2.0.3",title:"Seed payments work like the others",items:[
+  {t:"Same payment checks everywhere",d:"SEED.CN Pay now checks rates are set, warns about overpaying or a future date (tap Confirm anyway), blocks double taps, and records who paid."}
+ ]},
+ {v:"2.0.2",title:"Seed trips combined per person",items:[
+  {t:"One line per person in Pay All",d:"SEED.CN drivers, loaders and vehicles now show one combined line per person for each half of the month. One Pay button clears the oldest trips first and part payments still work."}
+ ]},
  {v:"2.0.1",title:"Fix: Add to payroll",items:[
   {t:"Add to payroll works again",d:"Fixed the false Changed on another device error that blocked adding staff to payroll and other saves."}
  ]},
@@ -4062,10 +4086,11 @@ function gather(){var M={},can=window.canWrite!==false;
  try{var cur=today().slice(0,7);staff.filter(stOn).forEach(function(e){var fr=/^\d{4}-\d{2}$/.test(e.from||"")?e.from:"2026-10";mRange(fr,cur).forEach(function(mm){var p=0;pvp.forEach(function(x){if(x.who===e.n&&x.month===mm)p+=+x.amount||0});add(mm,"st",e.n,"Monthly salary",e.s-p,function(){pvPay({k:e.n,s:e.s},mm)},31)})})}catch(x){}
  try{var A=rd("seedEntries"),seen={},sc=(typeof scfg!=="undefined"&&scfg)||{},dp=+sc.d||0,hd=+sc.h||0,rr=+sc.r||0;
   A.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}).forEach(function(e){var k=e.date+"|"+(e.driver||"").trim().toLowerCase(),f=!seen[k];seen[k]=1;e._p=f?dp:0;e._u=f?hd:Math.max(0,hd-rr)});
-  A.forEach(function(e){var m=String(e.date).slice(0,7),dy=+String(e.date).slice(8,10)||31,dt=e.date.slice(5)+" \u00b7 "+(+e.tonnes||0).toFixed(2)+" t";
-   add(m,"sd",e.driver||e.vehicle,e.vehicle+" \u00b7 "+dt,window.dInfo(e).u,function(){seedBtn(e.ts,"drv")},dy,1);
-   add(m,"sl",e.vehicle,(e.driver?e.driver+" \u00b7 ":"")+dt,window.lInfo(e).u,function(){seedBtn(e.ts,"ldr")},dy,1);
-   if(+e.mil>0)add(m,"sv",e.vehicle,(e.driver?e.driver+" \u00b7 ":"")+dt,window.vpInfo(e).u,function(){seedBtn(e.ts,"veh")},dy,1)})}catch(x){}
+  var G={},grp=function(c,name,who,u,e,k){u=r2(u);if(!(u>0.004))return;var m=String(e.date).slice(0,7),dy=+String(e.date).slice(8,10)||31,h=dy<=14?1:2,key=m+"|"+c+"|"+h+"|"+String(name||"").trim().toLowerCase(),o=G[key]||(G[key]={m:m,c:c,n:name,h:h,k:k,ids:[],a:0,tn:0,who:{},d1:e.date,d2:e.date});
+   o.ids.push(e.ts);o.a+=u;o.tn+=+e.tonnes||0;if(who)o.who[who]=1;if(e.date<o.d1)o.d1=e.date;if(e.date>o.d2)o.d2=e.date};
+  A.forEach(function(e){grp("sd",e.driver||e.vehicle,e.vehicle,window.dInfo(e).u,e,"drv");grp("sl",e.vehicle,e.driver,window.lInfo(e).u,e,"ldr");if(+e.mil>0)grp("sv",e.vehicle,e.driver,window.vpInfo(e).u,e,"veh")});
+  Object.keys(G).forEach(function(key){var o=G[key],w=Object.keys(o.who).join(", "),dt=(o.d1===o.d2?o.d1.slice(5):o.d1.slice(5)+"\u2013"+o.d2.slice(5))+" \u00b7 "+o.tn.toFixed(2)+" t";
+   add(o.m,o.c,o.n,(w?w+" \u00b7 ":"")+dt,o.a,function(){window.seedPayMany(o.ids,o.k)},o.h===1?1:31,o.ids.length)})}catch(x){}
  return M}
 function rw(){return(typeof canWrite==="undefined"||canWrite)&&!window.readOnly}
 function rowHtml(r){var b=r.act?'<button type="button" class="mp" data-i="'+(ACT.push(r.act)-1)+'">Pay</button>':"";return'<tr><td>'+esc(r.n)+'<div class="mut">'+esc(r.s)+'</div></td><td class="tc">'+(tl(r.t))+'</td><td class="pn">'+fmt(r.a)+'</td><td>'+b+'</td></tr>'}
