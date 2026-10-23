@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.9.9">
+<meta name="app-version" content="2.0.0">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -768,25 +768,25 @@ show(0);raf=requestAnimationFrame(tick);
 </div></section>
 <section id="nts" class="hide"><div class="card"><b class="ct">Notes</b><div class="mut" id="ntc"></div><div id="ntl"></div></div></section>
 
-<section id="stg" class="hide"><div class="sth"><button type="button" class="stx" id="stx" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="stn">Settings</div></div><div class="ssec" id="s-alerts"><div class="sh2">Alerts</div><div class="ssub">The unpaid alert saves with the Save button. The other two apply on this device straight away.</div>
+<section id="stg" class="hide"><div class="sth"><button type="button" class="stx" id="stx" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="stn">Settings</div></div><div class="snv" id="snv"><button type="button" data-s="s-alerts">Alerts</button><button type="button" data-s="s-sec">Security</button><button type="button" data-s="s-lock">Month lock</button><button type="button" data-s="s-data">Backup</button><button type="button" data-s="s-app">App</button></div><div class="ssec" id="s-alerts"><div class="shd"><span class="shi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8M13.7 20a2 2 0 0 1-3.4 0"/></svg></span><div class="sht"><div class="sh2">Alerts</div><div class="ssub">The unpaid alert saves with the Save button. The other two apply on this device straight away.</div></div></div>
 <div class="card sc"><div class="mut" id="sappnote"></div>
 <div class="setrow"><div class="st"><b>Unpaid balance alert</b><small>Balances above this get a &#9888; mark on the Unpaid tab</small></div><label class="sf"><span>Ksh.</span><input type="number" inputmode="decimal" id="salert" placeholder="0 = off"></label></div>
 <div class="setrow"><div class="st"><b>Low fuel margin warning<span class="nw">NEW</span></b><small>Ask before saving a fuel entry that earns less than this profit</small></div><label class="sf"><input type="number" inputmode="decimal" id="slowm" placeholder="0 = off"><span>%</span></label></div>
 <div class="setrow"><div class="st"><b>Daily reminder<span class="nw">NEW</span></b><small>Shows a banner after this time if no trip or fuel is logged today</small></div><button type="button" class="sw" id="srmsw" role="switch" aria-checked="false" aria-label="Daily reminder"><i></i></button></div>
 <div class="setrow hide" id="srmrow"><div class="st"><b>Reminder time</b></div><input type="time" id="srmtime" class="ssel" value="18:00" aria-label="Reminder time"></div>
 </div></div>
-<div class="ssec hide" id="s-ann"><div class="sh2">Announcement</div><div class="ssub">Shows to everyone as a banner until they dismiss it. Posting a new one replaces the old one.</div>
+<div class="ssec hide" id="s-ann"><div class="shd"><span class="shi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1zM16 9a4 4 0 0 1 0 6"/></svg></span><div class="sht"><div class="sh2">Announcement</div><div class="ssub">Shows to everyone as a banner until they dismiss it. Posting a new one replaces the old one.</div></div></div>
 <div class="card sc"><div class="mut" id="annnote"></div>
 <textarea id="annin" maxlength="300" rows="3" placeholder="Type the announcement (max 300 characters)" style="width:100%;margin:8px 0"></textarea>
 <div class="setrow"><div class="st"><b>Expires on</b><small>Optional. It disappears after this date.</small></div><input type="date" id="annexp" class="ssel" aria-label="Expiry date"></div>
 <div class="setrow"><button type="button" class="btn" id="annpost">Post</button><button type="button" class="x" id="annclr">Clear announcement</button></div>
 </div></div>
-<div class="ssec" id="s-sec"><div class="sh2">Security</div><div class="ssub">Applies on this device.</div>
+<div class="ssec" id="s-sec"><div class="shd"><span class="shi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><div class="sht"><div class="sh2">Security</div><div class="ssub">Applies on this device.</div></div></div>
 <div class="card sc"><div class="setrow"><div class="st"><b>Password for edits &amp; deletes</b><small id="spwnote">Off. Edits and deletes go through without asking. Turning it off needs your password.</small></div><button type="button" class="sw" id="spwsw" role="switch" aria-checked="false" aria-label="Ask password for edits and deletes"><i></i></button></div>
 <div class="setrow"><div class="st"><b>Fingerprint lock<span class="nw">NEW</span></b><small id="sfpnote">Off. Ask for your fingerprint (or phone screen lock) when the app opens and when you come back to it.</small></div><button type="button" class="sw" id="sfpsw" role="switch" aria-checked="false" aria-label="Fingerprint lock"><i></i></button></div></div></div>
-<div class="ssec" id="s-lock"><div class="sh2">Month lock</div><div class="ssub">Lock a finished month so it cannot be changed.</div><div class="card sc" id="lockc"></div></div>
-<div class="ssec" id="s-data"><div class="sh2">Data &amp; backup</div><div class="ssub">Keep a copy outside the app.</div><div id="bkhost"></div></div>
-<div class="ssec" id="s-app"><div class="sh2">App</div><div class="ssub">Look and feel.</div>
+<div class="ssec" id="s-lock"><div class="shd"><span class="shi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><div class="sht"><div class="sh2">Month lock</div><div class="ssub">Lock a finished month so it cannot be changed.</div></div></div><div class="card sc" id="lockc"></div></div>
+<div class="ssec" id="s-data"><div class="shd"><span class="shi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></span><div class="sht"><div class="sh2">Data &amp; backup</div><div class="ssub">Keep a copy outside the app.</div></div></div><div id="bkhost"></div></div>
+<div class="ssec" id="s-app"><div class="shd"><span class="shi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg></span><div class="sht"><div class="sh2">App</div><div class="ssub">Look and feel.</div></div></div>
 <div class="card sc">
 <div class="setrow"><div class="st"><b>Theme</b></div><div class="t3c" id="sthm"><button type="button" data-v="light">Light</button><button type="button" data-v="dark">Dark</button></div></div><div class="setrow wp"><div class="st"><b>Dark color</b><small>Pick the colour of the Dark theme</small></div><div class="pals" id="spal"><button type="button" data-p="navy"><i style="background:linear-gradient(135deg,#111724 55%,#2f6df6 55%)"></i>Navy</button><button type="button" data-p="graphite"><i style="background:linear-gradient(135deg,#17191d 55%,#4f8cf7 55%)"></i>Graphite</button><button type="button" data-p="forest"><i style="background:linear-gradient(135deg,#0f1c16 55%,#1fa971 55%)"></i>Forest</button><button type="button" data-p="plum"><i style="background:linear-gradient(135deg,#191222 55%,#8b5cf6 55%)"></i>Plum</button><button type="button" data-p="wine"><i style="background:linear-gradient(135deg,#201116 55%,#e0475b 55%)"></i>Wine</button></div></div>
 <div class="setrow"><div class="st"><b>Text size<span class="nw">NEW</span></b><small>Bigger or smaller text across the whole app</small></div><div class="t3c" id="stsz"><button type="button" data-v="s">S</button><button type="button" data-v="m">M</button><button type="button" data-v="l">L</button></div></div>
@@ -2880,6 +2880,51 @@ html.ro #sdform button:disabled,html.ro #seed .undo:disabled,html.ro #mbody #mMS
 .hd .srb{width:36px!important;min-width:36px;padding:0!important;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--card);color:var(--tx);border:1px solid var(--ln)!important;cursor:pointer}
 .hd .srb svg{width:18px;height:18px;display:block}
 .hd .srb.on{border-color:#22c55e!important}
+
+/* ===== Settings page: grouped-list redesign (looks only) ===== */
+#stg{--sr:6px}
+#stg .snv{position:sticky;top:calc(62px + env(safe-area-inset-top,0px));z-index:7;display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -12px 6px;padding:8px 12px;background:var(--bg)}
+#stg .snv::-webkit-scrollbar{display:none}
+#stg .snv button{flex:0 0 auto;padding:7px 14px;font-size:12.5px;font-weight:700;color:var(--mut);background:var(--card);border:1px solid var(--ln);border-radius:6px!important;cursor:pointer}
+#stg .snv button.on{background:var(--ac);border-color:var(--ac);color:#fff}
+#stg .ssec{margin-top:22px;scroll-margin-top:118px}
+#stg .shd{display:flex;align-items:center;gap:12px;margin:0 2px 10px}
+#stg .shi{flex:0 0 auto;width:38px;height:38px;display:grid;place-items:center;border-radius:6px!important;color:#fff;background:var(--ac)}
+#stg .shi svg{width:20px;height:20px}
+#stg #s-alerts .shi{background:#f59e0b}#stg #s-ann .shi{background:#ec4899}#stg #s-sec .shi{background:#16a34a}#stg #s-lock .shi{background:#64748b}#stg #s-data .shi{background:#0ea5e9}#stg #s-app .shi{background:#8b5cf6}
+#stg .sht{min-width:0}
+#stg .sh2{font-size:17px;font-weight:800;letter-spacing:.1px;line-height:1.2}
+#stg .ssub{margin:2px 0 0;font-size:12.5px;line-height:1.35;color:var(--mut)}
+#stg .card.sc,#stg .bkc,#stg #lockc{border:1px solid var(--ac)!important;border-radius:6px!important;background:var(--card);box-shadow:0 1px 2px rgba(0,0,0,.06);padding:0 16px!important;overflow:hidden}
+#stg #lockc{padding:14px 16px!important}
+#stg .bkc{padding:16px!important}
+#stg .bkc .bkh{display:none}
+#stg .setrow{padding:15px 0;gap:14px}
+#stg .st b{font-size:15px;font-weight:700;letter-spacing:.1px}
+#stg .st small{font-size:12.5px;line-height:1.4;margin-top:3px}
+#stg .nw{font-size:9.5px;letter-spacing:.5px;color:#fff;background:#16a34a;border:0;padding:2px 7px;border-radius:6px!important;vertical-align:2px}
+#stg .sf{width:128px;height:42px;box-sizing:border-box;background:var(--bg);border-radius:6px!important}
+#stg .sf input{padding:0}
+#stg .ssel{border-radius:6px!important;height:42px;box-sizing:border-box}
+#stg .sw{width:52px;height:32px}
+#stg .sw i{width:26px;height:26px}
+#stg .t3c{display:flex;gap:0;padding:3px;background:var(--bg);border:1px solid var(--ln);border-radius:6px!important}
+#stg .t3c button{flex:1;min-width:46px;padding:8px 14px;border:0;background:none;color:var(--mut);font-size:13px;font-weight:700;border-radius:6px!important}
+#stg .t3c button.on{background:var(--ac);color:#fff}
+#stg .setrow.wp{display:block;padding-top:6px}
+#stg .pals{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+#stg .pals button{min-width:0;padding:8px 2px 6px;border-radius:6px!important;font-size:11px;font-weight:700;background:var(--bg)}
+#stg .pals button i{height:34px;border-radius:6px!important;width:34px;margin:0 auto 5px}
+#stg .pals button.on{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac)}
+#stg .setrow.col+div{padding:2px 0 16px}
+#stg #sfoot,#stg #annin{border-radius:6px!important;background:var(--bg)}
+#stg #lockc .ct{display:none}
+#stg #lockc>.mut{font-size:12.5px;line-height:1.45;margin-bottom:10px}
+#stg #lockc .btn{border-radius:6px!important}
+#stg .bkc .bkg>.btn,#stg .bkc .bkmr .btn{border-radius:6px!important}
+#stg .sabout{margin:26px 0 6px;padding-top:14px;border-top:1px dashed var(--ln)}
+#stg>.sth{border-bottom:0;box-shadow:0 1px 0 var(--ln)}
+#stg .bkc .bkmr{grid-template-columns:1fr}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt"><span>FUEL &amp; TRIPS</span><small class="dtv"></small></div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
@@ -4057,6 +4102,15 @@ function init(){sec=g("pall");if(!sec)return;
  ["render","renderFuel","pvRender"].forEach(function(nm){var o=window[nm];if(typeof o==="function")window[nm]=function(){var r=o.apply(this,arguments);soon();return r}})}
 init();
 window.palAvail=rw;
+})();
+</script>
+<script>(function(){var d=document,nv=d.getElementById("snv");if(!nv)return;
+nv.addEventListener("click",function(e){var b=e.target.closest("button[data-s]");if(!b)return;var t=d.getElementById(b.dataset.s);if(t)try{t.scrollIntoView({behavior:"smooth",block:"start"})}catch(x){t.scrollIntoView()}});
+/* highlight the section that is in view */
+var ids=[].map.call(nv.querySelectorAll("button"),function(b){return b.dataset.s});
+function mark(){var y=(nv.getBoundingClientRect().bottom||0)+16,cur=ids[0];ids.forEach(function(i){var t=d.getElementById(i);if(t&&t.getBoundingClientRect().top<=y+4)cur=i});
+ [].forEach.call(nv.querySelectorAll("button"),function(b){var on=b.dataset.s===cur;if(b.classList.contains("on")!==on){b.classList.toggle("on",on);if(on){try{var l=b.offsetLeft-nv.clientWidth/2+b.offsetWidth/2;nv.scrollLeft=l}catch(x){}}}})}
+var t=0;window.addEventListener("scroll",function(){if(t)return;t=setTimeout(function(){t=0;var s=d.getElementById("stg");if(s&&!s.classList.contains("hide"))mark()},80)},{passive:true});
 })();
 </script>
 <script>(function(){
