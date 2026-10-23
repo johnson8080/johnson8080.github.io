@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.9.1">
+<meta name="app-version" content="1.9.2">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -630,7 +630,7 @@ show(0);raf=requestAnimationFrame(tick);
 <header class="hd"><button class="ib" id="mnu" type="button" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h7"/></svg></button><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="sbanner"></div><div id="annbar"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Winch</button><button data-g="seed">Seedcane</button></div>
-<div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button><button data-t="pdt" style="display:none">PAID</button></div>
+<div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pall" style="display:none">PAY ALL</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button><button data-t="pdt" style="display:none">PAID</button></div>
 <div class="tabs hide" id="barrates" data-g="rates" style="grid-template-columns:minmax(0,1fr)"><button data-t="set" class="on">Update Rates</button></div>
 <div class="tabs hide" id="barfuel" data-g="fuel" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button data-t="fen">ADD FUEL</button><button data-t="flg" class="on">ALL FUEL LOGS</button></div>
 <div class="tabs hide" id="barov" data-g="ov"><button data-t="ov" class="on">DOWNLOAD REPORT</button><button data-t="sum">Trips</button><button data-t="nts">All Notes</button><button data-t="pguide">DOWNLOAD GUIDE</button><button data-t="fsm">Fuel</button><button data-t="dhs">ACTIVITY LOG</button></div>
@@ -684,6 +684,7 @@ show(0);raf=requestAnimationFrame(tick);
 <div class="card"><b class="ut">UNPAID PRIV STAFF BALANCES</b><div class="mut" id="usn">Unpaid salary carries over month to month. Tap Pay to record a payment (full or part).</div><div class="wrap cap5 sx cu"><table><thead><tr><th>Staff</th><th>Owed</th><th>Paid</th><th>Unpaid</th><th></th></tr></thead><tbody id="us"></tbody></table></div></div>
 <div class="card"><b class="ut">PAID SALARY HISTORY</b><div class="wrap cap5 sx nolast"><table><tbody id="ph"></tbody></table></div></div>
 </section>
+<section id="pall" class="hide"><div class="pt"><small>TOTAL UNPAID</small><b id="ptt">0.00</b><div class="pc" id="ptc"></div></div><div class="pf"><input type="search" class="cq" id="pqf" placeholder="Search name&hellip;" autocomplete="off"><select id="pmf"><option value="">All months</option></select></div><div class="pa"><button type="button" class="btn sm alt" id="ppd">Download PDF</button><button type="button" class="btn sm" id="pps">Share PDF</button></div><div class="mut" style="font-size:12.5px;margin:0 2px 10px">Everything not yet paid, by month. Tap a month to open it, and tap Pay to record a payment. Payments are applied to the oldest balance first.</div><div id="pbd"></div></section>
 <section id="pdt" class="hide"><div class="card"><b class="ut">TOTAL PAID</b><div class="ufr" style="margin:0;grid-template-columns:minmax(0,1fr)"><div class="ucol"><div class="ul" id="ptl">TOTAL PAID</div><div class="utb" style="border-color:var(--ok)"><b id="ptot">0</b></div></div></div><div class="fgrid"><div><label>Period</label><select id="dper"><option value="all" selected>All dates</option><option value="day">Specify date</option><option value="month">Specify month</option><option value="year">Specify year</option><option value="range">Specify period</option></select></div><div id="pw1" class="hide"><label>Date</label><input type="date" id="pdday"></div><div id="pw2" class="hide"><label>Month</label><input type="month" id="pmon"></div><div id="pw3" class="hide"><label>Year</label><input type="number" inputmode="numeric" id="pdyr" min="2000" max="2100"></div></div><div class="mut" id="phint" style="font-size:12.5px;margin-top:6px"></div><div class="cfr cfl noprt hide" id="cfpdt"><button type="button" class="ed" id="pclr">Clear filters</button></div><div class="acts noprt" style="margin:10px 0 0"><button type="button" class="btn sm alt" id="pdDl">Download PDF</button><button type="button" class="btn sm" id="pdSh">Share PDF</button></div></div>
 <div class="card"><b class="ut">PAID DRIVER AMOUNTS</b><div class="wrap cap5 sx cp"><table><thead><tr><th>Driver</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="pdd"></tbody></table></div></div>
 <div class="card"><b class="ut">PAID LOADER AMOUNTS</b><div class="mut">Loader pay is the loader rate multiplied by the tonnes.</div><div class="wrap cap5 sx cp"><table><thead><tr><th>Driver</th><th>Tonnes</th><th>Paid</th><th>Unpaid</th></tr></thead><tbody id="pdl"></tbody></table></div></div>
@@ -797,7 +798,7 @@ show(0);raf=requestAnimationFrame(tick);
 <div id="sbar"><span>Unsaved changes</span><button type="button" class="sdis" id="sdis">Discard</button><button class="btn" id="sappsave" disabled>Save</button></div>
 
 <button type="button" class="fab hide" id="fabT" aria-label="Add trip log">+</button><button type="button" class="fab hide" id="fabF" aria-label="Add fuel entry">+</button><button type="button" class="fab hide" id="fabS" aria-label="Add seedcane entry">+</button>
-<nav class="bn" id="bn"><button data-go="pay:log" data-k="t"><i></i>Trips</button><button data-go="fuel:flg" data-k="f"><i></i>Fuel</button><button data-go="seed:" data-k="s"><i></i>SEED.CN</button><button data-go="pay:unp" data-k="p"><i></i>Salary</button><button data-go="hist" data-k="h"><i></i>History</button><button data-go="ov:ov" data-k="r"><i></i>Reports</button></nav>
+<nav class="bn" id="bn"><button data-go="pay:log" data-k="t"><i></i>Trips</button><button data-go="fuel:flg" data-k="f"><i></i>Fuel</button><button data-go="seed:" data-k="s"><i></i>SEED.CN</button><button data-go="pay:pall" data-k="p"><i></i>Salary</button><button data-go="hist" data-k="h"><i></i>History</button><button data-go="ov:ov" data-k="r"><i></i>Reports</button></nav>
 <div id="modal" class="modal hide"><div class="card" id="mbody"></div></div><div id="toast" class="hide"></div><div id="wm" aria-hidden="true">Developer: Made &amp; Managed by Johnson 0724067632</div>
 <script>
 var WM="Developer: Made & Managed by Johnson 0724067632";
@@ -919,11 +920,11 @@ $("ddp").addEventListener("input",function(){this.dataset.man=this.value===""?"0
 var G={pay:"log",fuel:"flg",ov:"ov",rates:"set"};
 document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){if(GATED[b.dataset.t]&&needRates()){gatePop();return}var bar=b.parentNode;G[bar.dataset.g]=b.dataset.t;
  bar.querySelectorAll("button").forEach(function(x){x.classList.toggle("on",x===b)});
- ["enter","log","advt","sum","unp","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","seed","stg","pguide","dhs"].forEach(function(s){$(s).classList.toggle("hide",s!==b.dataset.t)});if(b.dataset.t==="ov")try{capAll()}catch(x){}}});
+ ["enter","log","advt","sum","unp","pall","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","seed","stg","pguide","dhs"].forEach(function(s){$(s).classList.toggle("hide",s!==b.dataset.t)});if(b.dataset.t==="ov")try{capAll()}catch(x){}}});
 document.querySelectorAll(".main button").forEach(function(b){b.onclick=function(){var g=b.dataset.g;
  document.querySelectorAll(".main button").forEach(function(x){x.classList.toggle("on",x===b)});
  ["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.toggle("hide",x!==g)});
- if(g==="nts"||g==="sales"||g==="seed"||g==="stg"){["enter","log","advt","sum","unp","pvt","pvadd","psl","pdt","set","fen","fsm","flg","ov","nts","sales","seed","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$(g).classList.remove("hide");if(g==="nts")render();if(g==="sales")winchRender();return}
+ if(g==="nts"||g==="sales"||g==="seed"||g==="stg"){["enter","log","advt","sum","unp","pall","pvt","pvadd","psl","pdt","set","fen","fsm","flg","ov","nts","sales","seed","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$(g).classList.remove("hide");if(g==="nts")render();if(g==="sales")winchRender();return}
  document.querySelector("#bar"+g+' [data-t="'+G[g]+'"]').click();if(g==="rates")scrollTo(0,0)}});
 function payM(kind,who,u){if(needRates()){gatePop();return}$("mbody").innerHTML='<b style="font-size:18px">Mark paid</b><div class="mut">'+esc(who)+' · '+kind+' balance</div><label>Amount paid</label><input type="number" inputmode="decimal" id="pamt" value="'+(Math.round(u*100)/100)+'"><div class="mut" style="margin-top:6px">Unpaid now: '+fmt(u)+'. Lower the amount for a part payment.</div><label>Date paid</label><input type="date" id="pdate" value="'+today()+'"><div id="pwarn" class="neg" style="margin-top:8px;font-size:14px"></div><div class="b2"><button class="pr" id="pOK">Confirm paid</button><button id="pNo">Cancel</button></div>';
  $("modal").classList.remove("hide");$("pNo").onclick=closeM;
@@ -1907,8 +1908,8 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
  [].forEach.call(document.querySelectorAll(".main button"),function(b){b.insertAdjacentHTML("afterbegin",ic(b.dataset.g))});
  var nm={t:"nts",h:"hist",f:"fuel",p:"wal",s:"seed",r:"ov"};[].forEach.call(document.querySelectorAll(".bn button"),function(b){b.querySelector("i").innerHTML=ic(nm[b.dataset.k])});
  function th(){$("hth").innerHTML=ic(document.documentElement.getAttribute("data-theme")==="light"?"moon":"sun")}th();
- $("hst").innerHTML=ic("stg");$("hst").onclick=function(){if(!$("stg").classList.contains("hide"))return;[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.add("hide")});["enter","log","advt","sum","unp","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","seed","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$("stg").classList.remove("hide");act();scrollTo({top:0,behavior:"smooth"})};
- function go(v){if(v==="bk"){window.pgBk();return}if(v==="hist"){showHist();return}var a=v.split(":");document.querySelector('.main [data-g="'+a[0]+'"]').click();var t=document.querySelector('.tabs [data-t="'+a[1]+'"]');if(t)t.click();if(a[0]==="seed"&&window.seedPage)window.seedPage(a[1]||"");var up=function(){document.documentElement.scrollTop=0;document.body.scrollTop=0;scrollTo(0,0)};up();setTimeout(up,60);setTimeout(up,300)}
+ $("hst").innerHTML=ic("stg");$("hst").onclick=function(){if(!$("stg").classList.contains("hide"))return;[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});["pay","fuel","rates","ov"].forEach(function(x){$("bar"+x).classList.add("hide")});["enter","log","advt","sum","unp","pall","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","seed","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});$("stg").classList.remove("hide");act();scrollTo({top:0,behavior:"smooth"})};
+ function go(v){if(v==="bk"){window.pgBk();return}if(v==="pay:pall"&&!((typeof canWrite==="undefined"||canWrite)&&!window.readOnly))v="pay:unp";if(v==="hist"){showHist();return}var a=v.split(":");document.querySelector('.main [data-g="'+a[0]+'"]').click();var t=document.querySelector('.tabs [data-t="'+a[1]+'"]');if(t)t.click();if(a[0]==="seed"&&window.seedPage)window.seedPage(a[1]||"");var up=function(){document.documentElement.scrollTop=0;document.body.scrollTop=0;scrollTo(0,0)};up();setTimeout(up,60);setTimeout(up,300)}
  [].forEach.call(document.querySelectorAll(".bn button"),function(b){b.onclick=function(){go(b.dataset.go)}});
  $("hrp").onclick=function(){go("rates:set")};
  (function(){var h=document.querySelector(".hd h1");if(!h)return;h.setAttribute("role","button");h.setAttribute("tabindex","0");h.setAttribute("aria-label","Quick menu");
@@ -1920,7 +1921,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    $("modal").classList.remove("hide");$("qmC").onclick=closeM;
    [].forEach.call(document.querySelectorAll(".qm button"),function(b){b.onclick=function(){closeM();go(L[b.dataset.i][0])}})}
   h.onclick=openQ;h.onkeydown=function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();openQ()}}})();
- var MP={hist:"h",enter:"t",advt:"p",log:"t",fen:"f",flg:"f",unp:"p",pvt:"p",pvadd:"p",psl:"p",pdt:"p",sum:"r",fsm:"r",ov:"r",pguide:"r",dhs:"r",nts:"r",sales:"r",seed:"s",set:"m"};
+ var MP={hist:"h",enter:"t",advt:"p",log:"t",fen:"f",flg:"f",unp:"p",pall:"p",pvt:"p",pvadd:"p",psl:"p",pdt:"p",sum:"r",fsm:"r",ov:"r",pguide:"r",dhs:"r",nts:"r",sales:"r",seed:"s",set:"m"};
   var CATS={t:[],f:[],p:[["pay:unp","Unpaid","unp"],["pay:advt","Advance","advt"],["pay:pvt","PRIV STAFF","pvt"],["pay:pdt","PAID","pdt"],["pay:psl","PAYSLIP","psl"],["pay:pvadd","ADD PRIV STAFF","pvadd"]],r:[["ov:ov","DOWNLOAD REPORT","ov"],["ov:sum","TRIPS","sum"],["ov:nts","ALL NOTES","nts"],["ov:pguide","DOWNLOAD GUIDE","pguide"],["ov:fsm","FUEL","fsm"],["ov:dhs","ACTIVITY LOG","dhs"],["sales:","WINCH","sales"]],m:[["rates:set","Update Rates","set"]],s:[["seed:pdrv","DRIVER PAY","pdrv"],["seed:pldr","LOADER PAY","pldr"],["seed:pveh","VEHICLE PAY","pveh"],["seed:prep","SEEDCANE REPORT","prep"]]};
   var lastK=null;
   function sub(k,cur){var bar=$("sn"),L=CATS[k]||[];
@@ -1929,7 +1930,7 @@ paint();var dv=document.getElementById("devtxt");if(dv){var vm=document.querySel
    bar.classList.remove("hide");[].forEach.call(bar.querySelectorAll("button"),function(b){b.classList.toggle("on",b.dataset.s===(k==="s"&&window.sdPg||cur))})}
   function act(){$("hst").classList.toggle("on",!$("stg").classList.contains("hide"));var k="",cur="";[].forEach.call(document.querySelectorAll("section:not(.hide)"),function(x){if(MP[x.id]){k=MP[x.id];cur=x.id}});[].forEach.call(document.querySelectorAll(".bn button"),function(b){b.classList.toggle("on",b.dataset.k===k)});$("hrp").classList.toggle("on",k==="m");sub(k,cur);var cw=typeof canWrite==="undefined"||canWrite;$("fabT").classList.toggle("hide",cur!=="log"||!cw);$("fabF").classList.toggle("hide",cur!=="flg"||!cw);$("fabS").classList.toggle("hide",cur!=="seed"||!cw||!!window.sdPg||!!window.sdOpen);$("st1").classList.toggle("hide",k!=="t");$("st2").classList.toggle("hide",k!=="f");document.body.classList.toggle("nohd",!(k==="m"||k==="s"||!$("stg").classList.contains("hide")))}
   var HT="p";
-  function showHist(){["enter","log","advt","sum","unp","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","seed","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});$("hist").classList.remove("hide");document.body.classList.add("nohd");renderHist();scrollTo({top:0,behavior:"smooth"})}
+  function showHist(){["enter","log","advt","sum","unp","pall","pvt","pvadd","psl","pdt","set","fen","fsm","flg","nts","ov","sales","seed","stg","pguide","dhs"].forEach(function(x){$(x).classList.add("hide")});[].forEach.call(document.querySelectorAll(".main button"),function(b){b.classList.remove("on")});$("hist").classList.remove("hide");document.body.classList.add("nohd");renderHist();scrollTo({top:0,behavior:"smooth"})}
   var HMT={};function renderHist(){if($("hist").classList.contains("hide"))return;
    var sv=$("hveh"),cv=sv.value;sv.innerHTML='<option value="">All vehicles</option>'+cfg.veh.map(function(v){return"<option>"+esc(v)+"</option>"}).join("");if(cfg.veh.indexOf(cv)>=0)sv.value=cv;
    try{PM=alloc()}catch(x){}
@@ -2047,8 +2048,8 @@ document.addEventListener("touchmove",function(e){if(!on())return;var s=sc(e.tar
  if((top&&dy>0)||(bot&&dy<0)||s.scrollHeight<=s.clientHeight+1){if(e.cancelable)e.preventDefault()}},{passive:false,capture:true});
 document.addEventListener("wheel",function(e){if(!on())return;var s=sc(e.target);if(!s){e.preventDefault();return}
  var top=s.scrollTop<=0,bot=s.scrollTop+s.clientHeight>=s.scrollHeight-1;if((top&&e.deltaY<0)||(bot&&e.deltaY>0)||s.scrollHeight<=s.clientHeight+1)e.preventDefault()},{passive:false,capture:true})})();</script>
-<script>(function(){var IDS=["enter","log","advt","unp","pvt","pvadd","psl","pdt","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","seed","stg","hist"],
-G={enter:"pay",log:"pay",advt:"pay",unp:"pay",pvt:"pay",pvadd:"pay",psl:"pay",pdt:"pay",fen:"fuel",flg:"fuel",sum:"ov",fsm:"ov",ov:"ov",pguide:"ov",dhs:"ov",nts:"ov",set:"rates"},
+<script>(function(){var IDS=["enter","log","advt","unp","pall","pvt","pvadd","psl","pdt","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","seed","stg","hist"],
+G={enter:"pay",log:"pay",advt:"pay",unp:"pay",pall:"pay",pvt:"pay",pvadd:"pay",psl:"pay",pdt:"pay",fen:"fuel",flg:"fuel",sum:"ov",fsm:"ov",ov:"ov",pguide:"ov",dhs:"ov",nts:"ov",set:"rates"},
 cur=null,depth=0,popping=false,ready=false,raf=0,mflag=false,pback=false,pbt=0,oflag=false,oname=null,ohook=null,ocb=null,ocbt=0,pend=null;
 function flush(){if(pend){var p=pend;pend=null;window.ovOpen(p.name,p.hook)}}
 function q(x){return document.querySelector(x)}
@@ -2822,16 +2823,15 @@ html.ro #advt button:disabled,html.ro #pvadd button:disabled,html.ro #unp .undo:
 html.ro #sdform input:disabled,html.ro #sdform select:disabled,html.ro #mbody #mMil:disabled{opacity:.6;background:color-mix(in srgb,var(--mut) 14%,var(--card));cursor:not-allowed;-webkit-text-fill-color:currentColor}
 html.ro #sdform button:disabled,html.ro #seed .undo:disabled,html.ro #mbody #mMS:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(1)}
 
-#gsr,#pal{position:fixed;inset:0;z-index:1100;background:var(--bg);color:var(--tx);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
-#gsr.on,#pal.on{display:flex}
-html.palopen .modal{z-index:1250}
-#gsr .ch,#pal .ch{display:flex;align-items:center;gap:10px;padding:12px}
-#gsr .cx,#pal .cx{flex:0 0 auto;width:38px;height:38px;display:grid;place-items:center;background:var(--card);border:1px solid #16a34a;border-radius:6px;color:var(--tx);cursor:pointer;padding:0}
-#gsr .cx svg,#pal .cx svg{width:20px;height:20px}
-#gsr .cn,#pal .cn{flex:1;min-width:0;font-size:15px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#gsr{position:fixed;inset:0;z-index:1100;background:var(--bg);color:var(--tx);display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+#gsr.on{display:flex}
+#gsr .ch{display:flex;align-items:center;gap:10px;padding:12px}
+#gsr .cx{flex:0 0 auto;width:38px;height:38px;display:grid;place-items:center;background:var(--card);border:1px solid #16a34a;border-radius:6px;color:var(--tx);cursor:pointer;padding:0}
+#gsr .cx svg{width:20px;height:20px}
+#gsr .cn{flex:1;min-width:0;font-size:15px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #gsr .cqw{padding:0 12px 10px}
-#gsr .cq,#pal .cq,#pal select{width:100%;box-sizing:border-box;height:40px;margin:0;padding:0 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit;font-size:14px}
-#gsr .cb,#pal .cb{flex:1;overflow-y:auto;padding:8px 12px calc(24px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;overscroll-behavior:contain;border-top:1px solid var(--ln)}
+#gsr .cq{width:100%;box-sizing:border-box;height:40px;margin:0;padding:0 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit;font-size:14px}
+#gsr .cb{flex:1;overflow-y:auto;padding:8px 12px calc(24px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;overscroll-behavior:contain;border-top:1px solid var(--ln)}
 #gsr .gh{padding:30px 14px;text-align:center;color:var(--mut);font-size:13.5px;line-height:1.5}
 #gsr .gs{display:flex;justify-content:space-between;align-items:center;margin:14px 2px 6px;font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--ac)}
 #gsr .gs span{font-size:11px;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--ac) 14%,var(--bg))}
@@ -2842,35 +2842,37 @@ html.palopen .modal{z-index:1250}
 #gsr .gu{font-size:12px;color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
 #gsr .ga{flex:0 0 auto;font-size:13px;font-weight:800}
 #gsr .gmore{width:100%;margin:2px 0 8px}
-#pal .pf{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 12px 10px}
-#pal .pt{margin:0 12px 10px;padding:12px 14px;background:var(--card);border:1px solid var(--bad);border-radius:12px}
-#pal .pt small{display:block;font-size:11.5px;font-weight:800;letter-spacing:.5px;color:var(--mut)}
-#pal .pt b{display:block;font-size:26px;color:var(--bad);margin-top:2px}
-#pal .pc{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-#pal .pc span{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--bad) 10%,var(--bg));border:1px solid var(--ln)}
-#pal .pa{display:flex;gap:8px;margin:0 12px 10px}
-#pal .pa .btn{flex:1}
-#pal details.pam{margin:0 0 10px;background:var(--card);border:1px solid var(--ln);border-radius:14px;overflow:hidden}
-#pal details.pam>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;font-weight:800}
-#pal details.pam>summary::-webkit-details-marker{display:none}
-#pal .pmn{flex:1;min-width:0}
-#pal .pmn small{display:block;font-size:11.5px;font-weight:600;color:var(--mut)}
-#pal .pmt{font-weight:800;color:var(--bad)}
-#pal details.pam>summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg);transition:transform .2s;margin:0 4px 4px 2px}
-#pal details.pam[open]>summary::after{transform:rotate(-135deg);margin-bottom:-2px}
-#pal .pw{overflow-x:auto;border-top:1px solid var(--ln)}
-#pal table{width:max-content!important;min-width:100%;border-collapse:collapse;font-size:13.5px}
-#pal td{padding:8px 12px;border-bottom:1px solid var(--ln);white-space:nowrap;text-align:left}
-#pal td.pn{text-align:right;font-weight:700;color:var(--bad)}
-#pal tr.pg td{background:color-mix(in srgb,var(--ac) 10%,var(--card));font-size:11.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
-#pal tr.pg td.pn{color:var(--tx)}
-#pal td .mut{font-size:11.5px}
-#pal .pnone{padding:34px 14px;text-align:center;color:var(--mut)}
-#pal .phb{display:flex;gap:8px;padding:0 14px 8px}
-#pal .phs{flex:0 0 auto;padding:6px 12px;border-radius:999px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
-#pal .phs.on{background:var(--ac);border-color:var(--ac);color:#fff}
-#pal .phl{display:flex;justify-content:space-between;gap:10px;padding:0 14px 10px;font-size:12px;color:var(--mut)}
-#pal .phl b{color:var(--bad)}
+#pall .pt,#pall .pf,#pall .pa{box-sizing:border-box}
+#pall .cq,#pall select{width:100%;box-sizing:border-box;height:40px;margin:0;padding:0 12px;border-radius:10px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit;font-size:14px}
+#pall .pf{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 0 10px}
+#pall .pt{margin:0 0 10px;padding:12px 14px;background:var(--card);border:1px solid var(--bad);border-radius:12px}
+#pall .pt small{display:block;font-size:11.5px;font-weight:800;letter-spacing:.5px;color:var(--mut)}
+#pall .pt b{display:block;font-size:26px;color:var(--bad);margin-top:2px}
+#pall .pc{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+#pall .pc span{font-size:11.5px;font-weight:700;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--bad) 10%,var(--bg));border:1px solid var(--ln)}
+#pall .pa{display:flex;gap:8px;margin:0 0 10px}
+#pall .pa .btn{flex:1}
+#pall details.pam{margin:0 0 10px;background:var(--card);border:1.5px solid color-mix(in srgb,var(--mut) 40%,var(--ln));border-radius:14px;overflow:hidden}
+#pall details.pam>summary{list-style:none;display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer;font-weight:800}
+#pall details.pam>summary::-webkit-details-marker{display:none}
+#pall .pmn{flex:1;min-width:0}
+#pall .pmn small{display:block;font-size:11.5px;font-weight:600;color:var(--mut)}
+#pall .pmt{font-weight:800;color:var(--bad)}
+#pall details.pam>summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg);transition:transform .2s;margin:0 4px 4px 2px}
+#pall details.pam[open]>summary::after{transform:rotate(-135deg);margin-bottom:-2px}
+#pall .pw{overflow-x:auto;border-top:1px solid var(--ln)}
+#pall table{width:max-content!important;min-width:100%;border-collapse:collapse;font-size:13.5px}
+#pall td{padding:8px 12px;border-bottom:1px solid var(--ln);white-space:nowrap;text-align:left}
+#pall td.pn{text-align:right;font-weight:700;color:var(--bad)}
+#pall tr.pg td{background:color-mix(in srgb,var(--ac) 10%,var(--card));font-size:11.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase}
+#pall tr.pg td.pn{color:var(--tx)}
+#pall td .mut{font-size:11.5px}
+#pall .pnone{padding:34px 14px;text-align:center;color:var(--mut)}
+#pall .phb{display:flex;gap:8px;padding:0 14px 8px}
+#pall .phs{flex:0 0 auto;padding:6px 12px;border-radius:999px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+#pall .phs.on{background:var(--ac);border-color:var(--ac);color:#fff}
+#pall .phl{display:flex;justify-content:space-between;gap:10px;padding:0 14px 10px;font-size:12px;color:var(--mut)}
+#pall .phl b{color:var(--bad)}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt"><span>FUEL &amp; TRIPS</span><small class="dtv"></small></div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
@@ -2888,7 +2890,6 @@ function fill(){var L=g("dli");L.innerHTML="";
 var st=g("hst");
  if(st)L.appendChild(item("Settings",st.innerHTML,st,st.classList.contains("on")));
  L.appendChild(item("Search everything",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',{click:function(){if(window.gsrOpen)gsrOpen()}},false,true));
- if((typeof canWrite==="undefined"||canWrite)&&!window.readOnly)L.appendChild(item("Pay All Employees",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.6"/><path d="M6 9.5v.01M18 15.5v.01"/></svg>',{click:function(){if(window.palOpen)palOpen()}},false,true));
  L.appendChild(item("All Calculations",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',{click:function(){if(window.calcOpen)calcOpen()}},false,true));
  L.appendChild(item("About FuelTrips",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',{click:aboutOpen},false,true))}
 
@@ -3690,9 +3691,13 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"1.9.2",title:"Pay All Employees moved to Salary",items:[
+  {t:"Pay All Employees is now the Salary page",d:"Tap Salary at the bottom and you land straight on Pay All Employees. The tabs above it (Unpaid, Advance, Priv Staff, Paid, Payslip) work as before. It is no longer in the side menu."},
+  {t:"Month cards start closed",d:"Every month is closed when you open the page. Tap a month to open it. The card borders are also easier to see."}
+ ]},
  {v:"1.9.1",title:"Search everything and Pay All Employees",items:[
   {t:"Search everything",d:"Open the menu and tap Search everything to search trips, seedcane, fuel, payments, advances and staff in one box. Tap a result to jump to it."},
-  {t:"Pay All Employees",d:"Open the menu and tap Pay All Employees to see everything still unpaid, month by month. Each month has Date 1-14 and Date 15-30/31 buttons, a Pay button on every line, and a PDF download. Only accounts that can read and write see it."}
+  {t:"Pay All Employees",d:"Pay All Employees shows everything still unpaid, month by month (it is now the Salary page). Each month has Date 1-14 and Date 15-30/31 buttons, a Pay button on every line, and a PDF download. Only accounts that can read and write see it."}
  ]},
  {v:"1.9.0",title:"Fingerprint lock and new refresh",items:[
   {t:"Fingerprint lock",d:"Turn it on in Settings > Security. The app asks for your fingerprint or phone screen lock when it opens and when you come back after a short while."},
@@ -3853,7 +3858,7 @@ if(document.readyState==="complete")setTimeout(run,600);else window.addEventList
    Records: busy moments (main thread blocked), how long a tab takes to open after a tap,
    slow taps, and taps that never became a click ("tap twice"). Copy the report to share it. */
 (function(){
-var KEY="ftSpeed",ONK="ftSpeedOn",TABS=["enter","log","advt","unp","pvt","pvadd","psl","pdt","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","seed","stg","hist"];
+var KEY="ftSpeed",ONK="ftSpeedOn",TABS=["enter","log","advt","unp","pall","pvt","pvadd","psl","pdt","fen","flg","sum","fsm","ov","pguide","dhs","set","nts","sales","seed","stg","hist"];
 var exp={a:false,b:false},dirty=false,fns={},wr=[],ev=[],on=false,po=null,smp=null,last=0,pend=null,saveT=0,box=null,pre=null,tg=null,uiT=0;
 var BTN='button[data-t],button[data-g],button[data-go],#hst';
 function now(){return performance.now()}
@@ -3973,7 +3978,7 @@ window.gsrOpen=open;
 })();
 </script>
 <script>(function(){
-var d=document,g=function(i){return d.getElementById(i)},ov=null,ACT=[],DATA=[],isOpen=false,HALF={},OPENS={};
+var d=document,g=function(i){return d.getElementById(i)},sec=null,ACT=[],DATA=[],HALF={},OPENS={};
 var HL={1:"Date 1-14",2:"Date 15-30/31"};
 var MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
 var CATS=[["td","Trip drivers"],["tl","Trip loaders"],["st","Staff salary"],["sd","Seed drivers"],["sl","Seed loaders"],["sv","Seed vehicles"]];
@@ -3996,13 +4001,13 @@ function gather(){var M={},can=window.canWrite!==false;
  return M}
 function rw(){return(typeof canWrite==="undefined"||canWrite)&&!window.readOnly}
 function rowHtml(r){var b=r.act?'<button type="button" class="mp" data-i="'+(ACT.push(r.act)-1)+'">Pay</button>':"";return'<tr><td>'+esc(r.n)+'<div class="mut">'+esc(r.s)+'</div></td><td class="pn">'+fmt(r.a)+'</td><td>'+b+'</td></tr>'}
-function view(){if(!rw()){if(isOpen)hide();return}var M=gather(),mf=g("pmf").value,q=g("pqf").value.trim().toLowerCase(),months=Object.keys(M).sort().reverse(),tot=0,CT={},H="",out=[];ACT=[];
+function view(){if(!sec)return;if(!rw()){DATA=[];g("ptt").textContent=fmt(0);g("ptc").innerHTML="";g("pbd").innerHTML='<div class="pnone">Pay All Employees is only for accounts that can read and write.</div>';return}var M=gather(),mf=g("pmf").value,q=g("pqf").value.trim().toLowerCase(),months=Object.keys(M).sort().reverse(),tot=0,CT={},H="",out=[];ACT=[];
  months.filter(function(m){return!mf||m===mf}).forEach(function(m){var X={m:m,t:0,n:0,h:{1:{t:0,n:0,c:[]},2:{t:0,n:0,c:[]}}};
   CATS.forEach(function(c){var L=(M[m][c[0]]||[]).filter(function(r){return!q||(r.n+" "+r.s+" "+c[1]).toLowerCase().indexOf(q)>=0});if(!L.length)return;L.sort(function(a,b){return b.a-a.a});
    [1,2].forEach(function(h){var S=L.filter(function(r){return r.h===h});if(!S.length)return;var st=0;S.forEach(function(r){st+=r.a});st=r2(st);X.h[h].c.push([c[1],st,S]);X.h[h].t+=st;X.h[h].n+=S.length;X.t+=st;X.n+=S.length;CT[c[0]]=r2((CT[c[0]]||0)+st)})});
   if(!X.n)return;X.t=r2(X.t);X.h[1].t=r2(X.h[1].t);X.h[2].t=r2(X.h[2].t);tot+=X.t;out.push(X);
   var hs=HALF[m]||1,Hh=X.h[hs],rows=Hh.c.map(function(c){return'<tr class="pg"><td>'+c[0]+'</td><td class="pn">'+fmt(c[1])+'</td><td></td></tr>'+c[2].map(rowHtml).join("")}).join("");
-  var op=OPENS.hasOwnProperty(m)?OPENS[m]:out.length===1;
+  var op=OPENS[m]===true;
   H+='<details class="pam" data-m="'+m+'"'+(op?" open":"")+'><summary><span class="pmn">'+mlab(m)+'<small>Month total unpaid \u00b7 '+X.n+(X.n===1?" balance":" balances")+'</small></span><span class="pmt">'+fmt(X.t)+'</span></summary>'+
    '<div class="phb"><button type="button" class="phs'+(hs===1?" on":"")+'" data-h="'+m+'|1">'+HL[1]+'</button><button type="button" class="phs'+(hs===2?" on":"")+'" data-h="'+m+'|2">'+HL[2]+'</button></div>'+
    '<div class="phl"><span>'+HL[hs]+': <b>'+fmt(Hh.t)+'</b></span><span>Month total: <b>'+fmt(X.t)+'</b></span></div>'+
@@ -4016,25 +4021,23 @@ function pdf(){view();if(!DATA.length){toast("Nothing to export",true);return nu
  var items=[],mf=g("pmf").value,q=g("pqf").value.trim();
  DATA.forEach(function(x){items.push({t:"h",s:mlab(x.m)+" \u2013 month total unpaid "+fmt(x.t)});[1,2].forEach(function(h){var Z=x.h[h];if(!Z.n)return;var rows=[];Z.c.forEach(function(c){c[2].forEach(function(r){rows.push([c[0],r.n,r.s,fmt(r.a)])})});rows.push(["Total","","",fmt(Z.t)]);items.push({t:"h",s:HL[h]+" \u2013 unpaid "+fmt(Z.t)});items.push({t:"tbl",h:["Category","Name","Details","Unpaid"],rows:rows})})});
  return{blob:pdfBlob("Pay All Employees \u2013 unpaid by month","Total unpaid: "+g("ptt").textContent+(mf?" | Month: "+mlab(mf):"")+(q?" | Search: "+q:""),items),name:"pay-all-employees-"+today()+".pdf",title:"Pay All Employees \u2013 unpaid by month"}}
-function after(fn){hide();var go=function(){setTimeout(fn,60)};if(window.ovShut)ovShut("pal",go);else go()}
-function build(){ov=d.createElement("div");ov.id="pal";ov.setAttribute("role","dialog");ov.setAttribute("aria-label","Pay All Employees");
- ov.innerHTML='<div class="ch"><button type="button" class="cx" id="pax" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="cn">Pay All Employees</div></div>'+
- '<div class="cb" id="pcb"><div class="pt" style="margin:0 0 10px"><small>TOTAL UNPAID</small><b id="ptt">0.00</b><div class="pc" id="ptc"></div></div>'+
- '<div class="pf" style="padding:0 0 10px"><input type="search" class="cq" id="pqf" placeholder="Search name\u2026" autocomplete="off"><select id="pmf"><option value="">All months</option></select></div>'+
- '<div class="pa" style="margin:0 0 10px"><button type="button" class="btn sm alt" id="ppd">Download PDF</button><button type="button" class="btn sm" id="pps">Share PDF</button></div>'+
- '<div class="mut" style="font-size:12.5px;margin:0 2px 10px">Everything not yet paid, by month. Tap a month to open it, and tap Pay to record a payment. Payments are applied to the oldest balance first.</div><div id="pbd"></div></div>';
- d.body.appendChild(ov);g("pax").onclick=close;
+function shown(){return!!sec&&!sec.classList.contains("hide")}
+function reset(){g("pqf").value="";g("pmf").dataset.k="";g("pmf").value="";HALF={};OPENS={};view();try{window.scrollTo(0,0)}catch(x){}}
+function init(){sec=g("pall");if(!sec)return;
  g("pqf").addEventListener("input",view);g("pmf").addEventListener("change",view);
  g("pbd").addEventListener("click",function(e){var h=e.target.closest("button[data-h]");if(h){var a=h.dataset.h.split("|");HALF[a[0]]=+a[1];view();return}var b=e.target.closest("button[data-i]");if(!b)return;var f=ACT[+b.dataset.i];if(f)f()});
  g("pbd").addEventListener("toggle",function(e){var m=e.target&&e.target.dataset&&e.target.dataset.m;if(m)OPENS[m]=e.target.open},true);
  g("ppd").onclick=function(){try{var b=pdf();if(b){dlf(b.name,b.blob);toast("PDF downloaded")}}catch(x){toast("Could not create the PDF",true)}};
- g("pps").onclick=function(){try{var b=pdf();if(b)pvSharePdf(b.blob,b.name,b.title)}catch(x){toast("Could not create the PDF",true)}}}
-function open(){if(!rw()){toast("Pay All Employees is only for accounts that can read and write",true);return}if(!ov)build();g("pqf").value="";g("pmf").dataset.k="";g("pmf").value="";HALF={};OPENS={};isOpen=true;view();ov.classList.add("on");d.documentElement.classList.add("dlock","palopen");g("pcb").scrollTop=0;if(window.ovOpen)ovOpen("pal",{close:hide})}
-function hide(){if(!ov)return;isOpen=false;ov.classList.remove("on");d.documentElement.classList.remove("dlock","palopen")}
-function close(){if(!ov||!ov.classList.contains("on"))return;if(!(window.ovBack&&ovBack("pal")))hide()}
-var oc=window.closeM;if(typeof oc==="function")window.closeM=function(){var r=oc.apply(this,arguments);if(isOpen){setTimeout(function(){if(isOpen)view()},150);setTimeout(function(){if(isOpen)view()},1100)}return r};
-d.addEventListener("keydown",function(e){if(e.key==="Escape"&&ov&&ov.classList.contains("on")&&!g("modal").classList.contains("hide")===false)close()});
-window.palOpen=open;
+ g("pps").onclick=function(){try{var b=pdf();if(b)pvSharePdf(b.blob,b.name,b.title)}catch(x){toast("Could not create the PDF",true)}};
+ /* every time the page is opened: filters cleared and all month cards closed */
+ var was=shown();new MutationObserver(function(){var now=shown();if(now&&!was)reset();was=now}).observe(sec,{attributes:true,attributeFilter:["class"]});
+ if(was)reset();
+ /* keep the page current after a payment, a sync, or any data change while it is open */
+ var t=0;function soon(){if(t||!shown())return;t=setTimeout(function(){t=0;if(shown())view()},120)}
+ var oc=window.closeM;if(typeof oc==="function")window.closeM=function(){var r=oc.apply(this,arguments);if(shown()){setTimeout(function(){if(shown())view()},150);setTimeout(function(){if(shown())view()},1100)}return r};
+ ["render","renderFuel","pvRender"].forEach(function(nm){var o=window[nm];if(typeof o==="function")window[nm]=function(){var r=o.apply(this,arguments);soon();return r}})}
+init();
+window.palAvail=rw;
 })();
 </script>
 <script>(function(){
