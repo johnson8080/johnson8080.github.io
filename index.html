@@ -2866,6 +2866,11 @@ html.palopen .modal{z-index:1250}
 #pal tr.pg td.pn{color:var(--tx)}
 #pal td .mut{font-size:11.5px}
 #pal .pnone{padding:34px 14px;text-align:center;color:var(--mut)}
+#pal .phb{display:flex;gap:8px;padding:0 14px 8px}
+#pal .phs{flex:0 0 auto;padding:6px 12px;border-radius:999px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+#pal .phs.on{background:var(--ac);border-color:var(--ac);color:#fff}
+#pal .phl{display:flex;justify-content:space-between;gap:10px;padding:0 14px 10px;font-size:12px;color:var(--mut)}
+#pal .phl b{color:var(--bad)}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt"><span>FUEL &amp; TRIPS</span><small class="dtv"></small></div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
@@ -2883,7 +2888,7 @@ function fill(){var L=g("dli");L.innerHTML="";
 var st=g("hst");
  if(st)L.appendChild(item("Settings",st.innerHTML,st,st.classList.contains("on")));
  L.appendChild(item("Search everything",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',{click:function(){if(window.gsrOpen)gsrOpen()}},false,true));
- if((typeof canWrite==="undefined"||canWrite)&&!window.readOnly)L.appendChild(item("Pay All",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.6"/><path d="M6 9.5v.01M18 15.5v.01"/></svg>',{click:function(){if(window.palOpen)palOpen()}},false,true));
+ if((typeof canWrite==="undefined"||canWrite)&&!window.readOnly)L.appendChild(item("Pay All Employees",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="2.6"/><path d="M6 9.5v.01M18 15.5v.01"/></svg>',{click:function(){if(window.palOpen)palOpen()}},false,true));
  L.appendChild(item("All Calculations",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h.01M12 12h.01M16 12h.01M8 16h.01M12 16h.01M16 16h.01"/></svg>',{click:function(){if(window.calcOpen)calcOpen()}},false,true));
  L.appendChild(item("About FuelTrips",'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>',{click:aboutOpen},false,true))}
 
@@ -3685,9 +3690,9 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
- {v:"1.9.1",title:"Search everything and Pay All",items:[
+ {v:"1.9.1",title:"Search everything and Pay All Employees",items:[
   {t:"Search everything",d:"Open the menu and tap Search everything to search trips, seedcane, fuel, payments, advances and staff in one box. Tap a result to jump to it."},
-  {t:"Pay All",d:"Open the menu and tap Pay All to see everything still unpaid, month by month, with a Pay button and PDF download. Only accounts that can read and write see it."}
+  {t:"Pay All Employees",d:"Open the menu and tap Pay All Employees to see everything still unpaid, month by month. Each month has Date 1-14 and Date 15-30/31 buttons, a Pay button on every line, and a PDF download. Only accounts that can read and write see it."}
  ]},
  {v:"1.9.0",title:"Fingerprint lock and new refresh",items:[
   {t:"Fingerprint lock",d:"Turn it on in Settings > Security. The app asks for your fingerprint or phone screen lock when it opens and when you come back after a short while."},
@@ -3968,7 +3973,8 @@ window.gsrOpen=open;
 })();
 </script>
 <script>(function(){
-var d=document,g=function(i){return d.getElementById(i)},ov=null,ACT=[],DATA=[],isOpen=false;
+var d=document,g=function(i){return d.getElementById(i)},ov=null,ACT=[],DATA=[],isOpen=false,HALF={},OPENS={};
+var HL={1:"Date 1-14",2:"Date 15-30/31"};
 var MN=["January","February","March","April","May","June","July","August","September","October","November","December"];
 var CATS=[["td","Trip drivers"],["tl","Trip loaders"],["st","Staff salary"],["sd","Seed drivers"],["sl","Seed loaders"],["sv","Seed vehicles"]];
 function r2(v){return Math.round(v*100)/100}
@@ -3976,25 +3982,31 @@ function rd(k){try{return JSON.parse(localStorage.getItem(k)||"[]")}catch(e){ret
 function mlab(m){return MN[+m.slice(5,7)-1]+" "+m.slice(0,4)}
 function seedBtn(ts,k){var h=g("sdpg");if(!h)return;var b=d.createElement("button");b.dataset.vp=String(ts);b.dataset.k=k;h.appendChild(b);b.click();h.removeChild(b)}
 function gather(){var M={},can=window.canWrite!==false;
- function add(m,c,name,sub,amt,act){amt=r2(amt);if(!(amt>0.004)||!m)return;var o=M[m]||(M[m]={});(o[c]=o[c]||[]).push({n:name,s:sub,a:amt,act:can?act:null})}
- try{var AL=alloc(),TD={},TL={};entries.forEach(function(e){var o=AL[e.id];if(!o)return;var m=String(e.date).slice(0,7),k=e.driver||"(No driver name)";(TD[m]=TD[m]||{})[k]=((TD[m]||{})[k]||0)+o.dr;if(e.deposit>0)(TL[m]=TL[m]||{})[k]=((TL[m]||{})[k]||0)+o.lr});
-  Object.keys(TD).forEach(function(m){Object.keys(TD[m]).forEach(function(k){var u=r2(TD[m][k]);add(m,"td",k,"Driver balance held",u,function(){payM("driver",k,u)})})});
-  Object.keys(TL).forEach(function(m){Object.keys(TL[m]).forEach(function(k){var u=r2(TL[m][k]);add(m,"tl",k,"Loader balance",u,function(){payM("loader",k,u)})})})}catch(x){}
- try{var cur=today().slice(0,7);staff.filter(stOn).forEach(function(e){var fr=/^\d{4}-\d{2}$/.test(e.from||"")?e.from:"2026-10";mRange(fr,cur).forEach(function(mm){var p=0;pvp.forEach(function(x){if(x.who===e.n&&x.month===mm)p+=+x.amount||0});add(mm,"st",e.n,"Monthly salary",e.s-p,function(){pvPay({k:e.n,s:e.s},mm)})})})}catch(x){}
+ function add(m,c,name,sub,amt,act,day){amt=r2(amt);if(!(amt>0.004)||!m)return;var o=M[m]||(M[m]={});(o[c]=o[c]||[]).push({n:name,s:sub,a:amt,act:can?act:null,h:(+day||31)<=14?1:2})}
+ try{var AL=alloc(),TD={},TL={},ad=function(T,m,h,k,v){var a=T[m]||(T[m]={}),b=a[h]||(a[h]={});b[k]=(b[k]||0)+v};entries.forEach(function(e){var o=AL[e.id];if(!o)return;var m=String(e.date).slice(0,7),h=(+String(e.date).slice(8,10)||31)<=14?1:2,k=e.driver||"(No driver name)";ad(TD,m,h,k,o.dr);if(e.deposit>0)ad(TL,m,h,k,o.lr)});
+  Object.keys(TD).forEach(function(m){[1,2].forEach(function(h){Object.keys(TD[m][h]||{}).forEach(function(k){var u=r2(TD[m][h][k]);add(m,"td",k,"Driver balance held",u,function(){payM("driver",k,u)},h===1?1:31)})})});
+  Object.keys(TL).forEach(function(m){[1,2].forEach(function(h){Object.keys(TL[m][h]||{}).forEach(function(k){var u=r2(TL[m][h][k]);add(m,"tl",k,"Loader balance",u,function(){payM("loader",k,u)},h===1?1:31)})})})}catch(x){}
+ try{var cur=today().slice(0,7);staff.filter(stOn).forEach(function(e){var fr=/^\d{4}-\d{2}$/.test(e.from||"")?e.from:"2026-10";mRange(fr,cur).forEach(function(mm){var p=0;pvp.forEach(function(x){if(x.who===e.n&&x.month===mm)p+=+x.amount||0});add(mm,"st",e.n,"Monthly salary",e.s-p,function(){pvPay({k:e.n,s:e.s},mm)},31)})})}catch(x){}
  try{var A=rd("seedEntries"),seen={},sc=(typeof scfg!=="undefined"&&scfg)||{},dp=+sc.d||0,hd=+sc.h||0,rr=+sc.r||0;
   A.slice().sort(function(a,b){return a.date<b.date?-1:a.date>b.date?1:(a.ts||0)-(b.ts||0)}).forEach(function(e){var k=e.date+"|"+(e.driver||"").trim().toLowerCase(),f=!seen[k];seen[k]=1;e._p=f?dp:0;e._u=f?hd:Math.max(0,hd-rr)});
-  A.forEach(function(e){var m=String(e.date).slice(0,7),dt=e.date.slice(5)+" \u00b7 "+(+e.tonnes||0).toFixed(2)+" t";
-   add(m,"sd",e.driver||e.vehicle,e.vehicle+" \u00b7 "+dt,window.dInfo(e).u,function(){seedBtn(e.ts,"drv")});
-   add(m,"sl",e.vehicle,(e.driver?e.driver+" \u00b7 ":"")+dt,window.lInfo(e).u,function(){seedBtn(e.ts,"ldr")});
-   if(+e.mil>0)add(m,"sv",e.vehicle,(e.driver?e.driver+" \u00b7 ":"")+dt,window.vpInfo(e).u,function(){seedBtn(e.ts,"veh")})})}catch(x){}
+  A.forEach(function(e){var m=String(e.date).slice(0,7),dy=+String(e.date).slice(8,10)||31,dt=e.date.slice(5)+" \u00b7 "+(+e.tonnes||0).toFixed(2)+" t";
+   add(m,"sd",e.driver||e.vehicle,e.vehicle+" \u00b7 "+dt,window.dInfo(e).u,function(){seedBtn(e.ts,"drv")},dy);
+   add(m,"sl",e.vehicle,(e.driver?e.driver+" \u00b7 ":"")+dt,window.lInfo(e).u,function(){seedBtn(e.ts,"ldr")},dy);
+   if(+e.mil>0)add(m,"sv",e.vehicle,(e.driver?e.driver+" \u00b7 ":"")+dt,window.vpInfo(e).u,function(){seedBtn(e.ts,"veh")},dy)})}catch(x){}
  return M}
 function rw(){return(typeof canWrite==="undefined"||canWrite)&&!window.readOnly}
+function rowHtml(r){var b=r.act?'<button type="button" class="mp" data-i="'+(ACT.push(r.act)-1)+'">Pay</button>':"";return'<tr><td>'+esc(r.n)+'<div class="mut">'+esc(r.s)+'</div></td><td class="pn">'+fmt(r.a)+'</td><td>'+b+'</td></tr>'}
 function view(){if(!rw()){if(isOpen)hide();return}var M=gather(),mf=g("pmf").value,q=g("pqf").value.trim().toLowerCase(),months=Object.keys(M).sort().reverse(),tot=0,CT={},H="",out=[];ACT=[];
- var ms=months.filter(function(m){return!mf||m===mf});
- ms.forEach(function(m){var mt=0,cnt=0,rows="",cats=[];CATS.forEach(function(c){var L=(M[m][c[0]]||[]).filter(function(r){return!q||(r.n+" "+r.s+" "+c[1]).toLowerCase().indexOf(q)>=0});if(!L.length)return;L.sort(function(a,b){return b.a-a.a});var st=0;L.forEach(function(r){st+=r.a});st=r2(st);mt+=st;cnt+=L.length;CT[c[0]]=r2((CT[c[0]]||0)+st);cats.push([c[1],st,L]);
-   rows+='<tr class="pg"><td>'+c[1]+'</td><td class="pn">'+fmt(st)+'</td><td></td></tr>'+L.map(function(r){var b=r.act?'<button type="button" class="mp" data-i="'+(ACT.push(r.act)-1)+'">Pay</button>':"";return'<tr><td>'+esc(r.n)+'<div class="mut">'+esc(r.s)+'</div></td><td class="pn">'+fmt(r.a)+'</td><td>'+b+'</td></tr>'}).join("")});
-  if(!cnt)return;mt=r2(mt);tot+=mt;out.push({m:m,t:mt,c:cats});
-  H+='<details class="pam"'+(out.length===1?" open":"")+'><summary><span class="pmn">'+mlab(m)+'<small>'+cnt+(cnt===1?" balance":" balances")+' unpaid</small></span><span class="pmt">'+fmt(mt)+'</span></summary><div class="pw"><table><tbody>'+rows+'<tr class="pg"><td>Total for '+mlab(m)+'</td><td class="pn">'+fmt(mt)+'</td><td></td></tr></tbody></table></div></details>'});
+ months.filter(function(m){return!mf||m===mf}).forEach(function(m){var X={m:m,t:0,n:0,h:{1:{t:0,n:0,c:[]},2:{t:0,n:0,c:[]}}};
+  CATS.forEach(function(c){var L=(M[m][c[0]]||[]).filter(function(r){return!q||(r.n+" "+r.s+" "+c[1]).toLowerCase().indexOf(q)>=0});if(!L.length)return;L.sort(function(a,b){return b.a-a.a});
+   [1,2].forEach(function(h){var S=L.filter(function(r){return r.h===h});if(!S.length)return;var st=0;S.forEach(function(r){st+=r.a});st=r2(st);X.h[h].c.push([c[1],st,S]);X.h[h].t+=st;X.h[h].n+=S.length;X.t+=st;X.n+=S.length;CT[c[0]]=r2((CT[c[0]]||0)+st)})});
+  if(!X.n)return;X.t=r2(X.t);X.h[1].t=r2(X.h[1].t);X.h[2].t=r2(X.h[2].t);tot+=X.t;out.push(X);
+  var hs=HALF[m]||1,Hh=X.h[hs],rows=Hh.c.map(function(c){return'<tr class="pg"><td>'+c[0]+'</td><td class="pn">'+fmt(c[1])+'</td><td></td></tr>'+c[2].map(rowHtml).join("")}).join("");
+  var op=OPENS.hasOwnProperty(m)?OPENS[m]:out.length===1;
+  H+='<details class="pam" data-m="'+m+'"'+(op?" open":"")+'><summary><span class="pmn">'+mlab(m)+'<small>Month total unpaid \u00b7 '+X.n+(X.n===1?" balance":" balances")+'</small></span><span class="pmt">'+fmt(X.t)+'</span></summary>'+
+   '<div class="phb"><button type="button" class="phs'+(hs===1?" on":"")+'" data-h="'+m+'|1">'+HL[1]+'</button><button type="button" class="phs'+(hs===2?" on":"")+'" data-h="'+m+'|2">'+HL[2]+'</button></div>'+
+   '<div class="phl"><span>'+HL[hs]+': <b>'+fmt(Hh.t)+'</b></span><span>Month total: <b>'+fmt(X.t)+'</b></span></div>'+
+   '<div class="pw"><table><tbody>'+(rows||'<tr><td class="mut" colspan="3">Nothing unpaid for '+HL[hs]+'</td></tr>')+'<tr class="pg"><td>Total for '+HL[hs]+'</td><td class="pn">'+fmt(Hh.t)+'</td><td></td></tr></tbody></table></div></details>'});
  DATA=out;
  g("ptt").textContent=fmt(r2(tot));
  g("ptc").innerHTML=CATS.filter(function(c){return CT[c[0]]}).map(function(c){return'<span>'+c[1]+': '+fmt(CT[c[0]])+'</span>'}).join("");
@@ -4002,21 +4014,22 @@ function view(){if(!rw()){if(isOpen)hide();return}var M=gather(),mf=g("pmf").val
  var cur=mf,o='<option value="">All months</option>'+months.map(function(m){return'<option value="'+m+'">'+mlab(m)+'</option>'}).join("");if(g("pmf").dataset.k!==months.join(",")){g("pmf").innerHTML=o;g("pmf").value=months.indexOf(cur)>=0?cur:"";g("pmf").dataset.k=months.join(",")}}
 function pdf(){view();if(!DATA.length){toast("Nothing to export",true);return null}
  var items=[],mf=g("pmf").value,q=g("pqf").value.trim();
- DATA.forEach(function(x){items.push({t:"h",s:mlab(x.m)+" \u2013 unpaid "+fmt(x.t)});var rows=[];x.c.forEach(function(c){c[2].forEach(function(r){rows.push([c[0],r.n,r.s,fmt(r.a)])})});rows.push(["Total","","",fmt(x.t)]);items.push({t:"tbl",h:["Category","Name","Details","Unpaid"],rows:rows})});
- return{blob:pdfBlob("Pay All \u2013 unpaid by month","Total unpaid: "+g("ptt").textContent+(mf?" | Month: "+mlab(mf):"")+(q?" | Search: "+q:""),items),name:"pay-all-unpaid-"+today()+".pdf",title:"Pay All \u2013 unpaid by month"}}
+ DATA.forEach(function(x){items.push({t:"h",s:mlab(x.m)+" \u2013 month total unpaid "+fmt(x.t)});[1,2].forEach(function(h){var Z=x.h[h];if(!Z.n)return;var rows=[];Z.c.forEach(function(c){c[2].forEach(function(r){rows.push([c[0],r.n,r.s,fmt(r.a)])})});rows.push(["Total","","",fmt(Z.t)]);items.push({t:"h",s:HL[h]+" \u2013 unpaid "+fmt(Z.t)});items.push({t:"tbl",h:["Category","Name","Details","Unpaid"],rows:rows})})});
+ return{blob:pdfBlob("Pay All Employees \u2013 unpaid by month","Total unpaid: "+g("ptt").textContent+(mf?" | Month: "+mlab(mf):"")+(q?" | Search: "+q:""),items),name:"pay-all-employees-"+today()+".pdf",title:"Pay All Employees \u2013 unpaid by month"}}
 function after(fn){hide();var go=function(){setTimeout(fn,60)};if(window.ovShut)ovShut("pal",go);else go()}
-function build(){ov=d.createElement("div");ov.id="pal";ov.setAttribute("role","dialog");ov.setAttribute("aria-label","Pay All");
- ov.innerHTML='<div class="ch"><button type="button" class="cx" id="pax" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="cn">Pay All</div></div>'+
+function build(){ov=d.createElement("div");ov.id="pal";ov.setAttribute("role","dialog");ov.setAttribute("aria-label","Pay All Employees");
+ ov.innerHTML='<div class="ch"><button type="button" class="cx" id="pax" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="cn">Pay All Employees</div></div>'+
  '<div class="cb" id="pcb"><div class="pt" style="margin:0 0 10px"><small>TOTAL UNPAID</small><b id="ptt">0.00</b><div class="pc" id="ptc"></div></div>'+
  '<div class="pf" style="padding:0 0 10px"><input type="search" class="cq" id="pqf" placeholder="Search name\u2026" autocomplete="off"><select id="pmf"><option value="">All months</option></select></div>'+
  '<div class="pa" style="margin:0 0 10px"><button type="button" class="btn sm alt" id="ppd">Download PDF</button><button type="button" class="btn sm" id="pps">Share PDF</button></div>'+
  '<div class="mut" style="font-size:12.5px;margin:0 2px 10px">Everything not yet paid, by month. Tap a month to open it, and tap Pay to record a payment. Payments are applied to the oldest balance first.</div><div id="pbd"></div></div>';
  d.body.appendChild(ov);g("pax").onclick=close;
  g("pqf").addEventListener("input",view);g("pmf").addEventListener("change",view);
- g("pbd").addEventListener("click",function(e){var b=e.target.closest("button[data-i]");if(!b)return;var f=ACT[+b.dataset.i];if(f)f()});
+ g("pbd").addEventListener("click",function(e){var h=e.target.closest("button[data-h]");if(h){var a=h.dataset.h.split("|");HALF[a[0]]=+a[1];view();return}var b=e.target.closest("button[data-i]");if(!b)return;var f=ACT[+b.dataset.i];if(f)f()});
+ g("pbd").addEventListener("toggle",function(e){var m=e.target&&e.target.dataset&&e.target.dataset.m;if(m)OPENS[m]=e.target.open},true);
  g("ppd").onclick=function(){try{var b=pdf();if(b){dlf(b.name,b.blob);toast("PDF downloaded")}}catch(x){toast("Could not create the PDF",true)}};
  g("pps").onclick=function(){try{var b=pdf();if(b)pvSharePdf(b.blob,b.name,b.title)}catch(x){toast("Could not create the PDF",true)}}}
-function open(){if(!rw()){toast("Pay All is only for accounts that can read and write",true);return}if(!ov)build();g("pqf").value="";g("pmf").dataset.k="";g("pmf").value="";isOpen=true;view();ov.classList.add("on");d.documentElement.classList.add("dlock","palopen");g("pcb").scrollTop=0;if(window.ovOpen)ovOpen("pal",{close:hide})}
+function open(){if(!rw()){toast("Pay All Employees is only for accounts that can read and write",true);return}if(!ov)build();g("pqf").value="";g("pmf").dataset.k="";g("pmf").value="";HALF={};OPENS={};isOpen=true;view();ov.classList.add("on");d.documentElement.classList.add("dlock","palopen");g("pcb").scrollTop=0;if(window.ovOpen)ovOpen("pal",{close:hide})}
 function hide(){if(!ov)return;isOpen=false;ov.classList.remove("on");d.documentElement.classList.remove("dlock","palopen")}
 function close(){if(!ov||!ov.classList.contains("on"))return;if(!(window.ovBack&&ovBack("pal")))hide()}
 var oc=window.closeM;if(typeof oc==="function")window.closeM=function(){var r=oc.apply(this,arguments);if(isOpen){setTimeout(function(){if(isOpen)view()},150);setTimeout(function(){if(isOpen)view()},1100)}return r};
