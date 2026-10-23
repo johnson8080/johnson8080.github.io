@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.9.4">
+<meta name="app-version" content="1.9.6">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2858,8 +2858,8 @@ html.ro #sdform button:disabled,html.ro #seed .undo:disabled,html.ro #mbody #mMS
 #pall .pmn{flex:1;min-width:0}
 #pall .pmn small{display:block;font-size:11.5px;font-weight:600;color:var(--mut)}
 #pall .pmt{font-weight:800;color:var(--bad)}
-#pall details.pam>summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--mut);border-bottom:2px solid var(--mut);transform:rotate(45deg);transition:transform .2s;margin:0 4px 4px 2px}
-#pall details.pam[open]>summary::after{transform:rotate(-135deg);margin-bottom:-2px}
+#pall details.pam>summary::after{content:"";flex:0 0 auto;width:14px;height:14px;border:0;border-radius:0!important;background:no-repeat center/14px 14px url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M5 9l7 7 7-7'/></svg>");margin:0 2px;transform:none;transition:transform .2s}
+#pall details.pam[open]>summary::after{transform:rotate(180deg);margin:0 2px}
 #pall .pw{overflow-x:auto;border-top:1px solid var(--ln)}
 #pall table{width:max-content!important;min-width:100%;border-collapse:collapse;font-size:13.5px}
 #pall td{padding:8px 12px;border-bottom:1px solid var(--ln);white-space:nowrap;text-align:left}
@@ -3996,7 +3996,7 @@ function mlab(m){return MN[+m.slice(5,7)-1]+" "+m.slice(0,4)}
 function seedBtn(ts,k){var h=g("sdpg");if(!h)return;var b=d.createElement("button");b.dataset.vp=String(ts);b.dataset.k=k;h.appendChild(b);b.click();h.removeChild(b)}
 function gather(){var M={},can=window.canWrite!==false;
  function add(m,c,name,sub,amt,act,day,tr){amt=r2(amt);if(!(amt>0.004)||!m)return;var o=M[m]||(M[m]={});(o[c]=o[c]||[]).push({n:name,s:sub,a:amt,act:can?act:null,h:(+day||31)<=14?1:2,t:+tr||0})}
- try{var AL=alloc(),TD={},TL={},TDn={},TLn={},ad=function(T,m,h,k,v){var a=T[m]||(T[m]={}),b=a[h]||(a[h]={});b[k]=(b[k]||0)+v};entries.forEach(function(e){var o=AL[e.id];if(!o)return;var m=String(e.date).slice(0,7),h=(+String(e.date).slice(8,10)||31)<=14?1:2,k=e.driver||"(No driver name)";ad(TD,m,h,k,o.dr);if(Math.abs(o.dr)>0.004)ad(TDn,m,h,k,1);if(e.deposit>0){ad(TL,m,h,k,o.lr);if(Math.abs(o.lr)>0.004)ad(TLn,m,h,k,1)}});
+ try{var AL=alloc(),TD={},TL={},TDn={},TLn={},ad=function(T,m,h,k,v){var a=T[m]||(T[m]={}),b=a[h]||(a[h]={});b[k]=(b[k]||0)+v};entries.forEach(function(e){var o=AL[e.id];if(!o)return;var m=String(e.date).slice(0,7),h=(+String(e.date).slice(8,10)||31)<=14?1:2,k=e.driver||"(No driver name)";ad(TD,m,h,k,o.dr);if(e.tonnes>0)ad(TDn,m,h,k,1);if(e.deposit>0){ad(TL,m,h,k,o.lr);ad(TLn,m,h,k,1)}});
   Object.keys(TD).forEach(function(m){[1,2].forEach(function(h){Object.keys(TD[m][h]||{}).forEach(function(k){var u=r2(TD[m][h][k]);add(m,"td",k,"Driver balance held",u,function(){payM("driver",k,u)},h===1?1:31,(TDn[m][h]||{})[k])})})});
   Object.keys(TL).forEach(function(m){[1,2].forEach(function(h){Object.keys(TL[m][h]||{}).forEach(function(k){var u=r2(TL[m][h][k]);add(m,"tl",k,"Loader balance",u,function(){payM("loader",k,u)},h===1?1:31,(TLn[m][h]||{})[k])})})})}catch(x){}
  try{var cur=today().slice(0,7);staff.filter(stOn).forEach(function(e){var fr=/^\d{4}-\d{2}$/.test(e.from||"")?e.from:"2026-10";mRange(fr,cur).forEach(function(mm){var p=0;pvp.forEach(function(x){if(x.who===e.n&&x.month===mm)p+=+x.amount||0});add(mm,"st",e.n,"Monthly salary",e.s-p,function(){pvPay({k:e.n,s:e.s},mm)},31)})})}catch(x){}
