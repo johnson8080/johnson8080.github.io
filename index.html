@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2.0.0">
+<meta name="app-version" content="2.0.1">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -532,10 +532,11 @@ var onNote=function(x){if(!onC){onC=document.createElement("div");onC.id="onn";d
 var scan=function(snap){if(!ONR&&!snap)return;var now=Date.now();PL.forEach(function(x){var on=!!(x.t&&!x.off&&now-x.t<150000);if(ONR&&on&&!ONM[x.id])onNote(x);ONM[x.id]=on});ONR=true};
 fs.collection("presence").onSnapshot(function(sn){PL=[];sn.forEach(function(d){if(d.id===u.uid)return;var x=d.data()||{};PL.push({id:d.id,name:x.name||"user",v:x.v||"",t:x.t&&x.t.toMillis?x.t.toMillis():0,off:!!x.off})});RERR="";draw();scan(true)},function(e){RERR=(e&&e.code)||"error";draw()})}
 function ref(p){var a=p.split("/");return root.collection(a[0]).doc(a[1])}
+var stab=function(v){if(Array.isArray(v))return v.map(stab);if(v&&typeof v==="object"&&!(v instanceof Date)){var o={};Object.keys(v).sort().forEach(function(k){o[k]=stab(v[k])});return o}return v};
 var SEEN={},GUARD={"config/main":1,"config/fuel":1,"config/seed":1,"config/staff":1,"config/reasons":1,"config/app":1};
 var api={doc:function(p){var r=ref(p),c=p.split("/")[0];return{
-set:function(d,mo){if(GUARD[p]&&SEEN[p]!==undefined&&navigator.onLine!==false){return r.get({source:"server"}).then(function(sv){var cur=JSON.stringify(sv.exists?sv.data():null);if(cur!==SEEN[p])return Promise.reject(new Error("Changed on another device. The latest version is now showing, please redo your change."));return soft(r.set(d,mo))},function(er){if(er&&er.code==="permission-denied")throw er;return soft(r.set(d,mo))})}if(!COLS[c])return c==="backups"?r.set(d,mo):soft(r.set(d,mo));return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
-delete:function(){return gate().then(function(){return soft(r.delete())})},onSnapshot:function(a,b){return r.onSnapshot(typeof a==="function"?function(sn){try{if(GUARD[p])SEEN[p]=JSON.stringify(sn.exists?sn.data():null)}catch(e){}a(sn)}:a,b)}}},
+set:function(d,mo){if(GUARD[p]&&SEEN[p]!==undefined&&navigator.onLine!==false){return r.get({source:"server"}).then(function(sv){var cur=JSON.stringify(stab(sv.exists?sv.data():null));if(cur!==SEEN[p])return Promise.reject(new Error("Changed on another device. The latest version is now showing, please redo your change."));return soft(r.set(d,mo))},function(er){if(er&&er.code==="permission-denied")throw er;return soft(r.set(d,mo))})}if(!COLS[c])return c==="backups"?r.set(d,mo):soft(r.set(d,mo));return r.get({source:"cache"}).catch(function(){return r.get()}).catch(function(){return{exists:false}}).then(function(s){var o=Object.assign({},d),old=s.exists?s.data():{};if(!o.by)o.by=old.by||who;if(s.exists&&!o.editedBy){o.editedBy=who;o.editedAt=Date.now()}if(o.deleted&&!o.deletedBy)o.deletedBy=who;return s.exists?gate().then(function(){return bg(r.set(o))}):bg(r.set(o))})},
+delete:function(){return gate().then(function(){return soft(r.delete())})},onSnapshot:function(a,b){return r.onSnapshot(typeof a==="function"?function(sn){try{if(GUARD[p])SEEN[p]=JSON.stringify(stab(sn.exists?sn.data():null))}catch(e){}a(sn)}:a,b)}}},
 collection:function(n){var cr=root.collection(n);return{add:function(d){var o=Object.assign({},d);if(COLS[n]&&!o.by)o.by=who;return bg(cr.add(o))},onSnapshot:function(a,b){return cr.onSnapshot(typeof a==="function"?function(s){try{if(window.syncMark)syncMark(n,s)}catch(e){}a(s)}:a,b)}}}};if(ro){var blk=function(){try{if(window.toast)toast("Read-only account: changes are not allowed")}catch(x){}return Promise.reject(new Error("read-only"))},od=api.doc,oc=api.collection;api.doc=function(p){var d=od(p);return{set:blk,delete:blk,onSnapshot:d.onSnapshot}};api.collection=function(n){var c=oc(n);return{add:blk,onSnapshot:c.onSnapshot}}}return api};
 })();</script>
 <script>window.RNG=(function(){var S={},D=/^\d{4}-\d{2}-\d{2}$/;function ok(r){return!!(r&&D.test(r.a)&&D.test(r.b)&&r.a<=r.b)}
@@ -3742,6 +3743,9 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"2.0.1",title:"Fix: Add to payroll",items:[
+  {t:"Add to payroll works again",d:"Fixed the false Changed on another device error that blocked adding staff to payroll and other saves."}
+ ]},
  {v:"1.9.4",title:"Trip counts everywhere in Pay All",items:[
   {t:"SEED.CN trip counts and PDF",d:"SEED.CN lines now show their trip count too, each group shows a trip total, and the Pay All Employees PDF has a Trips column."}
  ]},
