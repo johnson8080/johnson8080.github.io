@@ -1,4 +1,4 @@
-const CACHE = "fuel-trips-v1.9.6";
+const CACHE = "fuel-trips-v1.9.8";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-maskable-512-v2.png", "icons/apple-touch-icon-v2.png", "icons/favicon-48-v2.png", "icons/splash-ring-192.png", "icons/splash-ring-512.png"];
 
 self.addEventListener("install", (e) => {

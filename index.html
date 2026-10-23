@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="1.9.6">
+<meta name="app-version" content="1.9.8">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -627,7 +627,7 @@ show(0);raf=requestAnimationFrame(tick);
 })();
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
-<header class="hd"><button class="ib" id="mnu" type="button" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h7"/></svg></button><div class="logo" id="lg"></div><div class="ht"><h1><span class="sd" aria-hidden="true"></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
+<header class="hd"><button class="ib" id="mnu" type="button" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h11M4 17h7"/></svg></button><div class="logo" id="lg"></div><div class="ht"><h1><svg class="fi" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="color:var(--ac);flex:0 0 auto;margin-right:7px"><path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17M3 22h12M15 10h2a2 2 0 0 1 2 2v3a2 2 0 0 0 4 0V9l-3-3M7 9h4"/></svg>FUEL &amp; TRIPS</h1><span id="netpop" aria-live="polite"></span></div><button class="onb" id="onl" aria-label="Who is online"><span class="od"></span><b>0</b></button><button class="ib srb" id="hsr" type="button" aria-label="Search everything"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button><button class="ib hrp" id="hrp" aria-label="Rates">RATES</button><button class="ib nb" id="who" aria-label="Connection status"><span id="wt">Online</span></button><button class="ib" id="hth" aria-label="Switch theme"></button><button class="ib" id="hst" aria-label="Settings"></button></header>
 <div id="banner"></div><div id="sbanner"></div><div id="annbar"></div>
 <div class="main"><button data-g="pay" class="on">Trips</button><button data-g="fuel">Fuel</button><button data-g="ov">Overview</button><button data-g="rates">Update Rates</button><button data-g="sales">Winch</button><button data-g="seed">Seedcane</button></div>
 <div class="tabs" id="barpay" data-g="pay" style="grid-template-columns:1fr 1.7fr 1.1fr 1fr"><button data-t="enter">ADD LOG</button><button data-t="log" class="on">ALL TRIP LOGS</button><button data-t="advt">Advance</button><button data-t="unp">Unpaid</button><button data-t="pall" style="display:none">PAY ALL</button><button data-t="pvt" style="display:none">PRIV STAFF</button><button data-t="pvadd" style="display:none">ADD PRIV STAFF</button><button data-t="psl" style="display:none">PAYSLIP</button><button data-t="pdt" style="display:none">PAID</button></div>
@@ -2874,6 +2874,12 @@ html.ro #sdform button:disabled,html.ro #seed .undo:disabled,html.ro #mbody #mMS
 #pall .phs.on{background:var(--ac);border-color:var(--ac);color:#fff}
 #pall .phl{display:flex;justify-content:space-between;gap:10px;padding:0 14px 10px;font-size:12px;color:var(--mut)}
 #pall .phl b{color:var(--bad)}
+
+/* header: fuel icon shows the connection colour (was the dot); search button */
+.hd h1 .fi{color:#16a34a!important}.hd h1.off .fi{color:#dc2626!important}
+.hd .srb{width:36px!important;min-width:36px;padding:0!important;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--card);color:var(--tx);border:1px solid var(--ln)!important;cursor:pointer}
+.hd .srb svg{width:18px;height:18px;display:block}
+.hd .srb.on{border-color:#22c55e!important}
 </style>
 <script>(function(){var d=document,g=function(i){return d.getElementById(i)},dr=null,btn=g("mnu");if(!btn)return;
 function build(){if(dr)return;dr=d.createElement("div");dr.id="drw";dr.innerHTML='<div class="dsh"></div><nav class="dpn" aria-label="Menu"><div class="dtt"><span>FUEL &amp; TRIPS</span><small class="dtv"></small></div><div id="dli"></div><div id="dxt"></div><div id="dft"></div></nav>';d.body.appendChild(dr);
@@ -3973,15 +3979,21 @@ function render(){var q=ov.querySelector(".cq").value.trim().toLowerCase(),b=ov.
  b.innerHTML=n?h:'<div class="gh">Nothing found for \u201c'+esc(q)+'\u201d.</div>'}
 function after(fn){hide();var go=function(){setTimeout(fn,60)};if(window.ovShut)ovShut("gsr",go);else go()}
 function build(){ov=d.createElement("div");ov.id="gsr";ov.setAttribute("role","dialog");ov.setAttribute("aria-label","Search everything");
- ov.innerHTML='<div class="ch"><button type="button" class="cx" id="gsx" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><div class="cn">Search everything</div></div><div class="cqw"><input type="search" class="cq" placeholder="Search plate, driver, date, amount\u2026" autocomplete="off"></div><div class="cb"></div>';
- d.body.appendChild(ov);g("gsx").onclick=close;
+ ov.innerHTML='<div class="cqw" style="padding-top:10px"><input type="search" class="cq" placeholder="Search plate, driver, date, amount\u2026" autocomplete="off"></div><div class="cb"></div>';
+ d.body.appendChild(ov);
  ov.querySelector(".cq").addEventListener("input",function(){SH={};clearTimeout(tm);tm=setTimeout(render,120)});
  ov.querySelector(".cb").addEventListener("click",function(e){var m=e.target.closest("button");if(!m)return;if(m.dataset.s){SH[m.dataset.s]=1;render();return}if(m.dataset.i!=null){var f=ACT[+m.dataset.i];if(f)after(f)}})}
-function open(){if(!ov)build();var q=ov.querySelector(".cq");q.value="";SH={};render();ov.classList.add("on");d.documentElement.classList.add("dlock");setTimeout(function(){try{q.focus()}catch(e){}},250);if(window.ovOpen)ovOpen("gsr",{close:hide})}
-function hide(){if(!ov)return;ov.classList.remove("on");d.documentElement.classList.remove("dlock")}
+function open(){if(!ov)build();var q=ov.querySelector(".cq");q.value="";SH={};render();fit();ov.classList.add("on");d.documentElement.classList.add("dlock");mark(true);setTimeout(function(){try{q.focus()}catch(e){}},250);if(window.ovOpen)ovOpen("gsr",{close:hide})}
+function hide(){if(!ov)return;ov.classList.remove("on");d.documentElement.classList.remove("dlock");mark(false)}
+function mark(on){var b=g("hsr");if(b)b.classList.toggle("on",!!on)}
+/* leave the header showing: the page starts just under it */
+function fit(){var h=d.querySelector(".hd"),t=0;try{if(h){var r=h.getBoundingClientRect();t=Math.max(0,Math.round(r.bottom))}}catch(e){}ov.style.top=t+"px";ov.style.paddingTop="0"}
 function close(){if(!ov||!ov.classList.contains("on"))return;if(!(window.ovBack&&ovBack("gsr")))hide()}
 d.addEventListener("keydown",function(e){if(e.key==="Escape"&&ov&&ov.classList.contains("on"))close()});
 window.gsrOpen=open;
+(function(){var b=g("hsr");if(b)b.addEventListener("click",function(){if(ov&&ov.classList.contains("on"))close();else open()});
+ var h=d.querySelector(".hd");if(h)h.addEventListener("click",function(e){if(!ov||!ov.classList.contains("on"))return;if(e.target.closest("#hsr"))return;close()},true);
+ window.addEventListener("resize",function(){if(ov&&ov.classList.contains("on"))fit()})})();
 })();
 </script>
 <script>(function(){
