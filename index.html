@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2.0.6">
+<meta name="app-version" content="2.0.8">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -3770,6 +3770,9 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"2.0.8",title:"Seedcane rows without tonnage",items:[
+  {t:"Tonnage removed",d:"Seedcane rows in Pay All no longer show tonnage. Tables keep single-line text and scroll sideways if content is long."}
+ ]},
  {v:"2.0.6",title:"Cleaner seedcane headers",items:[
   {t:"No repeated trip counts",d:"Seedcane driver, loader and vehicle headers in Pay All no longer repeat the same trip count. The total counts each seedcane trip once."}
  ]},
@@ -4109,7 +4112,7 @@ function gather(){var M={},can=window.canWrite!==false;
   var G={},grp=function(c,name,who,u,e,k){u=r2(u);if(!(u>0.004))return;var m=String(e.date).slice(0,7),dy=+String(e.date).slice(8,10)||31,h=dy<=14?1:2,key=m+"|"+c+"|"+h+"|"+String(name||"").trim().toLowerCase(),o=G[key]||(G[key]={m:m,c:c,n:name,h:h,k:k,ids:[],a:0,tn:0,who:{},d1:e.date,d2:e.date});
    o.ids.push(e.ts);(o.it=o.it||[]).push({id:e.ts,u:u});o.a+=u;o.tn+=+e.tonnes||0;if(who)o.who[who]=1;if(e.date<o.d1)o.d1=e.date;if(e.date>o.d2)o.d2=e.date};
   A.forEach(function(e){grp("sd",e.driver||e.vehicle,e.vehicle,window.dInfo(e).u,e,"drv");grp("sl",e.vehicle,e.driver,window.lInfo(e).u,e,"ldr");if(+e.mil>0)grp("sv",e.vehicle,e.driver,window.vpInfo(e).u,e,"veh")});
-  Object.keys(G).forEach(function(key){var o=G[key],w=Object.keys(o.who).join(", "),dt=(o.d1===o.d2?o.d1.slice(5):o.d1.slice(5)+"\u2013"+o.d2.slice(5))+" \u00b7 "+o.tn.toFixed(2)+" t";
+  Object.keys(G).forEach(function(key){var o=G[key],w=Object.keys(o.who).join(", "),dt=(o.d1===o.d2?o.d1.slice(5):o.d1.slice(5)+"\u2013"+o.d2.slice(5));
    add(o.m,o.c,o.n,(w?w+" \u00b7 ":"")+dt,o.a,function(){window.seedPayMany(o.ids,o.k)},o.h===1?1:31,o.ids.length,{t:"x",k:o.k,it:o.it})})}catch(x){}
  return M}
 function rw(){return(typeof canWrite==="undefined"||canWrite)&&!window.readOnly}
