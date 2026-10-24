@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2.0.5">
+<meta name="app-version" content="2.0.6">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -3770,6 +3770,9 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"2.0.6",title:"Cleaner seedcane headers",items:[
+  {t:"No repeated trip counts",d:"Seedcane driver, loader and vehicle headers in Pay All no longer repeat the same trip count. The total counts each seedcane trip once."}
+ ]},
  {v:"2.0.5",title:"Pay All per month",items:[
   {t:"Pay All button for each month",d:"Each month card in Salary now has a Pay All button that marks every unpaid balance of that month as paid."},
   {t:"Tidier tables",d:"Salary tables now sit inside their card with a small gap. History badge letters are centred and the top border is rounded."}
@@ -4114,14 +4117,14 @@ function rowHtml(r){var b=r.act?'<button type="button" class="mp" data-i="'+(ACT
 function view(){if(!sec)return;if(!rw()){DATA=[];g("ptt").textContent=fmt(0);g("ptc").innerHTML="";g("pbd").innerHTML='<div class="pnone">Pay All Employees is only for accounts that can read and write.</div>';return}var M=gather();MM=M;var mf=g("pmf").value,q=g("pqf").value.trim().toLowerCase(),months=Object.keys(M).sort().reverse(),tot=0,CT={},H="",out=[];ACT=[];
  months.filter(function(m){return!mf||m===mf}).forEach(function(m){var X={m:m,t:0,n:0,h:{1:{t:0,n:0,c:[]},2:{t:0,n:0,c:[]}}};
   CATS.forEach(function(c){var L=(M[m][c[0]]||[]).filter(function(r){return!q||(r.n+" "+r.s+" "+c[1]).toLowerCase().indexOf(q)>=0});if(!L.length)return;L.sort(function(a,b){return b.a-a.a});
-   [1,2].forEach(function(h){var S=L.filter(function(r){return r.h===h});if(!S.length)return;var st=0;S.forEach(function(r){st+=r.a});st=r2(st);var tn=0;S.forEach(function(r){tn+=r.t||0});X.h[h].c.push([c[1],st,S,tn]);X.h[h].t+=st;X.h[h].n+=S.length;X.t+=st;X.n+=S.length;CT[c[0]]=r2((CT[c[0]]||0)+st)})});
+   [1,2].forEach(function(h){var S=L.filter(function(r){return r.h===h});if(!S.length)return;var st=0;S.forEach(function(r){st+=r.a});st=r2(st);var tn=0;S.forEach(function(r){tn+=r.t||0});X.h[h].c.push([c[1],st,S,tn,c[0]]);X.h[h].t+=st;X.h[h].n+=S.length;X.t+=st;X.n+=S.length;CT[c[0]]=r2((CT[c[0]]||0)+st)})});
   if(!X.n)return;X.t=r2(X.t);X.h[1].t=r2(X.h[1].t);X.h[2].t=r2(X.h[2].t);tot+=X.t;out.push(X);
-  var hs=HALF[m]||1,Hh=X.h[hs],rows=Hh.c.map(function(c){return'<tr class="pg"><td>'+c[0]+'</td><td class="tc">'+tl(c[3])+'</td><td class="pn">'+fmt(c[1])+'</td><td></td></tr>'+c[2].map(rowHtml).join("")}).join("");
+  var hs=HALF[m]||1,Hh=X.h[hs],rows=Hh.c.map(function(c){return'<tr class="pg"><td>'+c[0]+'</td><td class="tc">'+(/^s[dlv]$/.test(c[4])?"":tl(c[3]))+'</td><td class="pn">'+fmt(c[1])+'</td><td></td></tr>'+c[2].map(rowHtml).join("")}).join("");
   var op=OPENS[m]===true;
   H+='<details class="pam" data-m="'+m+'"'+(op?" open":"")+'><summary><span class="pmn">'+mlab(m)+'<small>Month total unpaid \u00b7 '+X.n+(X.n===1?" balance":" balances")+'</small></span><span class="pmt">'+fmt(X.t)+'</span></summary>'+
    '<div class="phb"><button type="button" class="phs'+(hs===1?" on":"")+'" data-h="'+m+'|1">'+HL[1]+'</button><button type="button" class="phs'+(hs===2?" on":"")+'" data-h="'+m+'|2">'+HL[2]+'</button><button type="button" class="pam-all" data-pm="'+m+'">Pay All</button></div>'+
    '<div class="phl"><span>'+HL[hs]+': <b>'+fmt(Hh.t)+'</b></span><span>Month total: <b>'+fmt(X.t)+'</b></span></div>'+
-   '<div class="pw"><table><tbody>'+(rows||'<tr><td class="mut" colspan="4">Nothing unpaid for '+HL[hs]+'</td></tr>')+'<tr class="pg"><td>Total for '+HL[hs]+'</td><td class="tc">'+tl(Hh.c.reduce(function(a,c){return a+c[3]},0))+'</td><td class="pn">'+fmt(Hh.t)+'</td><td></td></tr></tbody></table></div></details>'});
+   '<div class="pw"><table><tbody>'+(rows||'<tr><td class="mut" colspan="4">Nothing unpaid for '+HL[hs]+'</td></tr>')+'<tr class="pg"><td>Total for '+HL[hs]+'</td><td class="tc">'+tl(Hh.c.reduce(function(a,c){return a+(c[4]==="sl"||c[4]==="sv"?0:c[3])},0))+'</td><td class="pn">'+fmt(Hh.t)+'</td><td></td></tr></tbody></table></div></details>'});
  DATA=out;
  g("ptt").textContent=fmt(r2(tot));
  g("ptc").innerHTML=CATS.filter(function(c){return CT[c[0]]}).map(function(c){return'<span>'+c[1]+': '+fmt(CT[c[0]])+'</span>'}).join("");
