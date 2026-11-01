@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2.0.10">
+<meta name="app-version" content="2.0.11">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2307,16 +2307,17 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 </script>
 <script>if("serviceWorker" in navigator){window.addEventListener("load",function(){try{navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}})}</script>
 <style>html,body{overscroll-behavior-y:none}
-#ptr{position:fixed;left:50%;top:0;height:44px;padding:4px 16px 4px 4px;box-sizing:border-box;border-radius:999px!important;background:var(--card);border:1px solid var(--ln);box-shadow:0 4px 16px rgba(0,0,0,.28);display:flex;align-items:center;gap:10px;z-index:7;opacity:0;pointer-events:none;white-space:nowrap;font-size:12.5px;font-weight:700;letter-spacing:.3px;color:var(--tx);transform:translate(-50%,-60px);transition:border-color .2s,box-shadow .2s}
-#ptr .pr{width:36px;height:36px;flex:0 0 auto;display:block;overflow:visible}
-#ptr .tk{stroke:var(--ln)}#ptr .pg{stroke:var(--ac);stroke-linecap:round;transform:rotate(-90deg);transform-origin:18px 18px}
-#ptr .dp{stroke:var(--ac);fill:none;stroke-width:1.8;stroke-linejoin:round}#ptr .df{fill:var(--ac)}
-#ptr.rdy{border-color:var(--ac);box-shadow:0 0 0 3px rgba(120,160,255,.22),0 4px 18px rgba(0,0,0,.32)}#ptr.rdy .pt{color:var(--ac)}
-#ptr.spin .pg{stroke-dasharray:26 68!important;stroke-dashoffset:0!important;animation:ptspin .8s linear infinite}
-#ptr.spin .dg{animation:ptbob 1s ease-in-out infinite}#ptr.spin .df{clip-path:none}
-@media(prefers-reduced-motion:reduce){#ptr.spin .pg{animation:ptspin .8s linear infinite!important}#ptr.spin .dg{animation:ptbob 1s ease-in-out infinite!important}}
-@keyframes ptspin{from{transform:rotate(-90deg)}to{transform:rotate(270deg)}}
-@keyframes ptbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6px)}}
+#ptr{position:fixed;left:50%;top:0;width:60px;height:36px;z-index:7;opacity:0;pointer-events:none;transform:translate(-50%,-60px)}
+#ptr .gs{width:60px;height:36px;display:block;overflow:visible}
+#ptr .gt{fill:none;stroke:var(--ln);stroke-width:3;stroke-dasharray:1.6 4.6}
+#ptr .ga{fill:none;stroke:var(--ac);stroke-width:3;stroke-linecap:round;stroke-dasharray:75.4;stroke-dashoffset:75.4;filter:drop-shadow(0 0 3px color-mix(in srgb,var(--ac) 70%,transparent))}
+#ptr .nd{stroke:var(--tx);stroke-width:2.2;stroke-linecap:round;transform-origin:30px 32px;transform:rotate(-90deg)}
+#ptr .hb{fill:var(--ac)}
+#ptr.rdy .ga{filter:drop-shadow(0 0 6px var(--ac))}#ptr.rdy .nd{stroke:var(--ac)}
+#ptr.spin .ga{animation:ptfill 1.5s cubic-bezier(.45,.05,.35,1) infinite}
+#ptr.spin .nd{stroke:var(--ac);animation:ptneedle 1.5s cubic-bezier(.45,.05,.35,1) infinite}
+@keyframes ptneedle{0%{transform:rotate(-90deg)}78%,100%{transform:rotate(90deg)}}
+@keyframes ptfill{0%{stroke-dashoffset:75.4}78%,100%{stroke-dashoffset:0}}
 .dr2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dr2>div{min-width:0}.dr2 input,.dr2 select{width:100%!important;min-width:0;box-sizing:border-box}
 .hd .onb{display:none;height:36px;box-sizing:border-box;min-width:44px;padding:0 10px;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ln);border-radius:6px;background:var(--card);color:var(--tx);font-size:11px;font-weight:700;line-height:1;cursor:pointer}.hd .onb.on{display:inline-flex}.onb .od{width:8px;height:8px;border-radius:50%;background:#6b7280;flex:0 0 auto}#onp{position:fixed;z-index:9990;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);width:min(360px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card);color:var(--tx);font-size:12.5px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
 
@@ -2340,22 +2341,21 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 
 </style>
 <script>(function(){
-var TH=56,MAXP=84,HOLD=52,pull=0,sx=0,sy=0,armed=false,on=false,busy=false,el=document.createElement("div"),lb;
-el.id="ptr";el.innerHTML='<svg class="pr" viewBox="0 0 36 36" aria-hidden="true"><defs><clipPath id="ptrc"><rect id="ptrk" x="0" y="25.5" width="36" height="0"/></clipPath></defs><circle class="tk" cx="18" cy="18" r="15" fill="none" stroke-width="2.5"/><circle class="pg" cx="18" cy="18" r="15" fill="none" stroke-width="2.5" stroke-dasharray="94.25" stroke-dashoffset="94.25"/><g class="dg"><path class="df" clip-path="url(#ptrc)" d="M18 9.5c-3.4 4.4-5.8 7.4-5.8 10.2a5.8 5.8 0 0 0 11.6 0C23.8 16.9 21.4 13.9 18 9.5z"/><path class="dp" d="M18 9.5c-3.4 4.4-5.8 7.4-5.8 10.2a5.8 5.8 0 0 0 11.6 0C23.8 16.9 21.4 13.9 18 9.5z"/></g></svg><span class="pt">Pull down</span>';document.body.appendChild(el);lb=el.querySelector(".pt");var pg=el.querySelector(".pg"),rk=el.querySelector("#ptrk");
+var TH=56,MAXP=84,HOLD=52,pull=0,sx=0,sy=0,armed=false,on=false,busy=false,el=document.createElement("div");
+el.id="ptr";el.setAttribute("aria-hidden","true");el.innerHTML='<svg class="gs" viewBox="0 0 60 36"><path class="gt" d="M6 32A24 24 0 0 1 54 32"/><path class="ga" d="M6 32A24 24 0 0 1 54 32"/><line class="nd" x1="30" y1="32" x2="30" y2="13"/><circle class="hb" cx="30" cy="32" r="3"/></svg>';document.body.appendChild(el);var ga=el.querySelector(".ga"),nd=el.querySelector(".nd");
 function paint(p,spin){var h=document.querySelector(".hd");document.body.style.marginTop=p+"px";if(h)h.style.transform=p?"translateY("+(-p)+"px)":"";
- var hh=h?Math.max(0,h.getBoundingClientRect().bottom):0;el.style.top=hh+"px";el.style.opacity=p>3?"1":"0";var pr=Math.min(1,p/TH);el.style.transform="translate(-50%,"+((p-44)/2)+"px) scale("+(0.75+0.25*pr)+")";
- if(!spin){var rd=p>=TH;if(rd&&!el.classList.contains("rdy")){try{if(navigator.vibrate)navigator.vibrate(12)}catch(e){}}el.classList.toggle("rdy",rd);lb.textContent=rd?"Release to refresh":"Pull down";pg.style.strokeDashoffset=94.25*(1-pr);rk.setAttribute("y",25.5-16*pr);rk.setAttribute("height",16*pr+1)}}
-function settle(p){var b=document.body,h=document.querySelector(".hd");b.style.transition="margin-top .22s ease,background .3s";if(h)h.style.transition="transform .22s ease";paint(p,busy);if(p===0)el.style.opacity="0";setTimeout(function(){b.style.transition="";if(h)h.style.transition="";if(p===0){b.style.marginTop="";if(h)h.style.transform=""}},260)}
+ var hh=h?Math.max(0,h.getBoundingClientRect().bottom):0;el.style.top=hh+"px";el.style.opacity=p>3?"1":"0";var pr=Math.min(1,p/TH);el.style.transform="translate(-50%,"+((p-36)/2)+"px) scale("+(0.6+0.4*pr)+")";
+ if(!spin){var rd=p>=TH;if(rd&&!el.classList.contains("rdy")){try{if(navigator.vibrate)navigator.vibrate(12)}catch(e){}}el.classList.toggle("rdy",rd);ga.style.strokeDashoffset=75.4*(1-pr);nd.style.transform="rotate("+(-90+180*pr)+"deg)"}}
+function settle(p){var b=document.body,h=document.querySelector(".hd");b.style.transition="margin-top .22s ease,background .3s";el.style.transition="top .22s ease,opacity .2s,transform .22s ease";if(h)h.style.transition="transform .22s ease";paint(p,busy);if(p===0)el.style.opacity="0";setTimeout(function(){b.style.transition="";el.style.transition="";if(h)h.style.transition="";if(p===0){b.style.marginTop="";if(h)h.style.transform=""}},260)}
 function blocked(t){if(busy)return true;if(document.documentElement.classList.contains("dlock"))return true;if((window.pageYOffset||document.documentElement.scrollTop||0)>0)return true;
  var m=document.getElementById("modal");if(m&&!m.classList.contains("hide"))return true;if(document.documentElement.classList.contains("mlock"))return true;
  if(document.getElementById("gP")||document.getElementById("fbE"))return true;
  if(t&&t.closest&&t.closest("input,textarea,select"))return true;
  for(var n=t;n&&n!==document.body&&n.nodeType===1;n=n.parentElement){if(n.scrollTop>0)return true}return false}
 function online(){return window.netProbe?window.netProbe():Promise.resolve(navigator.onLine!==false)}
-var raf=0;function spinStart(){cancelAnimationFrame(raf);var t0=performance.now();(function f(t){pg.style.transform="rotate("+(-90+((t-t0)*0.45)%360)+"deg)";raf=requestAnimationFrame(f)})(t0)}
-function spinStop(){cancelAnimationFrame(raf);pg.style.transform=""}
+function spinStart(){nd.style.transform=""}function spinStop(){ga.style.strokeDashoffset="";nd.style.transform="rotate(-90deg)"}
 function done(){busy=false;el.classList.remove("spin");spinStop();settle(0)}
-function run(){busy=true;el.classList.remove("rdy");lb.textContent="Refreshing…";el.classList.add("spin");spinStart();settle(HOLD);
+function run(){busy=true;el.classList.remove("rdy");el.classList.add("spin");spinStart();settle(HOLD);
  var safety=setTimeout(done,9000);
  Promise.all([online(),new Promise(function(r){setTimeout(r,1800)})]).then(function(a){
   if(a[0]){var fl=0;try{sessionStorage.setItem("fleetPtr","1");fl=sessionStorage.getItem("fleetPtr")==="1"}catch(e){}if(!fl){try{window.name="fleetPtr1";fl=1}catch(e){}}if(!fl)try{window.netMsg("Refreshed",false,3000)}catch(e){}
@@ -3770,6 +3770,9 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"2.0.11",title:"New pull to refresh",items:[
+  {t:"Fuel gauge pull down",d:"A small gauge fills as you pull, glows when ready, then fills left to right again and again while refreshing."}
+ ]},
  {v:"2.0.10",title:"History header height",items:[
   {t:"Even header boxes",d:"The empty header box in History now has the same height as the others."}
  ]},
