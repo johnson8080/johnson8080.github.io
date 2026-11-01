@@ -39,7 +39,7 @@ html.sp-on:not(.sp-lv) body>*:not(#sp):not(script):not(style):not(link){visibili
 #sp .sp-cap.on{animation:spCap .35s ease-out!important}
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="app-version" content="2.0.11">
+<meta name="app-version" content="2.0.12">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <title>FUEL &amp; TRIPS</title>
 <link rel="manifest" href="manifest.webmanifest">
@@ -2314,10 +2314,7 @@ setTimeout(check,8000);setInterval(check,18e5);document.addEventListener("visibi
 #ptr .nd{stroke:var(--tx);stroke-width:2.2;stroke-linecap:round;transform-origin:30px 32px;transform:rotate(-90deg)}
 #ptr .hb{fill:var(--ac)}
 #ptr.rdy .ga{filter:drop-shadow(0 0 6px var(--ac))}#ptr.rdy .nd{stroke:var(--ac)}
-#ptr.spin .ga{animation:ptfill 1.5s cubic-bezier(.45,.05,.35,1) infinite}
-#ptr.spin .nd{stroke:var(--ac);animation:ptneedle 1.5s cubic-bezier(.45,.05,.35,1) infinite}
-@keyframes ptneedle{0%{transform:rotate(-90deg)}78%,100%{transform:rotate(90deg)}}
-@keyframes ptfill{0%{stroke-dashoffset:75.4}78%,100%{stroke-dashoffset:0}}
+#ptr.spin .nd{stroke:var(--ac)}
 .dr2{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}.dr2>div{min-width:0}.dr2 input,.dr2 select{width:100%!important;min-width:0;box-sizing:border-box}
 .hd .onb{display:none;height:36px;box-sizing:border-box;min-width:44px;padding:0 10px;align-items:center;justify-content:center;gap:6px;border:1px solid var(--ln);border-radius:6px;background:var(--card);color:var(--tx);font-size:11px;font-weight:700;line-height:1;cursor:pointer}.hd .onb.on{display:inline-flex}.onb .od{width:8px;height:8px;border-radius:50%;background:#6b7280;flex:0 0 auto}#onp{position:fixed;z-index:9990;right:12px;top:calc(env(safe-area-inset-top,0px) + 56px);width:min(360px,calc(100vw - 24px));box-sizing:border-box;padding:10px 12px;border:1px solid var(--ln);border-radius:10px;background:var(--card);color:var(--tx);font-size:12.5px;box-shadow:0 6px 24px rgba(0,0,0,.35)}
 
@@ -2353,7 +2350,8 @@ function blocked(t){if(busy)return true;if(document.documentElement.classList.co
  if(t&&t.closest&&t.closest("input,textarea,select"))return true;
  for(var n=t;n&&n!==document.body&&n.nodeType===1;n=n.parentElement){if(n.scrollTop>0)return true}return false}
 function online(){return window.netProbe?window.netProbe():Promise.resolve(navigator.onLine!==false)}
-function spinStart(){nd.style.transform=""}function spinStop(){ga.style.strokeDashoffset="";nd.style.transform="rotate(-90deg)"}
+var raf=0;function spinStart(){cancelAnimationFrame(raf);var t0=performance.now();(function f(t){var k=((t-t0)%1100)/1100,e=k<.5?k*2:2-k*2;e=e<.5?2*e*e:1-Math.pow(-2*e+2,2)/2;ga.style.strokeDashoffset=75.4*(1-e);nd.style.transform="rotate("+(-90+180*e)+"deg)";raf=requestAnimationFrame(f)})(t0)}
+function spinStop(){cancelAnimationFrame(raf);ga.style.strokeDashoffset="75.4";nd.style.transform="rotate(-90deg)"}
 function done(){busy=false;el.classList.remove("spin");spinStop();settle(0)}
 function run(){busy=true;el.classList.remove("rdy");el.classList.add("spin");spinStart();settle(HOLD);
  var safety=setTimeout(done,9000);
@@ -2370,6 +2368,45 @@ document.addEventListener("touchmove",function(e){if(!armed)return;var t=e.touch
 function end(){if(!on){armed=false;return}on=false;armed=false;if(pull>=TH)run();else settle(0);pull=0}
 document.addEventListener("touchend",end,{passive:true});document.addEventListener("touchcancel",end,{passive:true});
 try{var rf=0;try{if(sessionStorage.getItem("fleetPtr")==="1"){sessionStorage.removeItem("fleetPtr");rf=1}}catch(e){}try{if(window.name==="fleetPtr1"){window.name="";rf=1}}catch(e){}if(rf)setTimeout(function(){try{window.netMsg("Refreshed",false,3000)}catch(e){}},900)}catch(e){}
+})();</script>
+<script>(function(){
+/* small polish animations: count-up totals, list rows sliding in, save tick. Uses the Web Animations API + rAF so they still run when CSS animations are switched off. */
+var RM=0;
+function parse(t){var m=/-?\d[\d,]*\.?\d*/.exec(t);if(!m)return null;var s=m[0],d=s.indexOf(".")<0?0:s.length-s.indexOf(".")-1;return{pre:t.slice(0,m.index),suf:t.slice(m.index+s.length),v:parseFloat(s.replace(/,/g,"")),d:d,c:s.indexOf(",")>=0}}
+function fmt(p,n){var s=Math.abs(n).toFixed(p.d);if(p.c){var q=s.split(".");q[0]=q[0].replace(/\B(?=(\d{3})+(?!\d))/g,",");s=q.join(".")}return p.pre+(n<0&&parseFloat(s.replace(/,/g,""))!==0?"-":"")+s+p.suf}
+function count(el,final,from){var S=el.__cu||(el.__cu={});cancelAnimationFrame(S.raf);var p=parse(final);
+ if(!p||el.children.length||isNaN(p.v)){S.shown=final;S.cur=p?p.v:0;S.target=final;return}
+ S.target=final;if(from==null)from=S.cur==null?0:S.cur;var to=p.v;
+ if(from===to||!(el.offsetParent)){S.cur=to;S.shown=final;if(el.textContent!==final)el.textContent=final;return}
+ var t0=performance.now(),D=700;
+ (function f(t){var k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,3),v=from+(to-from)*e;S.cur=v;var s=k>=1?final:fmt(p,v);S.shown=s;el.textContent=s;if(k<1)S.raf=requestAnimationFrame(f)})(t0)}
+function onStat(el){var S=el.__cu||(el.__cu={}),t=el.textContent;if(t===S.shown)return;if(S.raf&&t===S.target)return;count(el,t,S.cur)}
+var seen=0;
+try{new MutationObserver(function(ms){var set=[];ms.forEach(function(m){var n=m.target;if(n.nodeType===3)n=n.parentNode;if(n&&n.nodeType===1&&n.matches&&n.matches(".stat b")&&set.indexOf(n)<0)set.push(n)});set.forEach(onStat)}).observe(document.body,{childList:true,characterData:true,subtree:true})}catch(e){}
+["st1","st2"].forEach(function(id){var box=document.getElementById(id);if(!box)return;var was=!box.classList.contains("hide");
+ try{new MutationObserver(function(){var v=!box.classList.contains("hide");if(v&&!was){[].forEach.call(box.querySelectorAll(".stat b"),function(b){var S=b.__cu||{};count(b,S.target||b.textContent,0)})}was=v}).observe(box,{attributes:true,attributeFilter:["class"]})}catch(e){}});
+/* rows slide in */
+var LAST={};
+function rows(id){var c=document.getElementById(id);if(!c)return[];return[].slice.call(c.querySelectorAll(id==="hl"?".hi":"tbody tr, tr[data-id]"))}
+function slide(id){var c=document.getElementById(id);if(!c||!c.offsetParent)return;var now=Date.now();if(now-(LAST[id]||0)<1500)return;LAST[id]=now;
+ var R=rows(id).slice(0,12);if(!R.length||!R[0].animate)return;
+ R.forEach(function(r,i){try{r.animate([{opacity:0,transform:"translateY(12px)"},{opacity:1,transform:"none"}],{duration:280,delay:i*30,easing:"cubic-bezier(.2,.7,.2,1)",fill:"backwards"})}catch(e){}})}
+[["logl","log"],["flist","flg"],["hl","hist"]].forEach(function(a){var c=document.getElementById(a[0]),sec=document.getElementById(a[1]);if(!c)return;
+ try{new MutationObserver(function(){slide(a[0])}).observe(c,{childList:true})}catch(e){}
+ if(sec){var was=!sec.classList.contains("hide");try{new MutationObserver(function(){var v=!sec.classList.contains("hide");if(v&&!was)setTimeout(function(){slide(a[0])},30);was=v}).observe(sec,{attributes:true,attributeFilter:["class"]})}catch(e){}}});
+/* save tick */
+var MAP={"Trip saved":"save","Trip entry updated":"save","Fuel saved":"fsave","Fuel entry updated":"fsave","Entry saved":"ssave"},lastTick=0;
+function tick(btn){var r=btn.getBoundingClientRect();if(!r.width||!r.height||r.bottom<0||r.top>innerHeight)return;
+ try{btn.animate([{transform:"scale(1)",filter:"brightness(1)"},{transform:"scale(.96)",filter:"brightness(1.2)",offset:.3},{transform:"scale(1)",filter:"brightness(1)"}],{duration:380,easing:"ease-out"})}catch(e){}
+ var d=document.createElement("div"),sz=46;d.setAttribute("aria-hidden","true");
+ d.style.cssText="position:fixed;z-index:9999;pointer-events:none;width:"+sz+"px;height:"+sz+"px;border-radius:50%;background:var(--ok,#22c55e);box-shadow:0 4px 16px rgba(0,0,0,.35);display:grid;place-items:center;left:"+(r.left+r.width/2-sz/2)+"px;top:"+(r.top+r.height/2-sz/2)+"px";
+ d.innerHTML='<svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 13.5l5 5 9-10.5" stroke-dasharray="26" stroke-dashoffset="26"/></svg>';
+ document.body.appendChild(d);
+ try{d.animate([{transform:"scale(0)",opacity:0},{transform:"scale(1.18)",opacity:1,offset:.35},{transform:"scale(1)",opacity:1,offset:.5},{transform:"scale(1)",opacity:1,offset:.8},{transform:"scale(.85) translateY(-10px)",opacity:0}],{duration:1100,easing:"ease-out",fill:"forwards"});
+  d.querySelector("path").animate([{strokeDashoffset:26},{strokeDashoffset:0}],{duration:360,delay:120,easing:"ease-out",fill:"forwards"})}catch(e){}
+ setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},1200)}
+var tel=document.getElementById("toast");
+if(tel)try{new MutationObserver(function(){var q=tel.querySelector("b");if(!q||tel.classList.contains("bad"))return;var m=MAP[(q.textContent||"").trim()];if(!m)return;var n=Date.now();if(n-lastTick<400)return;lastTick=n;var b=document.getElementById(m);if(b)tick(b)}).observe(tel,{childList:true,characterData:true,subtree:true})}catch(e){}
 })();</script>
 <script>(function(){
 /* stop the phone's autofill / password manager from filling saved emails into app boxes (login boxes are left alone) */
@@ -3770,8 +3807,11 @@ setInterval(paint,3000);setTimeout(paint,1200);
    as app-version in src/html/01-page-head.html, then rebuild. */
 (function(){
 var WN_LOG=[
+ {v:"2.0.12",title:"Little animations",items:[
+  {t:"Smoother screens",d:"Totals count up, list rows slide in, and saving a trip or fuel entry shows a quick tick."}
+ ]},
  {v:"2.0.11",title:"New pull to refresh",items:[
-  {t:"Fuel gauge pull down",d:"A small gauge fills as you pull, glows when ready, then fills left to right again and again while refreshing."}
+  {t:"Fuel gauge pull down",d:"A small gauge fills as you pull, glows when ready, then sweeps back and forth while refreshing."}
  ]},
  {v:"2.0.10",title:"History header height",items:[
   {t:"Even header boxes",d:"The empty header box in History now has the same height as the others."}
