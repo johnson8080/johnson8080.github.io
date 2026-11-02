@@ -1,5 +1,6 @@
 const CACHE = "fuel-trips-v2.0.10";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-maskable-512-v2.png", "icons/apple-touch-icon-v2.png", "icons/favicon-48-v2.png", "icons/splash-ring-192.png", "icons/splash-ring-512.png"];
+const SYNC_TAG = 'fuel-trips-sync';
 
 self.addEventListener("install", (e) => {
   // Add files one by one so a single missing icon cannot stop the whole install
@@ -16,6 +17,81 @@ self.addEventListener("activate", (e) => {
       .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
+});
+
+// Handle push notifications
+self.addEventListener("push", (event) => {
+  var data = {};
+  try {
+    data = event.data ? event.data.json() : {};
+  } catch(e) {
+    data = { title: 'FuelTrips', body: event.data ? event.data.text() : 'New notification' };
+  }
+
+  var options = {
+    body: data.body || 'New update in FuelTrips',
+    icon: '/icons/favicon-48-v2.png',
+    badge: '/icons/favicon-48-v2.png',
+    tag: data.tag || 'fueltrips-notification',
+    requireInteraction: data.requireInteraction || false,
+    data: {
+      url: data.url || '/',
+      action: data.action || null,
+      timestamp: Date.now()
+    },
+    actions: data.actions || []
+  };
+
+  if(data.vibrate) {
+    options.vibrate = data.vibrate;
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'FuelTrips', options)
+  );
+});
+
+// Handle notification clicks
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+
+  var urlToOpen = event.notification.data.url || '/';
+  var action = event.notification.data.action;
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for(var i = 0; i < clientList.length; i++) {
+        var client = clientList[i];
+        if(client.url === urlToOpen && 'focus' in client) {
+          client.focus();
+          if(action) {
+            client.postMessage({ type: 'notification-action', action: action });
+          }
+          return;
+        }
+      }
+      if(clients.openWindow) {
+        return clients.openWindow(urlToOpen).then((newClient) => {
+          if(newClient && action) {
+            newClient.postMessage({ type: 'notification-action', action: action });
+          }
+        });
+      }
+    })
+  );
+});
+
+// Background sync for failed writes
+self.addEventListener("sync", (event) => {
+  if(event.tag === SYNC_TAG) {
+    event.waitUntil(
+      clients.matchAll().then((clientList) => {
+        if(clientList.length > 0) {
+          clientList[0].postMessage({ type: 'sync-retry' });
+        }
+      })
+    );
+  }
 });
 
 self.addEventListener("fetch", (e) => {
@@ -84,3 +160,18 @@ self.addEventListener("fetch", (e) => {
     );
   }
 });
+
+// Periodic background sync (if available)
+if('periodicSync' in self.registration) {
+  self.addEventListener('periodicsync', (event) => {
+    if(event.tag === 'fuel-trips-periodic') {
+      event.waitUntil(
+        clients.matchAll().then((clientList) => {
+          if(clientList.length > 0) {
+            clientList[0].postMessage({ type: 'periodic-sync' });
+          }
+        })
+      );
+    }
+  });
+}
